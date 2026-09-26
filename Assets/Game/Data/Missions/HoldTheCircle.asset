@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 91addb9ebbc174a43988264d9013212f, type: 3}
+  m_Name: HoldTheCircle
+  m_EditorClassIdentifier: BattleArena.Runtime::BattleArena.Missions.HoldZoneMission
+  title: Hold the Circle
+  description: Stand inside the marked circle for 12 seconds.
+  timeLimit: 40
+  weight: 1
+  zonePrefab: {fileID: 7127920469439287350, guid: 6eecf22504c3e204c8a0d537f2b9261b, type: 3}
+  radius: 4
+  requiredSeconds: 12
+  minDistance: 9
+  maxDistance: 15

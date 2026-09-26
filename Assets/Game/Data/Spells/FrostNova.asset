@@ -17,6 +17,7 @@ MonoBehaviour:
   color: {r: 0.55, g: 0.9, b: 1, a: 1}
   cooldown: 8
   baseDamage: 35
+  supportedUpgrades: 0000000001000000020000000500000004000000
   radius: 7
   slowMultiplier: 0.4
   slowDuration: 3

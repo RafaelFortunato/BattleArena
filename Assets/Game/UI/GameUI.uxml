@@ -24,6 +24,19 @@
                 <ui:VisualElement class="hud-top-spacer" picking-mode="Ignore" />
             </ui:VisualElement>
 
+            <ui:VisualElement name="mission-panel" class="mission-panel panel hidden" picking-mode="Ignore">
+                <ui:VisualElement class="mission-header" picking-mode="Ignore">
+                    <ui:Label text="MISSION" class="caption" picking-mode="Ignore" />
+                    <ui:Label name="mission-timer" text="0:40" class="mission-timer" picking-mode="Ignore" />
+                </ui:VisualElement>
+                <ui:Label name="mission-title" text="Mission" class="mission-title" picking-mode="Ignore" />
+                <ui:Label name="mission-description" text="" class="mission-description" picking-mode="Ignore" />
+                <ui:VisualElement class="bar mission-bar" picking-mode="Ignore">
+                    <ui:VisualElement name="mission-fill" class="bar-fill mission-fill" picking-mode="Ignore" />
+                    <ui:Label name="mission-status" text="" class="bar-label" picking-mode="Ignore" />
+                </ui:VisualElement>
+            </ui:VisualElement>
+
             <ui:VisualElement name="boss-panel" class="boss-panel hidden" picking-mode="Ignore">
                 <ui:Label name="boss-name" text="BOSS" class="boss-name" picking-mode="Ignore" />
                 <ui:VisualElement class="bar boss-bar" picking-mode="Ignore">
@@ -41,6 +54,7 @@
                         <ui:Label text="?" class="spell-name" picking-mode="Ignore" />
                         <ui:VisualElement class="spell-cooldown" picking-mode="Ignore" />
                         <ui:Label text="" class="spell-cooldown-text" picking-mode="Ignore" />
+                        <ui:Label text="" class="spell-charges" picking-mode="Ignore" />
                         <ui:Label text="LV 5" class="spell-lock" picking-mode="Ignore" />
                     </ui:VisualElement>
                     <ui:VisualElement name="spell-1" class="spell-slot locked" picking-mode="Ignore">
@@ -48,6 +62,7 @@
                         <ui:Label text="?" class="spell-name" picking-mode="Ignore" />
                         <ui:VisualElement class="spell-cooldown" picking-mode="Ignore" />
                         <ui:Label text="" class="spell-cooldown-text" picking-mode="Ignore" />
+                        <ui:Label text="" class="spell-charges" picking-mode="Ignore" />
                         <ui:Label text="LV 10" class="spell-lock" picking-mode="Ignore" />
                     </ui:VisualElement>
                     <ui:VisualElement name="spell-2" class="spell-slot locked" picking-mode="Ignore">
@@ -55,6 +70,7 @@
                         <ui:Label text="?" class="spell-name" picking-mode="Ignore" />
                         <ui:VisualElement class="spell-cooldown" picking-mode="Ignore" />
                         <ui:Label text="" class="spell-cooldown-text" picking-mode="Ignore" />
+                        <ui:Label text="" class="spell-charges" picking-mode="Ignore" />
                         <ui:Label text="LV 15" class="spell-lock" picking-mode="Ignore" />
                     </ui:VisualElement>
                 </ui:VisualElement>

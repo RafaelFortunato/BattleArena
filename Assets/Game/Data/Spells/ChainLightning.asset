@@ -18,6 +18,7 @@ MonoBehaviour:
   color: {r: 0.6, g: 0.85, b: 1, a: 1}
   cooldown: 5
   baseDamage: 40
+  supportedUpgrades: 00000000010000000200000006000000
   range: 14
   jumpRadius: 7
   maxTargets: 6

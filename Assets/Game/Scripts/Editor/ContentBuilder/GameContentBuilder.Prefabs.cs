@@ -6,6 +6,7 @@ using BattleArena.Pickups;
 using BattleArena.Player;
 using BattleArena.Pooling;
 using BattleArena.Progression;
+using BattleArena.Missions;
 using BattleArena.Spells;
 using BattleArena.Vfx;
 using UnityEditor;
@@ -31,6 +32,7 @@ namespace BattleArena.Editor.ContentBuilder
             public TimedRelease ChestSpawnEffect;
             public LevelUpConfig LevelUp;
             public TextMeshPro DamageLabel;
+            public MissionDefinition[] Missions;
             public TimedRelease CritEffect;
         }
 
@@ -57,7 +59,8 @@ namespace BattleArena.Editor.ContentBuilder
             var gem = BuildGem(m);
 
             // Enemies
-            var (schedule, boss) = BuildEnemyRoster(m, gem, deathPuff, bossSlam, bossOrb);
+            var roster = BuildEnemyRoster(m, gem, deathPuff, bossSlam, bossOrb);
+            var missions = BuildMissions(m, roster, collectEffect: chestSparkle);
 
             // Spells and level-up cards
             var spells = BuildSpells(m, fireball, frostRing, meteorStrike);
@@ -75,8 +78,9 @@ namespace BattleArena.Editor.ContentBuilder
             {
                 Input = input,
                 Player = player,
-                Schedule = schedule,
-                Boss = boss,
+                Schedule = roster.Schedule,
+                Boss = roster.Boss,
+                Missions = missions,
                 Shrine = BuildShrine(m),
                 Chest = BuildChest(m, chestSparkle),
                 ChestSpawnEffect = chestSparkle,

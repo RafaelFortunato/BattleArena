@@ -18,6 +18,7 @@ MonoBehaviour:
   color: {r: 0.85, g: 0.6, b: 1, a: 1}
   cooldown: 6
   baseDamage: 30
+  supportedUpgrades: 00000000010000000200000005000000
   distance: 7
   blastRadius: 3.5
   invulnerabilityDuration: 0.6

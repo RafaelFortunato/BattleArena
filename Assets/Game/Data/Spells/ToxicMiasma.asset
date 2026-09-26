@@ -18,6 +18,7 @@ MonoBehaviour:
   color: {r: 0.55, g: 0.95, b: 0.3, a: 1}
   cooldown: 10
   baseDamage: 12
+  supportedUpgrades: 0000000001000000020000000500000004000000
   zonePrefab: {fileID: 8815232819073640600, guid: 80506df7911d0e44da9f8b2544a0f1fb, type: 3}
   radius: 4.5
   duration: 5

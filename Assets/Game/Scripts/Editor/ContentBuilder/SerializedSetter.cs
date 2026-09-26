@@ -35,6 +35,15 @@ namespace BattleArena.Editor.ContentBuilder
                 case Object obj:
                     property.objectReferenceValue = obj;
                     break;
+                case Array values when values.GetType().GetElementType()!.IsEnum || values.GetType().GetElementType() == typeof(int):
+                    // Enum and int arrays are stored as integers.
+                    property.arraySize = values.Length;
+                    for (var i = 0; i < values.Length; i++)
+                        property.GetArrayElementAtIndex(i).intValue = Convert.ToInt32(values.GetValue(i));
+                    break;
+                case Enum enumValue:
+                    property.intValue = Convert.ToInt32(enumValue);
+                    break;
                 case float f:
                     property.floatValue = f;
                     break;

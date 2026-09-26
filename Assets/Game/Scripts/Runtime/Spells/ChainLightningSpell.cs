@@ -29,8 +29,8 @@ namespace BattleArena.Spells
             if (!CombatQueries.TryFindNearest(context.Origin, range, context.TargetMask, out var first))
                 return false;
 
-            // Pierce adds extra jumps; Area widens the jump range.
-            var targets = Mathf.Min(MaxTargetsLimit, maxTargets + context.Modifiers.ExtraPierce);
+            // Pierce and bounce upgrades add extra jumps; Area widens the jump range.
+            var targets = Mathf.Min(MaxTargetsLimit, maxTargets + context.Modifiers.ExtraPierce + context.Modifiers.ExtraBounces);
             CollectChain(first, context.TargetMask, targets, context.Area(jumpRadius));
 
             // Damage after collecting: a kill despawns the enemy, which would break the chain search.

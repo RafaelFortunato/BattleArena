@@ -530,6 +530,7 @@ MonoBehaviour:
   health: {fileID: 8474256082905014879}
   castOrigin: {fileID: 2241959256298700185}
   slotUnlockLevels: 050000000a0000000f000000
+  maxCooldownReduction: 0.6
 --- !u!114 &2730277161128458940
 MonoBehaviour:
   m_ObjectHideFlags: 0

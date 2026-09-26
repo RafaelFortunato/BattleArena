@@ -9,6 +9,7 @@ namespace BattleArena.Spells
     public sealed class ArcaneOrbitSpell : SpellDefinition
     {
         [SerializeField] private OrbitingOrbs orbsPrefab;
+        [SerializeField, Min(1)] private int orbCount = 3;
         [SerializeField, Min(0.5f)] private float radius = 3.2f;
         [SerializeField, Min(0.1f)] private float duration = 6f;
         [SerializeField] private float degreesPerSecond = 220f;
@@ -17,7 +18,8 @@ namespace BattleArena.Spells
         {
             var caster = context.Caster.Transform;
             var orbs = PoolManager.Spawn(orbsPrefab, caster.position, Quaternion.identity);
-            orbs.Activate(caster, GetDamage(context), context.Area(radius), context.Duration(duration), degreesPerSecond);
+            orbs.Activate(caster, GetDamage(context), orbCount + context.Modifiers.ExtraProjectiles,
+                context.Area(radius), context.Duration(duration), degreesPerSecond);
             return true;
         }
     }

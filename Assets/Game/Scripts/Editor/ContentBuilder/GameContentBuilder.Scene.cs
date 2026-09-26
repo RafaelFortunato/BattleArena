@@ -6,6 +6,7 @@ using BattleArena.Progression;
 using BattleArena.UI;
 using BattleArena.Vfx;
 using BattleArena.Interaction;
+using BattleArena.Missions;
 using Unity.AI.Navigation;
 using Unity.Cinemachine;
 using Unity.Cinemachine.TargetTracking;
@@ -40,7 +41,7 @@ namespace BattleArena.Editor.ContentBuilder
             var player = PlacePrefab(content.Player, Vector3.zero, Quaternion.identity);
             var playerHealth = player.GetComponent<Health>();
 
-            var gameManager = BuildSystems(content, player, playerHealth, out var levelUp);
+            var gameManager = BuildSystems(m, content, player, playerHealth, out var levelUp);
             BuildCamera(player.transform);
             BuildUserInterface(gameManager, levelUp, player, playerHealth);
 
@@ -209,7 +210,7 @@ namespace BattleArena.Editor.ContentBuilder
 
         // ---------------------------------------------------------------- Systems, camera, UI
 
-        private static GameManager BuildSystems(ContentSet content, GameObject player, Health playerHealth, out LevelUpController levelUp)
+        private static GameManager BuildSystems(MaterialSet m, ContentSet content, GameObject player, Health playerHealth, out LevelUpController levelUp)
         {
             var systems = new GameObject("Systems");
 
@@ -252,6 +253,16 @@ namespace BattleArena.Editor.ContentBuilder
                 .Set("config", content.LevelUp)
                 .Set("stats", player.GetComponent<PlayerStats>())
                 .Set("spellCaster", player.GetComponent<SpellCaster>())
+                .Apply();
+
+            var missions = systems.AddComponent<MissionDirector>();
+            SerializedSetter.For(missions)
+                .Set("missions", content.Missions)
+                .Set("rewards", levelUp)
+                .Set("player", player.transform)
+                .Set("playerHealth", playerHealth)
+                .Set("spawner", spawner)
+                .Set("pointer", BuildMissionPointer(m, player.transform))
                 .Apply();
 
             return gameManager;

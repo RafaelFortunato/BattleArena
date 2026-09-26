@@ -18,7 +18,9 @@ MonoBehaviour:
   color: {r: 0.75, g: 0.45, b: 1, a: 1}
   cooldown: 12
   baseDamage: 22
+  supportedUpgrades: 0100000002000000030000000400000005000000
   orbsPrefab: {fileID: 5161623284445319767, guid: ed100b954f43e5f41b9d94a9110c3e11, type: 3}
+  orbCount: 3
   radius: 3.2
   duration: 6
   degreesPerSecond: 220

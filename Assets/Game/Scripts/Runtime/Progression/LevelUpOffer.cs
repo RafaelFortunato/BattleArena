@@ -45,6 +45,30 @@ namespace BattleArena.Progression
         public override void Apply() => _stats.Apply(_upgrade.Stat, _upgrade.Amount);
     }
 
+    /// <summary>Mission reward: improves one equipped spell.</summary>
+    public sealed class SpellUpgradeOffer : LevelUpOffer
+    {
+        private readonly SpellUpgradeDefinition _upgrade;
+        private readonly SpellCaster _caster;
+        private readonly int _slot;
+
+        public SpellUpgradeOffer(SpellUpgradeDefinition upgrade, SpellCaster caster, int slot)
+        {
+            _upgrade = upgrade;
+            _caster = caster;
+            _slot = slot;
+        }
+
+        private SpellDefinition Spell => _caster.GetSpell(_slot);
+
+        public override string Title => _upgrade.DisplayName;
+        public override string Tag => $"{Spell.DisplayName.ToUpperInvariant()}  ·  [{SpellOffer.GetSlotKey(_slot)}]";
+        public override string Description => _upgrade.Describe(_caster.GetUpgrades(_slot));
+        public override Color Color => Spell.Color;
+
+        public override void Apply() => _caster.ApplyUpgrade(_slot, _upgrade.Kind, _upgrade.Amount);
+    }
+
     public sealed class SpellOffer : LevelUpOffer
     {
         private static readonly string[] SlotKeys = { "Q", "E", "R" };

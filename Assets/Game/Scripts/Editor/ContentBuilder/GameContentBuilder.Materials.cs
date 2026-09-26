@@ -20,6 +20,7 @@ namespace BattleArena.Editor.ContentBuilder
             public Material EnemyTelegraph, EnemyTelegraphFill, SpellTelegraph, SpellTelegraphFill, FrostRing, ArcaneRing, ToxicZone;
             public Material Particles;
             public Material HealthBar, DamageText;
+            public Material MissionZone, MissionZoneFill, ArcaneShard, PointerGlow;
         }
 
         private static MaterialSet BuildMaterials()
@@ -80,6 +81,10 @@ namespace BattleArena.Editor.ContentBuilder
                 ToxicZone = Transparent("ToxicZone", new Color(0.35f, 0.8f, 0.2f, 0.16f)),
 
                 Particles = ParticleMaterial(),
+                MissionZone = Transparent("MissionZone", new Color(1f, 0.8f, 0.3f, 0.14f)),
+                MissionZoneFill = Transparent("MissionZoneFill", new Color(1f, 0.8f, 0.25f, 0.32f)),
+                ArcaneShard = Lit("ArcaneShard", Hex("#F2D0FF"), emission: Hex("#C04DFF") * 5f),
+                PointerGlow = Lit("MissionPointer", Hex("#FFE9A8"), emission: Hex("#FFB020") * 3f),
                 HealthBar = HealthBarMaterial(),
                 DamageText = DamageTextMaterial(),
             };

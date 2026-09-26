@@ -102,6 +102,18 @@ namespace BattleArena.Core
         }
     }
 
+    public readonly struct SpellUpgradedEvent : IGameEvent
+    {
+        public readonly int SlotIndex;
+        public readonly SpellUpgradeKind Kind;
+
+        public SpellUpgradedEvent(int slotIndex, SpellUpgradeKind kind)
+        {
+            SlotIndex = slotIndex;
+            Kind = kind;
+        }
+    }
+
     public readonly struct SpellCastEvent : IGameEvent
     {
         public readonly int SlotIndex;
@@ -120,6 +132,39 @@ namespace BattleArena.Core
         public readonly IInteractable Target;
 
         public InteractionTargetChangedEvent(IInteractable target) => Target = target;
+    }
+
+    public readonly struct MissionStartedEvent : IGameEvent
+    {
+        public readonly string Title;
+        public readonly string Description;
+
+        public MissionStartedEvent(string title, string description)
+        {
+            Title = title;
+            Description = description;
+        }
+    }
+
+    public readonly struct MissionProgressEvent : IGameEvent
+    {
+        public readonly float Progress;
+        public readonly string Status;
+        public readonly float TimeRemaining;
+
+        public MissionProgressEvent(float progress, string status, float timeRemaining)
+        {
+            Progress = progress;
+            Status = status;
+            TimeRemaining = timeRemaining;
+        }
+    }
+
+    public readonly struct MissionEndedEvent : IGameEvent
+    {
+        public readonly bool Succeeded;
+
+        public MissionEndedEvent(bool succeeded) => Succeeded = succeeded;
     }
 
     public readonly struct NotificationEvent : IGameEvent

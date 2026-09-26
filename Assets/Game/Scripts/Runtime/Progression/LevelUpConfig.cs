@@ -12,9 +12,12 @@ namespace BattleArena.Progression
         [SerializeField, Range(1, 3)] private int choiceCount = 3;
         [SerializeField] private StatUpgradeDefinition[] statUpgrades = Array.Empty<StatUpgradeDefinition>();
         [SerializeField] private SpellDefinition[] spellPool = Array.Empty<SpellDefinition>();
+        [Tooltip("Mission reward cards that improve an equipped spell.")]
+        [SerializeField] private SpellUpgradeDefinition[] spellUpgrades = Array.Empty<SpellUpgradeDefinition>();
 
         public int ChoiceCount => choiceCount;
         public IReadOnlyList<StatUpgradeDefinition> StatUpgrades => statUpgrades;
         public IReadOnlyList<SpellDefinition> SpellPool => spellPool;
+        public IReadOnlyList<SpellUpgradeDefinition> SpellUpgrades => spellUpgrades;
     }
 }

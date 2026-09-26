@@ -31,11 +31,21 @@ namespace BattleArena.Editor.ContentBuilder
             }
         }
 
+        /// <summary>Enemy assets other builders need (the scene, missions).</summary>
+        private sealed class EnemyRoster
+        {
+            public SpawnSchedule Schedule;
+            public EnemyDefinition Boss;
+            public EnemyDefinition GoldenGoblin;
+            public EnemyDefinition Warlord;
+            public EnemyDefinition[] Camp;
+        }
+
         /// <summary>
         /// Builds every enemy: prefab (visual + behaviour components) and definition (stats), then the
         /// spawn schedule that introduces them over the match.
         /// </summary>
-        private static (SpawnSchedule schedule, EnemyDefinition boss) BuildEnemyRoster(MaterialSet m, ExperienceGem gem,
+        private static EnemyRoster BuildEnemyRoster(MaterialSet m, ExperienceGem gem,
             TimedRelease deathEffect, DelayedAreaStrike bossSlam, Projectile bossOrb)
         {
             var kit = new EnemyKit(m, gem, deathEffect);
@@ -51,6 +61,7 @@ namespace BattleArena.Editor.ContentBuilder
             var curse = BuildStrike("ShamanCurse", m.EnemyTelegraph, m.EnemyTelegraphFill, curseEruption, null);
             var beetleBlast = BuildStrike("BeetleBlast", m.EnemyTelegraph, m.EnemyTelegraphFill, bombBlast, null);
             var dashLine = BuildLineTelegraph(m);
+            var warlordSlam = BuildStrike("WarlordSlam", m.EnemyTelegraph, m.EnemyTelegraphFill, bombBlast, null);
 
             // --- Melee chasers
             var grunt = Define("Grunt", "Goblin Grunt", SaveEnemy(Melee(kit, "Grunt", 1f, 2.3f, v => Humanoid(v, m.Grunt, m))),
@@ -215,6 +226,34 @@ namespace BattleArena.Editor.ContentBuilder
             wyvernRoot.AddComponent<ContactAttack>();
             var wyvern = Define("StormWyvern", "Storm Wyvern", SaveEnemy(wyvernRoot), health: 20f, speed: 9.5f, damage: 9f, range: 1.3f, cooldown: 1f, xp: 3);
 
+            // --- Mission targets (never spawned by the schedule)
+            var goblinRoot = NewEnemy(kit, "GoldenGoblin", 0.85f, 2.3f, v =>
+            {
+                var body = Humanoid(v, m.Gold, m);
+                AddVisual(v, PrimitiveType.Sphere, m.Wood, new Vector3(0f, 1.15f, -0.45f), new Vector3(0.6f, 0.7f, 0.5f), name: "LootSack");
+                return body;
+            });
+            Behaviour<FleeMovement>(goblinRoot, ("fleeDistance", 14f), ("fleeStep", 6f), ("wanderRadius", 6f));
+            var goldenGoblin = Define("GoldenGoblin", "Golden Goblin", SaveEnemy(goblinRoot), health: 90f, speed: 5.8f, damage: 0f, range: 1f, cooldown: 1f, xp: 25);
+
+            var warlordRoot = NewEnemy(kit, "OgreWarlord", 2.1f, 2.4f, v =>
+            {
+                var body = Humanoid(v, m.Brute, m);
+                AddVisual(v, PrimitiveType.Cube, m.Gold, new Vector3(-0.35f, 1.75f, 0.1f), new Vector3(0.12f, 0.35f, 0.12f), new Vector3(0f, 0f, 30f), "HornL");
+                AddVisual(v, PrimitiveType.Cube, m.Gold, new Vector3(0.35f, 1.75f, 0.1f), new Vector3(0.12f, 0.35f, 0.12f), new Vector3(0f, 0f, -30f), "HornR");
+                AddVisual(v, PrimitiveType.Cylinder, m.Gold, new Vector3(0f, 1.05f, 0f), new Vector3(0.95f, 0.06f, 0.95f), name: "Belt");
+                AddVisual(v, PrimitiveType.Sphere, m.Brute, new Vector3(-0.55f, 1.1f, 0f), Vector3.one * 0.42f, name: "FistL");
+                AddVisual(v, PrimitiveType.Sphere, m.Brute, new Vector3(0.55f, 1.1f, 0f), Vector3.one * 0.42f, name: "FistR");
+                return body;
+            });
+            warlordRoot.AddComponent<ChaseMovement>();
+            warlordRoot.AddComponent<ContactAttack>();
+            Behaviour<GroundStrikeAttack>(warlordRoot,
+                ("range", 8f), ("cooldown", 4f), ("windup", 0.9f), ("baseDamage", 22f),
+                ("windupIndicator", WindupIndicator(warlordRoot, m.WindupGlow, new Vector3(0f, 1.9f, 0f), 0.5f)),
+                ("strikePrefab", warlordSlam), ("strikeRadius", 3.5f), ("strikeDelay", 1f), ("strikeCount", 3), ("scatter", 3.5f));
+            var warlord = Define("OgreWarlord", "Ogre Warlord", SaveEnemy(warlordRoot), health: 400f, speed: 2.6f, damage: 18f, range: 2.6f, cooldown: 1.3f, xp: 30);
+
             // --- Boss
             var bossRoot = NewEnemy(kit, "Boss", 2.6f, 0f, v =>
             {
@@ -258,7 +297,14 @@ namespace BattleArena.Editor.ContentBuilder
             });
             EditorUtility.SetDirty(schedule);
 
-            return (schedule, boss);
+            return new EnemyRoster
+            {
+                Schedule = schedule,
+                Boss = boss,
+                GoldenGoblin = goldenGoblin,
+                Warlord = warlord,
+                Camp = new[] { grunt, grunt, grunt, grunt, archer, archer, brute },
+            };
         }
 
         // ---------------------------------------------------------------- Construction helpers

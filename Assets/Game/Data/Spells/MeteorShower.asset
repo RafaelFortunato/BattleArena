@@ -17,6 +17,7 @@ MonoBehaviour:
   color: {r: 1, g: 0.4, b: 0.15, a: 1}
   cooldown: 14
   baseDamage: 90
+  supportedUpgrades: 0000000001000000020000000300000005000000
   meteorPrefab: {fileID: 7810031274077524975, guid: fdcdbf4f57d1f314c922572b49e9fce0, type: 3}
   meteorCount: 10
   impactRadius: 3

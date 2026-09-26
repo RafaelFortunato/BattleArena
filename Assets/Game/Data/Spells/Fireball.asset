@@ -17,6 +17,7 @@ MonoBehaviour:
   color: {r: 1, g: 0.6, b: 0.2, a: 1}
   cooldown: 4
   baseDamage: 45
+  supportedUpgrades: 0000000001000000020000000300000005000000
   projectilePrefab: {fileID: 8606313463938774560, guid: 2cd84b20b606cee4fa8bb5645dd7d1dd, type: 3}
   speed: 16
   projectileCount: 1

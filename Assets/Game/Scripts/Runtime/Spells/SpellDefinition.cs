@@ -25,9 +25,10 @@ namespace BattleArena.Spells
         public readonly float DurationMultiplier;
         public readonly int ExtraProjectiles;
         public readonly int ExtraPierce;
+        public readonly int ExtraBounces;
 
         public SpellModifiers(float damageMultiplier, float critChance, float critMultiplier, float areaMultiplier,
-            float durationMultiplier, int extraProjectiles, int extraPierce)
+            float durationMultiplier, int extraProjectiles, int extraPierce, int extraBounces = 0)
         {
             DamageMultiplier = damageMultiplier;
             CritChance = critChance;
@@ -36,7 +37,19 @@ namespace BattleArena.Spells
             DurationMultiplier = durationMultiplier;
             ExtraProjectiles = extraProjectiles;
             ExtraPierce = extraPierce;
+            ExtraBounces = extraBounces;
         }
+
+        /// <summary>Layers one spell slot's upgrades on top of the caster's stats.</summary>
+        public SpellModifiers With(SpellUpgradeState upgrades) => new(
+            DamageMultiplier * (1f + upgrades.Total(SpellUpgradeKind.Damage)),
+            CritChance,
+            CritMultiplier,
+            AreaMultiplier * (1f + upgrades.Total(SpellUpgradeKind.Area)),
+            DurationMultiplier * (1f + upgrades.Total(SpellUpgradeKind.Duration)),
+            ExtraProjectiles + upgrades.TotalInt(SpellUpgradeKind.ExtraProjectiles),
+            ExtraPierce,
+            ExtraBounces + upgrades.TotalInt(SpellUpgradeKind.ExtraBounces));
     }
 
     /// <summary>Everything a spell needs to know about its caster at the moment it is cast.</summary>
@@ -77,11 +90,16 @@ namespace BattleArena.Spells
         [SerializeField] private Color color = Color.white;
         [SerializeField, Min(0f)] private float cooldown = 5f;
         [SerializeField, Min(0f)] private float baseDamage = 30f;
+        [Tooltip("Spell upgrade cards that can be offered for this spell.")]
+        [SerializeField] private SpellUpgradeKind[] supportedUpgrades =
+            { SpellUpgradeKind.CooldownReduction, SpellUpgradeKind.Damage };
 
         public string DisplayName => displayName;
         public string Description => description;
         public Color Color => color;
         public float Cooldown => cooldown;
+
+        public bool Supports(SpellUpgradeKind kind) => System.Array.IndexOf(supportedUpgrades, kind) >= 0;
 
         protected DamageProfile GetDamage(in SpellContext context) => context.Damage(baseDamage);
 

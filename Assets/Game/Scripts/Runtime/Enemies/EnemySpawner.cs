@@ -27,6 +27,10 @@ namespace BattleArena.Enemies
 
         public EnemyDefinition BossDefinition => boss;
 
+        /// <summary>Difficulty scaling at the current match time (used by missions spawning their own enemies).</summary>
+        public float CurrentHealthMultiplier => schedule.GetHealthMultiplier(Time.time - _matchStartTime);
+        public float CurrentDamageMultiplier => schedule.GetDamageMultiplier(Time.time - _matchStartTime);
+
         private void Start() => Prewarm();
 
         public void Begin(float matchStartTime)
@@ -46,7 +50,7 @@ namespace BattleArena.Enemies
 
         public Enemy SpawnBoss()
         {
-            if (!TryFindSpawnPoint(bossSpawnDistance, bossSpawnDistance + 4f, out var position))
+            if (!TryFindSpawnPoint(player.position, bossSpawnDistance, bossSpawnDistance + 4f, out var position))
                 position = player.position + Vector3.forward * bossSpawnDistance;
 
             return Spawn(boss, position, 1f, 1f);
@@ -73,7 +77,7 @@ namespace BattleArena.Enemies
                 var count = Mathf.Min(room, phase.SpawnsPerTick);
                 for (var i = 0; i < count; i++)
                 {
-                    if (TryFindSpawnPoint(minSpawnDistance, maxSpawnDistance, out var position))
+                    if (TryFindSpawnPoint(player.position, minSpawnDistance, maxSpawnDistance, out var position))
                         Spawn(phase.PickEnemy(), position, healthMultiplier, damageMultiplier);
                 }
 
@@ -88,9 +92,9 @@ namespace BattleArena.Enemies
             return Enemy.Spawn(definition, position, rotation, healthMultiplier, damageMultiplier);
         }
 
-        private bool TryFindSpawnPoint(float minDistance, float maxDistance, out Vector3 position)
+        /// <summary>Random walkable point on a ring around <paramref name="center"/>.</summary>
+        public bool TryFindSpawnPoint(Vector3 center, float minDistance, float maxDistance, out Vector3 position)
         {
-            var center = player.position;
             for (var attempt = 0; attempt < MaxPlacementAttempts; attempt++)
             {
                 var direction = Random.insideUnitCircle.normalized;

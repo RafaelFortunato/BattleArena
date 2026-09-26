@@ -35,6 +35,13 @@ namespace BattleArena.UI
         private VisualElement _bossFill;
         private Label _notification;
         private Label _interactPrompt;
+        private VisualElement _missionPanel;
+        private Label _missionTitle;
+        private Label _missionDescription;
+        private Label _missionTimer;
+        private Label _missionStatus;
+        private VisualElement _missionFill;
+        private int _shownMissionSeconds = -1;
         private SpellSlotView[] _spellSlots;
 
         private IVisualElementScheduledItem _cooldownTicker;
@@ -59,9 +66,13 @@ namespace BattleArena.UI
             EventBus<PlayerLevelUpEvent>.Subscribe(OnLevelUp);
             EventBus<SpellEquippedEvent>.Subscribe(OnSpellEquipped);
             EventBus<SpellCastEvent>.Subscribe(OnSpellCast);
+            EventBus<SpellUpgradedEvent>.Subscribe(OnSpellUpgraded);
             EventBus<BossSpawnedEvent>.Subscribe(OnBossSpawned);
             EventBus<InteractionTargetChangedEvent>.Subscribe(OnInteractionTargetChanged);
             EventBus<NotificationEvent>.Subscribe(OnNotification);
+            EventBus<MissionStartedEvent>.Subscribe(OnMissionStarted);
+            EventBus<MissionProgressEvent>.Subscribe(OnMissionProgress);
+            EventBus<MissionEndedEvent>.Subscribe(OnMissionEnded);
         }
 
         // Start runs after every Awake, so the player's Health is initialised by now.
@@ -77,9 +88,13 @@ namespace BattleArena.UI
             EventBus<PlayerLevelUpEvent>.Unsubscribe(OnLevelUp);
             EventBus<SpellEquippedEvent>.Unsubscribe(OnSpellEquipped);
             EventBus<SpellCastEvent>.Unsubscribe(OnSpellCast);
+            EventBus<SpellUpgradedEvent>.Unsubscribe(OnSpellUpgraded);
             EventBus<BossSpawnedEvent>.Unsubscribe(OnBossSpawned);
             EventBus<InteractionTargetChangedEvent>.Unsubscribe(OnInteractionTargetChanged);
             EventBus<NotificationEvent>.Unsubscribe(OnNotification);
+            EventBus<MissionStartedEvent>.Unsubscribe(OnMissionStarted);
+            EventBus<MissionProgressEvent>.Unsubscribe(OnMissionProgress);
+            EventBus<MissionEndedEvent>.Unsubscribe(OnMissionEnded);
             UnbindBoss();
         }
 
@@ -98,6 +113,12 @@ namespace BattleArena.UI
             _bossFill = root.Q("boss-fill");
             _notification = root.Q<Label>("notification");
             _interactPrompt = root.Q<Label>("interact-prompt");
+            _missionPanel = root.Q("mission-panel");
+            _missionTitle = root.Q<Label>("mission-title");
+            _missionDescription = root.Q<Label>("mission-description");
+            _missionTimer = root.Q<Label>("mission-timer");
+            _missionStatus = root.Q<Label>("mission-status");
+            _missionFill = root.Q("mission-fill");
 
             _spellSlots = new SpellSlotView[spellCaster.SlotCount];
             for (var i = 0; i < _spellSlots.Length; i++)
@@ -157,17 +178,23 @@ namespace BattleArena.UI
             _cooldownTicker.Resume();
         }
 
+        // Charge upgrades change the counter immediately, even without a cast.
+        private void OnSpellUpgraded(SpellUpgradedEvent evt) => _cooldownTicker.Resume();
+
         private void RefreshCooldowns()
         {
-            var anyActive = false;
+            var anyRecharging = false;
             for (var i = 0; i < _spellSlots.Length; i++)
             {
-                var remaining = spellCaster.GetCooldownRemaining(i);
-                _spellSlots[i].SetCooldown(remaining, spellCaster.GetCooldownDuration(i));
-                anyActive |= remaining > 0f;
+                if (!spellCaster.IsUnlocked(i))
+                    continue;
+
+                _spellSlots[i].SetState(spellCaster.GetCharges(i), spellCaster.GetMaxCharges(i),
+                    spellCaster.GetCooldownRemaining(i), spellCaster.GetCooldownDuration(i));
+                anyRecharging |= spellCaster.IsRecharging(i);
             }
 
-            if (!anyActive)
+            if (!anyRecharging)
                 _cooldownTicker.Pause();
         }
 
@@ -201,6 +228,30 @@ namespace BattleArena.UI
 
         private void OnNotification(NotificationEvent evt) => ShowNotification(evt.Message);
 
+        private void OnMissionStarted(MissionStartedEvent evt)
+        {
+            _missionTitle.text = evt.Title;
+            _missionDescription.text = evt.Description;
+            _shownMissionSeconds = -1;
+            _missionPanel.RemoveFromClassList("hidden");
+        }
+
+        private void OnMissionProgress(MissionProgressEvent evt)
+        {
+            SetFill(_missionFill, evt.Progress);
+            // Missions cache their status strings, so a reference check avoids redundant text updates.
+            if (!ReferenceEquals(_missionStatus.text, evt.Status))
+                _missionStatus.text = evt.Status;
+
+            var seconds = Mathf.CeilToInt(evt.TimeRemaining);
+            if (seconds == _shownMissionSeconds)
+                return;
+            _shownMissionSeconds = seconds;
+            _missionTimer.text = $"{seconds / 60}:{seconds % 60:00}";
+        }
+
+        private void OnMissionEnded(MissionEndedEvent _) => _missionPanel.AddToClassList("hidden");
+
         private void ShowNotification(string message)
         {
             _notification.text = message;
@@ -218,7 +269,9 @@ namespace BattleArena.UI
             private readonly Label _name;
             private readonly VisualElement _cooldownOverlay;
             private readonly Label _cooldownText;
+            private readonly Label _chargesText;
             private int _shownSeconds = -1;
+            private int _shownCharges = -1;
 
             public SpellSlotView(VisualElement root, int unlockLevel)
             {
@@ -226,6 +279,7 @@ namespace BattleArena.UI
                 _name = root.Q<Label>(className: "spell-name");
                 _cooldownOverlay = root.Q(className: "spell-cooldown");
                 _cooldownText = root.Q<Label>(className: "spell-cooldown-text");
+                _chargesText = root.Q<Label>(className: "spell-charges");
                 root.Q<Label>(className: "spell-lock").text = $"LV {unlockLevel}";
             }
 
@@ -244,13 +298,25 @@ namespace BattleArena.UI
                 _root.schedule.Execute(() => _root.RemoveFromClassList("cast")).StartingIn(120);
             }
 
-            public void SetCooldown(float remaining, float total)
+            /// <summary>
+            /// The cooldown overlay covers the slot only when no charge is left; with charges in stock
+            /// the slot stays usable and just shows the count.
+            /// </summary>
+            public void SetState(int charges, int maxCharges, float remaining, float total)
             {
-                var normalized = total > 0f ? remaining / total : 0f;
-                _cooldownOverlay.style.height = Length.Percent(normalized * 100f);
-                _root.EnableInClassList("cooling", remaining > 0f);
+                var shownCharges = maxCharges > 1 ? charges : -1;
+                if (shownCharges != _shownCharges)
+                {
+                    _shownCharges = shownCharges;
+                    _chargesText.text = shownCharges >= 0 ? shownCharges.ToString() : string.Empty;
+                }
 
-                var seconds = Mathf.CeilToInt(remaining);
+                var empty = charges <= 0;
+                var normalized = empty && total > 0f ? remaining / total : 0f;
+                _cooldownOverlay.style.height = Length.Percent(normalized * 100f);
+                _root.EnableInClassList("cooling", empty);
+
+                var seconds = empty ? Mathf.CeilToInt(remaining) : 0;
                 if (seconds == _shownSeconds)
                     return;
                 _shownSeconds = seconds;

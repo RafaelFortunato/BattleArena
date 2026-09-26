@@ -48,16 +48,8 @@ namespace BattleArena.UI
 
         private void Show(LevelUpPresentation presentation)
         {
-            if (presentation.IsSpellChoice)
-            {
-                _title.text = "CHOOSE A SPELL";
-                _subtitle.text = $"Level {presentation.Level}  ·  it will be cast with [{SpellOffer.GetSlotKey(presentation.SlotIndex)}]";
-            }
-            else
-            {
-                _title.text = "LEVEL UP!";
-                _subtitle.text = $"Level {presentation.Level}  ·  choose an upgrade";
-            }
+            _title.text = presentation.Title;
+            _subtitle.text = presentation.Subtitle;
 
             _summary.text = stats.BuildSummary();
 

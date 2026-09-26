@@ -48,3 +48,11 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 53f32921d8678a142ae8f3dd33e1c83d, type: 2}
   - {fileID: 11400000, guid: 09c5bf69347b61e4b83095561eeef262, type: 2}
   - {fileID: 11400000, guid: 1c9c4e1e2d35beb439e311fa206c8326, type: 2}
+  spellUpgrades:
+  - {fileID: 11400000, guid: 5999af9fd3bb79c4f9932582117b6ac3, type: 2}
+  - {fileID: 11400000, guid: 3036f5926803a55428665823238ae07b, type: 2}
+  - {fileID: 11400000, guid: 682f72f9d1405ac45ae11f8f3446a6c9, type: 2}
+  - {fileID: 11400000, guid: c20b4e28584ac854f92a3be9cca1e84c, type: 2}
+  - {fileID: 11400000, guid: 01aae2da8f8ce3c4680181e45f0a1120, type: 2}
+  - {fileID: 11400000, guid: d1e261ea86cb834478a1e815e9d76c0e, type: 2}
+  - {fileID: 11400000, guid: 8359a7d7f17c23844bc58c6606fef0f9, type: 2}

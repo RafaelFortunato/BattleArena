@@ -252,6 +252,15 @@
     color: rgb(255, 255, 255);
 }
 
+.spell-charges {
+    position: absolute;
+    right: 5px;
+    bottom: 2px;
+    font-size: 18px;
+    color: rgb(242, 193, 78);
+    text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.9);
+}
+
 .spell-lock {
     display: none;
     position: absolute;
@@ -455,3 +464,43 @@
     color: rgba(244, 233, 208, 0.75);
     -unity-text-align: middle-center;
 }
+
+/* ---------- Mission panel ---------- */
+
+.mission-panel {
+    position: absolute;
+    top: 20px;
+    right: 28px;
+    width: 360px;
+}
+
+.mission-header {
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.mission-timer {
+    font-size: 15px;
+    color: rgb(242, 193, 78);
+    margin: 0;
+    padding: 0;
+}
+
+.mission-title {
+    font-size: 22px;
+    color: rgb(242, 193, 78);
+    margin: 2px 0 0 0;
+    padding: 0;
+}
+
+.mission-description {
+    font-size: 14px;
+    -unity-font-style: normal;
+    white-space: normal;
+    color: rgba(244, 233, 208, 0.85);
+    margin: 2px 0 8px 0;
+    padding: 0;
+}
+
+.mission-fill { background-color: rgb(242, 193, 78); }
+
