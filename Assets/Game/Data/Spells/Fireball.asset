@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: edb37046520d08d4499044b03fc4b5e3, type: 3}
+  m_Name: Fireball
+  m_EditorClassIdentifier: BattleArena.Runtime::BattleArena.Spells.FireballSpell
+  displayName: Fireball
+  description: Hurls an exploding fireball at the nearest enemy.
+  color: {r: 1, g: 0.6, b: 0.2, a: 1}
+  unlockLevel: 5
+  cooldown: 4
+  baseDamage: 45
+  projectilePrefab: {fileID: 8606313463938774560, guid: 2cd84b20b606cee4fa8bb5645dd7d1dd, type: 3}
+  speed: 16
+  explosionRadius: 3.5
+  targetingRange: 18

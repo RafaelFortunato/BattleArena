@@ -1,0 +1,387 @@
+/* ---------- Palette ----------
+   gold      #F2C14E   ink       #0E1222
+   parchment #F4E9D0   health    #D94B4B
+   xp        #5AB0FF   boss      #B03AD9
+*/
+
+.root {
+    flex-grow: 1;
+    color: rgb(244, 233, 208);
+    -unity-font-style: bold;
+}
+
+.hidden {
+    display: none;
+}
+
+/* ---------- Shared pieces ---------- */
+
+.panel {
+    background-image: url("project://database/Assets/Game/Art/Sprites/Buttons/DarkBlue/button_dark_normal_r16.png");
+    -unity-slice-left: 20;
+    -unity-slice-right: 20;
+    -unity-slice-top: 20;
+    -unity-slice-bottom: 26;
+    -unity-slice-scale: 0.5px;
+    -unity-background-image-tint-color: rgba(255, 255, 255, 0.92);
+    padding: 10px 16px 12px 16px;
+}
+
+.caption {
+    font-size: 13px;
+    letter-spacing: 2px;
+    color: rgba(244, 233, 208, 0.7);
+    margin: 0;
+    padding: 0;
+}
+
+.bar {
+    height: 22px;
+    background-color: rgba(4, 6, 14, 0.85);
+    border-width: 2px;
+    border-color: rgba(242, 193, 78, 0.55);
+    border-radius: 6px;
+    overflow: hidden;
+    justify-content: center;
+}
+
+.bar-fill {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 100%;
+    transition-property: width;
+    transition-duration: 0.15s;
+}
+
+.bar-label {
+    font-size: 13px;
+    -unity-text-align: middle-center;
+    color: rgb(255, 255, 255);
+    text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.8);
+    margin: 0;
+    padding: 0;
+}
+
+.health-fill { background-color: rgb(217, 75, 75); }
+.xp-fill { background-color: rgb(90, 176, 255); }
+.boss-fill { background-color: rgb(176, 58, 217); }
+
+/* ---------- HUD ---------- */
+
+.hud {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    padding: 20px 28px 18px 28px;
+    justify-content: space-between;
+}
+
+.hud-top {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.hud-top-spacer {
+    width: 340px;
+}
+
+.player-panel {
+    flex-direction: row;
+    align-items: center;
+    width: 340px;
+}
+
+.level-badge {
+    width: 54px;
+    height: 54px;
+    margin-right: 12px;
+    font-size: 26px;
+    -unity-text-align: middle-center;
+    color: rgb(14, 18, 34);
+    background-image: url("project://database/Assets/Game/Art/Sprites/Buttons/Gold/button_gold_normal_r16.png");
+    -unity-slice-left: 20;
+    -unity-slice-right: 20;
+    -unity-slice-top: 20;
+    -unity-slice-bottom: 26;
+    -unity-slice-scale: 0.5px;
+    transition-property: scale;
+    transition-duration: 0.25s;
+}
+
+.level-badge.level-up {
+    scale: 1.3 1.3;
+}
+
+.player-bars {
+    flex-grow: 1;
+}
+
+.health-bar {
+    margin-top: 4px;
+}
+
+.timer-panel {
+    align-items: center;
+    min-width: 170px;
+}
+
+.timer {
+    font-size: 38px;
+    color: rgb(242, 193, 78);
+    margin: 0;
+    padding: 0;
+    -unity-text-align: middle-center;
+}
+
+.timer.boss-phase {
+    color: rgb(214, 120, 255);
+}
+
+.boss-panel {
+    position: absolute;
+    top: 120px;
+    left: 25%;
+    right: 25%;
+    align-items: stretch;
+}
+
+.boss-name {
+    font-size: 22px;
+    letter-spacing: 3px;
+    -unity-text-align: middle-center;
+    color: rgb(214, 120, 255);
+    text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.8);
+}
+
+.boss-bar {
+    height: 26px;
+}
+
+.notification {
+    position: absolute;
+    top: 30%;
+    left: 0;
+    right: 0;
+    font-size: 30px;
+    -unity-text-align: middle-center;
+    color: rgb(242, 193, 78);
+    text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.85);
+    opacity: 0;
+    translate: 0 12px;
+    transition-property: opacity, translate;
+    transition-duration: 0.3s;
+}
+
+.notification.visible {
+    opacity: 1;
+    translate: 0 0;
+}
+
+.hud-bottom {
+    align-items: center;
+}
+
+.interact-prompt {
+    font-size: 20px;
+    margin-bottom: 14px;
+    padding: 8px 18px;
+    border-radius: 8px;
+    background-color: rgba(14, 18, 34, 0.85);
+    border-width: 2px;
+    border-color: rgb(242, 193, 78);
+}
+
+.spell-bar {
+    flex-direction: row;
+    margin-bottom: 12px;
+}
+
+.spell-slot {
+    width: 84px;
+    height: 84px;
+    margin: 0 8px;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    background-image: url("project://database/Assets/Game/Art/Sprites/Buttons/DarkBlue/button_dark_normal_r16.png");
+    -unity-slice-left: 20;
+    -unity-slice-right: 20;
+    -unity-slice-top: 20;
+    -unity-slice-bottom: 26;
+    -unity-slice-scale: 0.5px;
+    border-width: 3px;
+    border-radius: 12px;
+    border-color: rgb(242, 193, 78);
+    transition-property: scale;
+    transition-duration: 0.12s;
+}
+
+.spell-slot.cast {
+    scale: 0.9 0.9;
+}
+
+.spell-slot.locked {
+    border-color: rgba(244, 233, 208, 0.2);
+}
+
+.spell-key {
+    position: absolute;
+    top: 2px;
+    left: 6px;
+    font-size: 16px;
+    color: rgb(242, 193, 78);
+}
+
+.spell-name {
+    font-size: 12px;
+    white-space: normal;
+    -unity-text-align: middle-center;
+    margin-top: 10px;
+}
+
+.spell-cooldown {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 0;
+    background-color: rgba(4, 6, 14, 0.75);
+}
+
+.spell-cooldown-text {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    font-size: 28px;
+    -unity-text-align: middle-center;
+    color: rgb(255, 255, 255);
+}
+
+.spell-lock {
+    display: none;
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    font-size: 18px;
+    -unity-text-align: middle-center;
+    background-color: rgba(4, 6, 14, 0.8);
+    color: rgba(244, 233, 208, 0.6);
+}
+
+.spell-slot.locked .spell-lock {
+    display: flex;
+}
+
+.spell-slot.locked .spell-name,
+.spell-slot.cooling .spell-name {
+    opacity: 0;
+}
+
+.xp-bar {
+    align-self: stretch;
+    height: 18px;
+}
+
+/* ---------- Screens ---------- */
+
+.screen {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(5, 8, 20, 0.72);
+}
+
+.menu-card {
+    width: 620px;
+    align-items: center;
+    padding: 36px 40px 40px 40px;
+}
+
+.title {
+    font-size: 64px;
+    letter-spacing: 6px;
+    color: rgb(242, 193, 78);
+    text-shadow: 3px 3px 0 rgba(0, 0, 0, 0.8);
+    -unity-text-align: middle-center;
+    margin-bottom: 6px;
+}
+
+.subtitle {
+    font-size: 20px;
+    -unity-font-style: normal;
+    -unity-text-align: middle-center;
+    white-space: normal;
+    margin-bottom: 24px;
+}
+
+.controls {
+    margin-bottom: 28px;
+    align-items: center;
+}
+
+.control-line {
+    font-size: 17px;
+    -unity-font-style: normal;
+    color: rgba(244, 233, 208, 0.8);
+    margin: 2px 0;
+}
+
+.stats {
+    font-size: 20px;
+    -unity-font-style: normal;
+    -unity-text-align: middle-center;
+    white-space: normal;
+    margin-bottom: 28px;
+}
+
+.menu-button {
+    width: 300px;
+    height: 60px;
+    margin: 8px 0;
+    font-size: 24px;
+    letter-spacing: 3px;
+    -unity-font-style: bold;
+    color: rgb(244, 233, 208);
+    border-width: 0;
+    background-color: rgba(0, 0, 0, 0);
+    background-image: url("project://database/Assets/Game/Art/Sprites/Buttons/DarkBlue/button_dark_normal_r16.png");
+    -unity-slice-left: 20;
+    -unity-slice-right: 20;
+    -unity-slice-top: 20;
+    -unity-slice-bottom: 26;
+    -unity-slice-scale: 0.5px;
+}
+
+.menu-button:hover {
+    background-image: url("project://database/Assets/Game/Art/Sprites/Buttons/DarkBlue/button_dark_hover_r16.png");
+}
+
+.menu-button:active {
+    background-image: url("project://database/Assets/Game/Art/Sprites/Buttons/DarkBlue/button_dark_pressed_r16.png");
+}
+
+.menu-button.primary {
+    color: rgb(14, 18, 34);
+    background-image: url("project://database/Assets/Game/Art/Sprites/Buttons/Gold/button_gold_normal_r16.png");
+}
+
+.menu-button.primary:hover {
+    background-image: url("project://database/Assets/Game/Art/Sprites/Buttons/Gold/button_gold_hover_r16.png");
+}
+
+.menu-button.primary:active {
+    background-image: url("project://database/Assets/Game/Art/Sprites/Buttons/Gold/button_gold_pressed_r16.png");
+}

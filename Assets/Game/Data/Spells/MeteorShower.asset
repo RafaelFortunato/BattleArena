@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d213a5084388d724ba18ef41845a90f1, type: 3}
+  m_Name: MeteorShower
+  m_EditorClassIdentifier: BattleArena.Runtime::BattleArena.Spells.MeteorShowerSpell
+  displayName: Meteor Shower
+  description: Calls down a volley of meteors on enemies around you.
+  color: {r: 1, g: 0.4, b: 0.15, a: 1}
+  unlockLevel: 15
+  cooldown: 14
+  baseDamage: 90
+  meteorPrefab: {fileID: 7810031274077524975, guid: fdcdbf4f57d1f314c922572b49e9fce0, type: 3}
+  meteorCount: 10
+  impactRadius: 3
+  areaRadius: 12
+  firstImpactDelay: 0.8
+  delayBetweenImpacts: 0.15

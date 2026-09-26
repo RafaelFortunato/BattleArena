@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d21aadd5a6203eb4d896498db9bd56c1, type: 3}
+  m_Name: FrostNova
+  m_EditorClassIdentifier: BattleArena.Runtime::BattleArena.Spells.FrostNovaSpell
+  displayName: Frost Nova
+  description: Freezing burst that damages and slows nearby enemies.
+  color: {r: 0.55, g: 0.9, b: 1, a: 1}
+  unlockLevel: 10
+  cooldown: 8
+  baseDamage: 35
+  radius: 7
+  slowMultiplier: 0.4
+  slowDuration: 3
+  ringEffect: {fileID: 9156331991044525663, guid: 75c13a8af3bcddb4683e3ce26db723b3, type: 3}

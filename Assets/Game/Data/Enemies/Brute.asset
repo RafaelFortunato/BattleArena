@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 834fd195944db324eaee61ee2df7c738, type: 3}
+  m_Name: Brute
+  m_EditorClassIdentifier: BattleArena.Runtime::BattleArena.Enemies.EnemyDefinition
+  displayName: Ogre Brute
+  prefab: {fileID: 3002306230454510110, guid: 71398cde7287a844589a217d84459328, type: 3}
+  maxHealth: 75
+  moveSpeed: 2.3
+  contactDamage: 14
+  attackRange: 2
+  attackCooldown: 1.4
+  experienceReward: 4
