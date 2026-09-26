@@ -41,7 +41,7 @@ namespace BattleArena.Combat
         }
 
         /// <summary>Damages every living target in the radius and returns how many were hit.</summary>
-        public static int DamageInRadius(Vector3 center, float radius, float damage, int layerMask)
+        public static int DamageInRadius(Vector3 center, float radius, in DamageProfile damage, int layerMask)
         {
             var hits = 0;
             foreach (var hit in Overlap(center, radius, layerMask))
@@ -49,7 +49,26 @@ namespace BattleArena.Combat
                 if (!hit.TryGetComponent(out IDamageable damageable) || !damageable.IsAlive)
                     continue;
 
-                damageable.TakeDamage(damage);
+                damage.ApplyTo(damageable);
+                hits++;
+            }
+            return hits;
+        }
+
+        /// <summary>Slows and damages every living target in the radius. Returns how many were hit.</summary>
+        public static int DamageAndSlowInRadius(Vector3 center, float radius, in DamageProfile damage, int layerMask,
+            float slowMultiplier, float slowDuration)
+        {
+            var hits = 0;
+            foreach (var hit in Overlap(center, radius, layerMask))
+            {
+                if (!hit.TryGetComponent(out IDamageable damageable) || !damageable.IsAlive)
+                    continue;
+
+                // Slow before damaging: a killing blow despawns the enemy.
+                if (hit.TryGetComponent(out ISlowable slowable))
+                    slowable.ApplySlow(slowMultiplier, slowDuration);
+                damage.ApplyTo(damageable);
                 hits++;
             }
             return hits;

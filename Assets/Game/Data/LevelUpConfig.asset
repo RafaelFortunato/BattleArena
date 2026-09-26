@@ -1,0 +1,50 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2d10f17fd84b53e41bd0dd28501a955a, type: 3}
+  m_Name: LevelUpConfig
+  m_EditorClassIdentifier: BattleArena.Runtime::BattleArena.Progression.LevelUpConfig
+  choiceCount: 3
+  statUpgrades:
+  - {fileID: 11400000, guid: 1eb81bafc464c4a4181bf63ac12de2c7, type: 2}
+  - {fileID: 11400000, guid: 3a56d527e0c92d44fa13b48971fdd45c, type: 2}
+  - {fileID: 11400000, guid: 71f8ad9d73103d24e902785e27963c3a, type: 2}
+  - {fileID: 11400000, guid: 17eae842a41296f41a605a07c28dfa87, type: 2}
+  - {fileID: 11400000, guid: 619d63a86dc7d944389dff5852931e4d, type: 2}
+  - {fileID: 11400000, guid: 864c5e9f554a41f4ab01ed493f16e9ba, type: 2}
+  - {fileID: 11400000, guid: c183326ccd5c0a64592b0137bd75eddc, type: 2}
+  - {fileID: 11400000, guid: 8994ac1d7f3341f4db1734db7de904f7, type: 2}
+  - {fileID: 11400000, guid: f2e8d2b8d8efba54bab329fb352ccf76, type: 2}
+  - {fileID: 11400000, guid: 987c9caabf498fe4db0a01c24a03c320, type: 2}
+  - {fileID: 11400000, guid: 1d6cd213fb2f9834c8eb121426aaeb84, type: 2}
+  - {fileID: 11400000, guid: cc6fc3bed78a3a348a3f5d1763d97151, type: 2}
+  - {fileID: 11400000, guid: 7c4a6aa7027af6743abc29e0b7255f9c, type: 2}
+  - {fileID: 11400000, guid: 4a085d043966a2a418aea4707c413c67, type: 2}
+  - {fileID: 11400000, guid: ef73836398d484042a36a0f10bca7cdd, type: 2}
+  - {fileID: 11400000, guid: b64747f8852f0764a9bb17e00b986b8f, type: 2}
+  - {fileID: 11400000, guid: 4ac71fc2d4e081247aa2a65ff443c308, type: 2}
+  - {fileID: 11400000, guid: 0957f71222fad344f83dddc617f4da20, type: 2}
+  - {fileID: 11400000, guid: e8dd3dd54d4bde242932f8aec5dda4e1, type: 2}
+  - {fileID: 11400000, guid: 292f0b4f29d090745855ceb4a08dfc9e, type: 2}
+  - {fileID: 11400000, guid: 1817d75a393346c408baa3f0563299c6, type: 2}
+  - {fileID: 11400000, guid: f464364f838f250478df84fde89ba7a3, type: 2}
+  - {fileID: 11400000, guid: d827c99ca4b726249af80ba2a164b069, type: 2}
+  - {fileID: 11400000, guid: 4de48ee9796052343928706e8f59c832, type: 2}
+  - {fileID: 11400000, guid: e78be96e860da27439d85d61ca8711b1, type: 2}
+  spellPool:
+  - {fileID: 11400000, guid: 3a1225a6b700ada42b9b64da02cd47d8, type: 2}
+  - {fileID: 11400000, guid: afd3c31578bd8754c939b7d41f64f98a, type: 2}
+  - {fileID: 11400000, guid: 0df6e44364c208f48a0d2aa55cf5eda2, type: 2}
+  - {fileID: 11400000, guid: d50b987019d000847bcf9c204e3d91c7, type: 2}
+  - {fileID: 11400000, guid: 4f3bc2f9ccd3c2543a5b2b2908fb3fef, type: 2}
+  - {fileID: 11400000, guid: 53f32921d8678a142ae8f3dd33e1c83d, type: 2}
+  - {fileID: 11400000, guid: 09c5bf69347b61e4b83095561eeef262, type: 2}
+  - {fileID: 11400000, guid: 1c9c4e1e2d35beb439e311fa206c8326, type: 2}

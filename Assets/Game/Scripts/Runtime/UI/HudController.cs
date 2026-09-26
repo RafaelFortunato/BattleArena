@@ -17,7 +17,6 @@ namespace BattleArena.UI
         private const long CooldownRefreshMs = 50;
         private const long NotificationDurationMs = 2600;
         private const long LevelUpPulseMs = 250;
-        private static readonly string[] SpellKeys = { "Q", "E", "R" };
 
         [SerializeField] private GameManager gameManager;
         [SerializeField] private Health playerHealth;
@@ -58,7 +57,7 @@ namespace BattleArena.UI
             EventBus<MatchTimeChangedEvent>.Subscribe(OnMatchTimeChanged);
             EventBus<ExperienceChangedEvent>.Subscribe(OnExperienceChanged);
             EventBus<PlayerLevelUpEvent>.Subscribe(OnLevelUp);
-            EventBus<SpellUnlockedEvent>.Subscribe(OnSpellUnlocked);
+            EventBus<SpellEquippedEvent>.Subscribe(OnSpellEquipped);
             EventBus<SpellCastEvent>.Subscribe(OnSpellCast);
             EventBus<BossSpawnedEvent>.Subscribe(OnBossSpawned);
             EventBus<InteractionTargetChangedEvent>.Subscribe(OnInteractionTargetChanged);
@@ -76,7 +75,7 @@ namespace BattleArena.UI
             EventBus<MatchTimeChangedEvent>.Unsubscribe(OnMatchTimeChanged);
             EventBus<ExperienceChangedEvent>.Unsubscribe(OnExperienceChanged);
             EventBus<PlayerLevelUpEvent>.Unsubscribe(OnLevelUp);
-            EventBus<SpellUnlockedEvent>.Unsubscribe(OnSpellUnlocked);
+            EventBus<SpellEquippedEvent>.Unsubscribe(OnSpellEquipped);
             EventBus<SpellCastEvent>.Unsubscribe(OnSpellCast);
             EventBus<BossSpawnedEvent>.Unsubscribe(OnBossSpawned);
             EventBus<InteractionTargetChangedEvent>.Unsubscribe(OnInteractionTargetChanged);
@@ -103,8 +102,8 @@ namespace BattleArena.UI
             _spellSlots = new SpellSlotView[spellCaster.SlotCount];
             for (var i = 0; i < _spellSlots.Length; i++)
             {
-                _spellSlots[i] = new SpellSlotView(root.Q($"spell-{i}"));
-                _spellSlots[i].Bind(spellCaster.GetSpell(i));
+                // Slots start empty; they are bound when a spell is picked on the level-up screen.
+                _spellSlots[i] = new SpellSlotView(root.Q($"spell-{i}"), spellCaster.GetUnlockLevel(i));
             }
         }
 
@@ -150,11 +149,7 @@ namespace BattleArena.UI
             _levelLabel.schedule.Execute(() => _levelLabel.RemoveFromClassList("level-up")).StartingIn(LevelUpPulseMs);
         }
 
-        private void OnSpellUnlocked(SpellUnlockedEvent evt)
-        {
-            _spellSlots[evt.SlotIndex].SetUnlocked(true);
-            ShowNotification($"New spell: {evt.Spell.DisplayName}  [{SpellKeys[evt.SlotIndex]}]");
-        }
+        private void OnSpellEquipped(SpellEquippedEvent evt) => _spellSlots[evt.SlotIndex].Bind(evt.Spell);
 
         private void OnSpellCast(SpellCastEvent evt)
         {
@@ -167,9 +162,8 @@ namespace BattleArena.UI
             var anyActive = false;
             for (var i = 0; i < _spellSlots.Length; i++)
             {
-                var spell = spellCaster.GetSpell(i);
                 var remaining = spellCaster.GetCooldownRemaining(i);
-                _spellSlots[i].SetCooldown(remaining, spell != null ? spell.Cooldown : 0f);
+                _spellSlots[i].SetCooldown(remaining, spellCaster.GetCooldownDuration(i));
                 anyActive |= remaining > 0f;
             }
 
@@ -226,24 +220,23 @@ namespace BattleArena.UI
             private readonly Label _cooldownText;
             private int _shownSeconds = -1;
 
-            public SpellSlotView(VisualElement root)
+            public SpellSlotView(VisualElement root, int unlockLevel)
             {
                 _root = root;
                 _name = root.Q<Label>(className: "spell-name");
                 _cooldownOverlay = root.Q(className: "spell-cooldown");
                 _cooldownText = root.Q<Label>(className: "spell-cooldown-text");
+                root.Q<Label>(className: "spell-lock").text = $"LV {unlockLevel}";
             }
 
             public void Bind(SpellDefinition spell)
             {
+                _root.EnableInClassList("locked", spell == null);
                 if (spell == null)
                     return;
                 _name.text = spell.DisplayName;
                 _name.style.color = spell.Color;
-                _root.Q<Label>(className: "spell-lock").text = $"LV {spell.UnlockLevel}";
             }
-
-            public void SetUnlocked(bool unlocked) => _root.EnableInClassList("locked", !unlocked);
 
             public void PulseCast()
             {

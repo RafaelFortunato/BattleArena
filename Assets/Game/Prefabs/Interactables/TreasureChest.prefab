@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8580775100944004045}
   - component: {fileID: 323721101648513582}
+  - component: {fileID: 525953980772319611}
   - component: {fileID: 2994748011643495252}
   m_Layer: 12
   m_Name: TreasureChest
@@ -57,6 +58,22 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 2.2
   m_Center: {x: 0, y: 1, z: 0}
+--- !u!208 &525953980772319611
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5918710158589175519}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Shape: 1
+  m_Extents: {x: 0.65, y: 0.4, z: 0.45}
+  m_MoveThreshold: 0.1
+  m_Carve: 0
+  m_CarveOnlyStationary: 1
+  m_Center: {x: 0, y: 0.4, z: 0}
+  m_TimeToStationary: 0.5
 --- !u!114 &2994748011643495252
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -74,6 +91,10 @@ MonoBehaviour:
   lid: {fileID: 2493450265509621441}
   openAngle: -110
   openDuration: 0.4
+  lingerAfterOpen: 0.9
+  appearDuration: 0.35
+  vanishDuration: 0.35
+  openEffect: {fileID: 6571992726357587247, guid: 86e79c42e8d899d41b542b8cbcbb2d03, type: 3}
 --- !u!1 &5988224106849127670
 GameObject:
   m_ObjectHideFlags: 0

@@ -54,6 +54,21 @@ namespace BattleArena.Core
         }
     }
 
+    /// <summary>An enemy took damage; used for floating damage numbers.</summary>
+    public readonly struct EnemyDamagedEvent : IGameEvent
+    {
+        public readonly Vector3 Position;
+        public readonly float Amount;
+        public readonly bool IsCritical;
+
+        public EnemyDamagedEvent(Vector3 position, float amount, bool isCritical)
+        {
+            Position = position;
+            Amount = amount;
+            IsCritical = isCritical;
+        }
+    }
+
     public readonly struct ExperienceChangedEvent : IGameEvent
     {
         public readonly int Level;
@@ -75,12 +90,12 @@ namespace BattleArena.Core
         public PlayerLevelUpEvent(int level) => Level = level;
     }
 
-    public readonly struct SpellUnlockedEvent : IGameEvent
+    public readonly struct SpellEquippedEvent : IGameEvent
     {
         public readonly int SlotIndex;
         public readonly SpellDefinition Spell;
 
-        public SpellUnlockedEvent(int slotIndex, SpellDefinition spell)
+        public SpellEquippedEvent(int slotIndex, SpellDefinition spell)
         {
             SlotIndex = slotIndex;
             Spell = spell;

@@ -22,6 +22,9 @@ namespace BattleArena.Interaction
 
         public event Action<IInteractable> StateChanged;
 
+        // Shrines are permanent scene objects.
+        event Action<IInteractable> IInteractable.Removed { add { } remove { } }
+
         public void Interact(PlayerInteractor interactor)
         {
             if (!_isReady)

@@ -79,6 +79,36 @@
             </ui:VisualElement>
         </ui:VisualElement>
 
+        <!-- Level-up cards -->
+        <ui:VisualElement name="level-up" class="screen level-up-screen hidden">
+            <ui:Label name="level-up-title" text="LEVEL UP!" class="title" />
+            <ui:Label name="level-up-subtitle" text="" class="subtitle" />
+            <ui:VisualElement class="card-row">
+                    <ui:Button name="card-0" class="upgrade-card">
+                        <ui:Label text="COMMON" class="card-tag" picking-mode="Ignore" />
+                        <ui:Label text="Upgrade" class="card-title" picking-mode="Ignore" />
+                        <ui:VisualElement class="card-divider" picking-mode="Ignore" />
+                        <ui:Label text="" class="card-description" picking-mode="Ignore" />
+                        <ui:Label text="1" class="card-key" picking-mode="Ignore" />
+                    </ui:Button>
+                    <ui:Button name="card-1" class="upgrade-card">
+                        <ui:Label text="COMMON" class="card-tag" picking-mode="Ignore" />
+                        <ui:Label text="Upgrade" class="card-title" picking-mode="Ignore" />
+                        <ui:VisualElement class="card-divider" picking-mode="Ignore" />
+                        <ui:Label text="" class="card-description" picking-mode="Ignore" />
+                        <ui:Label text="2" class="card-key" picking-mode="Ignore" />
+                    </ui:Button>
+                    <ui:Button name="card-2" class="upgrade-card">
+                        <ui:Label text="COMMON" class="card-tag" picking-mode="Ignore" />
+                        <ui:Label text="Upgrade" class="card-title" picking-mode="Ignore" />
+                        <ui:VisualElement class="card-divider" picking-mode="Ignore" />
+                        <ui:Label text="" class="card-description" picking-mode="Ignore" />
+                        <ui:Label text="3" class="card-key" picking-mode="Ignore" />
+                    </ui:Button>
+            </ui:VisualElement>
+            <ui:Label name="level-up-stats" text="" class="stats-summary" />
+        </ui:VisualElement>
+
         <!-- Pause menu -->
         <ui:VisualElement name="pause-menu" class="screen hidden">
             <ui:VisualElement class="menu-card panel">

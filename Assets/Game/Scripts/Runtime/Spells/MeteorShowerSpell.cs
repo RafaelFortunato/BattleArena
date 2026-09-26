@@ -18,12 +18,14 @@ namespace BattleArena.Spells
 
         public override bool Cast(in SpellContext context)
         {
-            var center = context.Caster.position;
+            var center = context.CasterPosition;
             var damage = GetDamage(context);
+            var count = meteorCount + context.Modifiers.ExtraProjectiles;
+            var impact = context.Area(impactRadius);
 
             // Prefer enemy positions; fill the remaining meteors with random points in the area.
             var targets = CombatQueries.Overlap(center, areaRadius, context.TargetMask);
-            for (var i = 0; i < meteorCount; i++)
+            for (var i = 0; i < count; i++)
             {
                 var position = i < targets.Length
                     ? targets[i].transform.position
@@ -31,7 +33,7 @@ namespace BattleArena.Spells
                 position.y = center.y;
 
                 var meteor = PoolManager.Spawn(meteorPrefab, position, Quaternion.identity);
-                meteor.Arm(impactRadius, firstImpactDelay + delayBetweenImpacts * i, damage, context.TargetMask);
+                meteor.Arm(impact, firstImpactDelay + delayBetweenImpacts * i, damage, context.TargetMask);
             }
 
             return true;

@@ -73,7 +73,7 @@ namespace BattleArena.Enemies
             {
                 var position = _target.position;
                 var strike = PoolManager.Spawn(slamPrefab, position, Quaternion.identity);
-                strike.Arm(slamRadius, slamDelay, slamDamage, GameLayers.PlayerMask);
+                strike.Arm(slamRadius, slamDelay, DamageProfile.Flat(slamDamage), GameLayers.PlayerMask);
                 yield return WaitCache.Get(slamSpacing);
             }
 
@@ -95,7 +95,7 @@ namespace BattleArena.Enemies
                 {
                     var direction = Quaternion.AngleAxis(angleOffset + angleStep * i, Vector3.up) * Vector3.forward;
                     var projectile = PoolManager.Spawn(projectilePrefab, origin, Quaternion.LookRotation(direction));
-                    projectile.Launch(direction, projectileSpeed, projectileDamage);
+                    projectile.Launch(direction, projectileSpeed, DamageProfile.Flat(projectileDamage));
                 }
 
                 yield return WaitCache.Get(delayBetweenRings);

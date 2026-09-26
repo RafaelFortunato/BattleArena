@@ -33,7 +33,7 @@ namespace BattleArena.Combat
             Restore();
         }
 
-        private void OnDamaged(Health health, float amount)
+        private void OnDamaged(Health health, DamageResult damage)
         {
             if (!isActiveAndEnabled || flashMaterial == null)
                 return;

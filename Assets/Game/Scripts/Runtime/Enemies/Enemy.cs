@@ -1,4 +1,3 @@
-using System.Collections;
 using BattleArena.Combat;
 using BattleArena.Core;
 using BattleArena.Pickups;
@@ -22,9 +21,11 @@ namespace BattleArena.Enemies
 
         private NavMeshAgent _agent;
         private Health _health;
+        private Collider _collider;
         private float _contactDamage;
         private float _nextAttackTime;
-        private Coroutine _slowRoutine;
+        private float _slowMultiplier = 1f;
+        private float _slowUntil;
         private bool _movementLocked;
 
         internal int RegistryIndex = -1;
@@ -48,12 +49,18 @@ namespace BattleArena.Enemies
         {
             _agent = GetComponent<NavMeshAgent>();
             _health = GetComponent<Health>();
+            _collider = GetComponent<Collider>();
+            _health.Damaged += OnDamaged;
             _health.Died += OnDied;
             // Spread agents across priorities so crowds resolve avoidance more naturally.
             _agent.avoidancePriority = Random.Range(30, 70);
         }
 
-        private void OnDestroy() => _health.Died -= OnDied;
+        private void OnDestroy()
+        {
+            _health.Damaged -= OnDamaged;
+            _health.Died -= OnDied;
+        }
 
         // Also covers destruction on scene unload, where OnDespawned is never called.
         private void OnDisable() => EnemyRegistry.Unregister(this);
@@ -64,7 +71,7 @@ namespace BattleArena.Enemies
             _health.ResetHealth(definition.MaxHealth * healthMultiplier);
             _contactDamage = definition.ContactDamage * damageMultiplier;
             _nextAttackTime = 0f;
-            _agent.speed = definition.MoveSpeed;
+            ClearSlow();
             _agent.stoppingDistance = definition.AttackRange * 0.8f;
         }
 
@@ -77,7 +84,7 @@ namespace BattleArena.Enemies
 
         public void OnDespawned()
         {
-            StopSlow();
+            ClearSlow();
             MovementLocked = false;
             if (_agent.isOnNavMesh)
                 _agent.ResetPath();
@@ -88,6 +95,10 @@ namespace BattleArena.Enemies
         {
             if (!_health.IsAlive)
                 return;
+
+            // Slows expire on the director tick instead of a coroutine per enemy.
+            if (_slowMultiplier < 1f && now >= _slowUntil)
+                ClearSlow();
 
             var offset = targetPosition - transform.position;
             offset.y = 0f;
@@ -107,27 +118,26 @@ namespace BattleArena.Enemies
             if (!isActiveAndEnabled || Definition == null)
                 return;
 
-            StopSlow();
-            _slowRoutine = StartCoroutine(SlowRoutine(speedMultiplier, duration));
+            // The strongest active slow wins; re-applying refreshes the duration.
+            _slowMultiplier = Mathf.Min(_slowMultiplier, speedMultiplier);
+            _slowUntil = Mathf.Max(_slowUntil, Time.time + duration);
+            _agent.speed = Definition.MoveSpeed * _slowMultiplier;
         }
 
-        private IEnumerator SlowRoutine(float speedMultiplier, float duration)
+        private void ClearSlow()
         {
-            _agent.speed = Definition.MoveSpeed * speedMultiplier;
-            yield return WaitCache.Get(duration);
-            _agent.speed = Definition.MoveSpeed;
-            _slowRoutine = null;
-        }
-
-        private void StopSlow()
-        {
-            if (_slowRoutine == null)
-                return;
-
-            StopCoroutine(_slowRoutine);
-            _slowRoutine = null;
+            _slowMultiplier = 1f;
+            _slowUntil = 0f;
             if (Definition != null)
                 _agent.speed = Definition.MoveSpeed;
+        }
+
+        private void OnDamaged(Health _, DamageResult damage)
+        {
+            // Anchor floating damage numbers just above the enemy's head.
+            var position = transform.position;
+            position.y = _collider.bounds.max.y;
+            EventBus<EnemyDamagedEvent>.Raise(new EnemyDamagedEvent(position, damage.Amount, damage.IsCritical));
         }
 
         private void OnDied(Health _)

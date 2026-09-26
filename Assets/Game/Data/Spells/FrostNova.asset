@@ -13,9 +13,8 @@ MonoBehaviour:
   m_Name: FrostNova
   m_EditorClassIdentifier: BattleArena.Runtime::BattleArena.Spells.FrostNovaSpell
   displayName: Frost Nova
-  description: Freezing burst that damages and slows nearby enemies.
+  description: Freezing burst around you that damages and slows every enemy it touches.
   color: {r: 0.55, g: 0.9, b: 1, a: 1}
-  unlockLevel: 10
   cooldown: 8
   baseDamage: 35
   radius: 7

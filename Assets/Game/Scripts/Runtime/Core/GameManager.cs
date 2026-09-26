@@ -22,7 +22,7 @@ namespace BattleArena.Core
         [SerializeField, Min(1f)] private float matchDuration = 600f;
         [SerializeField, Min(0f)] private float endScreenDelay = 1.5f;
 
-        private GameState _stateBeforePause;
+        private GameState _stateBeforeSuspend;
         private float _matchStartTime;
         private Coroutine _matchTimer;
         private Health _bossHealth;
@@ -76,18 +76,40 @@ namespace BattleArena.Core
         public void TogglePause()
         {
             if (State.IsCombat())
-            {
-                _stateBeforePause = State;
-                Time.timeScale = 0f;
-                input.DisableGameplay();
-                SetState(GameState.Paused);
-            }
+                Suspend(GameState.Paused);
             else if (State == GameState.Paused)
-            {
-                Time.timeScale = 1f;
-                input.EnableGameplay();
-                SetState(_stateBeforePause);
-            }
+                Resume();
+        }
+
+        /// <summary>Freezes combat for the level-up cards. Returns false if the match isn't in combat.</summary>
+        public bool BeginLevelUp()
+        {
+            if (!State.IsCombat())
+                return State == GameState.LevelUp;
+
+            Suspend(GameState.LevelUp);
+            return true;
+        }
+
+        public void EndLevelUp()
+        {
+            if (State == GameState.LevelUp)
+                Resume();
+        }
+
+        private void Suspend(GameState overlay)
+        {
+            _stateBeforeSuspend = State;
+            Time.timeScale = 0f;
+            input.DisableGameplay();
+            SetState(overlay);
+        }
+
+        private void Resume()
+        {
+            Time.timeScale = 1f;
+            input.EnableGameplay();
+            SetState(_stateBeforeSuspend);
         }
 
         public void Restart()

@@ -4,7 +4,20 @@ namespace BattleArena.Combat
     {
         bool IsAlive { get; }
 
-        void TakeDamage(float amount);
+        void TakeDamage(float amount, bool isCritical = false);
+    }
+
+    /// <summary>A hit received by a <see cref="Health"/>: full damage after armor, not clamped to the remaining health.</summary>
+    public readonly struct DamageResult
+    {
+        public readonly float Amount;
+        public readonly bool IsCritical;
+
+        public DamageResult(float amount, bool isCritical)
+        {
+            Amount = amount;
+            IsCritical = isCritical;
+        }
     }
 
     /// <summary>Anything whose movement speed can be temporarily reduced (e.g. by Frost Nova).</summary>

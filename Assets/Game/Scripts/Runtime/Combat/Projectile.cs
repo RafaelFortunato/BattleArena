@@ -14,7 +14,7 @@ namespace BattleArena.Combat
         [SerializeField] private TimedRelease impactEffect;
 
         private Rigidbody _body;
-        private float _damage;
+        private DamageProfile _damage;
         private int _pierceRemaining;
         private float _explosionRadius;
         private int _explosionMask;
@@ -28,7 +28,7 @@ namespace BattleArena.Combat
 
         /// <param name="pierce">How many extra targets the projectile passes through.</param>
         /// <param name="explosionRadius">When above zero, the projectile explodes on the first hit and damages everything in the radius.</param>
-        public void Launch(Vector3 direction, float speed, float damage, int pierce = 0, float explosionRadius = 0f, int explosionMask = 0)
+        public void Launch(Vector3 direction, float speed, DamageProfile damage, int pierce = 0, float explosionRadius = 0f, int explosionMask = 0)
         {
             _damage = damage;
             _pierceRemaining = pierce;
@@ -72,7 +72,7 @@ namespace BattleArena.Combat
             if (!target.IsAlive)
                 return;
 
-            target.TakeDamage(_damage);
+            _damage.ApplyTo(target);
             if (_pierceRemaining-- <= 0)
                 Impact();
             else

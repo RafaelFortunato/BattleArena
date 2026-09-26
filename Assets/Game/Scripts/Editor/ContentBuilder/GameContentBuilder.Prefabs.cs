@@ -5,6 +5,7 @@ using BattleArena.Interaction;
 using BattleArena.Pickups;
 using BattleArena.Player;
 using BattleArena.Pooling;
+using BattleArena.Progression;
 using BattleArena.Spells;
 using BattleArena.Vfx;
 using UnityEditor;
@@ -12,6 +13,7 @@ using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.InputSystem;
 using UnityEngine.Rendering;
+using TMPro;
 
 namespace BattleArena.Editor.ContentBuilder
 {
@@ -26,6 +28,10 @@ namespace BattleArena.Editor.ContentBuilder
             public EnemyDefinition Boss;
             public HealingShrine Shrine;
             public TreasureChest Chest;
+            public TimedRelease ChestSpawnEffect;
+            public LevelUpConfig LevelUp;
+            public TextMeshPro DamageLabel;
+            public TimedRelease CritEffect;
         }
 
         private static ContentSet BuildContent(MaterialSet m)
@@ -37,7 +43,9 @@ namespace BattleArena.Editor.ContentBuilder
             var meteorImpact = BuildBurst("MeteorImpact", m, new Color(1f, 0.45f, 0.1f), 36, 4f, 0.5f, 0.6f, radius: 0.6f, fromGround: true);
             var slamImpact = BuildBurst("BossSlamImpact", m, new Color(0.85f, 0.3f, 1f), 36, 4f, 0.5f, 0.6f, radius: 0.6f, fromGround: true);
             var orbImpact = BuildBurst("BossOrbImpact", m, new Color(0.85f, 0.4f, 1f), 8, 3f, 0.25f, 0.3f);
-            var frostRing = BuildFrostRing(m);
+            var frostRing = BuildRing("FrostNovaRing", m.FrostRing);
+            var critSpark = BuildBurst("CritSpark", m, new Color(1f, 0.7f, 0.15f), 18, 7f, 0.35f, 0.35f, radius: 0.2f);
+            var chestSparkle = BuildBurst("ChestSparkle", m, new Color(1f, 0.85f, 0.35f), 30, 5f, 0.4f, 0.6f, radius: 0.6f);
 
             // Projectiles and telegraphed strikes
             var playerBolt = BuildProjectile("PlayerBolt", m.PlayerBolt, 0.35f, GameLayers.PlayerProjectile, 1.2f, hitSpark);
@@ -61,18 +69,9 @@ namespace BattleArena.Editor.ContentBuilder
 
             var schedule = BuildSpawnSchedule(grunt, runner, brute);
 
-            // Spells
-            var fireballSpell = LoadOrCreateAsset<FireballSpell>($"{DataFolder}/Spells/Fireball.asset");
-            SpellData(fireballSpell, "Fireball", "Hurls an exploding fireball at the nearest enemy.", new Color(1f, 0.6f, 0.2f), unlock: 5, cooldown: 4f, damage: 45f)
-                .Set("projectilePrefab", fireball).Set("speed", 16f).Set("explosionRadius", 3.5f).Apply();
-
-            var frostNova = LoadOrCreateAsset<FrostNovaSpell>($"{DataFolder}/Spells/FrostNova.asset");
-            SpellData(frostNova, "Frost Nova", "Freezing burst that damages and slows nearby enemies.", new Color(0.55f, 0.9f, 1f), unlock: 10, cooldown: 8f, damage: 35f)
-                .Set("radius", 7f).Set("slowMultiplier", 0.4f).Set("slowDuration", 3f).Set("ringEffect", frostRing).Apply();
-
-            var meteorShower = LoadOrCreateAsset<MeteorShowerSpell>($"{DataFolder}/Spells/MeteorShower.asset");
-            SpellData(meteorShower, "Meteor Shower", "Calls down a volley of meteors on enemies around you.", new Color(1f, 0.4f, 0.15f), unlock: 15, cooldown: 14f, damage: 90f)
-                .Set("meteorPrefab", meteorStrike).Set("meteorCount", 10).Set("impactRadius", 3f).Set("areaRadius", 12f).Apply();
+            // Spells and level-up cards
+            var spells = BuildSpells(m, fireball, frostRing, meteorStrike);
+            var levelUp = BuildLevelUpConfig(spells);
 
             // Input
             var input = LoadOrCreateAsset<InputReader>($"{DataFolder}/InputReader.asset");
@@ -80,7 +79,7 @@ namespace BattleArena.Editor.ContentBuilder
                 .Set("actions", AssetDatabase.LoadAssetAtPath<InputActionAsset>($"{SettingsFolder}/GameControls.inputactions"))
                 .Apply();
 
-            var player = BuildPlayer(m, input, playerBolt, new SpellDefinition[] { fireballSpell, frostNova, meteorShower });
+            var player = BuildPlayer(m, input, playerBolt);
 
             return new ContentSet
             {
@@ -89,7 +88,11 @@ namespace BattleArena.Editor.ContentBuilder
                 Schedule = schedule,
                 Boss = boss,
                 Shrine = BuildShrine(m),
-                Chest = BuildChest(m),
+                Chest = BuildChest(m, chestSparkle),
+                ChestSpawnEffect = chestSparkle,
+                LevelUp = levelUp,
+                DamageLabel = BuildDamageLabel(m),
+                CritEffect = critSpark,
             };
         }
 
@@ -149,18 +152,19 @@ namespace BattleArena.Editor.ContentBuilder
             return SavePrefab<TimedRelease>(root, $"{PrefabsFolder}/Vfx/{name}.prefab");
         }
 
-        private static ExpandingRing BuildFrostRing(MaterialSet m)
+        private static ExpandingRing BuildRing(string name, Material material)
         {
-            var root = CreateRoot("FrostNovaRing", GameLayers.Default);
-            var disc = AddVisual(root.transform, PrimitiveType.Cylinder, m.FrostRing, new Vector3(0f, 0.08f, 0f), new Vector3(1f, 0.02f, 1f));
+            var root = CreateRoot(name, GameLayers.Default);
+            var disc = AddVisual(root.transform, PrimitiveType.Cylinder, material, new Vector3(0f, 0.08f, 0f), new Vector3(1f, 0.02f, 1f));
             DisableShadows(disc);
             root.AddComponent<ExpandingRing>();
-            return SavePrefab<ExpandingRing>(root, $"{PrefabsFolder}/Vfx/FrostNovaRing.prefab");
+            return SavePrefab<ExpandingRing>(root, $"{PrefabsFolder}/Vfx/{name}.prefab");
         }
 
         // ---------------------------------------------------------------- Projectiles & strikes
 
-        private static Projectile BuildProjectile(string name, Material material, float diameter, int layer, float lifetime, TimedRelease impact)
+        private static Projectile BuildProjectile(string name, Material material, float diameter, int layer, float lifetime, TimedRelease impact,
+            float length = 0f)
         {
             var root = CreateRoot(name, layer);
 
@@ -175,7 +179,10 @@ namespace BattleArena.Editor.ContentBuilder
             body.constraints = RigidbodyConstraints.FreezeRotation;
             body.linearDamping = 0f;
 
-            var visual = AddVisual(root.transform, PrimitiveType.Sphere, material, Vector3.zero, Vector3.one * diameter);
+            // Elongated projectiles use a capsule lying along the flight direction (+Z).
+            var visual = length > 0f
+                ? AddVisual(root.transform, PrimitiveType.Capsule, material, Vector3.zero, new Vector3(diameter, length * 0.5f, diameter), new Vector3(90f, 0f, 0f))
+                : AddVisual(root.transform, PrimitiveType.Sphere, material, Vector3.zero, Vector3.one * diameter);
             DisableShadows(visual);
 
             var projectile = root.AddComponent<Projectile>();
@@ -318,7 +325,43 @@ namespace BattleArena.Editor.ContentBuilder
             var flash = root.AddComponent<DamageFlash>();
             SerializedSetter.For(flash).Set("renderers", new[] { bodyRenderer }).Set("flashMaterial", m.Flash).Apply();
 
+            // The boss uses the HUD bar instead of a world-space one.
+            if (shape != EnemyShape.Boss)
+                AddHealthBar(root, m, height: 2.3f);
+
             return root;
+        }
+
+        private static void AddHealthBar(GameObject root, MaterialSet m, float height)
+        {
+            // The shader billboards the quad and sizes it in world units, so the object's scale doesn't matter.
+            var bar = AddVisual(root.transform, PrimitiveType.Quad, m.HealthBar, new Vector3(0f, height, 0f), Vector3.one, name: "HealthBar");
+            DisableShadows(bar);
+            var barRenderer = bar.GetComponent<Renderer>();
+            barRenderer.enabled = false;
+
+            var healthBar = root.AddComponent<WorldHealthBar>();
+            SerializedSetter.For(healthBar).Set("health", root.GetComponent<Health>()).Set("bar", barRenderer).Apply();
+        }
+
+        private static TextMeshPro BuildDamageLabel(MaterialSet m)
+        {
+            var root = CreateRoot("DamageNumber", GameLayers.Default);
+            var text = root.AddComponent<TextMeshPro>();
+            text.font = AssetDatabase.LoadAssetAtPath<TMP_FontAsset>(DefaultFontPath);
+            text.fontSharedMaterial = m.DamageText;
+            text.fontSize = 6f;
+            text.fontStyle = FontStyles.Bold;
+            text.alignment = TextAlignmentOptions.Center;
+            text.textWrappingMode = TextWrappingModes.NoWrap;
+            text.rectTransform.sizeDelta = new Vector2(4f, 1.5f);
+            text.text = "0";
+
+            var textRenderer = root.GetComponent<MeshRenderer>();
+            textRenderer.shadowCastingMode = ShadowCastingMode.Off;
+            textRenderer.receiveShadows = false;
+
+            return SavePrefab<TextMeshPro>(root, $"{PrefabsFolder}/Vfx/DamageNumber.prefab");
         }
 
         private static EnemyDefinition EnemyData(string file, string displayName, Enemy prefab, float health, float speed,
@@ -371,19 +414,9 @@ namespace BattleArena.Editor.ContentBuilder
             };
         }
 
-        private static SerializedSetter SpellData(SpellDefinition spell, string displayName, string description, Color color,
-            int unlock, float cooldown, float damage) =>
-            SerializedSetter.For(spell)
-                .Set("displayName", displayName)
-                .Set("description", description)
-                .Set("color", color)
-                .Set("unlockLevel", unlock)
-                .Set("cooldown", cooldown)
-                .Set("baseDamage", damage);
-
         // ---------------------------------------------------------------- Player
 
-        private static GameObject BuildPlayer(MaterialSet m, InputReader input, Projectile bolt, SpellDefinition[] spells)
+        private static GameObject BuildPlayer(MaterialSet m, InputReader input, Projectile bolt)
         {
             var root = CreateRoot("Player", GameLayers.Player);
             root.tag = "Player";
@@ -398,11 +431,14 @@ namespace BattleArena.Editor.ContentBuilder
             var health = root.AddComponent<Health>();
             SerializedSetter.For(health).Set("maxHealth", 150f).Set("invulnerabilityDuration", 0.5f).Apply();
 
+            var stats = root.AddComponent<PlayerStats>();
+            SerializedSetter.For(stats).Set("health", health).Apply();
+
             var movement = root.AddComponent<PlayerController>();
-            SerializedSetter.For(movement).Set("input", input).Set("moveSpeed", 6.5f).Apply();
+            SerializedSetter.For(movement).Set("input", input).Set("stats", stats).Set("moveSpeed", 6.5f).Apply();
 
             var progression = root.AddComponent<PlayerProgression>();
-            SerializedSetter.For(progression).Set("health", health).Set("damageGrowthPerLevel", 0.08f).Apply();
+            SerializedSetter.For(progression).Set("stats", stats).Apply();
 
             // Placeholder wizard
             var visual = AddChild(root.transform, "Visual", Vector3.zero);
@@ -421,19 +457,18 @@ namespace BattleArena.Editor.ContentBuilder
             SerializedSetter.For(autoAttack)
                 .Set("projectilePrefab", bolt)
                 .Set("muzzle", muzzle)
-                .Set("progression", progression)
+                .Set("stats", stats)
                 .Set("baseDamage", 12f)
                 .Set("fireInterval", 0.5f)
-                .Set("levelsPerExtraBolt", 5)
                 .Apply();
 
             var caster = root.AddComponent<SpellCaster>();
             SerializedSetter.For(caster)
                 .Set("input", input)
-                .Set("progression", progression)
+                .Set("stats", stats)
                 .Set("controller", movement)
+                .Set("health", health)
                 .Set("castOrigin", muzzle)
-                .Set("spells", spells)
                 .Apply();
 
             var flash = root.AddComponent<DamageFlash>();
@@ -445,7 +480,7 @@ namespace BattleArena.Editor.ContentBuilder
             // Sensors: kinematic trigger volumes on their own layer, so they only see pickups/interactables.
             var magnet = CreateSensor(root.transform, "PickupMagnet", 3.5f);
             var pickupMagnet = magnet.AddComponent<PickupMagnet>();
-            SerializedSetter.For(pickupMagnet).Set("progression", progression).Set("collectPoint", magnet.transform).Apply();
+            SerializedSetter.For(pickupMagnet).Set("progression", progression).Set("stats", stats).Set("collectPoint", magnet.transform).Apply();
 
             var interactorSensor = CreateSensor(root.transform, "Interactor", 2.5f);
             var interactor = interactorSensor.AddComponent<PlayerInteractor>();
@@ -491,7 +526,7 @@ namespace BattleArena.Editor.ContentBuilder
             return SavePrefab<HealingShrine>(root, $"{PrefabsFolder}/Interactables/HealingShrine.prefab");
         }
 
-        private static TreasureChest BuildChest(MaterialSet m)
+        private static TreasureChest BuildChest(MaterialSet m, TimedRelease openEffect)
         {
             var root = CreateRoot("TreasureChest", GameLayers.Interactable);
             AddInteractionTrigger(root, 2.2f);
@@ -503,8 +538,15 @@ namespace BattleArena.Editor.ContentBuilder
             AddVisual(lidPivot, PrimitiveType.Cube, m.Wood, new Vector3(0f, 0.12f, 0.42f), new Vector3(1.24f, 0.24f, 0.84f), name: "Lid");
             AddVisual(lidPivot, PrimitiveType.Cube, m.Gold, new Vector3(0f, 0.02f, 0.85f), new Vector3(0.18f, 0.22f, 0.06f), name: "Lock");
 
+            // Chests spawn at runtime, so they can't be baked into the NavMesh; enemies steer around them instead.
+            var obstacle = root.AddComponent<NavMeshObstacle>();
+            obstacle.shape = NavMeshObstacleShape.Box;
+            obstacle.center = new Vector3(0f, 0.4f, 0f);
+            obstacle.size = new Vector3(1.3f, 0.8f, 0.9f);
+            obstacle.carving = false;
+
             var chest = root.AddComponent<TreasureChest>();
-            SerializedSetter.For(chest).Set("lid", lidPivot).Apply();
+            SerializedSetter.For(chest).Set("lid", lidPivot).Set("openEffect", openEffect).Apply();
 
             return SavePrefab<TreasureChest>(root, $"{PrefabsFolder}/Interactables/TreasureChest.prefab");
         }

@@ -19,14 +19,14 @@ namespace BattleArena.Combat
         [SerializeField, Min(0f)] private float fallHeight = 12f;
         [SerializeField] private TimedRelease impactEffect;
 
-        public void Arm(float radius, float delay, float damage, int targetMask) =>
+        public void Arm(float radius, float delay, DamageProfile damage, int targetMask) =>
             StartCoroutine(Run(radius, delay, damage, targetMask));
 
         public void OnSpawned() { }
 
         public void OnDespawned() => StopAllCoroutines();
 
-        private IEnumerator Run(float radius, float delay, float damage, int targetMask)
+        private IEnumerator Run(float radius, float delay, DamageProfile damage, int targetMask)
         {
             var diameter = radius * 2f;
             var origin = transform.position;

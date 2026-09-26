@@ -16,20 +16,13 @@ namespace BattleArena.Spells
 
         public override bool Cast(in SpellContext context)
         {
-            var center = context.Caster.position;
-            var damage = GetDamage(context);
-
-            foreach (var hit in CombatQueries.Overlap(center, radius, context.TargetMask))
-            {
-                // Slow before damaging: a killing blow despawns the enemy.
-                if (hit.TryGetComponent(out ISlowable slowable))
-                    slowable.ApplySlow(slowMultiplier, slowDuration);
-                if (hit.TryGetComponent(out IDamageable damageable))
-                    damageable.TakeDamage(damage);
-            }
+            var center = context.CasterPosition;
+            var area = context.Area(radius);
+            CombatQueries.DamageAndSlowInRadius(center, area, GetDamage(context), context.TargetMask, slowMultiplier,
+                context.Duration(slowDuration));
 
             if (ringEffect != null)
-                PoolManager.Spawn(ringEffect, center, Quaternion.identity).Play(radius);
+                PoolManager.Spawn(ringEffect, center, Quaternion.identity).Play(area);
 
             return true;
         }

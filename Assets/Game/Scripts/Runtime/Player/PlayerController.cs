@@ -9,6 +9,7 @@ namespace BattleArena.Player
         private const float GroundedVerticalSpeed = -2f;
 
         [SerializeField] private InputReader input;
+        [SerializeField] private PlayerStats stats;
         [SerializeField, Min(0f)] private float moveSpeed = 6f;
         [SerializeField, Min(0f)] private float turnSpeed = 900f;
         [SerializeField] private float gravity = -25f;
@@ -30,6 +31,15 @@ namespace BattleArena.Player
             _moveDirection = Vector3.zero;
         }
 
+        /// <summary>Instantly moves the character, e.g. for blink spells.</summary>
+        public void Teleport(Vector3 position)
+        {
+            // CharacterController overrides transform changes while enabled.
+            _controller.enabled = false;
+            transform.position = position;
+            _controller.enabled = true;
+        }
+
         private void OnMoveChanged(Vector2 value) => _moveDirection = Vector3.ClampMagnitude(new Vector3(value.x, 0f, value.y), 1f);
 
         private void Update()
@@ -41,7 +51,7 @@ namespace BattleArena.Player
             var deltaTime = Time.deltaTime;
             _verticalSpeed = _controller.isGrounded ? GroundedVerticalSpeed : _verticalSpeed + gravity * deltaTime;
 
-            var velocity = _moveDirection * moveSpeed;
+            var velocity = _moveDirection * (moveSpeed * stats.MoveSpeedMultiplier);
             velocity.y = _verticalSpeed;
             _controller.Move(velocity * deltaTime);
 

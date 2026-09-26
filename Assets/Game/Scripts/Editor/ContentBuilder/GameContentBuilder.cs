@@ -22,6 +22,7 @@ namespace BattleArena.Editor.ContentBuilder
         private const string SettingsFolder = Root + "/Settings";
         private const string ScenesFolder = Root + "/Scenes";
         private const string ScenePath = ScenesFolder + "/Arena.unity";
+        private const string DefaultFontPath = "Assets/TextMesh Pro/Resources/Fonts & Materials/LiberationSans SDF.asset";
 
         [MenuItem("BattleArena/Build Game Content", priority = 0)]
         public static void BuildAll()

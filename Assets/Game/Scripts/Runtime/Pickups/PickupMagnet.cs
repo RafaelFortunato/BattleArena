@@ -12,11 +12,30 @@ namespace BattleArena.Pickups
     public sealed class PickupMagnet : MonoBehaviour
     {
         [SerializeField] private PlayerProgression progression;
+        [SerializeField] private PlayerStats stats;
         [SerializeField] private Transform collectPoint;
         [SerializeField, Min(0.1f)] private float pullSpeed = 16f;
         [SerializeField, Min(0.05f)] private float collectDistance = 0.5f;
 
         private readonly List<ExperienceGem> _attracted = new(64);
+        private SphereCollider _trigger;
+        private float _baseRadius;
+
+        private void Awake()
+        {
+            _trigger = GetComponent<SphereCollider>();
+            _baseRadius = _trigger.radius;
+        }
+
+        private void OnEnable() => stats.Changed += OnStatChanged;
+
+        private void OnDisable() => stats.Changed -= OnStatChanged;
+
+        private void OnStatChanged(StatType stat)
+        {
+            if (stat == StatType.PickupRadius)
+                _trigger.radius = _baseRadius * stats.PickupRadiusMultiplier;
+        }
 
         private void OnTriggerEnter(Collider other)
         {

@@ -18,10 +18,15 @@ namespace BattleArena.Combat
         public float Normalized => Current / maxHealth;
         public bool IsAlive => Current > 0f;
 
+        /// <summary>Flat reduction applied to every hit. A hit always deals at least <see cref="MinimumDamageFraction"/> of its damage.</summary>
+        public float Armor { get; set; }
+
+        private const float MinimumDamageFraction = 0.2f;
+
         /// <summary>Raised whenever current or max health changes.</summary>
         public event Action<Health> Changed;
-        /// <summary>Raised with the damage actually applied.</summary>
-        public event Action<Health, float> Damaged;
+        /// <summary>Raised with the full damage of the hit after armor, even if it exceeds the remaining health.</summary>
+        public event Action<Health, DamageResult> Damaged;
         public event Action<Health> Died;
 
         private void Awake() => Current = maxHealth;
@@ -46,22 +51,29 @@ namespace BattleArena.Combat
             Changed?.Invoke(this);
         }
 
-        public void TakeDamage(float amount)
+        public void TakeDamage(float amount, bool isCritical = false)
         {
             if (!IsAlive || amount <= 0f || Time.time < _invulnerableUntil)
                 return;
 
-            var applied = Mathf.Min(amount, Current);
-            Current -= applied;
+            if (Armor > 0f)
+                amount = Mathf.Max(amount - Armor, amount * MinimumDamageFraction);
+
+            Current = Mathf.Max(0f, Current - amount);
             if (invulnerabilityDuration > 0f)
                 _invulnerableUntil = Time.time + invulnerabilityDuration;
 
-            Damaged?.Invoke(this, applied);
+            // Report the full hit (not clamped to the remaining health) so damage numbers show what was dealt.
+            Damaged?.Invoke(this, new DamageResult(amount, isCritical));
             Changed?.Invoke(this);
 
             if (Current <= 0f)
                 Died?.Invoke(this);
         }
+
+        /// <summary>Ignores all damage for <paramref name="duration"/> seconds.</summary>
+        public void GrantInvulnerability(float duration) =>
+            _invulnerableUntil = Mathf.Max(_invulnerableUntil, Time.time + duration);
 
         public void Heal(float amount)
         {

@@ -371,6 +371,7 @@ GameObject:
   - component: {fileID: 9077246413955613388}
   - component: {fileID: 6712204707169125796}
   - component: {fileID: 8474256082905014879}
+  - component: {fileID: 6236550476368623128}
   - component: {fileID: 3180704741708065369}
   - component: {fileID: 7569190660119117929}
   - component: {fileID: 6387014685880135531}
@@ -441,6 +442,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: BattleArena.Runtime::BattleArena.Combat.Health
   maxHealth: 150
   invulnerabilityDuration: 0.5
+--- !u!114 &6236550476368623128
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2335951063533167850}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2d2f985431d78f44987998abad67e211, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: BattleArena.Runtime::BattleArena.Player.PlayerStats
+  health: {fileID: 8474256082905014879}
+  baseCritChance: 0.05
+  baseCritMultiplier: 1.5
 --- !u!114 &3180704741708065369
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -454,6 +470,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: BattleArena.Runtime::BattleArena.Player.PlayerController
   input: {fileID: 11400000, guid: 484cc701bfc576a41a5b9cb92aa571c6, type: 2}
+  stats: {fileID: 6236550476368623128}
   moveSpeed: 6.5
   turnSpeed: 900
   gravity: -25
@@ -469,12 +486,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c8a67e16c2c2a4846982b6fd7c7c79c4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: BattleArena.Runtime::BattleArena.Player.PlayerProgression
-  health: {fileID: 8474256082905014879}
+  stats: {fileID: 6236550476368623128}
   baseExperience: 6
   experienceGrowth: 5
-  maxLevel: 30
-  damageGrowthPerLevel: 0.08
-  maxHealthPerLevel: 8
+  maxLevel: 40
 --- !u!114 &6387014685880135531
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -489,15 +504,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: BattleArena.Runtime::BattleArena.Player.AutoAttack
   projectilePrefab: {fileID: 3927578984583903370, guid: 7eb53226e5b50024d9791372fc5de130, type: 3}
   muzzle: {fileID: 2241959256298700185}
-  progression: {fileID: 7569190660119117929}
+  stats: {fileID: 6236550476368623128}
   baseDamage: 12
   fireInterval: 0.5
   range: 14
   projectileSpeed: 18
   pierce: 0
-  levelsPerExtraBolt: 5
   spreadAngle: 12
-  maxBolts: 5
+  maxBolts: 7
 --- !u!114 &7492786941686036248
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -511,13 +525,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: BattleArena.Runtime::BattleArena.Player.SpellCaster
   input: {fileID: 11400000, guid: 484cc701bfc576a41a5b9cb92aa571c6, type: 2}
-  progression: {fileID: 7569190660119117929}
+  stats: {fileID: 6236550476368623128}
   controller: {fileID: 3180704741708065369}
+  health: {fileID: 8474256082905014879}
   castOrigin: {fileID: 2241959256298700185}
-  spells:
-  - {fileID: 11400000, guid: 3a1225a6b700ada42b9b64da02cd47d8, type: 2}
-  - {fileID: 11400000, guid: 0df6e44364c208f48a0d2aa55cf5eda2, type: 2}
-  - {fileID: 11400000, guid: d50b987019d000847bcf9c204e3d91c7, type: 2}
+  slotUnlockLevels: 050000000a0000000f000000
 --- !u!114 &2730277161128458940
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -907,6 +919,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: BattleArena.Runtime::BattleArena.Pickups.PickupMagnet
   progression: {fileID: 7569190660119117929}
+  stats: {fileID: 6236550476368623128}
   collectPoint: {fileID: 6453859430494646699}
   pullSpeed: 16
   collectDistance: 0.5

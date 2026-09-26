@@ -13,10 +13,11 @@ namespace BattleArena.Editor.ContentBuilder
             public Material PlayerRobe, PlayerSkin, PlayerHat, StaffGlow;
             public Material Grunt, Runner, Brute, Boss, EnemyEyes;
             public Material Flash;
-            public Material PlayerBolt, Fireball, BossOrb, Meteor, Gem;
+            public Material PlayerBolt, Fireball, BossOrb, Meteor, Gem, ArcaneOrb;
             public Material CrystalReady, CrystalDepleted;
-            public Material EnemyTelegraph, EnemyTelegraphFill, SpellTelegraph, SpellTelegraphFill, FrostRing;
+            public Material EnemyTelegraph, EnemyTelegraphFill, SpellTelegraph, SpellTelegraphFill, FrostRing, ArcaneRing, ToxicZone;
             public Material Particles;
+            public Material HealthBar, DamageText;
         }
 
         private static MaterialSet BuildMaterials()
@@ -49,6 +50,7 @@ namespace BattleArena.Editor.ContentBuilder
                 BossOrb = Lit("BossOrb", Hex("#F0A0FF"), emission: Hex("#C030FF") * 5f),
                 Meteor = Lit("Meteor", Hex("#5A2B18"), emission: Hex("#FF4A00") * 3f),
                 Gem = Lit("ExperienceGem", Hex("#A6FFD8"), emission: Hex("#20E0A0") * 3f),
+                ArcaneOrb = Lit("ArcaneOrb", Hex("#E2C8FF"), emission: Hex("#9A4DFF") * 5f),
 
                 CrystalReady = Lit("CrystalReady", Hex("#B6FFC8"), emission: Hex("#30FF80") * 3f),
                 CrystalDepleted = Lit("CrystalDepleted", Hex("#6A7078"), smoothness: 0.4f),
@@ -58,8 +60,12 @@ namespace BattleArena.Editor.ContentBuilder
                 SpellTelegraph = Transparent("SpellTelegraph", new Color(1f, 0.55f, 0.1f, 0.15f)),
                 SpellTelegraphFill = Transparent("SpellTelegraphFill", new Color(1f, 0.5f, 0.05f, 0.35f)),
                 FrostRing = Transparent("FrostRing", new Color(0.55f, 0.9f, 1f, 0.45f)),
+                ArcaneRing = Transparent("ArcaneRing", new Color(0.7f, 0.4f, 1f, 0.45f)),
+                ToxicZone = Transparent("ToxicZone", new Color(0.35f, 0.8f, 0.2f, 0.16f)),
 
                 Particles = ParticleMaterial(),
+                HealthBar = HealthBarMaterial(),
+                DamageText = DamageTextMaterial(),
             };
         }
 
@@ -111,6 +117,35 @@ namespace BattleArena.Editor.ContentBuilder
             material.SetFloat("_Blend", 2f); // Additive: glows nicely with bloom.
             BaseShaderGUI.SetupMaterialBlendMode(material);
             BaseShaderGUI.SetMaterialKeywords(material);
+            EditorUtility.SetDirty(material);
+            return material;
+        }
+
+        private static Material HealthBarMaterial()
+        {
+            var material = LoadOrCreateMaterial("EnemyHealthBar", "BattleArena/HealthBar");
+            material.SetColor("_FillColor", Hex("#E0443E"));
+            material.SetColor("_BackColor", new Color(0.05f, 0.05f, 0.08f, 0.75f));
+            material.SetColor("_BorderColor", new Color(0f, 0f, 0f, 0.9f));
+            material.SetVector("_Size", new Vector4(1.2f, 0.16f, 0f, 0f));
+            material.SetFloat("_Border", 0.025f);
+            // Bars differ only by the per-instance _Fill, so they batch into instanced draws.
+            material.enableInstancing = true;
+            EditorUtility.SetDirty(material);
+            return material;
+        }
+
+        /// <summary>Copy of the default TMP font material that draws on top of everything, with an outline for readability.</summary>
+        private static Material DamageTextMaterial()
+        {
+            var font = AssetDatabase.LoadAssetAtPath<TMPro.TMP_FontAsset>(DefaultFontPath);
+            var material = LoadOrCreateMaterial("DamageText", "TextMeshPro/Mobile/Distance Field Overlay");
+            material.CopyPropertiesFromMaterial(font.material);
+            material.SetColor("_OutlineColor", new Color(0.08f, 0.04f, 0.02f, 1f));
+            // A thin outline plus a slightly dilated face keeps the numbers bright and readable.
+            material.SetFloat("_OutlineWidth", 0.2f);
+            material.SetFloat("_FaceDilate", 0.25f);
+            material.EnableKeyword("OUTLINE_ON");
             EditorUtility.SetDirty(material);
             return material;
         }

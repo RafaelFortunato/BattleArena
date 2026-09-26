@@ -2,7 +2,10 @@ using BattleArena.Combat;
 using BattleArena.Core;
 using BattleArena.Enemies;
 using BattleArena.Player;
+using BattleArena.Progression;
 using BattleArena.UI;
+using BattleArena.Vfx;
+using BattleArena.Interaction;
 using Unity.AI.Navigation;
 using Unity.Cinemachine;
 using Unity.Cinemachine.TargetTracking;
@@ -25,12 +28,6 @@ namespace BattleArena.Editor.ContentBuilder
 
         private static readonly Vector3[] ShrinePositions = { new(-18f, 0f, 14f), new(20f, 0f, -16f) };
 
-        private static readonly Vector3[] ChestPositions =
-        {
-            new(26f, 0f, 22f), new(-28f, 0f, -20f), new(4f, 0f, -30f),
-            new(-6f, 0f, 30f), new(32f, 0f, -2f), new(-33f, 0f, 4f)
-        };
-
         private static void BuildScene(Scene scene, MaterialSet m, ContentSet content)
         {
             BuildLighting();
@@ -39,15 +36,13 @@ namespace BattleArena.Editor.ContentBuilder
 
             foreach (var position in ShrinePositions)
                 PlacePrefab(content.Shrine.gameObject, position, Quaternion.identity);
-            for (var i = 0; i < ChestPositions.Length; i++)
-                PlacePrefab(content.Chest.gameObject, ChestPositions[i], Quaternion.Euler(0f, i * 57f, 0f));
 
             var player = PlacePrefab(content.Player, Vector3.zero, Quaternion.identity);
             var playerHealth = player.GetComponent<Health>();
 
-            var gameManager = BuildSystems(content, player, playerHealth);
+            var gameManager = BuildSystems(content, player, playerHealth, out var levelUp);
             BuildCamera(player.transform);
-            BuildUserInterface(gameManager, player, playerHealth);
+            BuildUserInterface(gameManager, levelUp, player, playerHealth);
 
             EditorSceneManager.SaveScene(scene, ScenePath);
             EditorBuildSettings.scenes = new[] { new EditorBuildSettingsScene(ScenePath, true) };
@@ -164,7 +159,7 @@ namespace BattleArena.Editor.ContentBuilder
                 var z = (float)(random.NextDouble() * 2 - 1) * (ArenaHalfSize - margin);
                 var position = new Vector3(x, 0f, z);
 
-                if (position.magnitude < 11f || IsNear(position, ShrinePositions, 5f) || IsNear(position, ChestPositions, 4f))
+                if (position.magnitude < 11f || IsNear(position, ShrinePositions, 5f))
                     continue;
 
                 place(position);
@@ -214,7 +209,7 @@ namespace BattleArena.Editor.ContentBuilder
 
         // ---------------------------------------------------------------- Systems, camera, UI
 
-        private static GameManager BuildSystems(ContentSet content, GameObject player, Health playerHealth)
+        private static GameManager BuildSystems(ContentSet content, GameObject player, Health playerHealth, out LevelUpController levelUp)
         {
             var systems = new GameObject("Systems");
 
@@ -233,6 +228,28 @@ namespace BattleArena.Editor.ContentBuilder
                 .Set("input", content.Input)
                 .Set("playerHealth", playerHealth)
                 .Set("spawner", spawner)
+                .Apply();
+
+            var chests = systems.AddComponent<ChestSpawner>();
+            SerializedSetter.For(chests)
+                .Set("chestPrefab", content.Chest)
+                .Set("player", player.transform)
+                .Set("spawnEffect", content.ChestSpawnEffect)
+                .Apply();
+
+            var damageNumbers = systems.AddComponent<DamageNumberManager>();
+            SerializedSetter.For(damageNumbers)
+                .Set("labelPrefab", content.DamageLabel)
+                .Set("criticalEffect", content.CritEffect)
+                .Apply();
+
+            levelUp = systems.AddComponent<LevelUpController>();
+            SerializedSetter.For(levelUp)
+                .Set("gameManager", gameManager)
+                .Set("input", content.Input)
+                .Set("config", content.LevelUp)
+                .Set("stats", player.GetComponent<PlayerStats>())
+                .Set("spellCaster", player.GetComponent<SpellCaster>())
                 .Apply();
 
             return gameManager;
@@ -273,7 +290,7 @@ namespace BattleArena.Editor.ContentBuilder
             follow.TrackerSettings = tracker;
         }
 
-        private static void BuildUserInterface(GameManager gameManager, GameObject player, Health playerHealth)
+        private static void BuildUserInterface(GameManager gameManager, LevelUpController levelUp, GameObject player, Health playerHealth)
         {
             var panelSettings = LoadOrCreateAsset<PanelSettings>($"{UIFolder}/GamePanelSettings.asset");
             panelSettings.themeStyleSheet = AssetDatabase.LoadAssetAtPath<ThemeStyleSheet>($"{UIFolder}/GameTheme.tss");
@@ -299,6 +316,12 @@ namespace BattleArena.Editor.ContentBuilder
             SerializedSetter.For(menus)
                 .Set("gameManager", gameManager)
                 .Set("progression", player.GetComponent<PlayerProgression>())
+                .Apply();
+
+            var levelUpView = uiObject.AddComponent<LevelUpView>();
+            SerializedSetter.For(levelUpView)
+                .Set("controller", levelUp)
+                .Set("stats", player.GetComponent<PlayerStats>())
                 .Apply();
         }
     }

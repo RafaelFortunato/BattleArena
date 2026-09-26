@@ -29,7 +29,7 @@ namespace BattleArena.Interaction
         {
             input.InteractRequested -= OnInteractRequested;
             foreach (var interactable in _inRange)
-                interactable.StateChanged -= OnInteractableStateChanged;
+                Unsubscribe(interactable);
             _inRange.Clear();
             SetCurrent(null);
         }
@@ -41,19 +41,34 @@ namespace BattleArena.Interaction
 
             _inRange.Add(interactable);
             interactable.StateChanged += OnInteractableStateChanged;
+            interactable.Removed += OnInteractableRemoved;
             RefreshCurrent();
         }
 
         private void OnTriggerExit(Collider other)
         {
-            if (!other.TryGetComponent(out IInteractable interactable) || !_inRange.Remove(interactable))
-                return;
-
-            interactable.StateChanged -= OnInteractableStateChanged;
-            RefreshCurrent();
+            if (other.TryGetComponent(out IInteractable interactable))
+                Forget(interactable);
         }
 
         private void OnInteractableStateChanged(IInteractable _) => RefreshCurrent();
+
+        private void OnInteractableRemoved(IInteractable interactable) => Forget(interactable);
+
+        private void Forget(IInteractable interactable)
+        {
+            if (!_inRange.Remove(interactable))
+                return;
+
+            Unsubscribe(interactable);
+            RefreshCurrent();
+        }
+
+        private void Unsubscribe(IInteractable interactable)
+        {
+            interactable.StateChanged -= OnInteractableStateChanged;
+            interactable.Removed -= OnInteractableRemoved;
+        }
 
         private void OnInteractRequested()
         {

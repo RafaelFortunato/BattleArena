@@ -2,7 +2,8 @@
     "name": "BattleArena.Runtime",
     "rootNamespace": "BattleArena",
     "references": [
-        "Unity.InputSystem"
+        "Unity.InputSystem",
+        "Unity.TextMeshPro"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

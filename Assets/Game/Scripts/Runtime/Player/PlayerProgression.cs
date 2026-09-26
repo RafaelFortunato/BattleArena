@@ -1,30 +1,28 @@
-using BattleArena.Combat;
 using BattleArena.Core;
 using UnityEngine;
 
 namespace BattleArena.Player
 {
-    /// <summary>Experience, levels and the stat growth that comes with them.</summary>
+    /// <summary>
+    /// Experience and levels. Each level gained raises <see cref="PlayerLevelUpEvent"/>;
+    /// the rewards themselves are chosen through the level-up cards.
+    /// </summary>
     public sealed class PlayerProgression : MonoBehaviour
     {
-        [SerializeField] private Health health;
+        [SerializeField] private PlayerStats stats;
 
         [Header("Experience curve: required = base + growth * (level - 1)")]
         [SerializeField, Min(1)] private int baseExperience = 6;
         [SerializeField, Min(0)] private int experienceGrowth = 5;
-        [SerializeField, Min(1)] private int maxLevel = 30;
-
-        [Header("Per-level growth")]
-        [SerializeField, Min(0f)] private float damageGrowthPerLevel = 0.1f;
-        [SerializeField, Min(0f)] private float maxHealthPerLevel = 8f;
+        [SerializeField, Min(1)] private int maxLevel = 40;
 
         public int Level { get; private set; } = 1;
         public int Experience { get; private set; }
         public int RequiredExperience => baseExperience + experienceGrowth * (Level - 1);
         public bool IsMaxLevel => Level >= maxLevel;
 
-        /// <summary>Multiplier applied to every source of player damage.</summary>
-        public float DamageMultiplier => 1f + damageGrowthPerLevel * (Level - 1);
+        // Fractional experience left over after applying the Experience Gain multiplier.
+        private float _experienceRemainder;
 
         private void Start() => RaiseExperienceChanged();
 
@@ -33,12 +31,15 @@ namespace BattleArena.Player
             if (amount <= 0 || IsMaxLevel)
                 return;
 
-            Experience += amount;
+            var scaled = amount * stats.ExperienceMultiplier + _experienceRemainder;
+            var gained = Mathf.FloorToInt(scaled);
+            _experienceRemainder = scaled - gained;
+
+            Experience += gained;
             while (!IsMaxLevel && Experience >= RequiredExperience)
             {
                 Experience -= RequiredExperience;
                 Level++;
-                health.IncreaseMax(maxHealthPerLevel);
                 EventBus<PlayerLevelUpEvent>.Raise(new PlayerLevelUpEvent(Level));
             }
 

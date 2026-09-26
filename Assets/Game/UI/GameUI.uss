@@ -18,10 +18,6 @@
 
 .panel {
     background-image: url("project://database/Assets/Game/Art/Sprites/Buttons/DarkBlue/button_dark_normal_r16.png");
-    -unity-slice-left: 20;
-    -unity-slice-right: 20;
-    -unity-slice-top: 20;
-    -unity-slice-bottom: 26;
     -unity-slice-scale: 0.5px;
     -unity-background-image-tint-color: rgba(255, 255, 255, 0.92);
     padding: 10px 16px 12px 16px;
@@ -104,10 +100,6 @@
     -unity-text-align: middle-center;
     color: rgb(14, 18, 34);
     background-image: url("project://database/Assets/Game/Art/Sprites/Buttons/Gold/button_gold_normal_r16.png");
-    -unity-slice-left: 20;
-    -unity-slice-right: 20;
-    -unity-slice-top: 20;
-    -unity-slice-bottom: 26;
     -unity-slice-scale: 0.5px;
     transition-property: scale;
     transition-duration: 0.25s;
@@ -209,10 +201,6 @@
     justify-content: center;
     overflow: hidden;
     background-image: url("project://database/Assets/Game/Art/Sprites/Buttons/DarkBlue/button_dark_normal_r16.png");
-    -unity-slice-left: 20;
-    -unity-slice-right: 20;
-    -unity-slice-top: 20;
-    -unity-slice-bottom: 26;
     -unity-slice-scale: 0.5px;
     border-width: 3px;
     border-radius: 12px;
@@ -358,10 +346,6 @@
     border-width: 0;
     background-color: rgba(0, 0, 0, 0);
     background-image: url("project://database/Assets/Game/Art/Sprites/Buttons/DarkBlue/button_dark_normal_r16.png");
-    -unity-slice-left: 20;
-    -unity-slice-right: 20;
-    -unity-slice-top: 20;
-    -unity-slice-bottom: 26;
     -unity-slice-scale: 0.5px;
 }
 
@@ -384,4 +368,90 @@
 
 .menu-button.primary:active {
     background-image: url("project://database/Assets/Game/Art/Sprites/Buttons/Gold/button_gold_pressed_r16.png");
+}
+
+/* ---------- Level-up cards ---------- */
+
+.level-up-screen {
+    background-color: rgba(5, 8, 20, 0.8);
+}
+
+.card-row {
+    flex-direction: row;
+    justify-content: center;
+    margin: 8px 0 28px 0;
+}
+
+.upgrade-card {
+    width: 300px;
+    height: 360px;
+    margin: 0 16px;
+    padding: 22px 22px 18px 22px;
+    align-items: center;
+    justify-content: flex-start;
+    background-color: rgba(0, 0, 0, 0);
+    background-image: url("project://database/Assets/Game/Art/Sprites/Buttons/DarkBlue/button_dark_normal_r16.png");
+    -unity-slice-scale: 0.5px;
+    border-width: 3px;
+    border-radius: 14px;
+    border-color: rgb(191, 204, 230);
+    transition-property: scale, translate;
+    transition-duration: 0.12s;
+}
+
+.upgrade-card:hover {
+    scale: 1.05 1.05;
+    translate: 0 -8px;
+    background-image: url("project://database/Assets/Game/Art/Sprites/Buttons/DarkBlue/button_dark_hover_r16.png");
+}
+
+.upgrade-card:active {
+    scale: 0.97 0.97;
+}
+
+.card-tag {
+    font-size: 14px;
+    letter-spacing: 3px;
+    margin-bottom: 18px;
+    -unity-text-align: middle-center;
+}
+
+.card-title {
+    font-size: 28px;
+    white-space: normal;
+    -unity-text-align: middle-center;
+    color: rgb(244, 233, 208);
+}
+
+.card-divider {
+    width: 60%;
+    height: 2px;
+    margin: 16px 0;
+    background-color: rgba(242, 193, 78, 0.5);
+}
+
+.card-description {
+    flex-grow: 1;
+    font-size: 19px;
+    -unity-font-style: normal;
+    white-space: normal;
+    -unity-text-align: upper-center;
+    color: rgba(244, 233, 208, 0.9);
+}
+
+.card-key {
+    width: 40px;
+    height: 40px;
+    font-size: 20px;
+    -unity-text-align: middle-center;
+    color: rgb(14, 18, 34);
+    background-color: rgb(242, 193, 78);
+    border-radius: 20px;
+}
+
+.stats-summary {
+    font-size: 17px;
+    -unity-font-style: normal;
+    color: rgba(244, 233, 208, 0.75);
+    -unity-text-align: middle-center;
 }
