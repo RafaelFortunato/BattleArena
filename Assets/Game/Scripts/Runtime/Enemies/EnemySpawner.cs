@@ -85,9 +85,7 @@ namespace BattleArena.Enemies
         {
             var toPlayer = Vector3.ProjectOnPlane(player.position - position, Vector3.up);
             var rotation = toPlayer.sqrMagnitude > 0.01f ? Quaternion.LookRotation(toPlayer) : Quaternion.identity;
-            var enemy = PoolManager.Spawn(definition.Prefab, position, rotation);
-            enemy.Initialize(definition, healthMultiplier, damageMultiplier);
-            return enemy;
+            return Enemy.Spawn(definition, position, rotation, healthMultiplier, damageMultiplier);
         }
 
         private bool TryFindSpawnPoint(float minDistance, float maxDistance, out Vector3 position)

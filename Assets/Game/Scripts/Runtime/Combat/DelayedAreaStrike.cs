@@ -6,7 +6,7 @@ namespace BattleArena.Combat
 {
     /// <summary>
     /// Telegraphed area attack: shows a ground marker that fills up, then deals damage in a radius.
-    /// Used by Meteor Shower and the boss slam.
+    /// Used by Meteor Shower, the boss slam, enemy curses, bombs and self-destructs.
     /// </summary>
     public sealed class DelayedAreaStrike : MonoBehaviour, IPoolable
     {
@@ -17,16 +17,23 @@ namespace BattleArena.Combat
         [Tooltip("Optional object that falls from above and lands when the strike hits (e.g. a meteor).")]
         [SerializeField] private Transform fallingObject;
         [SerializeField, Min(0f)] private float fallHeight = 12f;
+        [Tooltip("Peak height of the arc when the strike is lobbed from a launch point.")]
+        [SerializeField, Min(0f)] private float arcHeight = 4f;
         [SerializeField] private TimedRelease impactEffect;
 
+        /// <summary>Strike at this position after <paramref name="delay"/>; the falling object drops from above.</summary>
         public void Arm(float radius, float delay, DamageProfile damage, int targetMask) =>
-            StartCoroutine(Run(radius, delay, damage, targetMask));
+            StartCoroutine(Run(radius, delay, damage, targetMask, lobbed: false, Vector3.zero));
+
+        /// <summary>Like <see cref="Arm"/>, but the falling object flies in an arc from <paramref name="launchPosition"/>.</summary>
+        public void ArmLobbed(Vector3 launchPosition, float radius, float flightTime, DamageProfile damage, int targetMask) =>
+            StartCoroutine(Run(radius, flightTime, damage, targetMask, lobbed: true, launchPosition));
 
         public void OnSpawned() { }
 
         public void OnDespawned() => StopAllCoroutines();
 
-        private IEnumerator Run(float radius, float delay, DamageProfile damage, int targetMask)
+        private IEnumerator Run(float radius, float delay, DamageProfile damage, int targetMask, bool lobbed, Vector3 launchPosition)
         {
             var diameter = radius * 2f;
             var origin = transform.position;
@@ -41,7 +48,11 @@ namespace BattleArena.Combat
                 var size = diameter * t;
                 fill.localScale = new Vector3(size, fill.localScale.y, size);
                 if (fallingObject != null)
-                    fallingObject.position = origin + Vector3.up * (fallHeight * (1f - t * t));
+                {
+                    fallingObject.position = lobbed
+                        ? Vector3.Lerp(launchPosition, origin, t) + Vector3.up * (arcHeight * 4f * t * (1f - t))
+                        : origin + Vector3.up * (fallHeight * (1f - t * t));
+                }
                 yield return null;
             }
 

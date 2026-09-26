@@ -218,6 +218,8 @@ namespace BattleArena.Editor.ContentBuilder
                 .Set("schedule", content.Schedule)
                 .Set("player", player.transform)
                 .Set("boss", content.Boss)
+                // Twelve enemy types: keep the up-front instantiation (and load hitch) modest.
+                .Set("prewarmPerEnemyType", 12)
                 .Apply();
 
             var director = systems.AddComponent<EnemyDirector>();

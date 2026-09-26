@@ -7,6 +7,7 @@ namespace BattleArena.Enemies
     /// <summary>
     /// Centralised enemy "brain". Instead of one Update per enemy, every live enemy is ticked
     /// here a few times per second, which keeps pathfinding and attack checks cheap on WebGL.
+    /// Flying enemies, which bypass the NavMesh, are integrated here every frame in a single loop.
     /// </summary>
     public sealed class EnemyDirector : MonoBehaviour
     {
@@ -15,26 +16,41 @@ namespace BattleArena.Enemies
 
         private void OnEnable() => StartCoroutine(TickLoop());
 
+        private void Update()
+        {
+            var flyers = FlyingMovement.Active;
+            if (flyers.Count == 0 || !player.IsAlive)
+                return;
+
+            var target = player.transform.position;
+            var deltaTime = Time.deltaTime;
+            for (var i = flyers.Count - 1; i >= 0; i--)
+                flyers[i].Integrate(target, deltaTime);
+        }
+
         private IEnumerator TickLoop()
         {
             var wait = new WaitForSeconds(tickInterval);
             var playerTransform = player.transform;
+            var lastTick = Time.time;
 
             while (true)
             {
+                var now = Time.time;
                 if (player.IsAlive)
                 {
-                    var targetPosition = playerTransform.position;
-                    var now = Time.time;
+                    var context = new EnemyTickContext(playerTransform.position, player, now, now - lastTick);
                     var enemies = EnemyRegistry.Active;
 
-                    // Iterate backwards: a tick can kill the player and trigger cleanup.
+                    // Iterate backwards: a tick can remove its enemy (swap-remove moves an already-ticked
+                    // enemy into this slot) or spawn new ones at the end (ticked next time).
                     for (var i = enemies.Count - 1; i >= 0; i--)
                     {
                         if (i < enemies.Count)
-                            enemies[i].Tick(targetPosition, player, now);
+                            enemies[i].Tick(context);
                     }
                 }
+                lastTick = now;
 
                 yield return wait;
             }

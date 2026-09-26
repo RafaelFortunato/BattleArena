@@ -50,6 +50,7 @@ MonoBehaviour:
   fill: {fileID: 2176267770067807728}
   fallingObject: {fileID: 0}
   fallHeight: 12
+  arcHeight: 4
   impactEffect: {fileID: 1617620341499651606, guid: 480e286ec660ecf4bb264b711f7b6ae1, type: 3}
 --- !u!1 &764516330153837664
 GameObject:

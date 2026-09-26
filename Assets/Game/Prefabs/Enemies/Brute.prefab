@@ -594,6 +594,8 @@ GameObject:
   - component: {fileID: 3002306230454510110}
   - component: {fileID: 9179644616020637993}
   - component: {fileID: 6661037763966971777}
+  - component: {fileID: 7084163405944455855}
+  - component: {fileID: 1418484061441487755}
   m_Layer: 8
   m_Name: Brute
   m_TagString: Untagged
@@ -748,6 +750,30 @@ MonoBehaviour:
   m_EditorClassIdentifier: BattleArena.Runtime::BattleArena.Combat.WorldHealthBar
   health: {fileID: 6293691392692339104}
   bar: {fileID: 265275226409064974}
+--- !u!114 &7084163405944455855
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7572349627926020071}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 849c35db4b29ef84fbbe14c61ce898e6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: BattleArena.Runtime::BattleArena.Enemies.ChaseMovement
+--- !u!114 &1418484061441487755
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7572349627926020071}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d1631cdada98b814faa287362e8f736f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: BattleArena.Runtime::BattleArena.Enemies.ContactAttack
 --- !u!1 &7648060578053915501
 GameObject:
   m_ObjectHideFlags: 0

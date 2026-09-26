@@ -26,52 +26,141 @@ MonoBehaviour:
     MaxAlive: 25
     Enemies:
     - Enemy: {fileID: 11400000, guid: 4f5fc1729056ce54fb9e125aede96ccc, type: 2}
-      Weight: 0.8
+      Weight: 0.55
     - Enemy: {fileID: 11400000, guid: 5b2f806f34e855f4b91873ee9b3e8a99, type: 2}
-      Weight: 0.2
+      Weight: 0.15
+    - Enemy: {fileID: 11400000, guid: ce742931c13207d4aae19fd878a139fe, type: 2}
+      Weight: 0.3
   - StartTime: 120
     SpawnInterval: 1.1
     SpawnsPerTick: 2
     MaxAlive: 40
     Enemies:
     - Enemy: {fileID: 11400000, guid: 4f5fc1729056ce54fb9e125aede96ccc, type: 2}
-      Weight: 0.6
-    - Enemy: {fileID: 11400000, guid: 5b2f806f34e855f4b91873ee9b3e8a99, type: 2}
       Weight: 0.3
+    - Enemy: {fileID: 11400000, guid: 5b2f806f34e855f4b91873ee9b3e8a99, type: 2}
+      Weight: 0.12
+    - Enemy: {fileID: 11400000, guid: ce742931c13207d4aae19fd878a139fe, type: 2}
+      Weight: 0.18
+    - Enemy: {fileID: 11400000, guid: bc6250db604f0be4f96b43071d544b82, type: 2}
+      Weight: 0.15
+    - Enemy: {fileID: 11400000, guid: f4ced1491f2384a4aaa6cda6536e20b3, type: 2}
+      Weight: 0.12
     - Enemy: {fileID: 11400000, guid: 270c8ececbdcc8a4cb32b224374438ff, type: 2}
-      Weight: 0.1
-  - StartTime: 240
+      Weight: 0.08
+    - Enemy: {fileID: 11400000, guid: f092ec8722e0fec49887ecd0d5367829, type: 2}
+      Weight: 0.05
+  - StartTime: 210
     SpawnInterval: 1
     SpawnsPerTick: 3
-    MaxAlive: 60
+    MaxAlive: 55
     Enemies:
     - Enemy: {fileID: 11400000, guid: 4f5fc1729056ce54fb9e125aede96ccc, type: 2}
-      Weight: 0.5
-    - Enemy: {fileID: 11400000, guid: 5b2f806f34e855f4b91873ee9b3e8a99, type: 2}
-      Weight: 0.3
-    - Enemy: {fileID: 11400000, guid: 270c8ececbdcc8a4cb32b224374438ff, type: 2}
       Weight: 0.2
-  - StartTime: 360
+    - Enemy: {fileID: 11400000, guid: 5b2f806f34e855f4b91873ee9b3e8a99, type: 2}
+      Weight: 0.1
+    - Enemy: {fileID: 11400000, guid: ce742931c13207d4aae19fd878a139fe, type: 2}
+      Weight: 0.14
+    - Enemy: {fileID: 11400000, guid: bc6250db604f0be4f96b43071d544b82, type: 2}
+      Weight: 0.12
+    - Enemy: {fileID: 11400000, guid: f4ced1491f2384a4aaa6cda6536e20b3, type: 2}
+      Weight: 0.1
+    - Enemy: {fileID: 11400000, guid: 270c8ececbdcc8a4cb32b224374438ff, type: 2}
+      Weight: 0.08
+    - Enemy: {fileID: 11400000, guid: 07871812a3ac62f4baea89cf9f9fb91a, type: 2}
+      Weight: 0.08
+    - Enemy: {fileID: 11400000, guid: 9884a51885e70314c935aa4630119fcd, type: 2}
+      Weight: 0.07
+    - Enemy: {fileID: 11400000, guid: 2fe21849a0e06e44eb0d554cc0832844, type: 2}
+      Weight: 0.08
+    - Enemy: {fileID: 11400000, guid: a3b2c390b65bc1f49b0c0218b6530538, type: 2}
+      Weight: 0.05
+  - StartTime: 300
     SpawnInterval: 0.9
     SpawnsPerTick: 3
-    MaxAlive: 80
+    MaxAlive: 70
     Enemies:
     - Enemy: {fileID: 11400000, guid: 4f5fc1729056ce54fb9e125aede96ccc, type: 2}
-      Weight: 0.4
+      Weight: 0.14
     - Enemy: {fileID: 11400000, guid: 5b2f806f34e855f4b91873ee9b3e8a99, type: 2}
-      Weight: 0.35
+      Weight: 0.08
+    - Enemy: {fileID: 11400000, guid: ce742931c13207d4aae19fd878a139fe, type: 2}
+      Weight: 0.12
+    - Enemy: {fileID: 11400000, guid: bc6250db604f0be4f96b43071d544b82, type: 2}
+      Weight: 0.1
+    - Enemy: {fileID: 11400000, guid: f4ced1491f2384a4aaa6cda6536e20b3, type: 2}
+      Weight: 0.1
     - Enemy: {fileID: 11400000, guid: 270c8ececbdcc8a4cb32b224374438ff, type: 2}
-      Weight: 0.25
-  - StartTime: 480
+      Weight: 0.09
+    - Enemy: {fileID: 11400000, guid: 07871812a3ac62f4baea89cf9f9fb91a, type: 2}
+      Weight: 0.08
+    - Enemy: {fileID: 11400000, guid: 9884a51885e70314c935aa4630119fcd, type: 2}
+      Weight: 0.08
+    - Enemy: {fileID: 11400000, guid: 2fe21849a0e06e44eb0d554cc0832844, type: 2}
+      Weight: 0.08
+    - Enemy: {fileID: 11400000, guid: a3b2c390b65bc1f49b0c0218b6530538, type: 2}
+      Weight: 0.06
+    - Enemy: {fileID: 11400000, guid: 16cbd138e3300bc4f8e61b3055a42a98, type: 2}
+      Weight: 0.06
+    - Enemy: {fileID: 11400000, guid: f092ec8722e0fec49887ecd0d5367829, type: 2}
+      Weight: 0.05
+  - StartTime: 420
+    SpawnInterval: 0.85
+    SpawnsPerTick: 4
+    MaxAlive: 85
+    Enemies:
+    - Enemy: {fileID: 11400000, guid: 4f5fc1729056ce54fb9e125aede96ccc, type: 2}
+      Weight: 0.1
+    - Enemy: {fileID: 11400000, guid: 5b2f806f34e855f4b91873ee9b3e8a99, type: 2}
+      Weight: 0.08
+    - Enemy: {fileID: 11400000, guid: ce742931c13207d4aae19fd878a139fe, type: 2}
+      Weight: 0.1
+    - Enemy: {fileID: 11400000, guid: bc6250db604f0be4f96b43071d544b82, type: 2}
+      Weight: 0.1
+    - Enemy: {fileID: 11400000, guid: f4ced1491f2384a4aaa6cda6536e20b3, type: 2}
+      Weight: 0.1
+    - Enemy: {fileID: 11400000, guid: 270c8ececbdcc8a4cb32b224374438ff, type: 2}
+      Weight: 0.11
+    - Enemy: {fileID: 11400000, guid: 07871812a3ac62f4baea89cf9f9fb91a, type: 2}
+      Weight: 0.09
+    - Enemy: {fileID: 11400000, guid: 9884a51885e70314c935aa4630119fcd, type: 2}
+      Weight: 0.09
+    - Enemy: {fileID: 11400000, guid: 2fe21849a0e06e44eb0d554cc0832844, type: 2}
+      Weight: 0.08
+    - Enemy: {fileID: 11400000, guid: a3b2c390b65bc1f49b0c0218b6530538, type: 2}
+      Weight: 0.07
+    - Enemy: {fileID: 11400000, guid: 16cbd138e3300bc4f8e61b3055a42a98, type: 2}
+      Weight: 0.08
+    - Enemy: {fileID: 11400000, guid: f092ec8722e0fec49887ecd0d5367829, type: 2}
+      Weight: 0.06
+  - StartTime: 510
     SpawnInterval: 0.8
     SpawnsPerTick: 4
     MaxAlive: 100
     Enemies:
     - Enemy: {fileID: 11400000, guid: 4f5fc1729056ce54fb9e125aede96ccc, type: 2}
-      Weight: 0.35
+      Weight: 0.08
     - Enemy: {fileID: 11400000, guid: 5b2f806f34e855f4b91873ee9b3e8a99, type: 2}
-      Weight: 0.35
+      Weight: 0.07
+    - Enemy: {fileID: 11400000, guid: ce742931c13207d4aae19fd878a139fe, type: 2}
+      Weight: 0.1
+    - Enemy: {fileID: 11400000, guid: bc6250db604f0be4f96b43071d544b82, type: 2}
+      Weight: 0.1
+    - Enemy: {fileID: 11400000, guid: f4ced1491f2384a4aaa6cda6536e20b3, type: 2}
+      Weight: 0.1
     - Enemy: {fileID: 11400000, guid: 270c8ececbdcc8a4cb32b224374438ff, type: 2}
-      Weight: 0.3
+      Weight: 0.12
+    - Enemy: {fileID: 11400000, guid: 07871812a3ac62f4baea89cf9f9fb91a, type: 2}
+      Weight: 0.1
+    - Enemy: {fileID: 11400000, guid: 9884a51885e70314c935aa4630119fcd, type: 2}
+      Weight: 0.1
+    - Enemy: {fileID: 11400000, guid: 2fe21849a0e06e44eb0d554cc0832844, type: 2}
+      Weight: 0.08
+    - Enemy: {fileID: 11400000, guid: a3b2c390b65bc1f49b0c0218b6530538, type: 2}
+      Weight: 0.08
+    - Enemy: {fileID: 11400000, guid: 16cbd138e3300bc4f8e61b3055a42a98, type: 2}
+      Weight: 0.09
+    - Enemy: {fileID: 11400000, guid: f092ec8722e0fec49887ecd0d5367829, type: 2}
+      Weight: 0.07
   healthScalingPerMinute: 0.25
   damageScalingPerMinute: 0.1

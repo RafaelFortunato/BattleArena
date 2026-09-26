@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 834fd195944db324eaee61ee2df7c738, type: 3}
+  m_Name: GoblinBomber
+  m_EditorClassIdentifier: BattleArena.Runtime::BattleArena.Enemies.EnemyDefinition
+  displayName: Goblin Bomber
+  prefab: {fileID: 4956020720834356272, guid: 900dd210092d344498e4613ce2c88f8a, type: 3}
+  maxHealth: 22
+  moveSpeed: 3.1
+  contactDamage: 4
+  attackRange: 1.2
+  attackCooldown: 1
+  experienceReward: 3

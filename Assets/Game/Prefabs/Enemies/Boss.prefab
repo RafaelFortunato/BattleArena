@@ -555,6 +555,8 @@ GameObject:
   - component: {fileID: 1040355182858218936}
   - component: {fileID: 437655170594985888}
   - component: {fileID: 2251707653418499996}
+  - component: {fileID: 6094190321006749008}
+  - component: {fileID: 2445628629394220044}
   - component: {fileID: 6116988592369198556}
   m_Layer: 8
   m_Name: Boss
@@ -696,6 +698,30 @@ MonoBehaviour:
   - {fileID: 7973359057144329918}
   flashMaterial: {fileID: 2100000, guid: 383ba1ad25246d643ad5848a937b5eb5, type: 2}
   duration: 0.08
+--- !u!114 &6094190321006749008
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3018364710319332329}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 849c35db4b29ef84fbbe14c61ce898e6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: BattleArena.Runtime::BattleArena.Enemies.ChaseMovement
+--- !u!114 &2445628629394220044
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3018364710319332329}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d1631cdada98b814faa287362e8f736f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: BattleArena.Runtime::BattleArena.Enemies.ContactAttack
 --- !u!114 &6116988592369198556
 MonoBehaviour:
   m_ObjectHideFlags: 0

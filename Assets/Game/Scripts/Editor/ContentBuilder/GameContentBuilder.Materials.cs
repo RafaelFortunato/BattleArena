@@ -12,6 +12,8 @@ namespace BattleArena.Editor.ContentBuilder
             public Material Ground, GroundPatch, Stone, Wall, Wood, Leaves, Gold;
             public Material PlayerRobe, PlayerSkin, PlayerHat, StaffGlow;
             public Material Grunt, Runner, Brute, Boss, EnemyEyes;
+            public Material Bat, Archer, Wisp, Bomber, Shaman, Boar, Beetle, Slime, Wyvern;
+            public Material WindupGlow, CurseGlow, BombBody, EnemyArrow, WispBolt;
             public Material Flash;
             public Material PlayerBolt, Fireball, BossOrb, Meteor, Gem, ArcaneOrb;
             public Material CrystalReady, CrystalDepleted;
@@ -42,6 +44,20 @@ namespace BattleArena.Editor.ContentBuilder
                 Brute = Lit("EnemyBrute", Hex("#A8453B"), smoothness: 0.2f),
                 Boss = Lit("EnemyBoss", Hex("#4D2470"), smoothness: 0.35f),
                 EnemyEyes = Lit("EnemyEyes", Hex("#FFE3A0"), emission: Hex("#FF5A2A") * 4f),
+                Bat = Lit("EnemyBat", Hex("#3B2A4A"), smoothness: 0.3f),
+                Archer = Lit("EnemyArcher", Hex("#5E7A3A"), smoothness: 0.2f),
+                Wisp = Lit("EnemyWisp", Hex("#B8F4FF"), emission: Hex("#35C8FF") * 2.5f),
+                Bomber = Lit("EnemyBomber", Hex("#8C8A3C"), smoothness: 0.2f),
+                Shaman = Lit("EnemyShaman", Hex("#3A2455"), smoothness: 0.3f),
+                Boar = Lit("EnemyBoar", Hex("#6B4128"), smoothness: 0.2f),
+                Beetle = Lit("EnemyBeetle", Hex("#5A1414"), smoothness: 0.7f, metallic: 0.3f),
+                Slime = Lit("EnemySlime", Hex("#7CDB4A"), smoothness: 0.85f),
+                Wyvern = Lit("EnemyWyvern", Hex("#2F6F8F"), smoothness: 0.45f),
+                WindupGlow = Lit("EnemyWindupGlow", Hex("#FFB070"), emission: Hex("#FF4A10") * 6f),
+                CurseGlow = Lit("EnemyCurseGlow", Hex("#C8FFB0"), emission: Hex("#4DFF3A") * 4f),
+                BombBody = Lit("BombBody", Hex("#1C1C22"), smoothness: 0.6f),
+                EnemyArrow = Lit("EnemyArrow", Hex("#FFD8A0"), emission: Hex("#FF8A20") * 4f),
+                WispBolt = Lit("WispBolt", Hex("#D8FAFF"), emission: Hex("#30B8FF") * 5f),
 
                 Flash = Lit("HitFlash", Color.white, emission: Color.white * 1.5f),
 

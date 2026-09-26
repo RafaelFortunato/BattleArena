@@ -65,7 +65,7 @@ namespace BattleArena.Enemies
 
         private IEnumerator Slam()
         {
-            _enemy.MovementLocked = true;
+            _enemy.Hold();
             var count = IsEnraged ? slamCount + 2 : slamCount;
 
             // Each strike targets where the player is at that moment, forcing them to keep moving.
@@ -77,7 +77,7 @@ namespace BattleArena.Enemies
                 yield return WaitCache.Get(slamSpacing);
             }
 
-            _enemy.MovementLocked = false;
+            _enemy.Release();
         }
 
         private IEnumerator RadialBurst()

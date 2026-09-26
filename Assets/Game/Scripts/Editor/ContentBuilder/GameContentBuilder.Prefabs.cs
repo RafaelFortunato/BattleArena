@@ -57,17 +57,7 @@ namespace BattleArena.Editor.ContentBuilder
             var gem = BuildGem(m);
 
             // Enemies
-            var gruntPrefab = BuildEnemy("Grunt", m.Grunt, 1f, gem, deathPuff, m, EnemyShape.Grunt);
-            var runnerPrefab = BuildEnemy("Runner", m.Runner, 0.75f, gem, deathPuff, m, EnemyShape.Runner);
-            var brutePrefab = BuildEnemy("Brute", m.Brute, 1.5f, gem, deathPuff, m, EnemyShape.Brute);
-            var bossPrefab = BuildBoss(m, gem, deathPuff, bossSlam, bossOrb);
-
-            var grunt = EnemyData("Grunt", "Goblin Grunt", gruntPrefab, health: 18f, speed: 3.2f, damage: 5f, range: 1.3f, cooldown: 1f, xp: 1);
-            var runner = EnemyData("Runner", "Swift Imp", runnerPrefab, health: 10f, speed: 5.2f, damage: 4f, range: 1.1f, cooldown: 0.8f, xp: 1);
-            var brute = EnemyData("Brute", "Ogre Brute", brutePrefab, health: 75f, speed: 2.3f, damage: 14f, range: 2f, cooldown: 1.4f, xp: 4);
-            var boss = EnemyData("Boss", "Archlich Morvath", bossPrefab.GetComponent<Enemy>(), health: 12000f, speed: 2.7f, damage: 20f, range: 3.4f, cooldown: 1.2f, xp: 0);
-
-            var schedule = BuildSpawnSchedule(grunt, runner, brute);
+            var (schedule, boss) = BuildEnemyRoster(m, gem, deathPuff, bossSlam, bossOrb);
 
             // Spells and level-up cards
             var spells = BuildSpells(m, fireball, frostRing, meteorStrike);
@@ -191,7 +181,8 @@ namespace BattleArena.Editor.ContentBuilder
             return SavePrefab<Projectile>(root, $"{PrefabsFolder}/Projectiles/{name}.prefab");
         }
 
-        private static DelayedAreaStrike BuildStrike(string name, Material outlineMaterial, Material fillMaterial, TimedRelease impact, Material fallingMaterial)
+        private static DelayedAreaStrike BuildStrike(string name, Material outlineMaterial, Material fillMaterial, TimedRelease impact, Material fallingMaterial,
+            float fallingSize = 1.3f)
         {
             var root = CreateRoot(name, GameLayers.Default);
             var outline = AddVisual(root.transform, PrimitiveType.Cylinder, outlineMaterial, new Vector3(0f, 0.04f, 0f), new Vector3(1f, 0.01f, 1f), name: "Outline");
@@ -202,7 +193,7 @@ namespace BattleArena.Editor.ContentBuilder
             GameObject falling = null;
             if (fallingMaterial != null)
             {
-                falling = AddVisual(root.transform, PrimitiveType.Sphere, fallingMaterial, new Vector3(0f, 12f, 0f), Vector3.one * 1.3f, name: "Meteor");
+                falling = AddVisual(root.transform, PrimitiveType.Sphere, fallingMaterial, new Vector3(0f, 12f, 0f), Vector3.one * fallingSize, name: "Projectile");
                 falling.SetActive(false);
             }
 
@@ -236,101 +227,7 @@ namespace BattleArena.Editor.ContentBuilder
             return SavePrefab<ExperienceGem>(root, $"{PrefabsFolder}/Pickups/ExperienceGem.prefab");
         }
 
-        // ---------------------------------------------------------------- Enemies
-
-        private enum EnemyShape { Grunt, Runner, Brute, Boss }
-
-        private static Enemy BuildEnemy(string name, Material bodyMaterial, float scale, ExperienceGem gem, TimedRelease deathEffect,
-            MaterialSet m, EnemyShape shape)
-        {
-            var root = CreateEnemyRoot(name, bodyMaterial, scale, gem, deathEffect, m, shape);
-            return SavePrefab<Enemy>(root, $"{PrefabsFolder}/Enemies/{name}.prefab");
-        }
-
-        private static GameObject BuildBoss(MaterialSet m, ExperienceGem gem, TimedRelease deathEffect, DelayedAreaStrike slam, Projectile orb)
-        {
-            var root = CreateEnemyRoot("Boss", m.Boss, 2.6f, gem, deathEffect, m, EnemyShape.Boss);
-            var origin = AddChild(root.transform, "ProjectileOrigin", new Vector3(0f, 0.42f, 0.2f));
-
-            var boss = root.AddComponent<BossController>();
-            SerializedSetter.For(boss)
-                .Set("slamPrefab", slam)
-                .Set("projectilePrefab", orb)
-                .Set("projectileOrigin", origin)
-                .Apply();
-
-            return SavePrefab<Enemy>(root, $"{PrefabsFolder}/Enemies/Boss.prefab").gameObject;
-        }
-
-        private static GameObject CreateEnemyRoot(string name, Material bodyMaterial, float scale, ExperienceGem gem,
-            TimedRelease deathEffect, MaterialSet m, EnemyShape shape)
-        {
-            var root = CreateRoot(name, GameLayers.Enemy);
-            root.transform.localScale = Vector3.one * scale;
-
-            var agent = root.AddComponent<NavMeshAgent>();
-            agent.radius = 0.45f;
-            agent.height = 1.8f;
-            agent.baseOffset = 0f;
-            agent.angularSpeed = 540f;
-            agent.acceleration = 24f;
-            agent.autoBraking = false;
-            agent.obstacleAvoidanceType = ObstacleAvoidanceType.LowQualityObstacleAvoidance;
-
-            var capsule = root.AddComponent<CapsuleCollider>();
-            capsule.center = new Vector3(0f, 0.9f, 0f);
-            capsule.height = 1.8f;
-            capsule.radius = 0.45f;
-
-            var body = root.AddComponent<Rigidbody>();
-            body.isKinematic = true;
-            body.useGravity = false;
-
-            root.AddComponent<Health>();
-
-            var visual = AddChild(root.transform, "Visual", Vector3.zero);
-            var bodyRenderer = AddVisual(visual, PrimitiveType.Capsule, bodyMaterial, new Vector3(0f, 0.9f, 0f), new Vector3(0.9f, 0.9f, 0.9f), name: "Body")
-                .GetComponent<Renderer>();
-            // Tiny details don't need shadows; the sphere primitive is comparatively dense.
-            DisableShadows(AddVisual(visual, PrimitiveType.Sphere, m.EnemyEyes, new Vector3(-0.17f, 1.35f, 0.36f), Vector3.one * 0.16f, name: "EyeL"));
-            DisableShadows(AddVisual(visual, PrimitiveType.Sphere, m.EnemyEyes, new Vector3(0.17f, 1.35f, 0.36f), Vector3.one * 0.16f, name: "EyeR"));
-
-            switch (shape)
-            {
-                case EnemyShape.Runner:
-                    AddVisual(visual, PrimitiveType.Cube, bodyMaterial, new Vector3(-0.3f, 1.85f, 0f), new Vector3(0.1f, 0.35f, 0.1f), new Vector3(0f, 0f, 20f), "EarL");
-                    AddVisual(visual, PrimitiveType.Cube, bodyMaterial, new Vector3(0.3f, 1.85f, 0f), new Vector3(0.1f, 0.35f, 0.1f), new Vector3(0f, 0f, -20f), "EarR");
-                    break;
-                case EnemyShape.Brute:
-                    AddVisual(visual, PrimitiveType.Cube, m.Stone, new Vector3(-0.35f, 1.75f, 0.1f), new Vector3(0.12f, 0.3f, 0.12f), new Vector3(0f, 0f, 30f), "HornL");
-                    AddVisual(visual, PrimitiveType.Cube, m.Stone, new Vector3(0.35f, 1.75f, 0.1f), new Vector3(0.12f, 0.3f, 0.12f), new Vector3(0f, 0f, -30f), "HornR");
-                    AddVisual(visual, PrimitiveType.Sphere, bodyMaterial, new Vector3(-0.55f, 1.1f, 0f), Vector3.one * 0.4f, name: "FistL");
-                    AddVisual(visual, PrimitiveType.Sphere, bodyMaterial, new Vector3(0.55f, 1.1f, 0f), Vector3.one * 0.4f, name: "FistR");
-                    break;
-                case EnemyShape.Boss:
-                    for (var i = 0; i < 5; i++)
-                    {
-                        var angle = i * 72f * Mathf.Deg2Rad;
-                        var offset = new Vector3(Mathf.Sin(angle), 0f, Mathf.Cos(angle)) * 0.3f;
-                        AddVisual(visual, PrimitiveType.Cube, m.Gold, new Vector3(offset.x, 1.9f, offset.z), new Vector3(0.1f, 0.3f, 0.1f), name: $"CrownSpike{i}");
-                    }
-                    AddVisual(visual, PrimitiveType.Cylinder, m.Gold, new Vector3(0f, 1.78f, 0f), new Vector3(0.7f, 0.05f, 0.7f), name: "CrownBand");
-                    AddVisual(visual, PrimitiveType.Sphere, m.BossOrb, new Vector3(0.6f, 1.1f, 0.2f), Vector3.one * 0.3f, name: "HandOrb");
-                    break;
-            }
-
-            var enemy = root.AddComponent<Enemy>();
-            SerializedSetter.For(enemy).Set("experienceGemPrefab", gem).Set("deathEffect", deathEffect).Apply();
-
-            var flash = root.AddComponent<DamageFlash>();
-            SerializedSetter.For(flash).Set("renderers", new[] { bodyRenderer }).Set("flashMaterial", m.Flash).Apply();
-
-            // The boss uses the HUD bar instead of a world-space one.
-            if (shape != EnemyShape.Boss)
-                AddHealthBar(root, m, height: 2.3f);
-
-            return root;
-        }
+        // ---------------------------------------------------------------- Enemy helpers shared with the roster
 
         private static void AddHealthBar(GameObject root, MaterialSet m, float height)
         {
@@ -362,56 +259,6 @@ namespace BattleArena.Editor.ContentBuilder
             textRenderer.receiveShadows = false;
 
             return SavePrefab<TextMeshPro>(root, $"{PrefabsFolder}/Vfx/DamageNumber.prefab");
-        }
-
-        private static EnemyDefinition EnemyData(string file, string displayName, Enemy prefab, float health, float speed,
-            float damage, float range, float cooldown, int xp)
-        {
-            var definition = LoadOrCreateAsset<EnemyDefinition>($"{DataFolder}/Enemies/{file}.asset");
-            SerializedSetter.For(definition)
-                .Set("displayName", displayName)
-                .Set("prefab", prefab)
-                .Set("maxHealth", health)
-                .Set("moveSpeed", speed)
-                .Set("contactDamage", damage)
-                .Set("attackRange", range)
-                .Set("attackCooldown", cooldown)
-                .Set("experienceReward", xp)
-                .Apply();
-            return definition;
-        }
-
-        private static SpawnSchedule BuildSpawnSchedule(EnemyDefinition grunt, EnemyDefinition runner, EnemyDefinition brute)
-        {
-            var schedule = LoadOrCreateAsset<SpawnSchedule>($"{DataFolder}/SpawnSchedule.asset");
-            schedule.SetPhases(new[]
-            {
-                Phase(0f, interval: 1.6f, perTick: 1, maxAlive: 12, (grunt, 1f)),
-                Phase(45f, interval: 1.3f, perTick: 2, maxAlive: 25, (grunt, 0.8f), (runner, 0.2f)),
-                Phase(120f, interval: 1.1f, perTick: 2, maxAlive: 40, (grunt, 0.6f), (runner, 0.3f), (brute, 0.1f)),
-                Phase(240f, interval: 1.0f, perTick: 3, maxAlive: 60, (grunt, 0.5f), (runner, 0.3f), (brute, 0.2f)),
-                Phase(360f, interval: 0.9f, perTick: 3, maxAlive: 80, (grunt, 0.4f), (runner, 0.35f), (brute, 0.25f)),
-                Phase(480f, interval: 0.8f, perTick: 4, maxAlive: 100, (grunt, 0.35f), (runner, 0.35f), (brute, 0.3f)),
-            });
-            EditorUtility.SetDirty(schedule);
-            return schedule;
-        }
-
-        private static SpawnSchedule.Phase Phase(float start, float interval, int perTick, int maxAlive,
-            params (EnemyDefinition enemy, float weight)[] enemies)
-        {
-            var entries = new SpawnSchedule.WeightedEnemy[enemies.Length];
-            for (var i = 0; i < enemies.Length; i++)
-                entries[i] = new SpawnSchedule.WeightedEnemy { Enemy = enemies[i].enemy, Weight = enemies[i].weight };
-
-            return new SpawnSchedule.Phase
-            {
-                StartTime = start,
-                SpawnInterval = interval,
-                SpawnsPerTick = perTick,
-                MaxAlive = maxAlive,
-                Enemies = entries,
-            };
         }
 
         // ---------------------------------------------------------------- Player
