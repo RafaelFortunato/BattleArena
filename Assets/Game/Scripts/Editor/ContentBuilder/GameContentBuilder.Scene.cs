@@ -120,8 +120,15 @@ namespace BattleArena.Editor.ContentBuilder
             var environment = new GameObject("Environment");
             var root = environment.transform;
 
-            var ground = AddSolid(root, PrimitiveType.Plane, m.Ground, Vector3.zero, new Vector3(10f, 1f, 10f), "Ground");
+            // The visible ground reaches past the walls, but only the floor inside them is walkable: its collider
+            // is what the NavMesh is baked from, so enemies can never be placed outside the arena.
+            var ground = AddVisual(root, PrimitiveType.Plane, m.Ground, Vector3.zero, new Vector3(10f, 1f, 10f), name: "Ground");
             ground.layer = GameLayers.Ground;
+            var floor = new GameObject("Floor") { layer = GameLayers.Ground };
+            floor.transform.SetParent(root, false);
+            var floorCollider = floor.AddComponent<BoxCollider>();
+            floorCollider.center = new Vector3(0f, -0.25f, 0f);
+            floorCollider.size = new Vector3(ArenaHalfSize * 2f, 0.5f, ArenaHalfSize * 2f);
 
             // Flat decoration (no colliders)
             AddVisual(root, PrimitiveType.Cylinder, m.Stone, new Vector3(0f, 0.02f, 0f), new Vector3(18f, 0.02f, 18f), name: "CentralPlaza");
@@ -129,10 +136,20 @@ namespace BattleArena.Editor.ContentBuilder
 
             // Walls
             var wallLength = ArenaHalfSize * 2f + 4f;
-            AddSolid(root, PrimitiveType.Cube, m.Wall, new Vector3(0f, 1.5f, ArenaHalfSize + 1f), new Vector3(wallLength, 3f, 2f), "WallNorth");
-            AddSolid(root, PrimitiveType.Cube, m.Wall, new Vector3(0f, 1.5f, -ArenaHalfSize - 1f), new Vector3(wallLength, 3f, 2f), "WallSouth");
-            AddSolid(root, PrimitiveType.Cube, m.Wall, new Vector3(ArenaHalfSize + 1f, 1.5f, 0f), new Vector3(2f, 3f, wallLength), "WallEast");
-            AddSolid(root, PrimitiveType.Cube, m.Wall, new Vector3(-ArenaHalfSize - 1f, 1.5f, 0f), new Vector3(2f, 3f, wallLength), "WallWest");
+            GameObject[] walls =
+            {
+                AddSolid(root, PrimitiveType.Cube, m.Wall, new Vector3(0f, 1.5f, ArenaHalfSize + 1f), new Vector3(wallLength, 3f, 2f), "WallNorth"),
+                AddSolid(root, PrimitiveType.Cube, m.Wall, new Vector3(0f, 1.5f, -ArenaHalfSize - 1f), new Vector3(wallLength, 3f, 2f), "WallSouth"),
+                AddSolid(root, PrimitiveType.Cube, m.Wall, new Vector3(ArenaHalfSize + 1f, 1.5f, 0f), new Vector3(2f, 3f, wallLength), "WallEast"),
+                AddSolid(root, PrimitiveType.Cube, m.Wall, new Vector3(-ArenaHalfSize - 1f, 1.5f, 0f), new Vector3(2f, 3f, wallLength), "WallWest"),
+            };
+            // Wall tops are wide enough to bake as walkable islands; exclude them.
+            foreach (var wall in walls)
+            {
+                var modifier = wall.AddComponent<NavMeshModifier>();
+                modifier.overrideArea = true;
+                modifier.area = NavMesh.GetAreaFromName("Not Walkable");
+            }
 
             // Scattered obstacles, deterministic so the layout is stable between rebuilds.
             var random = new System.Random(LayoutSeed);
@@ -221,6 +238,7 @@ namespace BattleArena.Editor.ContentBuilder
                 .Set("boss", content.Boss)
                 // Twelve enemy types: keep the up-front instantiation (and load hitch) modest.
                 .Set("prewarmPerEnemyType", 12)
+                .Set("arenaHalfExtent", ArenaHalfSize - 2f)
                 .Apply();
 
             var director = systems.AddComponent<EnemyDirector>();

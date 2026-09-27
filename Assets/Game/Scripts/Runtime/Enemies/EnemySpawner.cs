@@ -17,6 +17,8 @@ namespace BattleArena.Enemies
         [SerializeField, Min(1f)] private float minSpawnDistance = 18f;
         [SerializeField, Min(1f)] private float maxSpawnDistance = 24f;
         [SerializeField, Min(0)] private int prewarmPerEnemyType = 25;
+        [Tooltip("Spawn points must lie within this distance of the arena centre on both axes.")]
+        [SerializeField, Min(1f)] private float arenaHalfExtent = 38f;
 
         [Header("Boss")]
         [SerializeField] private EnemyDefinition boss;
@@ -50,8 +52,10 @@ namespace BattleArena.Enemies
 
         public Enemy SpawnBoss()
         {
-            if (!TryFindSpawnPoint(player.position, bossSpawnDistance, bossSpawnDistance + 4f, out var position))
-                position = player.position + Vector3.forward * bossSpawnDistance;
+            // Fall back to the open centre of the arena when the player is cornered.
+            if (!TryFindSpawnPoint(player.position, bossSpawnDistance, bossSpawnDistance + 4f, out var position) &&
+                !TryFindSpawnPoint(Vector3.zero, 0f, bossSpawnDistance, out position))
+                position = Vector3.zero;
 
             return Spawn(boss, position, 1f, 1f);
         }
@@ -92,7 +96,7 @@ namespace BattleArena.Enemies
             return Enemy.Spawn(definition, position, rotation, healthMultiplier, damageMultiplier);
         }
 
-        /// <summary>Random walkable point on a ring around <paramref name="center"/>.</summary>
+        /// <summary>Random walkable point inside the arena on a ring around <paramref name="center"/>.</summary>
         public bool TryFindSpawnPoint(Vector3 center, float minDistance, float maxDistance, out Vector3 position)
         {
             for (var attempt = 0; attempt < MaxPlacementAttempts; attempt++)
@@ -101,7 +105,11 @@ namespace BattleArena.Enemies
                 var distance = Random.Range(minDistance, maxDistance);
                 var candidate = center + new Vector3(direction.x, 0f, direction.y) * distance;
 
-                if (NavMesh.SamplePosition(candidate, out var hit, 2f, NavMesh.AllAreas))
+                // Near a wall half the ring lies outside the arena; skip those instead of snapping to them.
+                if (!IsInsideArena(candidate))
+                    continue;
+
+                if (NavMesh.SamplePosition(candidate, out var hit, 2f, NavMesh.AllAreas) && IsInsideArena(hit.position))
                 {
                     position = hit.position;
                     return true;
@@ -111,5 +119,8 @@ namespace BattleArena.Enemies
             position = default;
             return false;
         }
+
+        private bool IsInsideArena(Vector3 point) =>
+            Mathf.Abs(point.x) <= arenaHalfExtent && Mathf.Abs(point.z) <= arenaHalfExtent;
     }
 }
