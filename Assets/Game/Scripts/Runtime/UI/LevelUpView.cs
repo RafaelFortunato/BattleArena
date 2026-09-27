@@ -1,60 +1,61 @@
-using System;
-using BattleArena.Player;
+using System.Collections.Generic;
 using BattleArena.Progression;
+using BattleArena.UI.Elements;
 using UnityEngine;
 using UnityEngine.UIElements;
 
 namespace BattleArena.UI
 {
-    /// <summary>Shows the three level-up cards and forwards clicks to <see cref="LevelUpController"/>.</summary>
+    /// <summary>
+    /// Card screen for level-ups, new spells and mission rewards. Cards are instantiated from a UXML template;
+    /// the highlighted card follows <see cref="LevelUpController.SelectedIndex"/> (keyboard, gamepad or hover).
+    /// </summary>
     [RequireComponent(typeof(UIDocument))]
     public sealed class LevelUpView : MonoBehaviour
     {
         [SerializeField] private LevelUpController controller;
-        [SerializeField] private PlayerStats stats;
+        [SerializeField] private VisualTreeAsset cardTemplate;
 
+        private readonly List<CardView> _cards = new(3);
         private VisualElement _screen;
+        private VisualElement _cardRow;
+        private Label _chip;
         private Label _title;
         private Label _subtitle;
-        private Label _summary;
-        private CardView[] _cards;
 
         private void OnEnable()
         {
             var root = GetComponent<UIDocument>().rootVisualElement;
             _screen = root.Q("level-up");
-            _title = root.Q<Label>("level-up-title");
-            _subtitle = root.Q<Label>("level-up-subtitle");
-            _summary = root.Q<Label>("level-up-stats");
-
-            _cards = new CardView[3];
-            for (var i = 0; i < _cards.Length; i++)
-            {
-                var index = i;
-                _cards[i] = new CardView(root.Q<Button>($"card-{i}"), () => controller.Choose(index));
-            }
+            _cardRow = root.Q("card-row");
+            _chip = root.Q<Label>("choice-chip-label");
+            _title = root.Q<Label>("choice-title");
+            _subtitle = root.Q<Label>("choice-subtitle");
 
             controller.Presented += Show;
+            controller.SelectionChanged += OnSelectionChanged;
             controller.Closed += Hide;
         }
 
         private void OnDisable()
         {
             controller.Presented -= Show;
+            controller.SelectionChanged -= OnSelectionChanged;
             controller.Closed -= Hide;
-            foreach (var card in _cards)
-                card.Dispose();
         }
 
         private void Show(LevelUpPresentation presentation)
         {
+            _chip.text = presentation.Chip;
             _title.text = presentation.Title;
             _subtitle.text = presentation.Subtitle;
-
-            _summary.text = stats.BuildSummary();
+            _screen.EnableInClassList("mission", presentation.Kind == ChoiceKind.MissionReward);
 
             var offers = presentation.Offers;
-            for (var i = 0; i < _cards.Length; i++)
+            while (_cards.Count < offers.Count)
+                _cards.Add(CreateCard(_cards.Count));
+
+            for (var i = 0; i < _cards.Count; i++)
                 _cards[i].Bind(i < offers.Count ? offers[i] : null);
 
             _screen.RemoveFromClassList("hidden");
@@ -62,44 +63,169 @@ namespace BattleArena.UI
 
         private void Hide() => _screen.AddToClassList("hidden");
 
-        /// <summary>View wrapper for one card button.</summary>
-        private sealed class CardView : IDisposable
+        private void OnSelectionChanged(int index)
         {
-            private readonly Button _button;
-            private readonly Action _onClick;
-            private readonly Label _tag;
-            private readonly Label _title;
-            private readonly Label _description;
+            for (var i = 0; i < _cards.Count; i++)
+                _cards[i].SetSelected(i == index);
+        }
 
-            public CardView(Button button, Action onClick)
+        private CardView CreateCard(int index)
+        {
+            var instance = cardTemplate.Instantiate();
+            var slot = instance.Q(className: "card-slot");
+            _cardRow.Add(slot);
+
+            var card = new CardView(slot);
+            card.Button.clicked += () => controller.Choose(index);
+            slot.RegisterCallback<PointerEnterEvent>(_ => controller.Select(index));
+            return card;
+        }
+
+        /// <summary>View wrapper for one card.</summary>
+        private sealed class CardView
+        {
+            private static readonly Color IdleBorder = new(1f, 1f, 1f, 0.3f);
+            private static readonly Color MutedSegment = new(0.42f, 0.45f, 0.565f);
+            private static readonly Color EmptySegment = new(1f, 1f, 1f, 0.08f);
+
+            private readonly VisualElement _slot;
+            private readonly VisualElement _shadow;
+            private readonly CardArtElement _art;
+            private readonly ShapeElement _hex;
+            private readonly VisualElement _icon;
+            private readonly VisualElement _badge;
+            private readonly VisualElement _badgeGem;
+            private readonly Label _badgeLabel;
+            private readonly Label _title;
+            private readonly Label _summary;
+            private readonly Label _statLabel;
+            private readonly Label _statValue;
+            private readonly VisualElement _bar;
+            private readonly VisualElement _barNow;
+            private readonly VisualElement _barGain;
+            private readonly VisualElement _segments;
+            private readonly Label _footnote;
+            private Color _highlight = Color.white;
+
+            public CardView(VisualElement slot)
             {
-                _button = button;
-                _onClick = onClick;
-                _tag = button.Q<Label>(className: "card-tag");
-                _title = button.Q<Label>(className: "card-title");
-                _description = button.Q<Label>(className: "card-description");
-                _button.clicked += _onClick;
+                _slot = slot;
+                Button = slot.Q<Button>(className: "card");
+                _shadow = slot.Q(className: "card-shadow");
+                _art = slot.Q<CardArtElement>(className: "card-art");
+                _hex = slot.Q<ShapeElement>(className: "card-hex");
+                _icon = slot.Q(className: "card-icon");
+                _badge = slot.Q(className: "card-badge");
+                _badgeGem = slot.Q(className: "card-badge-gem");
+                _badgeLabel = slot.Q<Label>(className: "card-badge-label");
+                _title = slot.Q<Label>(className: "card-title");
+                _summary = slot.Q<Label>(className: "card-summary");
+                _statLabel = slot.Q<Label>(className: "card-stat-label");
+                _statValue = slot.Q<Label>(className: "card-stat-value");
+                _bar = slot.Q(className: "card-bar");
+                _barNow = slot.Q(className: "card-bar-now");
+                _barGain = slot.Q(className: "card-bar-gain");
+                _segments = slot.Q(className: "card-segments");
+                _footnote = slot.Q<Label>(className: "card-footnote");
             }
+
+            public Button Button { get; }
 
             public void Bind(LevelUpOffer offer)
             {
-                _button.EnableInClassList("hidden", offer == null);
+                _slot.EnableInClassList("hidden", offer == null);
                 if (offer == null)
                     return;
 
-                _tag.text = offer.Tag;
-                _tag.style.color = offer.Color;
-                _title.text = offer.Title;
-                _description.text = offer.Description;
+                var accent = offer.Color;
+                _highlight = Color.Lerp(accent, Color.white, 0.45f);
+                var ink = Color.Lerp(accent, Color.black, 0.82f);
 
-                var border = new StyleColor(offer.Color);
-                _button.style.borderTopColor = border;
-                _button.style.borderBottomColor = border;
-                _button.style.borderLeftColor = border;
-                _button.style.borderRightColor = border;
+                _art.Accent = accent;
+                _art.Pattern = offer.Motif switch
+                {
+                    CardMotif.Dots => CardPattern.Dots,
+                    CardMotif.Diamonds => CardPattern.Diamonds,
+                    _ => CardPattern.Hexagons
+                };
+                _hex.SetColors(null, accent);
+                _icon.style.backgroundImage = new StyleBackground(offer.Icon);
+                _shadow.style.backgroundColor = Color.Lerp(accent, Color.black, 0.45f);
+
+                _badge.style.backgroundColor = accent;
+                _badgeGem.style.backgroundColor = ink;
+                _badgeLabel.style.color = ink;
+                _badgeLabel.text = offer.Badge;
+
+                _title.text = offer.Title;
+                var summary = offer.Summary;
+                _summary.text = summary;
+                _summary.EnableInClassList("hidden", string.IsNullOrEmpty(summary));
+
+                BindStat(offer.Stat, accent);
             }
 
-            public void Dispose() => _button.clicked -= _onClick;
+            public void SetSelected(bool selected)
+            {
+                _slot.EnableInClassList("selected", selected);
+                var border = selected ? _highlight : IdleBorder;
+                Button.style.borderTopColor = border;
+                Button.style.borderRightColor = border;
+                Button.style.borderBottomColor = border;
+                Button.style.borderLeftColor = border;
+            }
+
+            private void BindStat(in StatPreview stat, Color accent)
+            {
+                _statLabel.text = stat.Label;
+                _statValue.text = stat.Value;
+                _statValue.style.color = stat.Bar == StatBarStyle.None ? Color.white : _highlight;
+
+                _bar.EnableInClassList("hidden", stat.Bar != StatBarStyle.Continuous);
+                _segments.EnableInClassList("hidden", stat.Bar != StatBarStyle.Segmented);
+                _footnote.EnableInClassList("hidden", stat.Bar == StatBarStyle.None);
+
+                switch (stat.Bar)
+                {
+                    case StatBarStyle.Continuous:
+                        _barNow.style.width = Length.Percent(stat.CurrentFill * 100f);
+                        _barGain.style.left = Length.Percent(stat.CurrentFill * 100f);
+                        _barGain.style.width = Length.Percent(Mathf.Max(0.02f, stat.AfterFill - stat.CurrentFill) * 100f);
+                        _barGain.style.backgroundColor = accent;
+                        break;
+                    case StatBarStyle.Segmented:
+                        BuildSegments(stat, accent);
+                        break;
+                }
+
+                if (stat.Bar != StatBarStyle.None)
+                {
+                    _footnote.text =
+                        $"{stat.Current} now · <color=#{ColorUtility.ToHtmlStringRGB(_highlight)}>{stat.Gain} from this card</color>";
+                }
+            }
+
+            private void BuildSegments(in StatPreview stat, Color accent)
+            {
+                var count = Mathf.Max(1, stat.Segments);
+                var filledNow = Mathf.RoundToInt(stat.CurrentFill * count);
+                var filledAfter = Mathf.RoundToInt(stat.AfterFill * count);
+
+                while (_segments.childCount < count)
+                {
+                    var segment = new VisualElement { pickingMode = PickingMode.Ignore };
+                    segment.AddToClassList("card-segment");
+                    _segments.Add(segment);
+                }
+
+                for (var i = 0; i < _segments.childCount; i++)
+                {
+                    var segment = _segments[i];
+                    segment.EnableInClassList("hidden", i >= count);
+                    segment.style.marginLeft = i == 0 ? 0f : 6f;
+                    segment.style.backgroundColor = i < filledNow ? MutedSegment : i < filledAfter ? accent : EmptySegment;
+                }
+            }
         }
     }
 }

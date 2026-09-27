@@ -12,7 +12,6 @@ namespace BattleArena.Player
     public sealed class InputReader : ScriptableObject
     {
         public const int SpellSlotCount = 3;
-        public const int ChoiceCount = 3;
 
         [SerializeField] private InputActionAsset actions;
 
@@ -21,8 +20,10 @@ namespace BattleArena.Player
         private InputAction _move;
         private InputAction _interact;
         private InputAction _pause;
+        private InputAction _choicePrevious;
+        private InputAction _choiceNext;
+        private InputAction _confirm;
         private readonly InputAction[] _spells = new InputAction[SpellSlotCount];
-        private readonly InputAction[] _choices = new InputAction[ChoiceCount];
         private bool _initialized;
 
         public Vector2 Move { get; private set; }
@@ -31,8 +32,10 @@ namespace BattleArena.Player
         public event Action<int> SpellRequested;
         public event Action InteractRequested;
         public event Action PauseRequested;
-        /// <summary>Card index (0-2) picked with the 1/2/3 keys on the level-up screen.</summary>
-        public event Action<int> ChoiceRequested;
+        /// <summary>-1 / +1 to move the highlighted card (A/D, arrows, d-pad).</summary>
+        public event Action<int> ChoiceNavigated;
+        /// <summary>Confirms the highlighted card (F, Enter, Space, south button).</summary>
+        public event Action ConfirmRequested;
 
         public void EnableGameplay()
         {
@@ -66,21 +69,22 @@ namespace BattleArena.Player
             _move = _gameplayMap.FindAction("Move", throwIfNotFound: true);
             _interact = _gameplayMap.FindAction("Interact", throwIfNotFound: true);
             _pause = _systemMap.FindAction("Pause", throwIfNotFound: true);
+            _choicePrevious = _systemMap.FindAction("ChoicePrevious", throwIfNotFound: true);
+            _choiceNext = _systemMap.FindAction("ChoiceNext", throwIfNotFound: true);
+            _confirm = _systemMap.FindAction("Confirm", throwIfNotFound: true);
             for (var i = 0; i < SpellSlotCount; i++)
                 _spells[i] = _gameplayMap.FindAction($"Spell{i + 1}", throwIfNotFound: true);
-            for (var i = 0; i < ChoiceCount; i++)
-                _choices[i] = _systemMap.FindAction($"Choice{i + 1}", throwIfNotFound: true);
 
             _move.performed += OnMove;
             _move.canceled += OnMove;
             _interact.performed += OnInteract;
             _pause.performed += OnPause;
+            _choicePrevious.performed += OnChoicePrevious;
+            _choiceNext.performed += OnChoiceNext;
+            _confirm.performed += OnConfirm;
             _spells[0].performed += OnSpell1;
             _spells[1].performed += OnSpell2;
             _spells[2].performed += OnSpell3;
-            _choices[0].performed += OnChoice1;
-            _choices[1].performed += OnChoice2;
-            _choices[2].performed += OnChoice3;
 
             _initialized = true;
         }
@@ -94,12 +98,12 @@ namespace BattleArena.Player
             _move.canceled -= OnMove;
             _interact.performed -= OnInteract;
             _pause.performed -= OnPause;
+            _choicePrevious.performed -= OnChoicePrevious;
+            _choiceNext.performed -= OnChoiceNext;
+            _confirm.performed -= OnConfirm;
             _spells[0].performed -= OnSpell1;
             _spells[1].performed -= OnSpell2;
             _spells[2].performed -= OnSpell3;
-            _choices[0].performed -= OnChoice1;
-            _choices[1].performed -= OnChoice2;
-            _choices[2].performed -= OnChoice3;
             _gameplayMap.Disable();
             _systemMap.Disable();
             _initialized = false;
@@ -116,11 +120,11 @@ namespace BattleArena.Player
         private void OnMove(InputAction.CallbackContext context) => SetMove(context.ReadValue<Vector2>());
         private void OnInteract(InputAction.CallbackContext _) => InteractRequested?.Invoke();
         private void OnPause(InputAction.CallbackContext _) => PauseRequested?.Invoke();
+        private void OnChoicePrevious(InputAction.CallbackContext _) => ChoiceNavigated?.Invoke(-1);
+        private void OnChoiceNext(InputAction.CallbackContext _) => ChoiceNavigated?.Invoke(1);
+        private void OnConfirm(InputAction.CallbackContext _) => ConfirmRequested?.Invoke();
         private void OnSpell1(InputAction.CallbackContext _) => SpellRequested?.Invoke(0);
         private void OnSpell2(InputAction.CallbackContext _) => SpellRequested?.Invoke(1);
         private void OnSpell3(InputAction.CallbackContext _) => SpellRequested?.Invoke(2);
-        private void OnChoice1(InputAction.CallbackContext _) => ChoiceRequested?.Invoke(0);
-        private void OnChoice2(InputAction.CallbackContext _) => ChoiceRequested?.Invoke(1);
-        private void OnChoice3(InputAction.CallbackContext _) => ChoiceRequested?.Invoke(2);
     }
 }

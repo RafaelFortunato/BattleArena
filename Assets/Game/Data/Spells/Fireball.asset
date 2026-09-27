@@ -15,6 +15,7 @@ MonoBehaviour:
   displayName: Fireball
   description: Hurls a fireball at the nearest enemy that explodes on impact.
   color: {r: 1, g: 0.6, b: 0.2, a: 1}
+  icon: {fileID: 7388822144124034973, guid: d157800d0a0b34646b21b7fe7cd67287, type: 3}
   cooldown: 4
   baseDamage: 45
   supportedUpgrades: 0000000001000000020000000300000005000000

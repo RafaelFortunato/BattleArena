@@ -1,4 +1,5 @@
 using System.Globalization;
+using BattleArena.Progression;
 using UnityEngine;
 
 namespace BattleArena.Spells
@@ -20,35 +21,52 @@ namespace BattleArena.Spells
         public int MaxRank => maxRank;
         public float Weight => weight;
 
-        /// <summary>Card text for this upgrade given what the slot already has.</summary>
-        public string Describe(SpellUpgradeState state)
+        /// <summary>One-line pitch shown under the card title.</summary>
+        public string Summary => kind switch
+        {
+            SpellUpgradeKind.ExtraCharge => "Store an extra cast",
+            SpellUpgradeKind.CooldownReduction => "Recharges faster",
+            SpellUpgradeKind.Damage => "Hits harder",
+            SpellUpgradeKind.ExtraProjectiles => "Casts more at once",
+            SpellUpgradeKind.Duration => "Lasts longer",
+            SpellUpgradeKind.Area => "Covers more ground",
+            SpellUpgradeKind.ExtraBounces => "Jumps to more enemies",
+            _ => string.Empty
+        };
+
+        /// <summary>What the card changes for a slot with <paramref name="state"/>; the bar tracks upgrade ranks.</summary>
+        public StatPreview Preview(SpellUpgradeState state)
         {
             var current = state.Total(kind);
             var next = current + amount;
-            var first = state.Rank(kind) == 0;
-            var rank = $"Rank {state.Rank(kind) + 1}/{maxRank}";
+            var rank = state.Rank(kind);
+            var currentFill = (float)rank / maxRank;
+            var afterFill = (float)(rank + 1) / maxRank;
+
             return kind switch
             {
-                SpellUpgradeKind.ExtraCharge => $"Store an extra cast\nCharges {1 + current:0} → {1 + next:0}\n{rank}",
-                SpellUpgradeKind.CooldownReduction => $"Recharges faster\nCooldown {Change("-", current, next, true, first)}\n{rank}",
-                SpellUpgradeKind.Damage => $"Hits harder\nDamage {Change("+", current, next, true, first)}\n{rank}",
-                SpellUpgradeKind.ExtraProjectiles => $"Casts more at once\nProjectiles {Change("+", current, next, false, first)}\n{rank}",
-                SpellUpgradeKind.Duration => $"Lasts longer\nDuration {Change("+", current, next, true, first)}\n{rank}",
-                SpellUpgradeKind.Area => $"Covers more ground\nArea {Change("+", current, next, true, first)}\n{rank}",
-                SpellUpgradeKind.ExtraBounces => $"Jumps to more enemies\nExtra jumps {Change("+", current, next, false, first)}\n{rank}",
-                _ => rank
+                SpellUpgradeKind.ExtraCharge => Build("Charges", Count(1f + current, false), Count(1f + next, false), Count(amount, true)),
+                SpellUpgradeKind.CooldownReduction => Build("Cooldown", Percent(-current), Percent(-next), Percent(-amount)),
+                SpellUpgradeKind.Damage => Build("Damage", Percent(current), Percent(next), Percent(amount)),
+                SpellUpgradeKind.ExtraProjectiles => Build("Projectiles", Count(current, true), Count(next, true), Count(amount, true)),
+                SpellUpgradeKind.Duration => Build("Duration", Percent(current), Percent(next), Percent(amount)),
+                SpellUpgradeKind.Area => Build("Area", Percent(current), Percent(next), Percent(amount)),
+                SpellUpgradeKind.ExtraBounces => Build("Extra jumps", Count(current, true), Count(next, true), Count(amount, true)),
+                _ => StatPreview.Plain(displayName, string.Empty)
             };
+
+            StatPreview Build(string label, string now, string after, string gain) =>
+                new(label, after, now, gain, StatBarStyle.Segmented, currentFill, afterFill, maxRank);
         }
 
-        /// <summary>"-15%" for a first rank, "-15% → -30%" afterwards.</summary>
-        private static string Change(string sign, float current, float next, bool percent, bool first)
+        /// <summary>"+30%", "-15%", or "0%" when nothing has been collected yet.</summary>
+        private static string Percent(float fraction)
         {
-            var to = sign + Format(next, percent);
-            return first ? to : $"{sign}{Format(current, percent)} → {to}";
+            var value = Mathf.RoundToInt(fraction * 100f);
+            return value == 0 ? "0%" : (value > 0 ? "+" : "-") + Mathf.Abs(value).ToString(CultureInfo.InvariantCulture) + "%";
         }
 
-        private static string Format(float value, bool percent) => percent
-            ? (value * 100f).ToString("0", CultureInfo.InvariantCulture) + "%"
-            : value.ToString("0", CultureInfo.InvariantCulture);
+        private static string Count(float value, bool signed) =>
+            (signed ? "+" : string.Empty) + value.ToString("0", CultureInfo.InvariantCulture);
     }
 }

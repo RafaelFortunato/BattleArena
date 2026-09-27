@@ -16,6 +16,7 @@ MonoBehaviour:
   description: Blink forward through danger, becoming briefly invulnerable and blasting
     enemies where you land.
   color: {r: 0.85, g: 0.6, b: 1, a: 1}
+  icon: {fileID: 7388822144124034973, guid: def9b8485eb9b5948bf8cd9c5a82c53d, type: 3}
   cooldown: 6
   baseDamage: 30
   supportedUpgrades: 00000000010000000200000005000000

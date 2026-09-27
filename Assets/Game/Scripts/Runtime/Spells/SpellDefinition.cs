@@ -1,5 +1,6 @@
 using BattleArena.Combat;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 namespace BattleArena.Spells
 {
@@ -88,6 +89,8 @@ namespace BattleArena.Spells
         [SerializeField] private string displayName = "Spell";
         [SerializeField, TextArea] private string description;
         [SerializeField] private Color color = Color.white;
+        [Tooltip("White line icon, tinted with the spell colour by the UI.")]
+        [SerializeField] private VectorImage icon;
         [SerializeField, Min(0f)] private float cooldown = 5f;
         [SerializeField, Min(0f)] private float baseDamage = 30f;
         [Tooltip("Spell upgrade cards that can be offered for this spell.")]
@@ -97,6 +100,7 @@ namespace BattleArena.Spells
         public string DisplayName => displayName;
         public string Description => description;
         public Color Color => color;
+        public VectorImage Icon => icon;
         public float Cooldown => cooldown;
 
         public bool Supports(SpellUpgradeKind kind) => System.Array.IndexOf(supportedUpgrades, kind) >= 0;

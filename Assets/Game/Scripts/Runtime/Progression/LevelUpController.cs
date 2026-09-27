@@ -8,15 +8,27 @@ using Random = UnityEngine.Random;
 
 namespace BattleArena.Progression
 {
+    public enum ChoiceKind
+    {
+        LevelUp,
+        NewSpell,
+        MissionReward
+    }
+
     /// <summary>What the card screen should show.</summary>
     public readonly struct LevelUpPresentation
     {
+        public readonly ChoiceKind Kind;
+        /// <summary>Small label above the title, e.g. "LEVEL 8" or the completed mission's name.</summary>
+        public readonly string Chip;
         public readonly string Title;
         public readonly string Subtitle;
         public readonly IReadOnlyList<LevelUpOffer> Offers;
 
-        public LevelUpPresentation(string title, string subtitle, IReadOnlyList<LevelUpOffer> offers)
+        public LevelUpPresentation(ChoiceKind kind, string chip, string title, string subtitle, IReadOnlyList<LevelUpOffer> offers)
         {
+            Kind = kind;
+            Chip = chip;
             Title = title;
             Subtitle = subtitle;
             Offers = offers;
@@ -62,24 +74,45 @@ namespace BattleArena.Progression
         private float _acceptInputAt;
 
         public bool IsChoosing { get; private set; }
+        /// <summary>Card highlighted for keyboard / gamepad confirmation.</summary>
+        public int SelectedIndex { get; private set; }
 
         public event Action<LevelUpPresentation> Presented;
+        public event Action<int> SelectionChanged;
         public event Action Closed;
 
         private void OnEnable()
         {
             EventBus<PlayerLevelUpEvent>.Subscribe(OnLevelUp);
-            input.ChoiceRequested += Choose;
+            input.ChoiceNavigated += Navigate;
+            input.ConfirmRequested += Confirm;
         }
 
         private void OnDisable()
         {
             EventBus<PlayerLevelUpEvent>.Unsubscribe(OnLevelUp);
-            input.ChoiceRequested -= Choose;
+            input.ChoiceNavigated -= Navigate;
+            input.ConfirmRequested -= Confirm;
         }
 
         /// <summary>Queues a choice of upgrades for the player's equipped spells (e.g. a mission reward).</summary>
         public void QueueSpellUpgradeReward(string source) => Enqueue(new PendingChoice(true, 0, source));
+
+        /// <summary>Highlights a card (keyboard navigation or mouse hover).</summary>
+        public void Select(int index)
+        {
+            if (!IsChoosing)
+                return;
+            index = Mathf.Clamp(index, 0, _offers.Count - 1);
+            if (index == SelectedIndex)
+                return;
+            SelectedIndex = index;
+            SelectionChanged?.Invoke(index);
+        }
+
+        public void Navigate(int direction) => Select(SelectedIndex + direction);
+
+        public void Confirm() => Choose(SelectedIndex);
 
         public void Choose(int index)
         {
@@ -115,8 +148,10 @@ namespace BattleArena.Progression
                     continue;
 
                 IsChoosing = true;
+                SelectedIndex = _offers.Count / 2;
                 _acceptInputAt = Time.unscaledTime + inputDelay;
                 Presented?.Invoke(presentation);
+                SelectionChanged?.Invoke(SelectedIndex);
                 return;
             }
 
@@ -133,12 +168,12 @@ namespace BattleArena.Progression
             {
                 AddSpellOffers(slot);
                 if (_offers.Count > 0)
-                    return new LevelUpPresentation("CHOOSE A SPELL",
-                        $"Level {level}  ·  it will be cast with [{SpellOffer.GetSlotKey(slot)}]", _offers);
+                    return new LevelUpPresentation(ChoiceKind.NewSpell, $"LEVEL {level}", "NEW SPELL",
+                        $"Choose a spell to cast with {SpellOffer.GetSlotKey(slot)}", _offers);
             }
 
             AddStatOffers();
-            return new LevelUpPresentation("LEVEL UP!", $"Level {level}  ·  choose an upgrade", _offers);
+            return new LevelUpPresentation(ChoiceKind.LevelUp, $"LEVEL {level}", "LEVEL UP!", "Choose an upgrade", _offers);
         }
 
         private void AddSpellOffers(int slot)
@@ -209,7 +244,8 @@ namespace BattleArena.Progression
             if (_offers.Count == 0)
                 AddStatOffers();
 
-            return new LevelUpPresentation("MISSION COMPLETE", $"{source}  ·  choose a spell upgrade", _offers);
+            return new LevelUpPresentation(ChoiceKind.MissionReward, source.ToUpperInvariant(), "MISSION COMPLETE",
+                "Choose a spell upgrade", _offers);
         }
 
         private static int PickWeightedIndex(List<(int slot, SpellUpgradeDefinition upgrade)> candidates)

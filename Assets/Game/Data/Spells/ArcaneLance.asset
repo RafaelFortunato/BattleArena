@@ -15,6 +15,7 @@ MonoBehaviour:
   displayName: Arcane Lance
   description: A lance of pure arcane energy that pierces every enemy in its path.
   color: {r: 0.8, g: 0.55, b: 1, a: 1}
+  icon: {fileID: 7388822144124034973, guid: 5535d511fedd1d7498bbf481151e8b1c, type: 3}
   cooldown: 3
   baseDamage: 55
   supportedUpgrades: 00000000010000000200000003000000

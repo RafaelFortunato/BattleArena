@@ -1,5 +1,7 @@
+using System.Globalization;
 using BattleArena.Core;
 using BattleArena.Player;
+using BattleArena.Progression;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -11,17 +13,27 @@ namespace BattleArena.UI
     {
         [SerializeField] private GameManager gameManager;
         [SerializeField] private PlayerProgression progression;
+        [SerializeField] private SpellCaster spellCaster;
+        [SerializeField] private PlayerStats stats;
+        [SerializeField] private LevelUpConfig levelUpConfig;
 
         private VisualElement _mainMenu;
         private VisualElement _pauseMenu;
         private VisualElement _endScreen;
+        private Label _pauseTime;
+        private Label _pauseLevel;
+        private Label _pauseKills;
         private Label _endTitle;
         private Label _endSubtitle;
-        private Label _endStats;
+        private VisualElement _endIcon;
+        private Label _endTime;
+        private Label _endLevel;
+        private Label _endKills;
         private Button _startButton;
         private Button _resumeButton;
         private Button _pauseRestartButton;
         private Button _endRestartButton;
+        private BuildSummaryView _build;
 
         private void OnEnable()
         {
@@ -29,13 +41,20 @@ namespace BattleArena.UI
             _mainMenu = root.Q("main-menu");
             _pauseMenu = root.Q("pause-menu");
             _endScreen = root.Q("end-screen");
+            _pauseTime = root.Q<Label>("pause-time");
+            _pauseLevel = root.Q<Label>("pause-level");
+            _pauseKills = root.Q<Label>("pause-kills");
             _endTitle = root.Q<Label>("end-title");
             _endSubtitle = root.Q<Label>("end-subtitle");
-            _endStats = root.Q<Label>("end-stats");
+            _endIcon = root.Q("end-icon");
+            _endTime = root.Q<Label>("end-time");
+            _endLevel = root.Q<Label>("end-level");
+            _endKills = root.Q<Label>("end-kills");
             _startButton = root.Q<Button>("start-button");
             _resumeButton = root.Q<Button>("resume-button");
             _pauseRestartButton = root.Q<Button>("pause-restart-button");
             _endRestartButton = root.Q<Button>("end-restart-button");
+            _build ??= new BuildSummaryView(root, spellCaster, stats, levelUpConfig);
 
             _startButton.clicked += gameManager.StartMatch;
             _resumeButton.clicked += gameManager.TogglePause;
@@ -66,25 +85,44 @@ namespace BattleArena.UI
                     _startButton.Focus();
                     break;
                 case GameState.Paused:
-                    _resumeButton.Focus();
+                    ShowPause();
                     break;
                 case GameState.Victory:
-                    ShowEndScreen("VICTORY", "The arena is yours.");
+                    ShowEndScreen(true, "VICTORY", "The arena is yours.");
                     break;
                 case GameState.Defeat:
-                    ShowEndScreen("DEFEAT", "The horde overwhelmed you.");
+                    ShowEndScreen(false, "DEFEATED", "The horde overwhelmed you.");
                     break;
             }
         }
 
-        private void ShowEndScreen(string title, string subtitle)
+        private void ShowPause()
+        {
+            var remaining = Mathf.CeilToInt(gameManager.MatchDuration - gameManager.ElapsedTime);
+            _pauseTime.text = remaining > 0
+                ? $"{remaining / 60:00}:{remaining % 60:00} {Muted("to boss")}"
+                : Muted("Boss fight");
+            _pauseLevel.text = $"{Muted("Level")} {progression.Level}";
+            _pauseKills.text = $"{gameManager.Kills.ToString("N0", CultureInfo.InvariantCulture)} {Muted("defeated")}";
+            _build.Refresh();
+            _resumeButton.Focus();
+        }
+
+        private void ShowEndScreen(bool victory, string title, string subtitle)
         {
             var seconds = Mathf.FloorToInt(gameManager.ElapsedTime);
+            _endScreen.EnableInClassList("end-screen-defeat", !victory);
+            _endIcon.EnableInClassList("icon-crown", victory);
+            _endIcon.EnableInClassList("icon-skull", !victory);
             _endTitle.text = title;
             _endSubtitle.text = subtitle;
-            _endStats.text = $"Time {seconds / 60:00}:{seconds % 60:00}  ·  Level {progression.Level}  ·  {gameManager.Kills} defeated";
+            _endTime.text = $"{seconds / 60:00}:{seconds % 60:00}";
+            _endLevel.text = progression.Level.ToString();
+            _endKills.text = gameManager.Kills.ToString("N0", CultureInfo.InvariantCulture);
             _endRestartButton.Focus();
         }
+
+        private static string Muted(string text) => $"<color=#AEB6C8>{text}</color>";
 
         private static void SetVisible(VisualElement element, bool visible) => element.EnableInClassList("hidden", !visible);
     }

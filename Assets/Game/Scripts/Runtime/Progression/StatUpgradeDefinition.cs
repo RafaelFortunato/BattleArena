@@ -1,5 +1,6 @@
 using BattleArena.Player;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 namespace BattleArena.Progression
 {
@@ -21,11 +22,14 @@ namespace BattleArena.Progression
         [SerializeField] private UpgradeRarity rarity;
         [Tooltip("Relative chance of being offered.")]
         [SerializeField, Min(0f)] private float weight = 1f;
+        [Tooltip("White line icon for the card.")]
+        [SerializeField] private VectorImage icon;
 
         public string DisplayName => displayName;
         public StatType Stat => stat;
         public float Amount => amount;
         public UpgradeRarity Rarity => rarity;
         public float Weight => weight;
+        public VectorImage Icon => icon;
     }
 }

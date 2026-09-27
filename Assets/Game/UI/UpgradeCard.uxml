@@ -1,0 +1,35 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:ba="BattleArena.UI.Elements" editor-extension-mode="False">
+    <!-- One level-up / reward card. Colours, texts and the stat bar are bound by LevelUpView. -->
+    <ui:VisualElement class="card-slot">
+        <ui:VisualElement class="card-shadow" picking-mode="Ignore" />
+        <ui:Button class="card">
+            <ba:CardArtElement class="card-art" />
+            <ui:VisualElement class="card-emblem" picking-mode="Ignore">
+                <ui:VisualElement class="card-emblem-frame" picking-mode="Ignore">
+                    <ba:ShapeElement kind="Hexagon" class="fill card-hex" />
+                    <ba:ShapeElement kind="Hexagon" class="card-hex-inner" />
+                    <ui:VisualElement class="card-icon" picking-mode="Ignore" />
+                </ui:VisualElement>
+            </ui:VisualElement>
+            <ui:VisualElement class="card-badge" picking-mode="Ignore">
+                <ui:VisualElement class="card-badge-gem" picking-mode="Ignore" />
+                <ui:Label text="RARE" class="card-badge-label" picking-mode="Ignore" />
+            </ui:VisualElement>
+            <ui:VisualElement class="card-body" picking-mode="Ignore">
+                <ui:Label text="Upgrade" class="display card-title" picking-mode="Ignore" />
+                <ui:Label text="" class="card-summary" picking-mode="Ignore" />
+                <ui:VisualElement class="card-stat" picking-mode="Ignore">
+                    <ui:Label text="" class="card-stat-label" picking-mode="Ignore" />
+                    <ui:Label text="" class="display card-stat-value" picking-mode="Ignore" />
+                </ui:VisualElement>
+                <ui:VisualElement class="card-bar" picking-mode="Ignore">
+                    <ui:VisualElement class="card-bar-now" picking-mode="Ignore" />
+                    <ui:VisualElement class="card-bar-gain" picking-mode="Ignore" />
+                </ui:VisualElement>
+                <ui:VisualElement class="card-segments" picking-mode="Ignore" />
+                <ui:Label text="" class="card-footnote" picking-mode="Ignore" />
+            </ui:VisualElement>
+        </ui:Button>
+        <ba:ShapeElement kind="TriangleUp" class="card-pointer" />
+    </ui:VisualElement>
+</ui:UXML>

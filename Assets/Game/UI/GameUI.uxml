@@ -1,146 +1,275 @@
-<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:ba="BattleArena.UI.Elements" editor-extension-mode="False">
     <Style src="GameUI.uss" />
     <ui:VisualElement name="root" class="root" picking-mode="Ignore">
 
-        <!-- In-game HUD -->
+        <!-- ================================================================ In-game HUD -->
         <ui:VisualElement name="hud" class="hud hidden" picking-mode="Ignore">
-            <ui:VisualElement class="hud-top" picking-mode="Ignore">
-                <ui:VisualElement class="player-panel panel" picking-mode="Ignore">
-                    <ui:Label name="level-label" text="1" class="level-badge" picking-mode="Ignore" />
-                    <ui:VisualElement class="player-bars" picking-mode="Ignore">
-                        <ui:Label text="HEALTH" class="caption" picking-mode="Ignore" />
-                        <ui:VisualElement class="bar health-bar" picking-mode="Ignore">
-                            <ui:VisualElement name="health-fill" class="bar-fill health-fill" picking-mode="Ignore" />
-                            <ui:Label name="health-label" text="100 / 100" class="bar-label" picking-mode="Ignore" />
+
+            <!-- Match timer and timeline to the boss -->
+            <ui:VisualElement name="match-timer" class="match-timer" picking-mode="Ignore">
+                <ui:VisualElement class="timer-plate" picking-mode="Ignore">
+                    <ba:ShapeElement kind="Plate" class="fill timer-plate-shape" />
+                    <ui:Label name="timer-label" text="10:00" class="display timer-label" picking-mode="Ignore" />
+                </ui:VisualElement>
+                <ui:VisualElement class="timeline" picking-mode="Ignore">
+                    <ui:VisualElement class="timeline-track" picking-mode="Ignore">
+                        <ui:VisualElement name="timeline-fill" class="timeline-fill" picking-mode="Ignore" />
+                        <ui:VisualElement class="ticks" picking-mode="Ignore">
+                            <ui:VisualElement class="tick" /><ui:VisualElement class="tick" /><ui:VisualElement class="tick" />
+                            <ui:VisualElement class="tick" /><ui:VisualElement class="tick" /><ui:VisualElement class="tick" />
+                            <ui:VisualElement class="tick" /><ui:VisualElement class="tick" /><ui:VisualElement class="tick" />
                         </ui:VisualElement>
                     </ui:VisualElement>
-                </ui:VisualElement>
-
-                <ui:VisualElement class="timer-panel panel" picking-mode="Ignore">
-                    <ui:Label name="timer-label" text="10:00" class="timer" picking-mode="Ignore" />
-                    <ui:Label name="kills-label" text="0 defeated" class="caption" picking-mode="Ignore" />
-                </ui:VisualElement>
-
-                <ui:VisualElement class="hud-top-spacer" picking-mode="Ignore" />
-            </ui:VisualElement>
-
-            <ui:VisualElement name="mission-panel" class="mission-panel panel hidden" picking-mode="Ignore">
-                <ui:VisualElement class="mission-header" picking-mode="Ignore">
-                    <ui:Label text="MISSION" class="caption" picking-mode="Ignore" />
-                    <ui:Label name="mission-timer" text="0:40" class="mission-timer" picking-mode="Ignore" />
-                </ui:VisualElement>
-                <ui:Label name="mission-title" text="Mission" class="mission-title" picking-mode="Ignore" />
-                <ui:Label name="mission-description" text="" class="mission-description" picking-mode="Ignore" />
-                <ui:VisualElement class="bar mission-bar" picking-mode="Ignore">
-                    <ui:VisualElement name="mission-fill" class="bar-fill mission-fill" picking-mode="Ignore" />
-                    <ui:Label name="mission-status" text="" class="bar-label" picking-mode="Ignore" />
+                    <ui:VisualElement class="timeline-start" picking-mode="Ignore">
+                        <ui:VisualElement class="icon icon-play" picking-mode="Ignore" />
+                    </ui:VisualElement>
+                    <ui:VisualElement name="timeline-markers" class="timeline-markers" picking-mode="Ignore">
+                        <ba:ShapeElement name="timeline-playhead" kind="TriangleDown" class="timeline-playhead" />
+                    </ui:VisualElement>
+                    <ui:VisualElement class="timeline-boss" picking-mode="Ignore">
+                        <ui:VisualElement class="icon icon-skull" picking-mode="Ignore" />
+                    </ui:VisualElement>
                 </ui:VisualElement>
             </ui:VisualElement>
 
+            <!-- Boss health (replaces the timer during the boss fight) -->
             <ui:VisualElement name="boss-panel" class="boss-panel hidden" picking-mode="Ignore">
-                <ui:Label name="boss-name" text="BOSS" class="boss-name" picking-mode="Ignore" />
-                <ui:VisualElement class="bar boss-bar" picking-mode="Ignore">
-                    <ui:VisualElement name="boss-fill" class="bar-fill boss-fill" picking-mode="Ignore" />
+                <ui:VisualElement class="boss-header" picking-mode="Ignore">
+                    <ui:VisualElement class="boss-badge" picking-mode="Ignore">
+                        <ba:ShapeElement kind="Hexagon" class="fill boss-badge-shape" />
+                        <ui:VisualElement class="icon icon-skull boss-badge-icon" picking-mode="Ignore" />
+                    </ui:VisualElement>
+                    <ui:Label name="boss-name" text="BOSS" class="display boss-name" picking-mode="Ignore" />
+                </ui:VisualElement>
+                <ui:VisualElement class="boss-bar" picking-mode="Ignore">
+                    <ui:VisualElement name="boss-trail" class="boss-trail" picking-mode="Ignore" />
+                    <ui:VisualElement name="boss-fill" class="bar-fill boss-fill" picking-mode="Ignore">
+                        <ui:VisualElement class="bar-highlight boss-highlight" picking-mode="Ignore" />
+                    </ui:VisualElement>
+                    <ui:VisualElement class="ticks" picking-mode="Ignore">
+                        <ui:VisualElement class="tick tick-wide" /><ui:VisualElement class="tick tick-wide" /><ui:VisualElement class="tick tick-wide" />
+                        <ui:VisualElement class="tick tick-wide" /><ui:VisualElement class="tick tick-wide" /><ui:VisualElement class="tick tick-wide" />
+                        <ui:VisualElement class="tick tick-wide" /><ui:VisualElement class="tick tick-wide" /><ui:VisualElement class="tick tick-wide" />
+                    </ui:VisualElement>
+                    <ui:Label name="boss-health-label" text="" class="bar-label boss-health-label" picking-mode="Ignore" />
                 </ui:VisualElement>
             </ui:VisualElement>
 
-            <ui:Label name="notification" text="" class="notification" picking-mode="Ignore" />
+            <!-- Active mission -->
+            <ui:VisualElement name="mission-panel" class="mission-panel hidden" picking-mode="Ignore">
+                <ui:VisualElement class="mission-header" picking-mode="Ignore">
+                    <ui:Label text="MISSION" class="chip chip-gold" picking-mode="Ignore" />
+                    <ui:Label name="mission-timer" text="0:40" class="display mission-timer" picking-mode="Ignore" />
+                </ui:VisualElement>
+                <ui:Label name="mission-title" text="Mission" class="display mission-title" picking-mode="Ignore" />
+                <ui:Label name="mission-description" text="" class="mission-description" picking-mode="Ignore" />
+                <ui:VisualElement class="mission-progress" picking-mode="Ignore">
+                    <ui:VisualElement class="mission-bar" picking-mode="Ignore">
+                        <ui:VisualElement name="mission-fill" class="bar-fill mission-fill" picking-mode="Ignore" />
+                    </ui:VisualElement>
+                    <ui:Label name="mission-status" text="" class="mission-status" picking-mode="Ignore" />
+                </ui:VisualElement>
+            </ui:VisualElement>
 
+            <!-- Centre-screen announcements -->
+            <ui:VisualElement name="announcement" class="announcement" picking-mode="Ignore">
+                <ui:Label name="announcement-chip" text="NEW MISSION" class="chip chip-gold announcement-chip" picking-mode="Ignore" />
+                <ui:Label name="announcement-text" text="" class="display announcement-text" picking-mode="Ignore" />
+            </ui:VisualElement>
+
+            <!-- Spells and health -->
             <ui:VisualElement class="hud-bottom" picking-mode="Ignore">
-                <ui:Label name="interact-prompt" text="[F] Interact" class="interact-prompt hidden" picking-mode="Ignore" />
+                <ui:VisualElement name="interact-prompt" class="interact-prompt hidden" picking-mode="Ignore">
+                    <ui:Label text="F" class="interact-key" picking-mode="Ignore" />
+                    <ui:Label name="interact-label" text="Interact" class="interact-label" picking-mode="Ignore" />
+                </ui:VisualElement>
                 <ui:VisualElement name="spell-bar" class="spell-bar" picking-mode="Ignore">
                     <ui:VisualElement name="spell-0" class="spell-slot locked" picking-mode="Ignore">
-                        <ui:Label text="Q" class="spell-key" picking-mode="Ignore" />
-                        <ui:Label text="?" class="spell-name" picking-mode="Ignore" />
-                        <ui:VisualElement class="spell-cooldown" picking-mode="Ignore" />
-                        <ui:Label text="" class="spell-cooldown-text" picking-mode="Ignore" />
-                        <ui:Label text="" class="spell-charges" picking-mode="Ignore" />
-                        <ui:Label text="LV 5" class="spell-lock" picking-mode="Ignore" />
+                        <ui:VisualElement class="spell-frame" picking-mode="Ignore">
+                            <ba:ShapeElement kind="Hexagon" class="fill spell-hex" />
+                            <ui:VisualElement class="spell-icon" picking-mode="Ignore" />
+                            <ba:HexCooldownElement class="fill spell-sweep" />
+                            <ui:Label text="" class="display spell-cooldown-text" picking-mode="Ignore" />
+                            <ui:VisualElement class="spell-lock" picking-mode="Ignore">
+                                <ui:Label text="LVL" class="spell-lock-caption" picking-mode="Ignore" />
+                                <ui:Label text="5" class="display spell-lock-level" picking-mode="Ignore" />
+                            </ui:VisualElement>
+                            <ui:Label text="" class="spell-charges" picking-mode="Ignore" />
+                        </ui:VisualElement>
+                        <ui:Label text="Q" class="keycap keycap-small spell-key" picking-mode="Ignore" />
                     </ui:VisualElement>
                     <ui:VisualElement name="spell-1" class="spell-slot locked" picking-mode="Ignore">
-                        <ui:Label text="E" class="spell-key" picking-mode="Ignore" />
-                        <ui:Label text="?" class="spell-name" picking-mode="Ignore" />
-                        <ui:VisualElement class="spell-cooldown" picking-mode="Ignore" />
-                        <ui:Label text="" class="spell-cooldown-text" picking-mode="Ignore" />
-                        <ui:Label text="" class="spell-charges" picking-mode="Ignore" />
-                        <ui:Label text="LV 10" class="spell-lock" picking-mode="Ignore" />
+                        <ui:VisualElement class="spell-frame" picking-mode="Ignore">
+                            <ba:ShapeElement kind="Hexagon" class="fill spell-hex" />
+                            <ui:VisualElement class="spell-icon" picking-mode="Ignore" />
+                            <ba:HexCooldownElement class="fill spell-sweep" />
+                            <ui:Label text="" class="display spell-cooldown-text" picking-mode="Ignore" />
+                            <ui:VisualElement class="spell-lock" picking-mode="Ignore">
+                                <ui:Label text="LVL" class="spell-lock-caption" picking-mode="Ignore" />
+                                <ui:Label text="10" class="display spell-lock-level" picking-mode="Ignore" />
+                            </ui:VisualElement>
+                            <ui:Label text="" class="spell-charges" picking-mode="Ignore" />
+                        </ui:VisualElement>
+                        <ui:Label text="E" class="keycap keycap-small spell-key" picking-mode="Ignore" />
                     </ui:VisualElement>
                     <ui:VisualElement name="spell-2" class="spell-slot locked" picking-mode="Ignore">
-                        <ui:Label text="R" class="spell-key" picking-mode="Ignore" />
-                        <ui:Label text="?" class="spell-name" picking-mode="Ignore" />
-                        <ui:VisualElement class="spell-cooldown" picking-mode="Ignore" />
-                        <ui:Label text="" class="spell-cooldown-text" picking-mode="Ignore" />
-                        <ui:Label text="" class="spell-charges" picking-mode="Ignore" />
-                        <ui:Label text="LV 15" class="spell-lock" picking-mode="Ignore" />
+                        <ui:VisualElement class="spell-frame" picking-mode="Ignore">
+                            <ba:ShapeElement kind="Hexagon" class="fill spell-hex" />
+                            <ui:VisualElement class="spell-icon" picking-mode="Ignore" />
+                            <ba:HexCooldownElement class="fill spell-sweep" />
+                            <ui:Label text="" class="display spell-cooldown-text" picking-mode="Ignore" />
+                            <ui:VisualElement class="spell-lock" picking-mode="Ignore">
+                                <ui:Label text="LVL" class="spell-lock-caption" picking-mode="Ignore" />
+                                <ui:Label text="15" class="display spell-lock-level" picking-mode="Ignore" />
+                            </ui:VisualElement>
+                            <ui:Label text="" class="spell-charges" picking-mode="Ignore" />
+                        </ui:VisualElement>
+                        <ui:Label text="R" class="keycap keycap-small spell-key" picking-mode="Ignore" />
                     </ui:VisualElement>
                 </ui:VisualElement>
-                <ui:VisualElement class="bar xp-bar" picking-mode="Ignore">
-                    <ui:VisualElement name="xp-fill" class="bar-fill xp-fill" picking-mode="Ignore" />
-                    <ui:Label name="xp-label" text="0 / 6 XP" class="bar-label" picking-mode="Ignore" />
+                <ui:VisualElement class="health-bar" picking-mode="Ignore">
+                    <ui:VisualElement name="health-fill" class="bar-fill health-fill" picking-mode="Ignore">
+                        <ui:VisualElement class="bar-highlight health-highlight" picking-mode="Ignore" />
+                    </ui:VisualElement>
+                    <ui:Label name="health-label" text="100 / 100" class="bar-label health-label" picking-mode="Ignore" />
+                </ui:VisualElement>
+            </ui:VisualElement>
+
+            <!-- Level and experience -->
+            <ui:VisualElement class="xp-row" picking-mode="Ignore">
+                <ui:VisualElement class="xp-bar" picking-mode="Ignore">
+                    <ui:VisualElement name="xp-fill" class="bar-fill xp-fill" picking-mode="Ignore">
+                        <ui:VisualElement class="bar-highlight xp-highlight" picking-mode="Ignore" />
+                        <ui:VisualElement class="xp-cap" picking-mode="Ignore" />
+                    </ui:VisualElement>
+                    <ui:VisualElement class="ticks" picking-mode="Ignore">
+                        <ui:VisualElement class="tick tick-wide" /><ui:VisualElement class="tick tick-wide" /><ui:VisualElement class="tick tick-wide" />
+                        <ui:VisualElement class="tick tick-wide" /><ui:VisualElement class="tick tick-wide" /><ui:VisualElement class="tick tick-wide" />
+                        <ui:VisualElement class="tick tick-wide" /><ui:VisualElement class="tick tick-wide" /><ui:VisualElement class="tick tick-wide" />
+                    </ui:VisualElement>
+                </ui:VisualElement>
+                <ui:VisualElement name="level-badge" class="level-badge" picking-mode="Ignore">
+                    <ba:ShapeElement kind="Hexagon" class="fill level-hex-outer" />
+                    <ba:ShapeElement kind="Hexagon" class="level-hex-inner" />
+                    <ui:VisualElement class="level-text" picking-mode="Ignore">
+                        <ui:Label text="LV" class="level-caption" picking-mode="Ignore" />
+                        <ui:Label name="level-label" text="1" class="display level-value" picking-mode="Ignore" />
+                    </ui:VisualElement>
                 </ui:VisualElement>
             </ui:VisualElement>
         </ui:VisualElement>
 
-        <!-- Main menu -->
-        <ui:VisualElement name="main-menu" class="screen">
-            <ui:VisualElement class="menu-card panel">
-                <ui:Label text="BATTLE ARENA" class="title" />
-                <ui:Label text="Survive ten minutes. Then defeat what comes for you." class="subtitle" />
-                <ui:VisualElement class="controls">
-                    <ui:Label text="WASD — Move" class="control-line" />
-                    <ui:Label text="Q · E · R — Spells (unlock at levels 5, 10, 15)" class="control-line" />
-                    <ui:Label text="F — Interact  ·  Esc — Pause" class="control-line" />
+        <!-- ================================================================ Main menu -->
+        <ui:VisualElement name="main-menu" class="screen screen-clear">
+            <ba:GradientElement direction="Horizontal" class="fill scrim-side" />
+            <ba:GradientElement direction="Vertical" class="scrim-bottom" />
+            <ui:VisualElement class="menu-content">
+                <ui:VisualElement class="menu-tagline">
+                    <ui:Label text="SURVIVAL ROGUELITE" class="chip chip-accent" />
+                    <ui:Label text="10 minutes · 1 boss" class="menu-tagline-text" />
                 </ui:VisualElement>
-                <ui:Button name="start-button" text="START" class="menu-button primary" />
+                <ui:Label text="BATTLE" class="display menu-title" />
+                <ui:Label text="ARENA" class="display menu-title menu-title-second" />
+                <ui:Label text="Survive ten minutes. Then defeat what comes for you." class="menu-subtitle" />
+                <ui:Button name="start-button" text="PLAY" class="display btn btn-primary btn-play" />
+            </ui:VisualElement>
+            <ui:VisualElement class="menu-controls">
+                <ui:VisualElement class="control-group">
+                    <ui:Label text="W" class="keycap" /><ui:Label text="A" class="keycap" /><ui:Label text="S" class="keycap" /><ui:Label text="D" class="keycap" />
+                    <ui:Label text="Move" class="control-label" />
+                </ui:VisualElement>
+                <ui:VisualElement class="control-group">
+                    <ui:Label text="Q" class="keycap" /><ui:Label text="E" class="keycap" /><ui:Label text="R" class="keycap" />
+                    <ui:Label text="Spells" class="control-label" />
+                </ui:VisualElement>
+                <ui:VisualElement class="control-group">
+                    <ui:Label text="F" class="keycap" />
+                    <ui:Label text="Interact" class="control-label" />
+                </ui:VisualElement>
+                <ui:VisualElement class="control-group">
+                    <ui:Label text="Esc" class="keycap keycap-wide" />
+                    <ui:Label text="Pause" class="control-label" />
+                </ui:VisualElement>
             </ui:VisualElement>
         </ui:VisualElement>
 
-        <!-- Level-up cards -->
-        <ui:VisualElement name="level-up" class="screen level-up-screen hidden">
-            <ui:Label name="level-up-title" text="LEVEL UP!" class="title" />
-            <ui:Label name="level-up-subtitle" text="" class="subtitle" />
-            <ui:VisualElement class="card-row">
-                    <ui:Button name="card-0" class="upgrade-card">
-                        <ui:Label text="COMMON" class="card-tag" picking-mode="Ignore" />
-                        <ui:Label text="Upgrade" class="card-title" picking-mode="Ignore" />
-                        <ui:VisualElement class="card-divider" picking-mode="Ignore" />
-                        <ui:Label text="" class="card-description" picking-mode="Ignore" />
-                        <ui:Label text="1" class="card-key" picking-mode="Ignore" />
-                    </ui:Button>
-                    <ui:Button name="card-1" class="upgrade-card">
-                        <ui:Label text="COMMON" class="card-tag" picking-mode="Ignore" />
-                        <ui:Label text="Upgrade" class="card-title" picking-mode="Ignore" />
-                        <ui:VisualElement class="card-divider" picking-mode="Ignore" />
-                        <ui:Label text="" class="card-description" picking-mode="Ignore" />
-                        <ui:Label text="2" class="card-key" picking-mode="Ignore" />
-                    </ui:Button>
-                    <ui:Button name="card-2" class="upgrade-card">
-                        <ui:Label text="COMMON" class="card-tag" picking-mode="Ignore" />
-                        <ui:Label text="Upgrade" class="card-title" picking-mode="Ignore" />
-                        <ui:VisualElement class="card-divider" picking-mode="Ignore" />
-                        <ui:Label text="" class="card-description" picking-mode="Ignore" />
-                        <ui:Label text="3" class="card-key" picking-mode="Ignore" />
-                    </ui:Button>
+        <!-- ================================================================ Level-up cards -->
+        <ui:VisualElement name="level-up" class="screen screen-dim choice-screen hidden">
+            <ui:VisualElement class="choice-header">
+                <ui:VisualElement name="choice-chip" class="chip chip-accent choice-chip">
+                    <ui:VisualElement class="icon icon-check choice-chip-icon" />
+                    <ui:Label name="choice-chip-label" text="LEVEL 2" class="choice-chip-label" />
+                </ui:VisualElement>
+                <ui:Label name="choice-title" text="LEVEL UP!" class="display choice-title" />
+                <ui:Label name="choice-subtitle" text="Choose an upgrade" class="choice-subtitle" />
             </ui:VisualElement>
-            <ui:Label name="level-up-stats" text="" class="stats-summary" />
-        </ui:VisualElement>
 
-        <!-- Pause menu -->
-        <ui:VisualElement name="pause-menu" class="screen hidden">
-            <ui:VisualElement class="menu-card panel">
-                <ui:Label text="PAUSED" class="title" />
-                <ui:Button name="resume-button" text="RESUME" class="menu-button primary" />
-                <ui:Button name="pause-restart-button" text="RESTART" class="menu-button" />
+            <ui:VisualElement name="card-row" class="card-row" />
+
+            <ui:VisualElement class="nav-hint">
+                <ui:Label text="A" class="keycap" /><ui:Label text="D" class="keycap" />
+                <ui:Label text="or" class="nav-hint-or" />
+                <ui:VisualElement class="keycap"><ui:VisualElement class="icon icon-arrow-left keycap-icon" /></ui:VisualElement>
+                <ui:VisualElement class="keycap"><ui:VisualElement class="icon icon-arrow-right keycap-icon" /></ui:VisualElement>
+                <ui:Label text="Browse" class="nav-hint-label" />
+                <ui:VisualElement class="nav-hint-divider" />
+                <ui:Label text="F" class="keycap keycap-accent" />
+                <ui:Label text="Confirm" class="nav-hint-label" />
             </ui:VisualElement>
         </ui:VisualElement>
 
-        <!-- Victory / defeat -->
-        <ui:VisualElement name="end-screen" class="screen hidden">
-            <ui:VisualElement class="menu-card panel">
-                <ui:Label name="end-title" text="VICTORY" class="title" />
-                <ui:Label name="end-subtitle" text="" class="subtitle" />
-                <ui:Label name="end-stats" text="" class="stats" />
-                <ui:Button name="end-restart-button" text="PLAY AGAIN" class="menu-button primary" />
+        <!-- ================================================================ Pause menu -->
+        <ui:VisualElement name="pause-menu" class="screen screen-dim-strong hidden">
+            <ui:VisualElement class="pause-column">
+                <ui:Label text="PAUSED" class="display pause-title" />
+                <ui:VisualElement class="pause-chips">
+                    <ui:Label name="pause-time" text="" class="info-chip" />
+                    <ui:Label name="pause-level" text="" class="info-chip" />
+                    <ui:Label name="pause-kills" text="" class="info-chip" />
+                </ui:VisualElement>
+                <ui:VisualElement class="pause-buttons">
+                    <ui:Button name="resume-button" text="RESUME" class="display btn btn-primary btn-large" />
+                    <ui:Button name="pause-restart-button" text="RESTART" class="display btn btn-secondary btn-medium" />
+                </ui:VisualElement>
+                <ui:VisualElement class="pause-hint">
+                    <ui:Label text="Esc" class="keycap keycap-wide" />
+                    <ui:Label text="Resume" class="control-label" />
+                </ui:VisualElement>
+            </ui:VisualElement>
+
+            <ui:VisualElement class="build-panel">
+                <ui:Label text="SPELLS" class="section-label" />
+                <ui:VisualElement name="build-spells" class="build-spells" />
+                <ui:VisualElement class="build-divider" />
+                <ui:Label text="STATS" class="section-label" />
+                <ui:VisualElement name="build-stats" class="build-stats" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+
+        <!-- ================================================================ Victory / defeat -->
+        <ui:VisualElement name="end-screen" class="screen screen-dim-strong hidden">
+            <ui:VisualElement class="end-column">
+                <ui:VisualElement class="end-badge">
+                    <ba:ShapeElement kind="Hexagon" class="fill end-badge-shape" />
+                    <ui:VisualElement name="end-icon" class="icon end-icon" />
+                </ui:VisualElement>
+                <ui:Label name="end-title" text="VICTORY" class="display end-title" />
+                <ui:Label name="end-subtitle" text="" class="end-subtitle" />
+                <ui:VisualElement class="end-tiles">
+                    <ui:VisualElement class="end-tile">
+                        <ui:Label text="TIME" class="end-tile-caption" />
+                        <ui:Label name="end-time" text="00:00" class="display end-tile-value" />
+                    </ui:VisualElement>
+                    <ui:VisualElement class="end-tile">
+                        <ui:Label text="LEVEL" class="end-tile-caption" />
+                        <ui:Label name="end-level" text="1" class="display end-tile-value" />
+                    </ui:VisualElement>
+                    <ui:VisualElement class="end-tile">
+                        <ui:Label text="DEFEATED" class="end-tile-caption" />
+                        <ui:Label name="end-kills" text="0" class="display end-tile-value" />
+                    </ui:VisualElement>
+                </ui:VisualElement>
+                <ui:Button name="end-restart-button" text="PLAY AGAIN" class="display btn btn-primary btn-large end-button" />
             </ui:VisualElement>
         </ui:VisualElement>
 

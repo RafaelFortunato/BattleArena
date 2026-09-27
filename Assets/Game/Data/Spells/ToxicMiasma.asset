@@ -16,6 +16,7 @@ MonoBehaviour:
   description: A poison cloud on the nearest enemy that damages and slows everything
     inside for 5 seconds.
   color: {r: 0.55, g: 0.95, b: 0.3, a: 1}
+  icon: {fileID: 7388822144124034973, guid: 81ffad172e6c52143aa3f277c1e743d0, type: 3}
   cooldown: 10
   baseDamage: 12
   supportedUpgrades: 0000000001000000020000000500000004000000

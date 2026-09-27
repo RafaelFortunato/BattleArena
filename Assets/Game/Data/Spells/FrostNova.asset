@@ -15,6 +15,7 @@ MonoBehaviour:
   displayName: Frost Nova
   description: Freezing burst around you that damages and slows every enemy it touches.
   color: {r: 0.55, g: 0.9, b: 1, a: 1}
+  icon: {fileID: 7388822144124034973, guid: 6a9d9bf248e431a4fa87ec8b12592f58, type: 3}
   cooldown: 8
   baseDamage: 35
   supportedUpgrades: 0000000001000000020000000500000004000000

@@ -3,6 +3,7 @@ using System.Collections;
 using System.Globalization;
 using BattleArena.Combat;
 using BattleArena.Core;
+using BattleArena.Progression;
 using BattleArena.Spells;
 using UnityEngine;
 
@@ -37,43 +38,61 @@ namespace BattleArena.Player
     {
         private const float RegenerationTick = 0.5f;
 
-        /// <summary>How a stat is shown on cards: a multiplier of 100%, an absolute percentage, or a flat number.</summary>
-        private enum DisplayKind { Multiplier, Percent, Flat }
+        /// <summary>How a stat reads on screen.</summary>
+        private enum DisplayKind
+        {
+            /// <summary>Upgrade total as a signed percentage: "+8%".</summary>
+            Bonus,
+            /// <summary>Absolute percentage: "15%".</summary>
+            Percent,
+            /// <summary>Signed flat upgrade total: "+1", "+0.5/s".</summary>
+            Count,
+            /// <summary>Absolute number: "240".</summary>
+            Absolute
+        }
 
         private readonly struct StatInfo
         {
             public readonly string Name;
             public readonly DisplayKind Kind;
             public readonly string Suffix;
+            /// <summary>Display value that fills a card's comparison bar.</summary>
+            public readonly float BarMax;
+            /// <summary>Whole-number stats are drawn as this many segments instead of a bar.</summary>
+            public readonly int Segments;
 
-            public StatInfo(string name, DisplayKind kind, string suffix = "")
+            public StatInfo(string name, DisplayKind kind, float barMax, string suffix = "", int segments = 0)
             {
                 Name = name;
                 Kind = kind;
+                BarMax = barMax;
                 Suffix = suffix;
+                Segments = segments;
             }
         }
 
         // Indexed by StatType.
         private static readonly StatInfo[] Info =
         {
-            new("Movement Speed", DisplayKind.Multiplier),
-            new("Max Health", DisplayKind.Flat),
-            new("Damage", DisplayKind.Multiplier),
-            new("Critical Chance", DisplayKind.Percent),
-            new("Critical Damage", DisplayKind.Percent),
-            new("Cast Speed", DisplayKind.Multiplier),
-            new("Area", DisplayKind.Multiplier),
-            new("Duration", DisplayKind.Multiplier),
-            new("Projectiles", DisplayKind.Flat),
-            new("Pierce", DisplayKind.Flat),
-            new("Pickup Radius", DisplayKind.Multiplier),
-            new("Armor", DisplayKind.Flat),
-            new("Regeneration", DisplayKind.Flat, " HP/s"),
-            new("Experience Gain", DisplayKind.Multiplier),
-            new("Luck", DisplayKind.Percent),
-            new("Heal on Kill", DisplayKind.Flat, " HP"),
+            new("Move speed", DisplayKind.Bonus, 60f),
+            new("Max health", DisplayKind.Absolute, 400f),
+            new("Damage", DisplayKind.Bonus, 100f),
+            new("Critical chance", DisplayKind.Percent, 50f),
+            new("Critical damage", DisplayKind.Percent, 300f),
+            new("Cast speed", DisplayKind.Bonus, 60f),
+            new("Area", DisplayKind.Bonus, 60f),
+            new("Duration", DisplayKind.Bonus, 60f),
+            new("Projectiles", DisplayKind.Count, 3f, segments: 3),
+            new("Pierce", DisplayKind.Count, 3f, segments: 3),
+            new("Pickup radius", DisplayKind.Bonus, 100f),
+            new("Armor", DisplayKind.Count, 8f),
+            new("Regeneration", DisplayKind.Count, 4f, "/s"),
+            new("Experience gain", DisplayKind.Bonus, 50f),
+            new("Luck", DisplayKind.Bonus, 60f),
+            new("Heal on kill", DisplayKind.Count, 4f, " HP"),
         };
+
+        public static int StatCount => Info.Length;
 
         [SerializeField] private Health health;
         [SerializeField, Range(0f, 1f)] private float baseCritChance = 0.05f;
@@ -134,51 +153,48 @@ namespace BattleArena.Player
             Changed?.Invoke(stat);
         }
 
-        /// <summary>e.g. "Critical Chance\n5% → 10%".</summary>
-        public string DescribeUpgrade(StatType stat, float amount)
+        /// <summary>Card preview for adding <paramref name="amount"/> to <paramref name="stat"/>: "5% → 15%" plus bar fills.</summary>
+        public StatPreview Preview(StatType stat, float amount)
         {
             var info = Info[(int)stat];
             var current = GetDisplayValue(stat);
-            var next = info.Kind == DisplayKind.Flat ? current + amount : current + amount * 100f;
+            var delta = info.Kind is DisplayKind.Bonus or DisplayKind.Percent ? amount * 100f : amount;
+            var next = current + delta;
             if (stat == StatType.CritChance)
                 next = Mathf.Min(100f, next);
 
-            return $"{info.Name}\n{Format(info, current)}  →  {Format(info, next)}";
+            var gain = FormatSigned(delta, info.Kind is DisplayKind.Bonus or DisplayKind.Percent ? "%" : info.Suffix);
+            var bar = info.Segments > 0 ? StatBarStyle.Segmented : StatBarStyle.Continuous;
+            return new StatPreview(info.Name, Format(info, next), Format(info, current), gain, bar,
+                Mathf.Clamp01(current / info.BarMax), Mathf.Clamp01(next / info.BarMax), info.Segments);
         }
-
-        /// <summary>Overview shown on the level-up screen.</summary>
-        public string BuildSummary() => string.Format(CultureInfo.InvariantCulture,
-            "Damage {0:0}%   ·   Crit {1:0}% ({2:0}% dmg)   ·   Cast Speed {3:0}%   ·   Area {4:0}%   ·   Move {5:0}%   ·   Armor {6:0}   ·   HP {7:0}",
-            DamageMultiplier * 100f, CritChance * 100f, CritMultiplier * 100f, CastSpeedMultiplier * 100f,
-            AreaMultiplier * 100f, MoveSpeedMultiplier * 100f, Bonus(StatType.Armor), health.Max);
 
         public static string GetStatName(StatType stat) => Info[(int)stat].Name;
 
+        /// <summary>Current value as shown on screen, e.g. "+8%", "15%", "240".</summary>
+        public string FormatCurrent(StatType stat) => Format(Info[(int)stat], GetDisplayValue(stat));
+
         private float Bonus(StatType stat) => _bonuses[(int)stat];
 
-        private float GetDisplayValue(StatType stat)
+        private float GetDisplayValue(StatType stat) => stat switch
         {
-            var info = Info[(int)stat];
-            return stat switch
-            {
-                StatType.MaxHealth => health.Max,
-                StatType.CritChance => CritChance * 100f,
-                StatType.CritDamage => CritMultiplier * 100f,
-                _ => info.Kind switch
-                {
-                    DisplayKind.Multiplier => (1f + Bonus(stat)) * 100f,
-                    DisplayKind.Percent => Bonus(stat) * 100f,
-                    _ => Bonus(stat)
-                }
-            };
-        }
+            StatType.MaxHealth => health.Max,
+            StatType.CritChance => CritChance * 100f,
+            StatType.CritDamage => CritMultiplier * 100f,
+            _ => Info[(int)stat].Kind == DisplayKind.Bonus ? Bonus(stat) * 100f : Bonus(stat)
+        };
 
         // Invariant culture so numbers read the same in every locale (e.g. "0.5", not "0,5").
         private static string Format(in StatInfo info, float value) => info.Kind switch
         {
-            DisplayKind.Flat => value.ToString("0.#", CultureInfo.InvariantCulture) + info.Suffix,
-            _ => value.ToString("0", CultureInfo.InvariantCulture) + "%"
+            DisplayKind.Bonus => FormatSigned(value, "%"),
+            DisplayKind.Percent => value.ToString("0", CultureInfo.InvariantCulture) + "%",
+            DisplayKind.Count => FormatSigned(value, info.Suffix),
+            _ => value.ToString("0", CultureInfo.InvariantCulture) + info.Suffix
         };
+
+        private static string FormatSigned(float value, string suffix) =>
+            (value < 0f ? "-" : "+") + Mathf.Abs(value).ToString("0.#", CultureInfo.InvariantCulture) + suffix;
 
         private void OnEnemyKilled(EnemyKilledEvent _)
         {

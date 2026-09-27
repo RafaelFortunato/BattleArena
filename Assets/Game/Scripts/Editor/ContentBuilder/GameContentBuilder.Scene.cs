@@ -43,7 +43,7 @@ namespace BattleArena.Editor.ContentBuilder
 
             var gameManager = BuildSystems(m, content, player, playerHealth, out var levelUp);
             BuildCamera(player.transform);
-            BuildUserInterface(gameManager, levelUp, player, playerHealth);
+            BuildUserInterface(gameManager, levelUp, content.LevelUp, player, playerHealth);
 
             EditorSceneManager.SaveScene(scene, ScenePath);
             EditorBuildSettings.scenes = new[] { new EditorBuildSettingsScene(ScenePath, true) };
@@ -303,7 +303,8 @@ namespace BattleArena.Editor.ContentBuilder
             follow.TrackerSettings = tracker;
         }
 
-        private static void BuildUserInterface(GameManager gameManager, LevelUpController levelUp, GameObject player, Health playerHealth)
+        private static void BuildUserInterface(GameManager gameManager, LevelUpController levelUp, LevelUpConfig levelUpConfig,
+            GameObject player, Health playerHealth)
         {
             var panelSettings = LoadOrCreateAsset<PanelSettings>($"{UIFolder}/GamePanelSettings.asset");
             panelSettings.themeStyleSheet = AssetDatabase.LoadAssetAtPath<ThemeStyleSheet>($"{UIFolder}/GameTheme.tss");
@@ -329,12 +330,15 @@ namespace BattleArena.Editor.ContentBuilder
             SerializedSetter.For(menus)
                 .Set("gameManager", gameManager)
                 .Set("progression", player.GetComponent<PlayerProgression>())
+                .Set("spellCaster", player.GetComponent<SpellCaster>())
+                .Set("stats", player.GetComponent<PlayerStats>())
+                .Set("levelUpConfig", levelUpConfig)
                 .Apply();
 
             var levelUpView = uiObject.AddComponent<LevelUpView>();
             SerializedSetter.For(levelUpView)
                 .Set("controller", levelUp)
-                .Set("stats", player.GetComponent<PlayerStats>())
+                .Set("cardTemplate", AssetDatabase.LoadAssetAtPath<VisualTreeAsset>($"{UIFolder}/UpgradeCard.uxml"))
                 .Apply();
         }
     }

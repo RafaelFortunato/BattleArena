@@ -5,8 +5,10 @@ using BattleArena.Pooling;
 using BattleArena.Progression;
 using BattleArena.Spells;
 using BattleArena.Vfx;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.Rendering;
+using UnityEngine.UIElements;
 using K = BattleArena.Spells.SpellUpgradeKind;
 
 namespace BattleArena.Editor.ContentBuilder
@@ -74,6 +76,7 @@ namespace BattleArena.Editor.ContentBuilder
                 .Set("displayName", displayName)
                 .Set("description", description)
                 .Set("color", color)
+                .Set("icon", LoadIcon("spell-" + ToKebabCase(file)))
                 .Set("cooldown", cooldown)
                 .Set("baseDamage", damage);
             configure(setter).Apply();
@@ -162,8 +165,33 @@ namespace BattleArena.Editor.ContentBuilder
                 .Set("amount", amount)
                 .Set("rarity", (int)rarity)
                 .Set("weight", weight)
+                .Set("icon", LoadIcon("stat-" + ToKebabCase(stat.ToString())))
                 .Apply();
             return upgrade;
+        }
+
+        /// <summary>Line icons live in UI/Icons and are named after what they depict, e.g. "stat-move-speed".</summary>
+        private static VectorImage LoadIcon(string name)
+        {
+            var path = $"{UIFolder}/Icons/{name}.svg";
+            var icon = AssetDatabase.LoadAssetAtPath<VectorImage>(path);
+            if (icon == null)
+                Debug.LogWarning($"Missing icon {path}");
+            return icon;
+        }
+
+        /// <summary>"MeteorShower" → "meteor-shower".</summary>
+        private static string ToKebabCase(string pascalCase)
+        {
+            var builder = new System.Text.StringBuilder(pascalCase.Length + 4);
+            for (var i = 0; i < pascalCase.Length; i++)
+            {
+                var c = pascalCase[i];
+                if (char.IsUpper(c) && i > 0)
+                    builder.Append('-');
+                builder.Append(char.ToLowerInvariant(c));
+            }
+            return builder.ToString();
         }
 
         // ---------------------------------------------------------------- Spell prefabs

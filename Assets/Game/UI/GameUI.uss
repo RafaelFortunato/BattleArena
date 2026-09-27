@@ -1,44 +1,142 @@
-/* ---------- Palette ----------
-   gold      #F2C14E   ink       #0E1222
-   parchment #F4E9D0   health    #D94B4B
-   xp        #5AB0FF   boss      #B03AD9
+/* ================================================================ Tokens
+   ink        #14161F   panel      rgba(8, 10, 16, a)
+   text       #FFFFFF   muted      #AEB6C8   soft #C9CFDC   dim #8B93A7
+   accent     #7C4DFF   deep       #4D309E   light #B79DFF
+   gold       #F2C14E   gold deep  #7A5A12   gold ink #231A05
+   health     #FF6A2A   trough     #3A1712   highlight #FF9E6B
+   boss       #FF5A4E   trough     #3A1212   highlight #FF8A80   trail #FFD2CC
+   Fonts: Baloo 2 ExtraBold for display text, Nunito for everything else.
 */
 
 .root {
     flex-grow: 1;
-    color: rgb(244, 233, 208);
-    -unity-font-style: bold;
+    color: rgb(255, 255, 255);
+    -unity-font-definition: url("project://database/Assets/Game/UI/Fonts/Nunito-ExtraBold.ttf");
+    -unity-font-style: normal;
+}
+
+/* Same specificity as the theme's rule, so the class rules below can still set margins and padding. */
+.unity-label {
+    margin: 0;
+    padding: 0;
+}
+
+.display {
+    -unity-font-definition: url("project://database/Assets/Game/UI/Fonts/Baloo2-ExtraBold.ttf");
+}
+
+.body-text,
+.mission-description,
+.menu-subtitle,
+.card-summary,
+.end-subtitle {
+    -unity-font-definition: url("project://database/Assets/Game/UI/Fonts/Nunito-Bold.ttf");
 }
 
 .hidden {
     display: none;
 }
 
-/* ---------- Shared pieces ---------- */
-
-.panel {
-    background-image: url("project://database/Assets/Game/Art/Sprites/Buttons/DarkBlue/button_dark_normal_r16.png");
-    -unity-slice-scale: 0.5px;
-    -unity-background-image-tint-color: rgba(255, 255, 255, 0.92);
-    padding: 10px 16px 12px 16px;
+.fill {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
 }
 
-.caption {
+/* ================================================================ Shared pieces */
+
+.icon {
+    -unity-background-scale-mode: scale-to-fit;
+    flex-shrink: 0;
+}
+
+.icon-play { background-image: url("project://database/Assets/Game/UI/Icons/ui-play.svg"); }
+.icon-skull { background-image: url("project://database/Assets/Game/UI/Icons/ui-skull.svg"); }
+.icon-exclamation { background-image: url("project://database/Assets/Game/UI/Icons/ui-exclamation.svg"); }
+.icon-check { background-image: url("project://database/Assets/Game/UI/Icons/ui-check.svg"); }
+.icon-lock { background-image: url("project://database/Assets/Game/UI/Icons/ui-lock.svg"); }
+.icon-crown { background-image: url("project://database/Assets/Game/UI/Icons/ui-crown.svg"); }
+.icon-arrow-left { background-image: url("project://database/Assets/Game/UI/Icons/ui-arrow-left.svg"); }
+.icon-arrow-right { background-image: url("project://database/Assets/Game/UI/Icons/ui-arrow-right.svg"); }
+
+.chip {
+    padding: 4px 12px;
+    border-radius: 14px;
     font-size: 13px;
     letter-spacing: 2px;
-    color: rgba(244, 233, 208, 0.7);
-    margin: 0;
-    padding: 0;
+    -unity-text-align: middle-center;
 }
 
-.bar {
-    height: 22px;
-    background-color: rgba(4, 6, 14, 0.85);
+.chip-gold {
+    background-color: rgb(242, 193, 78);
+    color: rgb(35, 26, 5);
+}
+
+.chip-accent {
+    background-color: rgb(124, 77, 255);
+    color: rgb(255, 255, 255);
+}
+
+.keycap {
+    min-width: 38px;
+    height: 36px;
+    padding: 0 8px;
+    margin-right: 5px;
     border-width: 2px;
-    border-color: rgba(242, 193, 78, 0.55);
-    border-radius: 6px;
-    overflow: hidden;
+    border-color: rgba(255, 255, 255, 0.85);
+    border-radius: 8px;
+    background-color: rgba(12, 14, 22, 0.8);
+    font-size: 16px;
+    -unity-text-align: middle-center;
+    align-items: center;
     justify-content: center;
+}
+
+.keycap-small {
+    min-width: 30px;
+    width: 30px;
+    height: 26px;
+    padding: 0;
+    margin-right: 0;
+    border-radius: 6px;
+    font-size: 14px;
+}
+
+.keycap-wide {
+    padding: 0 10px;
+}
+
+.keycap-accent {
+    background-color: rgb(124, 77, 255);
+    border-color: rgb(255, 255, 255);
+}
+
+.keycap-icon {
+    width: 16px;
+    height: 16px;
+}
+
+.ticks {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    flex-direction: row;
+    justify-content: space-evenly;
+}
+
+.tick {
+    width: 2px;
+    height: 100%;
+    background-color: rgba(8, 10, 16, 0.35);
+}
+
+.tick-wide {
+    width: 3px;
+    background-color: rgba(8, 10, 16, 0.45);
 }
 
 .bar-fill {
@@ -51,20 +149,88 @@
     transition-duration: 0.15s;
 }
 
-.bar-label {
-    font-size: 13px;
-    -unity-text-align: middle-center;
-    color: rgb(255, 255, 255);
-    text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.8);
-    margin: 0;
-    padding: 0;
+.bar-highlight {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
 }
 
-.health-fill { background-color: rgb(217, 75, 75); }
-.xp-fill { background-color: rgb(90, 176, 255); }
-.boss-fill { background-color: rgb(176, 58, 217); }
+.bar-label {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    -unity-text-align: middle-center;
+    text-shadow: 0 2px 0 rgba(0, 0, 0, 0.7);
+}
 
-/* ---------- HUD ---------- */
+/* ================================================================ Buttons */
+
+.btn {
+    margin: 0;
+    padding: 0;
+    border-width: 0;
+    border-radius: 16px;
+    color: rgb(255, 255, 255);
+    letter-spacing: 3px;
+    -unity-text-align: middle-center;
+    transition-property: translate, background-color;
+    transition-duration: 0.08s;
+}
+
+.btn-primary {
+    background-color: rgb(124, 77, 255);
+    border-bottom-width: 6px;
+    border-bottom-color: rgb(77, 48, 158);
+}
+
+.btn-primary:hover,
+.btn-primary:focus {
+    background-color: rgb(142, 99, 255);
+}
+
+.btn-primary:active {
+    translate: 0 3px;
+    border-bottom-width: 3px;
+}
+
+.btn-secondary {
+    border-width: 3px;
+    border-color: rgba(255, 255, 255, 0.85);
+    background-color: rgba(8, 10, 16, 0.6);
+}
+
+.btn-secondary:hover,
+.btn-secondary:focus {
+    background-color: rgba(255, 255, 255, 0.12);
+}
+
+.btn-secondary:active {
+    translate: 0 2px;
+}
+
+.btn-play {
+    width: 340px;
+    height: 84px;
+    margin-top: 52px;
+    font-size: 36px;
+}
+
+.btn-large {
+    width: 340px;
+    height: 84px;
+    font-size: 34px;
+}
+
+.btn-medium {
+    width: 340px;
+    height: 72px;
+    font-size: 28px;
+}
+
+/* ================================================================ HUD */
 
 .hud {
     position: absolute;
@@ -72,223 +238,615 @@
     top: 0;
     right: 0;
     bottom: 0;
-    padding: 20px 28px 18px 28px;
-    justify-content: space-between;
 }
 
-.hud-top {
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: flex-start;
-}
+/* ---------- Match timer and timeline */
 
-.hud-top-spacer {
-    width: 340px;
-}
-
-.player-panel {
-    flex-direction: row;
+.match-timer {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 18px;
     align-items: center;
-    width: 340px;
 }
 
-.level-badge {
-    width: 54px;
-    height: 54px;
-    margin-right: 12px;
-    font-size: 26px;
-    -unity-text-align: middle-center;
-    color: rgb(14, 18, 34);
-    background-image: url("project://database/Assets/Game/Art/Sprites/Buttons/Gold/button_gold_normal_r16.png");
-    -unity-slice-scale: 0.5px;
-    transition-property: scale;
-    transition-duration: 0.25s;
-}
-
-.level-badge.level-up {
-    scale: 1.3 1.3;
-}
-
-.player-bars {
-    flex-grow: 1;
-}
-
-.health-bar {
-    margin-top: 4px;
-}
-
-.timer-panel {
+.timer-plate {
+    width: 260px;
+    height: 104px;
     align-items: center;
-    min-width: 170px;
+    justify-content: center;
 }
 
-.timer {
-    font-size: 38px;
-    color: rgb(242, 193, 78);
-    margin: 0;
-    padding: 0;
+.timer-plate-shape {
+    --shape-fill: rgba(20, 22, 31, 0.94);
+    --shape-border: rgb(255, 255, 255);
+    --shape-border-width: 4;
+    --shape-inner: rgba(124, 77, 255, 0.55);
+    --shape-inner-inset: 9;
+}
+
+.timer-label {
+    font-size: 64px;
+    letter-spacing: 2px;
+    padding-top: 8px;
     -unity-text-align: middle-center;
+    text-shadow: 0 5px 0 rgb(77, 48, 158);
 }
 
-.timer.boss-phase {
-    color: rgb(214, 120, 255);
+.timeline {
+    width: 940px;
+    height: 60px;
+    margin-top: 12px;
 }
+
+.timeline-track {
+    position: absolute;
+    left: 28px;
+    right: 30px;
+    top: 21px;
+    height: 18px;
+    border-width: 3px;
+    border-color: rgb(20, 22, 31);
+    border-radius: 9px;
+    background-color: rgba(8, 10, 16, 0.85);
+    overflow: hidden;
+}
+
+.timeline-fill {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 0;
+    background-color: rgb(255, 255, 255);
+}
+
+.timeline-start {
+    position: absolute;
+    left: 0;
+    top: 8px;
+    width: 44px;
+    height: 44px;
+    border-width: 3px;
+    border-color: rgb(255, 255, 255);
+    border-radius: 22px;
+    background-color: rgb(20, 22, 31);
+    align-items: center;
+    justify-content: center;
+}
+
+.timeline-start .icon {
+    width: 18px;
+    height: 18px;
+    margin-left: 2px;
+}
+
+.timeline-markers {
+    position: absolute;
+    left: 28px;
+    right: 30px;
+    top: 0;
+    bottom: 0;
+}
+
+.timeline-marker {
+    position: absolute;
+    top: 10px;
+    width: 40px;
+    height: 40px;
+    translate: -50% 0;
+    border-width: 3px;
+    border-color: rgb(20, 22, 31);
+    border-radius: 20px;
+    background-color: rgb(242, 193, 78);
+    align-items: center;
+    justify-content: center;
+}
+
+.timeline-marker .icon {
+    width: 18px;
+    height: 18px;
+    -unity-background-image-tint-color: rgb(20, 22, 31);
+}
+
+.timeline-marker.failed {
+    background-color: rgb(90, 95, 110);
+}
+
+.timeline-playhead {
+    position: absolute;
+    top: 6px;
+    width: 20px;
+    height: 12px;
+    translate: -50% 0;
+    --shape-fill: rgb(255, 255, 255);
+    --shape-border: rgb(20, 22, 31);
+    --shape-border-width: 2;
+}
+
+.timeline-boss {
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 60px;
+    height: 60px;
+    border-width: 4px;
+    border-color: rgb(255, 90, 78);
+    border-radius: 30px;
+    background-color: rgb(20, 22, 31);
+    align-items: center;
+    justify-content: center;
+}
+
+.timeline-boss .icon {
+    width: 30px;
+    height: 30px;
+    -unity-background-image-tint-color: rgb(255, 90, 78);
+}
+
+/* ---------- Boss */
 
 .boss-panel {
     position: absolute;
-    top: 120px;
-    left: 25%;
-    right: 25%;
-    align-items: stretch;
+    left: 0;
+    right: 0;
+    top: 26px;
+    align-items: center;
+}
+
+.boss-header {
+    flex-direction: row;
+    align-items: center;
+}
+
+.boss-badge {
+    width: 58px;
+    height: 64px;
+    align-items: center;
+    justify-content: center;
+}
+
+.boss-badge-shape {
+    --shape-fill: rgb(20, 22, 31);
+    --shape-border: rgb(255, 90, 78);
+    --shape-border-width: 4;
+}
+
+.boss-badge-icon {
+    width: 30px;
+    height: 30px;
+    -unity-background-image-tint-color: rgb(255, 90, 78);
 }
 
 .boss-name {
-    font-size: 22px;
-    letter-spacing: 3px;
-    -unity-text-align: middle-center;
-    color: rgb(214, 120, 255);
-    text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.8);
+    margin-left: 14px;
+    padding-top: 6px;
+    font-size: 46px;
+    letter-spacing: 2px;
+    text-shadow: 0 5px 0 rgb(90, 20, 16);
 }
 
 .boss-bar {
-    height: 26px;
+    width: 1100px;
+    height: 40px;
+    margin-top: 10px;
+    border-width: 4px;
+    border-color: rgb(20, 22, 31);
+    border-radius: 20px;
+    background-color: rgb(58, 18, 18);
+    overflow: hidden;
 }
 
-.notification {
+.boss-trail {
     position: absolute;
-    top: 30%;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 100%;
+    background-color: rgb(255, 210, 204);
+    transition-property: width;
+    transition-duration: 0.5s;
+    transition-delay: 0.35s;
+    transition-timing-function: ease-out;
+}
+
+.boss-fill {
+    background-color: rgb(255, 90, 78);
+}
+
+.boss-highlight {
+    height: 9px;
+    background-color: rgb(255, 138, 128);
+}
+
+.boss-health-label {
+    font-size: 17px;
+    letter-spacing: 1px;
+}
+
+/* ---------- Mission */
+
+.mission-panel {
+    position: absolute;
+    right: 32px;
+    top: 30px;
+    width: 400px;
+    padding: 16px 18px 18px 18px;
+    background-color: rgba(8, 10, 16, 0.78);
+    border-width: 2px;
+    border-color: rgba(255, 255, 255, 0.14);
+    border-radius: 16px;
+}
+
+.mission-header {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.mission-timer {
+    font-size: 22px;
+    color: rgb(242, 193, 78);
+}
+
+.mission-title {
+    margin-top: 8px;
+    font-size: 30px;
+    white-space: normal;
+}
+
+.mission-description {
+    margin-top: 4px;
+    font-size: 16px;
+    color: rgb(201, 207, 220);
+    white-space: normal;
+}
+
+.mission-progress {
+    flex-direction: row;
+    align-items: center;
+    margin-top: 12px;
+}
+
+.mission-bar {
+    flex-grow: 1;
+    height: 12px;
+    border-radius: 6px;
+    background-color: rgba(255, 255, 255, 0.12);
+    overflow: hidden;
+}
+
+.mission-fill {
+    border-radius: 6px;
+    background-color: rgb(242, 193, 78);
+}
+
+.mission-status {
+    margin-left: 12px;
+    font-size: 16px;
+}
+
+/* ---------- Announcements */
+
+.announcement {
+    position: absolute;
     left: 0;
     right: 0;
-    font-size: 30px;
-    -unity-text-align: middle-center;
-    color: rgb(242, 193, 78);
-    text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.85);
+    top: 250px;
+    align-items: center;
     opacity: 0;
-    translate: 0 12px;
+    translate: 0 14px;
     transition-property: opacity, translate;
     transition-duration: 0.3s;
 }
 
-.notification.visible {
+.announcement.visible {
     opacity: 1;
     translate: 0 0;
 }
 
+.announcement-chip {
+    margin-bottom: 6px;
+    padding: 5px 16px;
+    font-size: 15px;
+    letter-spacing: 3px;
+}
+
+.announcement-text {
+    font-size: 50px;
+    -unity-text-align: middle-center;
+    text-shadow: 0 4px 0 rgba(8, 10, 16, 0.75);
+}
+
+.announcement.plain .announcement-chip {
+    display: none;
+}
+
+.announcement.plain .announcement-text {
+    font-size: 40px;
+}
+
+/* ---------- Spells, health and interaction */
+
 .hud-bottom {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 96px;
     align-items: center;
 }
 
 .interact-prompt {
-    font-size: 20px;
-    margin-bottom: 14px;
-    padding: 8px 18px;
-    border-radius: 8px;
-    background-color: rgba(14, 18, 34, 0.85);
+    flex-direction: row;
+    align-items: center;
+    margin-bottom: 18px;
+    padding: 7px 16px 7px 7px;
+    border-radius: 24px;
+    background-color: rgba(8, 10, 16, 0.82);
+}
+
+.interact-key {
+    width: 34px;
+    height: 34px;
     border-width: 2px;
-    border-color: rgb(242, 193, 78);
+    border-color: rgb(255, 255, 255);
+    border-radius: 17px;
+    font-size: 16px;
+    -unity-text-align: middle-center;
+}
+
+.interact-label {
+    margin-left: 10px;
+    font-size: 19px;
 }
 
 .spell-bar {
     flex-direction: row;
+    align-items: flex-end;
     margin-bottom: 12px;
 }
 
 .spell-slot {
-    width: 84px;
-    height: 84px;
-    margin: 0 8px;
     align-items: center;
-    justify-content: center;
-    overflow: hidden;
-    background-image: url("project://database/Assets/Game/Art/Sprites/Buttons/DarkBlue/button_dark_normal_r16.png");
-    -unity-slice-scale: 0.5px;
-    border-width: 3px;
-    border-radius: 12px;
-    border-color: rgb(242, 193, 78);
+    margin: 0 9px;
+}
+
+.spell-frame {
+    width: 92px;
+    height: 100px;
     transition-property: scale;
     transition-duration: 0.12s;
 }
 
-.spell-slot.cast {
+.spell-slot.cast .spell-frame {
     scale: 0.9 0.9;
 }
 
-.spell-slot.locked {
-    border-color: rgba(244, 233, 208, 0.2);
+.spell-hex {
+    --shape-fill: rgba(20, 22, 31, 0.92);
+    --shape-border: rgb(255, 255, 255);
+    --shape-border-width: 4;
 }
 
-.spell-key {
+.spell-icon {
     position: absolute;
-    top: 2px;
-    left: 6px;
-    font-size: 16px;
-    color: rgb(242, 193, 78);
+    left: 24px;
+    top: 28px;
+    width: 44px;
+    height: 44px;
+    -unity-background-scale-mode: scale-to-fit;
 }
 
-.spell-name {
-    font-size: 12px;
-    white-space: normal;
-    -unity-text-align: middle-center;
-    margin-top: 10px;
-}
-
-.spell-cooldown {
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    height: 0;
-    background-color: rgba(4, 6, 14, 0.75);
+.spell-sweep {
+    --sweep-color: rgba(5, 6, 10, 0.62);
 }
 
 .spell-cooldown-text {
     position: absolute;
     left: 0;
-    right: 0;
     top: 0;
+    right: 0;
     bottom: 0;
-    font-size: 28px;
+    padding-top: 6px;
+    font-size: 36px;
     -unity-text-align: middle-center;
-    color: rgb(255, 255, 255);
-}
-
-.spell-charges {
-    position: absolute;
-    right: 5px;
-    bottom: 2px;
-    font-size: 18px;
-    color: rgb(242, 193, 78);
-    text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.9);
+    text-shadow: 0 2px 0 rgba(0, 0, 0, 0.6);
 }
 
 .spell-lock {
     display: none;
     position: absolute;
     left: 0;
-    right: 0;
     top: 0;
+    right: 0;
     bottom: 0;
-    font-size: 18px;
+    align-items: center;
+    justify-content: center;
+}
+
+.spell-lock-caption {
+    font-size: 13px;
+    letter-spacing: 1px;
+    color: rgb(139, 147, 167);
+}
+
+.spell-lock-level {
+    font-size: 30px;
+    color: rgb(201, 207, 220);
+}
+
+.spell-charges {
+    display: none;
+    position: absolute;
+    right: -6px;
+    bottom: 2px;
+    width: 26px;
+    height: 26px;
+    border-radius: 13px;
+    font-size: 15px;
+    color: rgb(28, 14, 3);
     -unity-text-align: middle-center;
-    background-color: rgba(4, 6, 14, 0.8);
-    color: rgba(244, 233, 208, 0.6);
+}
+
+.spell-charges.visible {
+    display: flex;
+}
+
+.spell-key {
+    margin-top: 6px;
+}
+
+.spell-slot.locked .spell-hex {
+    --shape-fill: rgba(20, 22, 31, 0.8);
+    --shape-border: rgba(255, 255, 255, 0.18);
 }
 
 .spell-slot.locked .spell-lock {
     display: flex;
 }
 
-.spell-slot.locked .spell-name,
-.spell-slot.cooling .spell-name {
-    opacity: 0;
+.spell-slot.locked .spell-icon {
+    display: none;
+}
+
+.spell-slot.locked .spell-key {
+    border-color: rgba(255, 255, 255, 0.2);
+    background-color: rgba(0, 0, 0, 0);
+    color: rgb(139, 147, 167);
+}
+
+.spell-slot.cooling .spell-hex {
+    --shape-fill: rgba(52, 58, 78, 0.92);
+    --shape-border: rgba(255, 255, 255, 0.4);
+}
+
+.spell-slot.cooling .spell-icon {
+    opacity: 0.5;
+}
+
+.spell-slot.cooling .spell-key {
+    border-color: rgba(255, 255, 255, 0.45);
+    color: rgb(201, 207, 220);
+}
+
+.health-bar {
+    width: 560px;
+    height: 28px;
+    border-width: 3px;
+    border-color: rgb(20, 22, 31);
+    border-radius: 14px;
+    background-color: rgb(58, 23, 18);
+    overflow: hidden;
+}
+
+.health-fill {
+    background-color: rgb(255, 106, 42);
+}
+
+.health-highlight {
+    height: 6px;
+    background-color: rgb(255, 158, 107);
+}
+
+.health-label {
+    font-size: 15px;
+}
+
+/* ---------- Level and experience */
+
+.xp-row {
+    position: absolute;
+    left: 24px;
+    right: 24px;
+    bottom: 12px;
+    height: 88px;
 }
 
 .xp-bar {
-    align-self: stretch;
-    height: 18px;
+    position: absolute;
+    left: 44px;
+    right: 0;
+    top: 29px;
+    height: 30px;
+    border-width: 4px;
+    border-color: rgb(20, 22, 31);
+    border-radius: 15px;
+    background-color: rgba(8, 10, 16, 0.88);
+    overflow: hidden;
 }
 
-/* ---------- Screens ---------- */
+.xp-fill {
+    width: 0;
+    background-color: rgb(124, 77, 255);
+}
+
+.xp-highlight {
+    height: 7px;
+    background-color: rgb(183, 157, 255);
+}
+
+.xp-cap {
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    width: 5px;
+    background-color: rgb(255, 255, 255);
+}
+
+.level-badge {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 80px;
+    height: 88px;
+    transition-property: scale;
+    transition-duration: 0.25s;
+}
+
+.level-badge.level-up {
+    scale: 1.25 1.25;
+}
+
+.level-hex-outer {
+    --shape-fill: rgb(77, 48, 158);
+    --shape-border: rgb(255, 255, 255);
+    --shape-border-width: 4.5;
+}
+
+.level-hex-inner {
+    position: absolute;
+    left: 11px;
+    right: 11px;
+    top: 12px;
+    bottom: 12px;
+    --shape-fill: rgb(20, 22, 31);
+    --shape-border: rgb(124, 77, 255);
+    --shape-border-width: 3;
+}
+
+.level-text {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    align-items: center;
+    justify-content: center;
+}
+
+.level-caption {
+    font-size: 12px;
+    letter-spacing: 2px;
+    color: rgb(183, 157, 255);
+}
+
+.level-value {
+    font-size: 34px;
+    margin-top: -4px;
+}
+
+/* ================================================================ Screens */
 
 .screen {
     position: absolute;
@@ -296,211 +854,660 @@
     top: 0;
     right: 0;
     bottom: 0;
-    align-items: center;
-    justify-content: center;
-    background-color: rgba(5, 8, 20, 0.72);
 }
 
-.menu-card {
-    width: 620px;
-    align-items: center;
-    padding: 36px 40px 40px 40px;
+.screen-dim {
+    background-color: rgba(8, 10, 16, 0.8);
 }
 
-.title {
-    font-size: 64px;
-    letter-spacing: 6px;
-    color: rgb(242, 193, 78);
-    text-shadow: 3px 3px 0 rgba(0, 0, 0, 0.8);
-    -unity-text-align: middle-center;
-    margin-bottom: 6px;
+.screen-dim-strong {
+    background-color: rgba(8, 10, 16, 0.84);
 }
 
-.subtitle {
-    font-size: 20px;
-    -unity-font-style: normal;
-    -unity-text-align: middle-center;
-    white-space: normal;
-    margin-bottom: 24px;
-}
-
-.controls {
-    margin-bottom: 28px;
-    align-items: center;
-}
-
-.control-line {
-    font-size: 17px;
-    -unity-font-style: normal;
-    color: rgba(244, 233, 208, 0.8);
-    margin: 2px 0;
-}
-
-.stats {
-    font-size: 20px;
-    -unity-font-style: normal;
-    -unity-text-align: middle-center;
-    white-space: normal;
-    margin-bottom: 28px;
-}
-
-.menu-button {
-    width: 300px;
-    height: 60px;
-    margin: 8px 0;
-    font-size: 24px;
+.section-label {
+    margin-bottom: 14px;
+    font-size: 15px;
     letter-spacing: 3px;
-    -unity-font-style: bold;
-    color: rgb(244, 233, 208);
-    border-width: 0;
-    background-color: rgba(0, 0, 0, 0);
-    background-image: url("project://database/Assets/Game/Art/Sprites/Buttons/DarkBlue/button_dark_normal_r16.png");
-    -unity-slice-scale: 0.5px;
+    color: rgb(139, 147, 167);
 }
 
-.menu-button:hover {
-    background-image: url("project://database/Assets/Game/Art/Sprites/Buttons/DarkBlue/button_dark_hover_r16.png");
+.control-label {
+    margin-left: 8px;
+    font-size: 18px;
+    color: rgb(174, 182, 200);
 }
 
-.menu-button:active {
-    background-image: url("project://database/Assets/Game/Art/Sprites/Buttons/DarkBlue/button_dark_pressed_r16.png");
+/* ---------- Main menu */
+
+.scrim-side {
+    --gradient-from: rgba(8, 10, 16, 0.9);
+    --gradient-mid: rgba(8, 10, 16, 0.62);
+    --gradient-mid-at: 0.42;
+    --gradient-to: rgba(8, 10, 16, 0.12);
 }
 
-.menu-button.primary {
-    color: rgb(14, 18, 34);
-    background-image: url("project://database/Assets/Game/Art/Sprites/Buttons/Gold/button_gold_normal_r16.png");
+.scrim-bottom {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 260px;
+    --gradient-from: rgba(8, 10, 16, 0.8);
+    --gradient-to: rgba(8, 10, 16, 0);
 }
 
-.menu-button.primary:hover {
-    background-image: url("project://database/Assets/Game/Art/Sprites/Buttons/Gold/button_gold_hover_r16.png");
+.menu-content {
+    position: absolute;
+    left: 180px;
+    top: 230px;
+    width: 900px;
+    align-items: flex-start;
 }
 
-.menu-button.primary:active {
-    background-image: url("project://database/Assets/Game/Art/Sprites/Buttons/Gold/button_gold_pressed_r16.png");
+.menu-tagline {
+    flex-direction: row;
+    align-items: center;
 }
 
-/* ---------- Level-up cards ---------- */
+.menu-tagline .chip {
+    padding: 6px 14px;
+    font-size: 16px;
+}
 
-.level-up-screen {
-    background-color: rgba(5, 8, 20, 0.8);
+.menu-tagline-text {
+    margin-left: 12px;
+    font-size: 18px;
+    color: rgb(174, 182, 200);
+}
+
+.menu-title {
+    margin-top: 10px;
+    font-size: 150px;
+    letter-spacing: 2px;
+    text-shadow: 0 8px 0 rgb(77, 48, 158);
+}
+
+.menu-title-second {
+    margin-top: -105px;
+}
+
+.menu-subtitle {
+    margin-top: -16px;
+    max-width: 780px;
+    font-size: 26px;
+    color: rgb(213, 218, 230);
+    white-space: normal;
+}
+
+.menu-controls {
+    position: absolute;
+    left: 180px;
+    bottom: 90px;
+    flex-direction: row;
+    align-items: center;
+}
+
+.control-group {
+    flex-direction: row;
+    align-items: center;
+    margin-right: 36px;
+}
+
+/* ---------- Card choice (level-up, new spell, mission reward) */
+
+.choice-screen {
+    align-items: center;
+}
+
+.choice-header {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 56px;
+    align-items: center;
+}
+
+.choice-chip {
+    flex-direction: row;
+    align-items: center;
+    padding: 6px 16px;
+}
+
+.choice-chip-icon {
+    display: none;
+    width: 18px;
+    height: 18px;
+    margin-right: 8px;
+    -unity-background-image-tint-color: rgb(35, 26, 5);
+}
+
+.choice-chip-label {
+    font-size: 16px;
+    letter-spacing: 3px;
+}
+
+.choice-title {
+    margin-top: 6px;
+    font-size: 104px;
+    letter-spacing: 3px;
+    text-shadow: 0 7px 0 rgb(77, 48, 158);
+}
+
+.choice-subtitle {
+    margin-top: -6px;
+    font-size: 22px;
+    color: rgb(201, 207, 220);
+}
+
+.choice-screen.mission .choice-chip {
+    background-color: rgb(242, 193, 78);
+}
+
+.choice-screen.mission .choice-chip-label {
+    color: rgb(35, 26, 5);
+}
+
+.choice-screen.mission .choice-chip-icon {
+    display: flex;
+}
+
+.choice-screen.mission .choice-title {
+    color: rgb(242, 193, 78);
+    text-shadow: 0 7px 0 rgb(122, 90, 18);
 }
 
 .card-row {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 330px;
     flex-direction: row;
     justify-content: center;
-    margin: 8px 0 28px 0;
+    align-items: flex-start;
 }
 
-.upgrade-card {
-    width: 300px;
-    height: 360px;
-    margin: 0 16px;
-    padding: 22px 22px 18px 22px;
+.card-slot {
+    width: 370px;
+    margin: 0 22px;
     align-items: center;
-    justify-content: flex-start;
-    background-color: rgba(0, 0, 0, 0);
-    background-image: url("project://database/Assets/Game/Art/Sprites/Buttons/DarkBlue/button_dark_normal_r16.png");
-    -unity-slice-scale: 0.5px;
+    opacity: 0.8;
+    translate: 0 24px;
+    transition-property: translate, opacity;
+    transition-duration: 0.14s;
+}
+
+.card-slot.selected {
+    opacity: 1;
+    translate: 0 0;
+}
+
+.card-shadow {
+    display: none;
+    position: absolute;
+    left: 0;
+    top: 14px;
+    width: 370px;
+    height: 500px;
+    border-radius: 22px;
+}
+
+.card-slot.selected .card-shadow {
+    display: flex;
+}
+
+.card {
+    width: 370px;
+    height: 500px;
+    margin: 0;
+    padding: 0;
     border-width: 3px;
-    border-radius: 14px;
-    border-color: rgb(191, 204, 230);
-    transition-property: scale, translate;
-    transition-duration: 0.12s;
+    border-color: rgba(255, 255, 255, 0.3);
+    border-radius: 22px;
+    background-color: rgb(20, 22, 31);
+    overflow: hidden;
+    -unity-text-align: upper-left;
 }
 
-.upgrade-card:hover {
-    scale: 1.05 1.05;
-    translate: 0 -8px;
-    background-image: url("project://database/Assets/Game/Art/Sprites/Buttons/DarkBlue/button_dark_hover_r16.png");
+.card:hover,
+.card:active,
+.card:focus {
+    background-color: rgb(20, 22, 31);
 }
 
-.upgrade-card:active {
-    scale: 0.97 0.97;
+.card-slot.selected .card {
+    border-width: 4px;
 }
 
-.card-tag {
-    font-size: 14px;
+.card-art {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    height: 270px;
+}
+
+.card-emblem {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 30px;
+    align-items: center;
+}
+
+.card-emblem-frame {
+    width: 148px;
+    height: 162px;
+}
+
+.card-hex {
+    --shape-fill: rgb(20, 22, 31);
+    --shape-border: rgb(255, 255, 255);
+    --shape-border-width: 4;
+}
+
+.card-hex-inner {
+    position: absolute;
+    left: 16px;
+    right: 16px;
+    top: 18px;
+    bottom: 18px;
+    --shape-fill: rgba(0, 0, 0, 0);
+    --shape-border: rgba(255, 255, 255, 0.14);
+    --shape-border-width: 2;
+}
+
+.card-icon {
+    position: absolute;
+    left: 44px;
+    top: 51px;
+    width: 60px;
+    height: 60px;
+    -unity-background-scale-mode: scale-to-fit;
+}
+
+.card-badge {
+    position: absolute;
+    left: 22px;
+    top: 238px;
+    height: 34px;
+    flex-direction: row;
+    align-items: center;
+    padding: 0 14px 0 11px;
+    border-width: 3px;
+    border-color: rgb(20, 22, 31);
+    border-radius: 10px;
+}
+
+.card-badge-gem {
+    width: 9px;
+    height: 9px;
+    margin-right: 9px;
+    rotate: 45deg;
+}
+
+.card-badge-label {
+    font-size: 13px;
     letter-spacing: 3px;
-    margin-bottom: 18px;
-    -unity-text-align: middle-center;
+}
+
+.card-body {
+    position: absolute;
+    left: 24px;
+    right: 24px;
+    top: 290px;
 }
 
 .card-title {
-    font-size: 28px;
+    margin-bottom: -8px;
+    font-size: 42px;
     white-space: normal;
-    -unity-text-align: middle-center;
-    color: rgb(244, 233, 208);
 }
 
-.card-divider {
-    width: 60%;
-    height: 2px;
-    margin: 16px 0;
-    background-color: rgba(242, 193, 78, 0.5);
-}
-
-.card-description {
-    flex-grow: 1;
-    font-size: 19px;
-    -unity-font-style: normal;
+.card-summary {
+    margin-top: 2px;
+    font-size: 16px;
+    color: rgb(201, 207, 220);
     white-space: normal;
-    -unity-text-align: upper-center;
-    color: rgba(244, 233, 208, 0.9);
 }
 
-.card-key {
-    width: 40px;
-    height: 40px;
-    font-size: 20px;
-    -unity-text-align: middle-center;
-    color: rgb(14, 18, 34);
-    background-color: rgb(242, 193, 78);
-    border-radius: 20px;
-}
-
-.stats-summary {
-    font-size: 17px;
-    -unity-font-style: normal;
-    color: rgba(244, 233, 208, 0.75);
-    -unity-text-align: middle-center;
-}
-
-/* ---------- Mission panel ---------- */
-
-.mission-panel {
-    position: absolute;
-    top: 20px;
-    right: 28px;
-    width: 360px;
-}
-
-.mission-header {
+.card-stat {
     flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 10px;
+}
+
+.card-stat-label {
+    font-size: 17px;
+    color: rgb(174, 182, 200);
+}
+
+.card-stat-value {
+    font-size: 30px;
+}
+
+.card-bar {
+    height: 14px;
+    margin-top: 8px;
+    border-radius: 7px;
+    background-color: rgba(255, 255, 255, 0.08);
+    overflow: hidden;
+}
+
+.card-bar-now {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    background-color: rgb(107, 115, 144);
+}
+
+.card-bar-gain {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+}
+
+.card-segments {
+    flex-direction: row;
+    height: 14px;
+    margin-top: 8px;
+}
+
+.card-segment {
+    flex-grow: 1;
+    height: 14px;
+    border-radius: 7px;
+    background-color: rgba(255, 255, 255, 0.08);
+}
+
+.card-footnote {
+    margin-top: 10px;
+    font-size: 15px;
+    color: rgb(139, 147, 167);
+}
+
+.card-pointer {
+    width: 34px;
+    height: 20px;
+    margin-top: 30px;
+    visibility: hidden;
+    --shape-fill: rgb(255, 255, 255);
+    --shape-border: rgb(20, 22, 31);
+    --shape-border-width: 3;
+}
+
+.card-slot.selected .card-pointer {
+    visibility: visible;
+}
+
+.nav-hint {
+    position: absolute;
+    bottom: 60px;
+    flex-direction: row;
+    align-items: center;
+    padding: 12px 24px;
+    border-width: 2px;
+    border-color: rgba(255, 255, 255, 0.12);
+    border-radius: 32px;
+    background-color: rgba(8, 10, 16, 0.8);
+}
+
+.nav-hint-or {
+    margin: 0 10px 0 5px;
+    font-size: 15px;
+    color: rgb(139, 147, 167);
+}
+
+.nav-hint-label {
+    margin-left: 5px;
+    font-size: 17px;
+    color: rgb(201, 207, 220);
+}
+
+.nav-hint-divider {
+    width: 2px;
+    height: 26px;
+    margin: 0 24px;
+    background-color: rgba(255, 255, 255, 0.14);
+}
+
+/* ---------- Pause */
+
+.pause-column {
+    position: absolute;
+    left: 180px;
+    top: 250px;
+    width: 700px;
+    align-items: flex-start;
+}
+
+.pause-title {
+    font-size: 130px;
+    letter-spacing: 3px;
+    text-shadow: 0 8px 0 rgb(77, 48, 158);
+}
+
+.pause-chips {
+    flex-direction: row;
+    margin-top: 16px;
+}
+
+.info-chip {
+    margin-right: 12px;
+    padding: 8px 16px;
+    border-width: 2px;
+    border-color: rgba(255, 255, 255, 0.14);
+    border-radius: 22px;
+    background-color: rgba(255, 255, 255, 0.08);
+    font-size: 18px;
+}
+
+.pause-buttons {
+    margin-top: 52px;
+}
+
+.pause-buttons .btn {
+    margin-bottom: 16px;
+}
+
+.pause-hint {
+    flex-direction: row;
+    align-items: center;
+    margin-top: 14px;
+}
+
+.build-panel {
+    position: absolute;
+    left: 1000px;
+    top: 150px;
+    width: 740px;
+    padding: 30px 34px 20px 34px;
+    border-width: 3px;
+    border-color: rgba(255, 255, 255, 0.18);
+    border-radius: 24px;
+    background-color: rgba(20, 22, 31, 0.92);
+}
+
+.build-spells {
+    margin-bottom: 8px;
+}
+
+.build-spell {
+    flex-direction: row;
+    align-items: center;
+    margin-bottom: 14px;
+}
+
+.build-spell-frame {
+    width: 58px;
+    height: 64px;
+    margin-right: 16px;
+    align-items: center;
+    justify-content: center;
+}
+
+.build-spell-hex {
+    --shape-fill: rgb(20, 22, 31);
+    --shape-border: rgb(255, 255, 255);
+    --shape-border-width: 3.5;
+}
+
+.build-spell-icon {
+    width: 28px;
+    height: 28px;
+}
+
+.build-spell.locked .build-spell-hex {
+    --shape-border: rgba(255, 255, 255, 0.2);
+}
+
+.build-spell.locked .build-spell-icon {
+    width: 24px;
+    height: 24px;
+    -unity-background-image-tint-color: rgb(139, 147, 167);
+}
+
+.build-spell-info {
+    flex-grow: 1;
+    flex-shrink: 1;
+}
+
+.build-spell-name {
+    font-size: 26px;
+}
+
+.build-spell-chips {
+    flex-direction: row;
+    flex-wrap: wrap;
+    margin-top: 2px;
+}
+
+.upgrade-chip {
+    margin: 4px 6px 0 0;
+    padding: 3px 10px;
+    border-radius: 12px;
+    background-color: rgba(242, 193, 78, 0.16);
+    color: rgb(242, 193, 78);
+    font-size: 14px;
+}
+
+.build-spell-muted {
+    font-size: 18px;
+    color: rgb(139, 147, 167);
+}
+
+.build-divider {
+    height: 2px;
+    margin-bottom: 20px;
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.build-stats {
+    flex-direction: row;
+    flex-wrap: wrap;
     justify-content: space-between;
 }
 
-.mission-timer {
-    font-size: 15px;
-    color: rgb(242, 193, 78);
-    margin: 0;
-    padding: 0;
+.build-stat {
+    width: 47%;
+    flex-direction: row;
+    justify-content: space-between;
+    margin-bottom: 11px;
 }
 
-.mission-title {
-    font-size: 22px;
-    color: rgb(242, 193, 78);
-    margin: 2px 0 0 0;
-    padding: 0;
+.build-stat-label {
+    font-size: 18px;
+    color: rgb(174, 182, 200);
 }
 
-.mission-description {
+.build-stat-value {
+    font-size: 18px;
+}
+
+/* ---------- Victory / defeat */
+
+.end-column {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 140px;
+    align-items: center;
+}
+
+.end-badge {
+    width: 120px;
+    height: 130px;
+    align-items: center;
+    justify-content: center;
+}
+
+.end-badge-shape {
+    --shape-fill: rgb(20, 22, 31);
+    --shape-border: rgb(242, 193, 78);
+    --shape-border-width: 5;
+}
+
+.end-icon {
+    width: 56px;
+    height: 56px;
+    -unity-background-image-tint-color: rgb(242, 193, 78);
+}
+
+.end-title {
+    margin-top: 12px;
+    font-size: 160px;
+    letter-spacing: 6px;
+    color: rgb(242, 193, 78);
+    text-shadow: 0 9px 0 rgb(122, 90, 18);
+}
+
+.end-subtitle {
+    margin-top: -12px;
+    font-size: 26px;
+    color: rgb(213, 218, 230);
+}
+
+.end-tiles {
+    flex-direction: row;
+    margin-top: 44px;
+}
+
+.end-tile {
+    width: 230px;
+    margin: 0 12px;
+    padding: 20px 0 16px 0;
+    align-items: center;
+    border-width: 3px;
+    border-color: rgba(255, 255, 255, 0.18);
+    border-radius: 20px;
+    background-color: rgba(20, 22, 31, 0.92);
+}
+
+.end-tile-caption {
     font-size: 14px;
-    -unity-font-style: normal;
-    white-space: normal;
-    color: rgba(244, 233, 208, 0.85);
-    margin: 2px 0 8px 0;
-    padding: 0;
+    letter-spacing: 3px;
+    color: rgb(139, 147, 167);
 }
 
-.mission-fill { background-color: rgb(242, 193, 78); }
+.end-tile-value {
+    font-size: 52px;
+}
 
+.end-button {
+    margin-top: 52px;
+    width: 360px;
+}
+
+.end-screen-defeat .end-badge-shape {
+    --shape-border: rgb(255, 90, 78);
+}
+
+.end-screen-defeat .end-icon {
+    -unity-background-image-tint-color: rgb(255, 90, 78);
+}
+
+.end-screen-defeat .end-title {
+    color: rgb(255, 90, 78);
+    text-shadow: 0 9px 0 rgb(90, 20, 16);
+}

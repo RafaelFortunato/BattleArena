@@ -278,7 +278,7 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "Choice1",
+                    "name": "ChoicePrevious",
                     "type": "Button",
                     "id": "87491454-c3ee-44fd-b0ed-226ca16ee770",
                     "expectedControlType": "Button",
@@ -287,7 +287,7 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "Choice2",
+                    "name": "ChoiceNext",
                     "type": "Button",
                     "id": "306eea11-9f1d-45fb-a5e6-27068030510b",
                     "expectedControlType": "Button",
@@ -296,7 +296,7 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "Choice3",
+                    "name": "Confirm",
                     "type": "Button",
                     "id": "81a12e64-6370-4812-8827-db1aae2a1b52",
                     "expectedControlType": "Button",
@@ -330,67 +330,111 @@
                 },
                 {
                     "name": "",
-                    "id": "fed3e903-74af-40b8-ae32-318a878d1de4",
-                    "path": "<Keyboard>/1",
+                    "id": "7675098a-5a53-4fb7-a080-24e62c80312e",
+                    "path": "<Keyboard>/a",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Choice1",
+                    "action": "ChoicePrevious",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
                 {
                     "name": "",
-                    "id": "90f7e0dd-dfeb-40ff-8969-44093d20934b",
-                    "path": "<Keyboard>/numpad1",
+                    "id": "3c9d2f23-dda4-486e-b2cf-68c026d4e09c",
+                    "path": "<Keyboard>/leftArrow",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Choice1",
+                    "action": "ChoicePrevious",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
                 {
                     "name": "",
-                    "id": "01693f5e-f532-46a6-ba0b-1c9774ef6c7a",
-                    "path": "<Keyboard>/2",
+                    "id": "eae59c38-05b9-48e8-87ff-ba6663236be9",
+                    "path": "<Gamepad>/dpad/left",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Choice2",
+                    "action": "ChoicePrevious",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
                 {
                     "name": "",
-                    "id": "fe86ccf8-7321-4e2b-94af-48852ea1b331",
-                    "path": "<Keyboard>/numpad2",
+                    "id": "74dc0009-9d94-45e3-afe5-f0eadd972367",
+                    "path": "<Keyboard>/d",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Choice2",
+                    "action": "ChoiceNext",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
                 {
                     "name": "",
-                    "id": "9ef0e65c-664e-4b06-96ff-2aabc1298705",
-                    "path": "<Keyboard>/3",
+                    "id": "f3c3086c-7d9e-4dea-9acd-61fd73eecbeb",
+                    "path": "<Keyboard>/rightArrow",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Choice3",
+                    "action": "ChoiceNext",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
                 {
                     "name": "",
-                    "id": "c5345f90-23d0-4220-bc80-8cb6df0726ba",
-                    "path": "<Keyboard>/numpad3",
+                    "id": "98187202-b035-4c8f-8bb9-c2b45fb7e9bc",
+                    "path": "<Gamepad>/dpad/right",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Choice3",
+                    "action": "ChoiceNext",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "f2e3f2be-a575-4567-8c1a-753d0d625b31",
+                    "path": "<Keyboard>/f",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Confirm",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "d3f3ce22-811f-42dc-8cb4-82158ceda93b",
+                    "path": "<Keyboard>/enter",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Confirm",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "eb735401-a59a-4f9b-aa24-eae298df899d",
+                    "path": "<Keyboard>/space",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Confirm",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "ff5b93e0-f641-46ea-9c16-b9157323f50c",
+                    "path": "<Gamepad>/buttonSouth",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Confirm",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
