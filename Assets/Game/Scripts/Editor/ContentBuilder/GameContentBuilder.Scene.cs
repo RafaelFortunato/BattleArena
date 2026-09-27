@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using BattleArena.Combat;
 using BattleArena.Core;
 using BattleArena.Enemies;
@@ -28,6 +29,22 @@ namespace BattleArena.Editor.ContentBuilder
         private const int LayoutSeed = 1337;
 
         private static readonly Vector3[] ShrinePositions = { new(-18f, 0f, 14f), new(20f, 0f, -16f) };
+
+        // Autumn churchyard layout. The dirt paths model radiates from the well to the shrines and arena edges.
+        private static readonly Vector3 WellPosition = new(-4f, 0f, 3f);
+        private static readonly (Vector3 center, float length, float yaw)[] RuinWalls =
+        {
+            (new Vector3(-25f, 0f, 24f), 12f, 8f),
+            (new Vector3(28f, 0f, 8f), 12f, 82f),
+            (new Vector3(-8f, 0f, -28f), 6f, -6f),
+        };
+        private static readonly (Vector3 center, float yaw)[] GraveGroups =
+        {
+            (new Vector3(13f, 0f, 14f), 12f),
+            (new Vector3(-26f, 0f, -8f), -80f),
+            (new Vector3(12f, 0f, -26f), 4f),
+            (new Vector3(-4f, 0f, 26f), -6f),
+        };
 
         private static void BuildScene(Scene scene, MaterialSet m, ContentSet content)
         {
@@ -130,36 +147,66 @@ namespace BattleArena.Editor.ContentBuilder
             floorCollider.center = new Vector3(0f, -0.25f, 0f);
             floorCollider.size = new Vector3(ArenaHalfSize * 2f, 0.5f, ArenaHalfSize * 2f);
 
-            // Flat decoration (no colliders)
-            AddVisual(root, PrimitiveType.Cylinder, m.Stone, new Vector3(0f, 0.02f, 0f), new Vector3(18f, 0.02f, 18f), name: "CentralPlaza");
-            AddVisual(root, PrimitiveType.Cylinder, m.GroundPatch, new Vector3(0f, 0.03f, 0f), new Vector3(15f, 0.02f, 15f), name: "PlazaInlay");
+            // Props are prefab instances so their art can be replaced in one place.
+            var props = BuildEnvironmentProps(m);
+            // Blender's FBX export turns models 180° around the vertical axis; undo it so the paths meet the well.
+            PlaceProp(props.GroundPaths, root, Vector3.zero, 180f, Vector3.one);
+            PlaceProp(props.Well, root, WellPosition, 20f, Vector3.one);
 
-            // Walls
+            var walls = new GameObject("Walls").transform;
+            walls.SetParent(root, false);
             var wallLength = ArenaHalfSize * 2f + 4f;
-            GameObject[] walls =
+            PlaceWall(props.WallSegment, walls, new Vector3(0f, 0f, ArenaHalfSize + 1f), wallLength, 0f);
+            PlaceWall(props.WallSegment, walls, new Vector3(0f, 0f, -ArenaHalfSize - 1f), wallLength, 0f);
+            PlaceWall(props.WallSegment, walls, new Vector3(ArenaHalfSize + 1f, 0f, 0f), wallLength, 90f);
+            PlaceWall(props.WallSegment, walls, new Vector3(-ArenaHalfSize - 1f, 0f, 0f), wallLength, 90f);
+
+            // Only large, readable obstacles: small clutter would eat projectiles in the middle of a fight.
+            var random = new System.Random(LayoutSeed);
+            var reserved = new List<(Vector3 position, float radius)> { (WellPosition, 7f) };
+            foreach (var shrine in ShrinePositions)
+                reserved.Add((shrine, 5f));
+
+            var landmarks = new GameObject("Landmarks").transform;
+            landmarks.SetParent(root, false);
+            foreach (var (center, length, yaw) in RuinWalls)
             {
-                AddSolid(root, PrimitiveType.Cube, m.Wall, new Vector3(0f, 1.5f, ArenaHalfSize + 1f), new Vector3(wallLength, 3f, 2f), "WallNorth"),
-                AddSolid(root, PrimitiveType.Cube, m.Wall, new Vector3(0f, 1.5f, -ArenaHalfSize - 1f), new Vector3(wallLength, 3f, 2f), "WallSouth"),
-                AddSolid(root, PrimitiveType.Cube, m.Wall, new Vector3(ArenaHalfSize + 1f, 1.5f, 0f), new Vector3(2f, 3f, wallLength), "WallEast"),
-                AddSolid(root, PrimitiveType.Cube, m.Wall, new Vector3(-ArenaHalfSize - 1f, 1.5f, 0f), new Vector3(2f, 3f, wallLength), "WallWest"),
-            };
-            // Wall tops are wide enough to bake as walkable islands; exclude them.
-            foreach (var wall in walls)
-            {
-                var modifier = wall.AddComponent<NavMeshModifier>();
-                modifier.overrideArea = true;
-                modifier.area = NavMesh.GetAreaFromName("Not Walkable");
+                PlaceWall(props.WallSegment, landmarks, center, length, yaw);
+                reserved.Add((center, length * 0.5f + 3f));
             }
 
-            // Scattered obstacles, deterministic so the layout is stable between rebuilds.
-            var random = new System.Random(LayoutSeed);
+            // A few big grave markers in small groups rather than a field of little headstones.
+            foreach (var (center, yaw) in GraveGroups)
+            {
+                var right = Quaternion.Euler(0f, yaw, 0f) * Vector3.right;
+                for (var i = -1; i <= 1; i++)
+                {
+                    var marker = i == 0 ? props.Headstone : props.CelticCross;
+                    // +180°: the carved face of the imported markers points away from the camera otherwise.
+                    PlaceProp(marker, landmarks, center + right * (i * 2.6f), yaw + 180f + Range(random, -8f, 8f), Vector3.one);
+                }
+                reserved.Add((center, 6f));
+            }
+
             var obstacles = new GameObject("Obstacles").transform;
             obstacles.SetParent(root, false);
+            PlaceObstacles(random, 16, reserved, position => PlaceProp(props.AutumnTree, obstacles, position, Range(random, 0f, 360f),
+                Vector3.one * Range(random, 0.95f, 1.25f)));
+            PlaceObstacles(random, 4, reserved, position => PlaceProp(props.LanternPine, obstacles, position, Range(random, 0f, 360f),
+                Vector3.one * Range(random, 0.95f, 1.15f)));
+            PlaceObstacles(random, 5, reserved, position => PlaceProp(props.Boulder, obstacles, position, Range(random, 0f, 360f),
+                Vector3.one * Range(random, 1.8f, 2.4f)));
+            PlaceObstacles(random, 3, reserved, position => PlaceProp(props.Slab, obstacles, position, Range(random, 0f, 360f),
+                Vector3.one * Range(random, 1.8f, 2.2f)));
 
-            PlaceObstacles(random, 22, position => AddRock(obstacles, m, random, position));
-            PlaceObstacles(random, 18, position => AddTree(obstacles, m, position));
-            PlaceObstacles(random, 8, position => AddSolid(obstacles, PrimitiveType.Cube, m.Stone,
-                position + Vector3.up * 1.5f, new Vector3(1.2f, 3f, 1.2f), "Pillar", new Vector3(0f, (float)random.NextDouble() * 90f, 0f)));
+            // Leaf litter is flat decoration and may sit anywhere.
+            var decoration = new GameObject("Decoration").transform;
+            decoration.SetParent(root, false);
+            for (var i = 0; i < 22; i++)
+            {
+                var position = new Vector3(Range(random, -1f, 1f), 0f, Range(random, -1f, 1f)) * (ArenaHalfSize - 2f);
+                PlaceProp(props.LeafLitter, decoration, position, Range(random, 0f, 360f), Vector3.one * Range(random, 1f, 1.6f));
+            }
 
             foreach (var renderer in environment.GetComponentsInChildren<Renderer>())
                 GameObjectUtility.SetStaticEditorFlags(renderer.gameObject, StaticEditorFlags.BatchingStatic);
@@ -167,46 +214,34 @@ namespace BattleArena.Editor.ContentBuilder
             return environment;
         }
 
-        private static void PlaceObstacles(System.Random random, int count, System.Action<Vector3> place)
+        /// <summary>Scatters props away from the spawn area, reserved spots and each other.</summary>
+        private static void PlaceObstacles(System.Random random, int count, List<(Vector3 position, float radius)> reserved,
+            System.Action<Vector3> place)
         {
             const float margin = 4f;
+            const float spacing = 3.5f;
             var placed = 0;
-            for (var attempt = 0; placed < count && attempt < count * 20; attempt++)
+            for (var attempt = 0; placed < count && attempt < count * 30; attempt++)
             {
                 var x = (float)(random.NextDouble() * 2 - 1) * (ArenaHalfSize - margin);
                 var z = (float)(random.NextDouble() * 2 - 1) * (ArenaHalfSize - margin);
                 var position = new Vector3(x, 0f, z);
 
-                if (position.magnitude < 11f || IsNear(position, ShrinePositions, 5f))
+                if (position.magnitude < 11f || IsReserved(position, reserved))
                     continue;
 
                 place(position);
+                reserved.Add((position, spacing));
                 placed++;
             }
         }
 
-        private static bool IsNear(Vector3 position, Vector3[] points, float distance)
+        private static bool IsReserved(Vector3 position, List<(Vector3 position, float radius)> reserved)
         {
-            foreach (var point in points)
-                if ((point - position).sqrMagnitude < distance * distance)
+            foreach (var (point, radius) in reserved)
+                if ((point - position).sqrMagnitude < radius * radius)
                     return true;
             return false;
-        }
-
-        private static void AddRock(Transform parent, MaterialSet m, System.Random random, Vector3 position)
-        {
-            var scale = new Vector3(Range(random, 1.8f, 3.6f), Range(random, 1.2f, 2.4f), Range(random, 1.8f, 3.6f));
-            AddSolid(parent, PrimitiveType.Sphere, m.Stone, position + Vector3.up * scale.y * 0.3f, scale, "Rock",
-                new Vector3(0f, Range(random, 0f, 360f), 0f));
-        }
-
-        private static void AddTree(Transform parent, MaterialSet m, Vector3 position)
-        {
-            var tree = new GameObject("Tree").transform;
-            tree.SetParent(parent, false);
-            tree.localPosition = position;
-            AddSolid(tree, PrimitiveType.Cylinder, m.Wood, new Vector3(0f, 1.2f, 0f), new Vector3(0.6f, 1.2f, 0.6f), "Trunk");
-            AddVisual(tree, PrimitiveType.Sphere, m.Leaves, new Vector3(0f, 3.3f, 0f), new Vector3(3f, 2.6f, 3f), name: "Canopy");
         }
 
         private static float Range(System.Random random, float min, float max) => min + (float)random.NextDouble() * (max - min);

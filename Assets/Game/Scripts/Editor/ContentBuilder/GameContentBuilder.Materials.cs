@@ -10,6 +10,9 @@ namespace BattleArena.Editor.ContentBuilder
         private sealed class MaterialSet
         {
             public Material Ground, GroundPatch, Stone, Wall, Wood, Leaves, Gold;
+            public Material PineBark, PineNeedles, PineNeedlesDark, LanternIron, LanternGlow;
+            public Material PropStone, PropStoneDark, PropStoneLight, GraveStone, Moss, Slate, WellWater, Dirt;
+            public Material AutumnWood, LeafRust, LeafRustDark, LeafOchre, RockStone, RockMoss;
             public Material PlayerRobe, PlayerSkin, PlayerHat, StaffGlow;
             public Material Grunt, Runner, Brute, Boss, EnemyEyes;
             public Material Bat, Archer, Wisp, Bomber, Shaman, Boar, Beetle, Slime, Wyvern;
@@ -27,13 +30,38 @@ namespace BattleArena.Editor.ContentBuilder
         {
             return new MaterialSet
             {
-                Ground = Lit("Ground", Hex("#4E6B3F"), smoothness: 0.05f),
+                // Painted grass tiles every ~8 m across the 100 m ground plane.
+                Ground = Lit("Ground", Color.white, smoothness: 0.05f, baseMap: LoadTexture(GroundTexturePath), tiling: new Vector2(12f, 12f)),
                 GroundPatch = Lit("GroundPatch", Hex("#3F5A33"), smoothness: 0.05f),
                 Stone = Lit("Stone", Hex("#8A8D93"), smoothness: 0.15f),
                 Wall = Lit("Wall", Hex("#5A5C66"), smoothness: 0.1f),
                 Wood = Lit("Wood", Hex("#7A4E2A"), smoothness: 0.2f),
                 Leaves = Lit("Leaves", Hex("#2F6B3A"), smoothness: 0.05f),
                 Gold = Lit("Gold", Hex("#E2B243"), smoothness: 0.6f, metallic: 0.8f),
+
+                // Lantern pine (Blender model); slot order matches the FBX sub-meshes.
+                // A touch lighter than the Blender source so they still read as teal under the arena's daylight.
+                PineBark = Lit("PineBark", Hex("#3A3245"), smoothness: 0.1f),
+                PineNeedles = Lit("PineNeedles", Hex("#3F7480"), smoothness: 0.15f),
+                PineNeedlesDark = Lit("PineNeedlesDark", Hex("#2A5264"), smoothness: 0.15f),
+                LanternIron = Lit("LanternIron", Hex("#1A181E"), smoothness: 0.5f, metallic: 0.6f),
+                LanternGlow = Lit("LanternGlow", Hex("#FFE3A0"), emission: Hex("#FFB14A") * 7f),
+
+                // Autumn churchyard props (Blender models); muted, slightly warm.
+                PropStone = Lit("PropStone", Hex("#8E8A82"), smoothness: 0.1f),
+                PropStoneDark = Lit("PropStoneDark", Hex("#6C6862"), smoothness: 0.1f),
+                PropStoneLight = Lit("PropStoneLight", Hex("#A6A298"), smoothness: 0.1f),
+                GraveStone = Lit("GraveStone", Hex("#9A968D"), smoothness: 0.1f),
+                Moss = Lit("Moss", Hex("#66714A"), smoothness: 0.05f),
+                Slate = Lit("Slate", Hex("#4A4852"), smoothness: 0.25f),
+                WellWater = Lit("WellWater", Hex("#1F2E33"), smoothness: 0.85f),
+                Dirt = Lit("Dirt", Hex("#6E614B"), smoothness: 0.05f),
+                AutumnWood = Lit("AutumnWood", Hex("#6B4A30"), smoothness: 0.1f),
+                LeafRust = Lit("LeafRust", Hex("#9A6440"), smoothness: 0.1f),
+                LeafRustDark = Lit("LeafRustDark", Hex("#74492F"), smoothness: 0.1f),
+                LeafOchre = Lit("LeafOchre", Hex("#A88650"), smoothness: 0.1f),
+                RockStone = Lit("RockStone", Hex("#716C66"), smoothness: 0.1f),
+                RockMoss = Lit("RockMoss", Hex("#5F6A45"), smoothness: 0.05f),
 
                 PlayerRobe = Lit("PlayerRobe", Hex("#3560C9"), smoothness: 0.25f),
                 PlayerSkin = Lit("PlayerSkin", Hex("#F0C8A0"), smoothness: 0.3f),
@@ -90,12 +118,15 @@ namespace BattleArena.Editor.ContentBuilder
             };
         }
 
-        private static Material Lit(string name, Color baseColor, float smoothness = 0.3f, float metallic = 0f, Color? emission = null)
+        private static Material Lit(string name, Color baseColor, float smoothness = 0.3f, float metallic = 0f, Color? emission = null,
+            Texture2D baseMap = null, Vector2? tiling = null)
         {
             var material = LoadOrCreateMaterial(name, "Universal Render Pipeline/Lit");
             material.SetColor("_BaseColor", baseColor);
             material.SetFloat("_Smoothness", smoothness);
             material.SetFloat("_Metallic", metallic);
+            material.SetTexture("_BaseMap", baseMap);
+            material.SetTextureScale("_BaseMap", tiling ?? Vector2.one);
 
             if (emission.HasValue)
             {
@@ -186,6 +217,23 @@ namespace BattleArena.Editor.ContentBuilder
             material = new Material(shader) { name = name };
             AssetDatabase.CreateAsset(material, path);
             return material;
+        }
+
+        /// <summary>Tiling colour texture: repeat wrap, mipmaps and some anisotropy for the tilted camera.</summary>
+        private static Texture2D LoadTexture(string path)
+        {
+            if (AssetImporter.GetAtPath(path) is not TextureImporter importer)
+                return null;
+
+            if (importer.wrapMode != TextureWrapMode.Repeat || importer.anisoLevel != 4 || importer.maxTextureSize != 1024)
+            {
+                importer.wrapMode = TextureWrapMode.Repeat;
+                importer.anisoLevel = 4;
+                importer.maxTextureSize = 1024;
+                importer.mipmapEnabled = true;
+                importer.SaveAndReimport();
+            }
+            return AssetDatabase.LoadAssetAtPath<Texture2D>(path);
         }
 
         private static Color Hex(string hex) => ColorUtility.TryParseHtmlString(hex, out var color) ? color : Color.magenta;
