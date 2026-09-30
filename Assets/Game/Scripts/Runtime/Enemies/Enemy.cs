@@ -1,3 +1,4 @@
+using System;
 using BattleArena.Combat;
 using BattleArena.Core;
 using BattleArena.Pickups;
@@ -60,6 +61,12 @@ namespace BattleArena.Enemies
         /// <summary>Movement speed after slows and overrides. Flyers read this since they bypass the agent.</summary>
         public float CurrentSpeed { get; private set; }
 
+        /// <summary>
+        /// Raised when an attack starts, with the seconds until it lands (0 for an instant hit), so visuals can
+        /// time the swing.
+        /// </summary>
+        public event Action<float> AttackStarted;
+
         private void Awake()
         {
             _agent = GetComponent<NavMeshAgent>();
@@ -70,7 +77,7 @@ namespace BattleArena.Enemies
             _health.Damaged += OnDamaged;
             _health.Died += OnDied;
             // Spread agents across priorities so crowds resolve avoidance more naturally.
-            _agent.avoidancePriority = Random.Range(30, 70);
+            _agent.avoidancePriority = UnityEngine.Random.Range(30, 70);
         }
 
         private void OnDestroy()
@@ -141,6 +148,9 @@ namespace BattleArena.Enemies
         }
 
         // ---------------------------------------------------------------- Control API for behaviours
+
+        /// <summary>Tells visuals an attack is starting; it lands after <paramref name="secondsToImpact"/>.</summary>
+        public void NotifyAttack(float secondsToImpact) => AttackStarted?.Invoke(secondsToImpact);
 
         /// <summary>Suspends the movement component so an attack can drive the enemy.</summary>
         public void Hold(bool stopMoving = true)

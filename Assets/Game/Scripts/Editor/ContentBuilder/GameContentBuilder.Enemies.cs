@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using BattleArena.Combat;
 using BattleArena.Core;
 using BattleArena.Enemies;
@@ -64,50 +65,23 @@ namespace BattleArena.Editor.ContentBuilder
             var warlordSlam = BuildStrike("WarlordSlam", m.StrikeEnemyRing, m.StrikeEnemyFill, bombBlast, null);
 
             // --- Melee chasers
-            var grunt = Define("Grunt", "Goblin Grunt", SaveEnemy(Melee(kit, "Grunt", 1f, 2.3f, v => Humanoid(v, m.Grunt, m))),
+            var grunt = Define("Grunt", "Goblin Grunt", SaveEnemy(Melee(kit, "Grunt", 1f, 2.3f, v => Monster(v, new MonsterSpec("Orc", 1.75f, 3.2f, attack: "Weapon"), m, "Grunt"))),
                 health: 18f, speed: 3.2f, damage: 5f, range: 1.3f, cooldown: 1f, xp: 1);
 
-            var runner = Define("Runner", "Swift Imp", SaveEnemy(Melee(kit, "Runner", 0.75f, 2.3f, v =>
-                {
-                    var body = Humanoid(v, m.Runner, m);
-                    AddVisual(v, PrimitiveType.Cube, m.Runner, new Vector3(-0.3f, 1.85f, 0f), new Vector3(0.1f, 0.35f, 0.1f), new Vector3(0f, 0f, 20f), "EarL");
-                    AddVisual(v, PrimitiveType.Cube, m.Runner, new Vector3(0.3f, 1.85f, 0f), new Vector3(0.1f, 0.35f, 0.1f), new Vector3(0f, 0f, -20f), "EarR");
-                    return body;
-                })),
+            var runner = Define("Runner", "Swift Imp", SaveEnemy(Melee(kit, "Runner", 0.75f, 2.3f, v => Monster(v, new MonsterSpec("Demon", 1.8f, 5.2f, move: "Run"), m, "Runner"))),
                 health: 10f, speed: 5.2f, damage: 4f, range: 1.1f, cooldown: 0.8f, xp: 1);
 
-            var brute = Define("Brute", "Ogre Brute", SaveEnemy(Melee(kit, "Brute", 1.5f, 2.3f, v =>
-                {
-                    var body = Humanoid(v, m.Brute, m);
-                    AddVisual(v, PrimitiveType.Cube, m.Stone, new Vector3(-0.35f, 1.75f, 0.1f), new Vector3(0.12f, 0.3f, 0.12f), new Vector3(0f, 0f, 30f), "HornL");
-                    AddVisual(v, PrimitiveType.Cube, m.Stone, new Vector3(0.35f, 1.75f, 0.1f), new Vector3(0.12f, 0.3f, 0.12f), new Vector3(0f, 0f, -30f), "HornR");
-                    AddVisual(v, PrimitiveType.Sphere, m.Brute, new Vector3(-0.55f, 1.1f, 0f), Vector3.one * 0.4f, name: "FistL");
-                    AddVisual(v, PrimitiveType.Sphere, m.Brute, new Vector3(0.55f, 1.1f, 0f), Vector3.one * 0.4f, name: "FistR");
-                    return body;
-                })),
+            var brute = Define("Brute", "Ogre Brute", SaveEnemy(Melee(kit, "Brute", 1.5f, 2.3f, v => Monster(v, new MonsterSpec("Yeti", 1.75f, 2.3f), m, "Brute"))),
                 health: 75f, speed: 2.3f, damage: 14f, range: 2f, cooldown: 1.4f, xp: 4);
 
             // --- Swarm Bat: fast, weaves side to side while closing in.
-            var batRoot = NewEnemy(kit, "SwarmBat", 0.9f, 2.1f, v =>
-            {
-                var body = AddVisual(v, PrimitiveType.Sphere, m.Bat, new Vector3(0f, 1.3f, 0f), Vector3.one * 0.6f, name: "Body");
-                AddVisual(v, PrimitiveType.Cube, m.Bat, new Vector3(-0.5f, 1.4f, 0f), new Vector3(0.8f, 0.06f, 0.4f), new Vector3(0f, 0f, 25f), "WingL");
-                AddVisual(v, PrimitiveType.Cube, m.Bat, new Vector3(0.5f, 1.4f, 0f), new Vector3(0.8f, 0.06f, 0.4f), new Vector3(0f, 0f, -25f), "WingR");
-                AddEyes(v, m, new Vector3(0f, 1.4f, 0.26f), 0.12f, 0.12f);
-                return body.GetComponent<Renderer>();
-            });
+            var batRoot = NewEnemy(kit, "SwarmBat", 0.9f, 2.1f, v => Monster(v, MonsterSpec.Flyer("Armabee", 1.0f, 0.6f, 6f), m, "SwarmBat"));
             Behaviour<ZigZagMovement>(batRoot, ("amplitude", 2.5f), ("frequency", 1.1f));
             batRoot.AddComponent<ContactAttack>();
             var bat = Define("SwarmBat", "Swarm Bat", SaveEnemy(batRoot), health: 8f, speed: 6f, damage: 3f, range: 1.1f, cooldown: 0.8f, xp: 1);
 
             // --- Goblin Archer: keeps its distance and fires aimed arrows.
-            var archerRoot = NewEnemy(kit, "GoblinArcher", 0.9f, 2.3f, v =>
-            {
-                var body = Humanoid(v, m.Archer, m);
-                AddVisual(v, PrimitiveType.Cylinder, m.Archer, new Vector3(0f, 1.78f, 0f), new Vector3(0.55f, 0.12f, 0.55f), name: "Hood");
-                AddVisual(v, PrimitiveType.Cylinder, m.Wood, new Vector3(0.45f, 1.1f, 0.25f), new Vector3(0.05f, 0.55f, 0.05f), new Vector3(15f, 0f, 0f), "Bow");
-                return body;
-            });
+            var archerRoot = NewEnemy(kit, "GoblinArcher", 0.9f, 2.3f, v => Monster(v, new MonsterSpec("Tribal", 1.8f, 3.4f, attack: "Weapon"), m, "GoblinArcher"));
             Behaviour<KeepDistanceMovement>(archerRoot, ("preferredDistance", 9f), ("tolerance", 2f));
             Behaviour<ProjectileAttack>(archerRoot,
                 ("range", 13f), ("cooldown", 2.6f), ("windup", 0.55f), ("baseDamage", 8f),
@@ -118,17 +92,7 @@ namespace BattleArena.Editor.ContentBuilder
             var archer = Define("GoblinArcher", "Goblin Archer", SaveEnemy(archerRoot), health: 16f, speed: 3.4f, damage: 3f, range: 1.2f, cooldown: 1f, xp: 2);
 
             // --- Arcane Wisp: circles the player and fires a three-bolt spread.
-            var wispRoot = NewEnemy(kit, "ArcaneWisp", 1f, 2.4f, v =>
-            {
-                var core = AddVisual(v, PrimitiveType.Sphere, m.Wisp, new Vector3(0f, 1.4f, 0f), Vector3.one * 0.8f, name: "Core");
-                for (var i = 0; i < 3; i++)
-                {
-                    var angle = i * 120f * Mathf.Deg2Rad;
-                    DisableShadows(AddVisual(v, PrimitiveType.Sphere, m.WispBolt, new Vector3(Mathf.Sin(angle) * 0.65f, 1.4f, Mathf.Cos(angle) * 0.65f),
-                        Vector3.one * 0.2f, name: $"Mote{i}"));
-                }
-                return core.GetComponent<Renderer>();
-            });
+            var wispRoot = NewEnemy(kit, "ArcaneWisp", 1f, 2.4f, v => Monster(v, MonsterSpec.Flyer("Ghost", 1.35f, 0.35f, 4.2f, attack: "Punch"), m, "ArcaneWisp"));
             Behaviour<OrbitMovement>(wispRoot, ("radius", 7.5f), ("leadAngle", 35f));
             Behaviour<ProjectileAttack>(wispRoot,
                 ("range", 11f), ("cooldown", 3f), ("windup", 0.45f), ("baseDamage", 6f),
@@ -139,12 +103,7 @@ namespace BattleArena.Editor.ContentBuilder
             var wisp = Define("ArcaneWisp", "Arcane Wisp", SaveEnemy(wispRoot), health: 14f, speed: 4.2f, damage: 3f, range: 1.1f, cooldown: 1f, xp: 2);
 
             // --- Goblin Bomber: lobs bombs that land where the player stood.
-            var bomberRoot = NewEnemy(kit, "GoblinBomber", 1f, 2.3f, v =>
-            {
-                var body = Humanoid(v, m.Bomber, m);
-                AddVisual(v, PrimitiveType.Sphere, m.BombBody, new Vector3(0f, 1.2f, -0.45f), Vector3.one * 0.55f, name: "Backpack");
-                return body;
-            });
+            var bomberRoot = NewEnemy(kit, "GoblinBomber", 1f, 2.3f, v => Monster(v, new MonsterSpec("Monkroose", 1.75f, 3.1f, attack: "Weapon"), m, "GoblinBomber"));
             Behaviour<KeepDistanceMovement>(bomberRoot, ("preferredDistance", 10f), ("tolerance", 2f));
             Behaviour<LobbedBombAttack>(bomberRoot,
                 ("range", 14f), ("cooldown", 3.6f), ("windup", 0.6f), ("baseDamage", 14f),
@@ -155,14 +114,7 @@ namespace BattleArena.Editor.ContentBuilder
             var bomber = Define("GoblinBomber", "Goblin Bomber", SaveEnemy(bomberRoot), health: 22f, speed: 3.1f, damage: 4f, range: 1.2f, cooldown: 1f, xp: 3);
 
             // --- Dark Shaman: stays far back and curses the ground around the player.
-            var shamanRoot = NewEnemy(kit, "DarkShaman", 1.1f, 2.4f, v =>
-            {
-                var body = Humanoid(v, m.Shaman, m);
-                AddVisual(v, PrimitiveType.Cube, m.Stone, new Vector3(0f, 1.4f, 0.42f), new Vector3(0.35f, 0.3f, 0.08f), name: "Mask");
-                AddVisual(v, PrimitiveType.Cylinder, m.Wood, new Vector3(0.5f, 1.05f, 0.2f), new Vector3(0.06f, 1f, 0.06f), name: "Staff");
-                DisableShadows(AddVisual(v, PrimitiveType.Sphere, m.CurseGlow, new Vector3(0.5f, 2.1f, 0.2f), Vector3.one * 0.25f, name: "StaffOrb"));
-                return body;
-            });
+            var shamanRoot = NewEnemy(kit, "DarkShaman", 1.1f, 2.4f, v => Monster(v, new MonsterSpec("BlueDemon", 1.85f, 2.5f, attack: "Weapon"), m, "DarkShaman"));
             Behaviour<KeepDistanceMovement>(shamanRoot, ("preferredDistance", 12f), ("tolerance", 2.5f));
             Behaviour<GroundStrikeAttack>(shamanRoot,
                 ("range", 15f), ("cooldown", 4.5f), ("windup", 0.8f), ("baseDamage", 16f),
@@ -172,15 +124,7 @@ namespace BattleArena.Editor.ContentBuilder
             var shaman = Define("DarkShaman", "Dark Shaman", SaveEnemy(shamanRoot), health: 36f, speed: 2.5f, damage: 4f, range: 1.2f, cooldown: 1f, xp: 4);
 
             // --- Boar Charger: telegraphs a line, then dashes along it.
-            var boarRoot = NewEnemy(kit, "BoarCharger", 1f, 1.9f, v =>
-            {
-                var body = AddVisual(v, PrimitiveType.Cube, m.Boar, new Vector3(0f, 0.65f, 0f), new Vector3(0.9f, 0.8f, 1.5f), name: "Body");
-                AddVisual(v, PrimitiveType.Cube, m.Boar, new Vector3(0f, 0.8f, 0.9f), new Vector3(0.65f, 0.6f, 0.55f), name: "Head");
-                AddVisual(v, PrimitiveType.Cube, m.Stone, new Vector3(-0.22f, 0.6f, 1.2f), new Vector3(0.08f, 0.08f, 0.3f), new Vector3(-20f, 0f, 0f), "TuskL");
-                AddVisual(v, PrimitiveType.Cube, m.Stone, new Vector3(0.22f, 0.6f, 1.2f), new Vector3(0.08f, 0.08f, 0.3f), new Vector3(-20f, 0f, 0f), "TuskR");
-                AddEyes(v, m, new Vector3(0f, 0.95f, 1.16f), 0.18f, 0.12f);
-                return body.GetComponent<Renderer>();
-            });
+            var boarRoot = NewEnemy(kit, "BoarCharger", 1f, 1.9f, v => Monster(v, new MonsterSpec("Dino", 1.5f, 3.3f, move: "Run"), m, "BoarCharger"));
             boarRoot.AddComponent<ChaseMovement>();
             boarRoot.AddComponent<ContactAttack>();
             Behaviour<DashAttack>(boarRoot,
@@ -190,13 +134,7 @@ namespace BattleArena.Editor.ContentBuilder
             var boar = Define("BoarCharger", "Boar Charger", SaveEnemy(boarRoot), health: 45f, speed: 3.3f, damage: 8f, range: 1.6f, cooldown: 1.2f, xp: 3);
 
             // --- Bomb Beetle: rushes in and explodes after a short fuse.
-            var beetleRoot = NewEnemy(kit, "BombBeetle", 0.85f, 1.4f, v =>
-            {
-                var shell = AddVisual(v, PrimitiveType.Sphere, m.Beetle, new Vector3(0f, 0.4f, 0f), new Vector3(1.1f, 0.6f, 1.3f), name: "Shell");
-                DisableShadows(AddVisual(v, PrimitiveType.Sphere, m.WindupGlow, new Vector3(0f, 0.68f, -0.1f), new Vector3(0.5f, 0.25f, 0.6f), name: "PowderSac"));
-                AddEyes(v, m, new Vector3(0f, 0.45f, 0.6f), 0.15f, 0.12f);
-                return shell.GetComponent<Renderer>();
-            });
+            var beetleRoot = NewEnemy(kit, "BombBeetle", 0.85f, 1.4f, v => Monster(v, MonsterSpec.Blob("GreenSpikyBlob", 0.95f, 4.4f), m, "BombBeetle"));
             beetleRoot.AddComponent<ChaseMovement>();
             Behaviour<SelfDestructAttack>(beetleRoot,
                 ("range", 2.4f), ("cooldown", 5f), ("windup", 0.9f), ("baseDamage", 22f),
@@ -205,47 +143,25 @@ namespace BattleArena.Editor.ContentBuilder
             var beetle = Define("BombBeetle", "Bomb Beetle", SaveEnemy(beetleRoot), health: 12f, speed: 4.4f, damage: 0f, range: 1f, cooldown: 1f, xp: 2);
 
             // --- Slimes: the big one splits into two small ones.
-            var smallSlime = Define("SmallSlime", "Slimeling", SaveEnemy(Melee(kit, "SmallSlime", 0.7f, 1.5f, v => SlimeBody(v, m))),
+            var smallSlime = Define("SmallSlime", "Slimeling", SaveEnemy(Melee(kit, "SmallSlime", 0.7f, 1.5f, v => Monster(v, MonsterSpec.Blob("PinkBlob", 1.05f, 3.4f), m, "SmallSlime"))),
                 health: 14f, speed: 3.4f, damage: 4f, range: 1.1f, cooldown: 1f, xp: 1);
-            var bigSlimeRoot = Melee(kit, "BigSlime", 1.35f, 1.5f, v => SlimeBody(v, m));
+            var bigSlimeRoot = Melee(kit, "BigSlime", 1.35f, 1.5f, v => Monster(v, MonsterSpec.Blob("GreenBlob", 1.1f, 2.1f), m, "BigSlime"));
             Behaviour<SplitOnDeath>(bigSlimeRoot, ("splitInto", smallSlime), ("count", 2), ("spread", 1.2f));
             var bigSlime = Define("BigSlime", "Giant Slime", SaveEnemy(bigSlimeRoot), health: 55f, speed: 2.1f, damage: 9f, range: 1.8f, cooldown: 1.2f, xp: 3);
 
             // --- Storm Wyvern: flies over obstacles faster than the player, but turns very slowly.
-            var wyvernRoot = NewEnemy(kit, "StormWyvern", 1f, 3f, v =>
-            {
-                var body = AddVisual(v, PrimitiveType.Capsule, m.Wyvern, new Vector3(0f, 2f, 0f), new Vector3(0.5f, 0.7f, 0.5f), new Vector3(90f, 0f, 0f), "Body");
-                AddVisual(v, PrimitiveType.Sphere, m.Wyvern, new Vector3(0f, 2.1f, 0.75f), Vector3.one * 0.42f, name: "Head");
-                AddVisual(v, PrimitiveType.Cube, m.Wyvern, new Vector3(-0.9f, 2.1f, -0.1f), new Vector3(1.6f, 0.05f, 0.6f), new Vector3(0f, 0f, 15f), "WingL");
-                AddVisual(v, PrimitiveType.Cube, m.Wyvern, new Vector3(0.9f, 2.1f, -0.1f), new Vector3(1.6f, 0.05f, 0.6f), new Vector3(0f, 0f, -15f), "WingR");
-                AddVisual(v, PrimitiveType.Cube, m.Wyvern, new Vector3(0f, 2f, -0.9f), new Vector3(0.12f, 0.12f, 0.8f), name: "Tail");
-                AddEyes(v, m, new Vector3(0f, 2.18f, 0.93f), 0.12f, 0.1f);
-                return body.GetComponent<Renderer>();
-            }, flying: true);
+            var wyvernRoot = NewEnemy(kit, "StormWyvern", 1f, 3f, v => Monster(v, MonsterSpec.Flyer("Dragon", 1.3f, 1.0f, 9.5f), m, "StormWyvern"), flying: true);
             Behaviour<FlyingMovement>(wyvernRoot, ("turnRateDegrees", 75f), ("arenaHalfExtent", ArenaHalfSize - 1.5f));
             wyvernRoot.AddComponent<ContactAttack>();
             var wyvern = Define("StormWyvern", "Storm Wyvern", SaveEnemy(wyvernRoot), health: 20f, speed: 9.5f, damage: 9f, range: 1.3f, cooldown: 1f, xp: 3);
 
             // --- Mission targets (never spawned by the schedule)
             var goblinRoot = NewEnemy(kit, "GoldenGoblin", 0.85f, 2.3f, v =>
-            {
-                var body = Humanoid(v, m.Gold, m);
-                AddVisual(v, PrimitiveType.Sphere, m.Wood, new Vector3(0f, 1.15f, -0.45f), new Vector3(0.6f, 0.7f, 0.5f), name: "LootSack");
-                return body;
-            });
+                Monster(v, new MonsterSpec("Orc", 1.75f, 5.8f, move: "Run", attack: "Weapon", material: m.MonsterGold), m, "GoldenGoblin"));
             Behaviour<FleeMovement>(goblinRoot, ("fleeDistance", 14f), ("fleeStep", 6f), ("wanderRadius", 6f));
             var goldenGoblin = Define("GoldenGoblin", "Golden Goblin", SaveEnemy(goblinRoot), health: 90f, speed: 5.8f, damage: 0f, range: 1f, cooldown: 1f, xp: 25);
 
-            var warlordRoot = NewEnemy(kit, "OgreWarlord", 2.1f, 2.4f, v =>
-            {
-                var body = Humanoid(v, m.Brute, m);
-                AddVisual(v, PrimitiveType.Cube, m.Gold, new Vector3(-0.35f, 1.75f, 0.1f), new Vector3(0.12f, 0.35f, 0.12f), new Vector3(0f, 0f, 30f), "HornL");
-                AddVisual(v, PrimitiveType.Cube, m.Gold, new Vector3(0.35f, 1.75f, 0.1f), new Vector3(0.12f, 0.35f, 0.12f), new Vector3(0f, 0f, -30f), "HornR");
-                AddVisual(v, PrimitiveType.Cylinder, m.Gold, new Vector3(0f, 1.05f, 0f), new Vector3(0.95f, 0.06f, 0.95f), name: "Belt");
-                AddVisual(v, PrimitiveType.Sphere, m.Brute, new Vector3(-0.55f, 1.1f, 0f), Vector3.one * 0.42f, name: "FistL");
-                AddVisual(v, PrimitiveType.Sphere, m.Brute, new Vector3(0.55f, 1.1f, 0f), Vector3.one * 0.42f, name: "FistR");
-                return body;
-            });
+            var warlordRoot = NewEnemy(kit, "OgreWarlord", 2.1f, 2.4f, v => Monster(v, new MonsterSpec("Orc_Skull", 1.8f, 2.6f, attack: "Weapon"), m, "OgreWarlord"));
             warlordRoot.AddComponent<ChaseMovement>();
             warlordRoot.AddComponent<ContactAttack>();
             Behaviour<GroundStrikeAttack>(warlordRoot,
@@ -255,19 +171,7 @@ namespace BattleArena.Editor.ContentBuilder
             var warlord = Define("OgreWarlord", "Ogre Warlord", SaveEnemy(warlordRoot), health: 400f, speed: 2.6f, damage: 18f, range: 2.6f, cooldown: 1.3f, xp: 30);
 
             // --- Boss
-            var bossRoot = NewEnemy(kit, "Boss", 2.6f, 0f, v =>
-            {
-                var body = Humanoid(v, m.Boss, m);
-                for (var i = 0; i < 5; i++)
-                {
-                    var angle = i * 72f * Mathf.Deg2Rad;
-                    var offset = new Vector3(Mathf.Sin(angle), 0f, Mathf.Cos(angle)) * 0.3f;
-                    AddVisual(v, PrimitiveType.Cube, m.Gold, new Vector3(offset.x, 1.9f, offset.z), new Vector3(0.1f, 0.3f, 0.1f), name: $"CrownSpike{i}");
-                }
-                AddVisual(v, PrimitiveType.Cylinder, m.Gold, new Vector3(0f, 1.78f, 0f), new Vector3(0.7f, 0.05f, 0.7f), name: "CrownBand");
-                AddVisual(v, PrimitiveType.Sphere, m.BossOrb, new Vector3(0.6f, 1.1f, 0.2f), Vector3.one * 0.3f, name: "HandOrb");
-                return body;
-            });
+            var bossRoot = NewEnemy(kit, "Boss", 2.6f, 0f, v => Monster(v, MonsterSpec.Flyer("Ghost_Skull", 1.6f, 0.25f, 2.7f, attack: "Punch"), m, "Boss"));
             bossRoot.AddComponent<ChaseMovement>();
             bossRoot.AddComponent<ContactAttack>();
             Behaviour<BossController>(bossRoot, ("slamPrefab", bossSlam), ("projectilePrefab", bossOrb),
@@ -346,7 +250,9 @@ namespace BattleArena.Editor.ContentBuilder
             SerializedSetter.For(enemy).Set("experienceGemPrefab", kit.Gem).Set("deathEffect", kit.DeathEffect).Apply();
 
             var flash = root.AddComponent<DamageFlash>();
-            SerializedSetter.For(flash).Set("renderers", new[] { bodyRenderer }).Set("flashMaterial", kit.M.Flash).Apply();
+            var flashRenderers = visual.GetComponentsInChildren<Renderer>().Where(r => r is not ParticleSystemRenderer).ToArray();
+            SerializedSetter.For(flash).Set("renderers", flashRenderers.Length > 0 ? flashRenderers : new[] { bodyRenderer })
+                .Set("flashMaterial", kit.M.Flash).Apply();
 
             if (healthBarHeight > 0f)
                 AddHealthBar(root, kit.M, healthBarHeight);
@@ -381,27 +287,6 @@ namespace BattleArena.Editor.ContentBuilder
             DisableShadows(indicator);
             indicator.SetActive(false);
             return indicator;
-        }
-
-        private static Renderer Humanoid(Transform visual, Material material, MaterialSet m)
-        {
-            var body = AddVisual(visual, PrimitiveType.Capsule, material, new Vector3(0f, 0.9f, 0f), new Vector3(0.9f, 0.9f, 0.9f), name: "Body");
-            AddEyes(visual, m, new Vector3(0f, 1.35f, 0.36f), 0.17f, 0.16f);
-            return body.GetComponent<Renderer>();
-        }
-
-        private static Renderer SlimeBody(Transform visual, MaterialSet m)
-        {
-            var body = AddVisual(visual, PrimitiveType.Sphere, m.Slime, new Vector3(0f, 0.48f, 0f), new Vector3(1.3f, 0.95f, 1.3f), name: "Body");
-            AddEyes(visual, m, new Vector3(0f, 0.7f, 0.55f), 0.22f, 0.14f);
-            return body.GetComponent<Renderer>();
-        }
-
-        private static void AddEyes(Transform visual, MaterialSet m, Vector3 center, float spacing, float size)
-        {
-            // Tiny details don't need shadows; the sphere primitive is comparatively dense.
-            DisableShadows(AddVisual(visual, PrimitiveType.Sphere, m.EnemyEyes, center + Vector3.left * spacing, Vector3.one * size, name: "EyeL"));
-            DisableShadows(AddVisual(visual, PrimitiveType.Sphere, m.EnemyEyes, center + Vector3.right * spacing, Vector3.one * size, name: "EyeR"));
         }
 
         private static Enemy SaveEnemy(GameObject root) => SavePrefab<Enemy>(root, $"{EnemyPrefabsFolder}/{root.name}.prefab");

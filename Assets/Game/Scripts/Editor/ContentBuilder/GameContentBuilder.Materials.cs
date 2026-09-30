@@ -14,8 +14,7 @@ namespace BattleArena.Editor.ContentBuilder
             public Material PropStone, PropStoneDark, PropStoneLight, GraveStone, Moss, Slate, HealingWater, WellDepth, Dirt;
             public Material AutumnWood, LeafRust, LeafRustDark, LeafOchre, RockStone, RockMoss;
             public Material HuskyBody, HuskyCrystal;
-            public Material Grunt, Runner, Brute, Boss, EnemyEyes;
-            public Material Bat, Archer, Wisp, Bomber, Shaman, Boar, Beetle, Slime, Wyvern;
+            public Material MonsterAtlas, MonsterGold;
             public Material WindupGlow, CurseGlow, BombBody, EnemyArrow, WispBolt;
             public Material Flash;
             public Material PlayerBolt, Fireball, BossOrb, Meteor, Gem, ArcaneOrb;
@@ -69,20 +68,9 @@ namespace BattleArena.Editor.ContentBuilder
                 HuskyBody = Lit("WizardHuskyBody", Color.white, smoothness: 0.15f, baseMap: LoadTexture(HuskyAlbedoPath)),
                 HuskyCrystal = Lit("WizardHuskyCrystal", Hex("#B8FFF6"), smoothness: 0.8f, emission: Hex("#3CE8D8") * 3.5f),
 
-                Grunt = Lit("EnemyGrunt", Hex("#7DAE45"), smoothness: 0.2f),
-                Runner = Lit("EnemyRunner", Hex("#D9A534"), smoothness: 0.2f),
-                Brute = Lit("EnemyBrute", Hex("#A8453B"), smoothness: 0.2f),
-                Boss = Lit("EnemyBoss", Hex("#4D2470"), smoothness: 0.35f),
-                EnemyEyes = Lit("EnemyEyes", Hex("#FFE3A0"), emission: Hex("#FF5A2A") * 4f),
-                Bat = Lit("EnemyBat", Hex("#3B2A4A"), smoothness: 0.3f),
-                Archer = Lit("EnemyArcher", Hex("#5E7A3A"), smoothness: 0.2f),
-                Wisp = Lit("EnemyWisp", Hex("#B8F4FF"), emission: Hex("#35C8FF") * 2.5f),
-                Bomber = Lit("EnemyBomber", Hex("#8C8A3C"), smoothness: 0.2f),
-                Shaman = Lit("EnemyShaman", Hex("#3A2455"), smoothness: 0.3f),
-                Boar = Lit("EnemyBoar", Hex("#6B4128"), smoothness: 0.2f),
-                Beetle = Lit("EnemyBeetle", Hex("#5A1414"), smoothness: 0.7f, metallic: 0.3f),
-                Slime = Lit("EnemySlime", Hex("#7CDB4A"), smoothness: 0.85f),
-                Wyvern = Lit("EnemyWyvern", Hex("#2F6F8F"), smoothness: 0.45f),
+                // Quaternius monsters share one flat-colour atlas; the golden goblin tints it gold.
+                MonsterAtlas = Lit("MonsterAtlas", Color.white, smoothness: 0.2f, baseMap: LoadMonsterAtlas()),
+                MonsterGold = Lit("MonsterGold", Hex("#FFD166"), smoothness: 0.6f, metallic: 0.65f, baseMap: LoadMonsterAtlas()),
                 WindupGlow = Lit("EnemyWindupGlow", Hex("#FFB070"), emission: Hex("#FF4A10") * 6f),
                 CurseGlow = Lit("EnemyCurseGlow", Hex("#C8FFB0"), emission: Hex("#4DFF3A") * 4f),
                 BombBody = Lit("BombBody", Hex("#1C1C22"), smoothness: 0.6f),

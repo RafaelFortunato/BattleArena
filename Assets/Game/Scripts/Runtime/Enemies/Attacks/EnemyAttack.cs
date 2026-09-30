@@ -92,6 +92,7 @@ namespace BattleArena.Enemies
                     _phaseEndsAt = context.Now + windup;
                     Owner.Hold();
                     Owner.Face(context.TargetPosition);
+                    Owner.NotifyAttack(windup);
                     SetIndicator(true);
                     OnWindupStarted(context);
                     break;

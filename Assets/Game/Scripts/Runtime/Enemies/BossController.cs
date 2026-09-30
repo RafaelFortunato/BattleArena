@@ -66,6 +66,7 @@ namespace BattleArena.Enemies
         private IEnumerator Slam()
         {
             _enemy.Hold();
+            _enemy.NotifyAttack(0.3f);
             var count = IsEnraged ? slamCount + 2 : slamCount;
 
             // Each strike targets where the player is at that moment, forcing them to keep moving.
@@ -89,6 +90,7 @@ namespace BattleArena.Enemies
             {
                 // Offset alternate rings by half a step so they leave different gaps.
                 var angleOffset = ring % 2 == 0 ? 0f : angleStep * 0.5f;
+                _enemy.NotifyAttack(0f);
                 var origin = projectileOrigin.position;
 
                 for (var i = 0; i < projectilesPerRing; i++)

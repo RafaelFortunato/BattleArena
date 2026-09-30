@@ -32,6 +32,7 @@ namespace BattleArena.Enemies
                 return;
 
             ScaledDamage(definition.ContactDamage).ApplyTo(context.Target);
+            Owner.NotifyAttack(0f);
             _readyAt = context.Now + definition.AttackCooldown;
         }
     }
