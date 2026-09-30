@@ -24,7 +24,7 @@ namespace BattleArena.Editor.ContentBuilder
         /// </summary>
         private sealed class EnvironmentProps
         {
-            public GameObject AutumnTree, LanternPine, Boulder, Slab, Well, CelticCross, Headstone, WallSegment, GroundPaths, LeafLitter;
+            public GameObject AutumnTree, LanternPine, Boulder, Slab, CelticCross, Headstone, WallSegment, GroundPaths, LeafLitter;
         }
 
         private static EnvironmentProps BuildEnvironmentProps(MaterialSet m) => new()
@@ -42,11 +42,6 @@ namespace BattleArena.Editor.ContentBuilder
             }),
             Boulder = PropPrefab("Boulder", root => AddMeshCollider(root, AddModel(root, "Rocks/RockBoulder.fbx", m.RockStone, m.RockMoss))),
             Slab = PropPrefab("Slab", root => AddMeshCollider(root, AddModel(root, "Rocks/RockSlab.fbx", m.RockStone, m.RockMoss))),
-            Well = PropPrefab("Well", root =>
-            {
-                AddModel(root, "Props/Well.fbx", m.PropStoneDark, m.PropStone, m.WellWater, m.AutumnWood, m.Slate);
-                AddCapsule(root, 1.35f, 3f);
-            }),
             // Grave markers are built twice the source size: few, big and easy to read (and to steer around).
             CelticCross = PropPrefab("CelticCross", root =>
             {
@@ -68,9 +63,16 @@ namespace BattleArena.Editor.ContentBuilder
                 modifier.area = NavMesh.GetAreaFromName("Not Walkable");
             }),
             // Flat ground decoration: lifted slightly above the grass, no collider, no shadow.
-            GroundPaths = PropPrefab("GroundPaths", root => AddDecal(root, "Props/GroundPaths.fbx", 0.02f, m.Dirt)),
+            GroundPaths = GroundPathsPrefab(m),
             LeafLitter = PropPrefab("LeafLitter", root => AddDecal(root, "Props/LeafLitter.fbx", 0.03f, m.LeafRust, m.LeafOchre, m.LeafRustDark)),
         };
+
+        /// <summary>The path network follows the scene layout, so its mesh is regenerated on every build.</summary>
+        private static GameObject GroundPathsPrefab(MaterialSet m)
+        {
+            var mesh = BuildPathMesh();
+            return PropPrefab("GroundPaths", root => AddDecal(root, mesh, 0.02f, m.Dirt));
+        }
 
         private static GameObject PropPrefab(string name, System.Action<GameObject> build)
         {
@@ -96,10 +98,7 @@ namespace BattleArena.Editor.ContentBuilder
         /// <summary>Adds the model under a "Model" child; materials follow the Blender slot order.</summary>
         private static Mesh AddModel(GameObject root, string modelPath, float scale, params Material[] materials)
         {
-            var model = new GameObject("Model") { layer = root.layer }.transform;
-            model.SetParent(root.transform, false);
-            model.localScale = Vector3.one * scale;
-
+            var model = AddModelRoot(root, scale);
             var path = $"{ModelsFolder}/{modelPath}";
             var mesh = LoadModelMesh(path);
             if (mesh == null)
@@ -108,16 +107,41 @@ namespace BattleArena.Editor.ContentBuilder
                 return null;
             }
 
-            var visual = new GameObject(Path.GetFileNameWithoutExtension(path)) { layer = root.layer };
-            visual.transform.SetParent(model, false);
-            visual.AddComponent<MeshFilter>().sharedMesh = mesh;
-            visual.AddComponent<MeshRenderer>().sharedMaterials = materials;
+            AddMeshPart(model, Path.GetFileNameWithoutExtension(path), mesh, materials);
             return mesh;
+        }
+
+        private static Transform AddModelRoot(GameObject root, float scale = 1f)
+        {
+            var model = new GameObject("Model") { layer = root.layer }.transform;
+            model.SetParent(root.transform, false);
+            model.localScale = Vector3.one * scale;
+            return model;
+        }
+
+        private static GameObject AddMeshPart(Transform parent, string name, Mesh mesh, params Material[] materials)
+        {
+            var part = new GameObject(name) { layer = parent.gameObject.layer };
+            part.transform.SetParent(parent, false);
+            part.AddComponent<MeshFilter>().sharedMesh = mesh;
+            part.AddComponent<MeshRenderer>().sharedMaterials = materials;
+            return part;
         }
 
         private static void AddDecal(GameObject root, string modelPath, float lift, params Material[] materials)
         {
             AddModel(root, modelPath, materials);
+            FinishDecal(root, lift);
+        }
+
+        private static void AddDecal(GameObject root, Mesh mesh, float lift, params Material[] materials)
+        {
+            AddMeshPart(AddModelRoot(root), mesh.name, mesh, materials);
+            FinishDecal(root, lift);
+        }
+
+        private static void FinishDecal(GameObject root, float lift)
+        {
             var model = root.transform.Find("Model");
             model.localPosition = new Vector3(0f, lift, 0f);
             foreach (var renderer in model.GetComponentsInChildren<MeshRenderer>())

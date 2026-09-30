@@ -11,7 +11,7 @@ namespace BattleArena.Editor.ContentBuilder
         {
             public Material Ground, GroundPatch, Stone, Wall, Wood, Leaves, Gold;
             public Material PineBark, PineNeedles, PineNeedlesDark, LanternIron, LanternGlow;
-            public Material PropStone, PropStoneDark, PropStoneLight, GraveStone, Moss, Slate, WellWater, Dirt;
+            public Material PropStone, PropStoneDark, PropStoneLight, GraveStone, Moss, Slate, HealingWater, WellDepth, Dirt;
             public Material AutumnWood, LeafRust, LeafRustDark, LeafOchre, RockStone, RockMoss;
             public Material PlayerRobe, PlayerSkin, PlayerHat, StaffGlow;
             public Material Grunt, Runner, Brute, Boss, EnemyEyes;
@@ -19,7 +19,6 @@ namespace BattleArena.Editor.ContentBuilder
             public Material WindupGlow, CurseGlow, BombBody, EnemyArrow, WispBolt;
             public Material Flash;
             public Material PlayerBolt, Fireball, BossOrb, Meteor, Gem, ArcaneOrb;
-            public Material CrystalReady, CrystalDepleted;
             public Material EnemyTelegraph, EnemyTelegraphFill, SpellTelegraph, SpellTelegraphFill, FrostRing, ArcaneRing, ToxicZone;
             public Material Particles;
             public Material HealthBar, DamageText;
@@ -54,8 +53,11 @@ namespace BattleArena.Editor.ContentBuilder
                 GraveStone = Lit("GraveStone", Hex("#9A968D"), smoothness: 0.1f),
                 Moss = Lit("Moss", Hex("#66714A"), smoothness: 0.05f),
                 Slate = Lit("Slate", Hex("#4A4852"), smoothness: 0.25f),
-                WellWater = Lit("WellWater", Hex("#1F2E33"), smoothness: 0.85f),
-                Dirt = Lit("Dirt", Hex("#6E614B"), smoothness: 0.05f),
+                // Glowing water marks a well that is ready to heal; the dark shaft shows once it is drained.
+                HealingWater = Lit("HealingWater", Hex("#63D8E6"), smoothness: 0.9f, emission: Hex("#23B5CC") * 1.4f),
+                WellDepth = Lit("WellDepth", Hex("#151A19"), smoothness: 0.1f),
+                // UVs are in world units (see DirtTileSize), so the texture keeps its scale on every path.
+                Dirt = DirtMaterial(),
                 AutumnWood = Lit("AutumnWood", Hex("#6B4A30"), smoothness: 0.1f),
                 LeafRust = Lit("LeafRust", Hex("#9A6440"), smoothness: 0.1f),
                 LeafRustDark = Lit("LeafRustDark", Hex("#74492F"), smoothness: 0.1f),
@@ -97,8 +99,6 @@ namespace BattleArena.Editor.ContentBuilder
                 Gem = Lit("ExperienceGem", Hex("#A6FFD8"), emission: Hex("#20E0A0") * 3f),
                 ArcaneOrb = Lit("ArcaneOrb", Hex("#E2C8FF"), emission: Hex("#9A4DFF") * 5f),
 
-                CrystalReady = Lit("CrystalReady", Hex("#B6FFC8"), emission: Hex("#30FF80") * 3f),
-                CrystalDepleted = Lit("CrystalDepleted", Hex("#6A7078"), smoothness: 0.4f),
 
                 EnemyTelegraph = Transparent("EnemyTelegraph", new Color(1f, 0.2f, 0.25f, 0.18f)),
                 EnemyTelegraphFill = Transparent("EnemyTelegraphFill", new Color(1f, 0.15f, 0.2f, 0.4f)),
@@ -151,6 +151,25 @@ namespace BattleArena.Editor.ContentBuilder
             material.SetFloat("_Surface", 1f);
             material.SetFloat("_Blend", 0f);
             material.SetFloat("_Cull", (float)CullMode.Off);
+            BaseShaderGUI.SetupMaterialBlendMode(material);
+            BaseShaderGUI.SetMaterialKeywords(material);
+            EditorUtility.SetDirty(material);
+            return material;
+        }
+
+        /// <summary>
+        /// Lit and alpha-blended by vertex colour, so the fringe of the path mesh (vertex alpha fading to 0) blends
+        /// the dirt softly into the grass. The URP Lit shader ignores vertex colour; the particle Lit shader uses it.
+        /// </summary>
+        private static Material DirtMaterial()
+        {
+            var material = LoadOrCreateMaterial("Dirt", "Universal Render Pipeline/Particles/Lit");
+            material.SetTexture("_BaseMap", LoadTexture(DirtTexturePath));
+            material.SetColor("_BaseColor", Color.white);
+            material.SetFloat("_Smoothness", 0.05f);
+            material.SetFloat("_Surface", 1f);
+            material.SetFloat("_Blend", 0f);
+            material.SetFloat("_ReceiveShadows", 1f);
             BaseShaderGUI.SetupMaterialBlendMode(material);
             BaseShaderGUI.SetMaterialKeywords(material);
             EditorUtility.SetDirty(material);

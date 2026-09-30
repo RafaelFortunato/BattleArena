@@ -27,7 +27,7 @@ namespace BattleArena.Editor.ContentBuilder
             public GameObject Player;
             public SpawnSchedule Schedule;
             public EnemyDefinition Boss;
-            public HealingShrine Shrine;
+            public HealingWell Well;
             public TreasureChest Chest;
             public TimedRelease ChestSpawnEffect;
             public LevelUpConfig LevelUp;
@@ -48,6 +48,7 @@ namespace BattleArena.Editor.ContentBuilder
             var frostRing = BuildRing("FrostNovaRing", m.FrostRing);
             var critSpark = BuildBurst("CritSpark", m, new Color(1f, 0.7f, 0.15f), 18, 7f, 0.35f, 0.35f, radius: 0.2f);
             var chestSparkle = BuildBurst("ChestSparkle", m, new Color(1f, 0.85f, 0.35f), 30, 5f, 0.4f, 0.6f, radius: 0.6f);
+            var wellSplash = BuildBurst("WellSplash", m, new Color(0.45f, 0.95f, 1f), 30, 4.5f, 0.35f, 0.6f, radius: 0.7f);
 
             // Projectiles and telegraphed strikes
             var playerBolt = BuildProjectile("PlayerBolt", m.PlayerBolt, 0.35f, GameLayers.PlayerProjectile, 1.2f, hitSpark);
@@ -81,7 +82,7 @@ namespace BattleArena.Editor.ContentBuilder
                 Schedule = roster.Schedule,
                 Boss = roster.Boss,
                 Missions = missions,
-                Shrine = BuildShrine(m),
+                Well = BuildHealingWell(m, wellSplash),
                 Chest = BuildChest(m, chestSparkle),
                 ChestSpawnEffect = chestSparkle,
                 LevelUp = levelUp,
@@ -358,23 +359,31 @@ namespace BattleArena.Editor.ContentBuilder
 
         // ---------------------------------------------------------------- Interactables
 
-        private static HealingShrine BuildShrine(MaterialSet m)
+        private static HealingWell BuildHealingWell(MaterialSet m, TimedRelease splash)
         {
-            var root = CreateRoot("HealingShrine", GameLayers.Interactable);
-            AddInteractionTrigger(root, 2.6f);
+            var root = CreateRoot("HealingWell", GameLayers.Interactable);
+            AddInteractionTrigger(root, 2.8f);
 
-            AddSolid(root.transform, PrimitiveType.Cylinder, m.Stone, new Vector3(0f, 0.2f, 0f), new Vector3(2f, 0.2f, 2f), "Base");
-            AddSolid(root.transform, PrimitiveType.Cylinder, m.Stone, new Vector3(0f, 0.8f, 0f), new Vector3(0.6f, 0.5f, 0.6f), "Pedestal");
-            var crystal = AddVisual(root.transform, PrimitiveType.Cube, m.CrystalReady, new Vector3(0f, 1.9f, 0f), new Vector3(0.55f, 0.8f, 0.55f), new Vector3(0f, 45f, 0f), "Crystal");
+            // Stone, posts and roof, plus the water as its own part so it can drain and refill.
+            AddModel(root, "Props/Well.fbx", m.PropStoneDark, m.PropStone, m.AutumnWood, m.Slate, m.WellDepth);
+            var water = AddMeshPart(root.transform.Find("Model"), "Water", LoadModelMesh($"{ModelsFolder}/Props/WellWater.fbx"), m.HealingWater);
+            water.GetComponent<MeshRenderer>().shadowCastingMode = ShadowCastingMode.Off;
 
-            var shrine = root.AddComponent<HealingShrine>();
-            SerializedSetter.For(shrine)
-                .Set("crystal", crystal.GetComponent<Renderer>())
-                .Set("readyMaterial", m.CrystalReady)
-                .Set("depletedMaterial", m.CrystalDepleted)
+            // The blocker stays on the Default layer, so the well stops movement and is carved out of the NavMesh.
+            var blocker = new GameObject("Blocker") { layer = GameLayers.Default };
+            blocker.transform.SetParent(root.transform, false);
+            var collider = blocker.AddComponent<CapsuleCollider>();
+            collider.radius = 1.25f;
+            collider.height = 2.4f;
+            collider.center = new Vector3(0f, 1.2f, 0f);
+
+            var well = root.AddComponent<HealingWell>();
+            SerializedSetter.For(well)
+                .Set("water", water.transform)
+                .Set("useEffect", splash)
                 .Apply();
 
-            return SavePrefab<HealingShrine>(root, $"{PrefabsFolder}/Interactables/HealingShrine.prefab");
+            return SavePrefab<HealingWell>(root, $"{PrefabsFolder}/Interactables/HealingWell.prefab");
         }
 
         private static TreasureChest BuildChest(MaterialSet m, TimedRelease openEffect)

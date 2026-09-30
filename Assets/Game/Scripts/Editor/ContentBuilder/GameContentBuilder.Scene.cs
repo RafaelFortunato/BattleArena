@@ -28,10 +28,8 @@ namespace BattleArena.Editor.ContentBuilder
         private const float ArenaHalfSize = 40f;
         private const int LayoutSeed = 1337;
 
-        private static readonly Vector3[] ShrinePositions = { new(-18f, 0f, 14f), new(20f, 0f, -16f) };
-
-        // Autumn churchyard layout. The dirt paths model radiates from the well to the shrines and arena edges.
-        private static readonly Vector3 WellPosition = new(-4f, 0f, 3f);
+        // Autumn churchyard layout. The healing wells sit on the dirt path loop (see GameContentBuilder.Paths).
+        private static readonly Vector3[] WellPositions = { new(-18f, 0f, 14f), new(20f, 0f, -16f) };
         private static readonly (Vector3 center, float length, float yaw)[] RuinWalls =
         {
             (new Vector3(-25f, 0f, 24f), 12f, 8f),
@@ -49,11 +47,8 @@ namespace BattleArena.Editor.ContentBuilder
         private static void BuildScene(Scene scene, MaterialSet m, ContentSet content)
         {
             BuildLighting();
-            var environment = BuildEnvironment(m);
+            var environment = BuildEnvironment(m, content.Well);
             BakeNavMesh(environment);
-
-            foreach (var position in ShrinePositions)
-                PlacePrefab(content.Shrine.gameObject, position, Quaternion.identity);
 
             var player = PlacePrefab(content.Player, Vector3.zero, Quaternion.identity);
             var playerHealth = player.GetComponent<Health>();
@@ -132,7 +127,7 @@ namespace BattleArena.Editor.ContentBuilder
 
         // ---------------------------------------------------------------- Environment
 
-        private static GameObject BuildEnvironment(MaterialSet m)
+        private static GameObject BuildEnvironment(MaterialSet m, HealingWell well)
         {
             var environment = new GameObject("Environment");
             var root = environment.transform;
@@ -149,9 +144,7 @@ namespace BattleArena.Editor.ContentBuilder
 
             // Props are prefab instances so their art can be replaced in one place.
             var props = BuildEnvironmentProps(m);
-            // Blender's FBX export turns models 180° around the vertical axis; undo it so the paths meet the well.
-            PlaceProp(props.GroundPaths, root, Vector3.zero, 180f, Vector3.one);
-            PlaceProp(props.Well, root, WellPosition, 20f, Vector3.one);
+            PlaceProp(props.GroundPaths, root, Vector3.zero, 0f, Vector3.one);
 
             var walls = new GameObject("Walls").transform;
             walls.SetParent(root, false);
@@ -163,9 +156,9 @@ namespace BattleArena.Editor.ContentBuilder
 
             // Only large, readable obstacles: small clutter would eat projectiles in the middle of a fight.
             var random = new System.Random(LayoutSeed);
-            var reserved = new List<(Vector3 position, float radius)> { (WellPosition, 7f) };
-            foreach (var shrine in ShrinePositions)
-                reserved.Add((shrine, 5f));
+            var reserved = new List<(Vector3 position, float radius)>(PathReservations());
+            foreach (var position in WellPositions)
+                reserved.Add((position, 6f));
 
             var landmarks = new GameObject("Landmarks").transform;
             landmarks.SetParent(root, false);
@@ -210,6 +203,11 @@ namespace BattleArena.Editor.ContentBuilder
 
             foreach (var renderer in environment.GetComponentsInChildren<Renderer>())
                 GameObjectUtility.SetStaticEditorFlags(renderer.gameObject, StaticEditorFlags.BatchingStatic);
+
+            // Wells join the environment before the NavMesh bake so enemies path around them, but after the
+            // static batching pass: their water moves.
+            foreach (var position in WellPositions)
+                PlaceProp(well.gameObject, root, position, 0f, Vector3.one);
 
             return environment;
         }
@@ -297,6 +295,7 @@ namespace BattleArena.Editor.ContentBuilder
             SerializedSetter.For(damageNumbers)
                 .Set("labelPrefab", content.DamageLabel)
                 .Set("criticalEffect", content.CritEffect)
+                .Set("playerHealth", playerHealth)
                 .Apply();
 
             levelUp = systems.AddComponent<LevelUpController>();

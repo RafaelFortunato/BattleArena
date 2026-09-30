@@ -1,3 +1,4 @@
+using BattleArena.Combat;
 using BattleArena.Core;
 using BattleArena.Pooling;
 using TMPro;
@@ -6,7 +7,7 @@ using UnityEngine;
 namespace BattleArena.Vfx
 {
     /// <summary>
-    /// Floating damage numbers above enemies. A fixed set of TextMeshPro labels is created up front and
+    /// Floating damage numbers above enemies, and in red above the player when it is hit. A fixed set of TextMeshPro labels is created up front and
     /// animated from this single Update (rise + scale), so hits never instantiate or allocate. Only
     /// transforms change per frame; text meshes are rebuilt once per number, when it is shown.
     /// </summary>
@@ -32,13 +33,20 @@ namespace BattleArena.Vfx
         [SerializeField] private AnimationCurve criticalPunch = new(new Keyframe(0f, 2.2f), new Keyframe(0.18f, 0.9f), new Keyframe(0.3f, 1f));
         [SerializeField] private TimedRelease criticalEffect;
 
+        [Header("Player hit")]
+        [SerializeField] private Health playerHealth;
+        [SerializeField] private Color playerHitColor = new(1f, 0.22f, 0.2f);
+        [SerializeField, Min(0.1f)] private float playerHitScale = 1.3f;
+        [Tooltip("Height of player damage numbers above the player's feet.")]
+        [SerializeField, Min(0f)] private float playerHitHeight = 2.2f;
+
         private struct Entry
         {
             public Transform Transform;
             public Vector3 Origin;
             public float Age;
             public float Scale;
-            public bool IsCritical;
+            public bool Punch;
         }
 
         // Active entries are packed at the front of the array; the rest are free.
@@ -68,20 +76,40 @@ namespace BattleArena.Vfx
                 _facing = mainCamera.transform.rotation;
         }
 
-        private void OnEnable() => EventBus<EnemyDamagedEvent>.Subscribe(Show);
-
-        private void OnDisable() => EventBus<EnemyDamagedEvent>.Unsubscribe(Show);
-
-        private void Show(EnemyDamagedEvent evt)
+        private void OnEnable()
         {
-            if (evt.Amount < 0.5f)
-                return;
+            EventBus<EnemyDamagedEvent>.Subscribe(ShowEnemyHit);
+            if (playerHealth != null)
+                playerHealth.Damaged += ShowPlayerHit;
+        }
 
-            if (evt.IsCritical && criticalEffect != null)
+        private void OnDisable()
+        {
+            EventBus<EnemyDamagedEvent>.Unsubscribe(ShowEnemyHit);
+            if (playerHealth != null)
+                playerHealth.Damaged -= ShowPlayerHit;
+        }
+
+        private void ShowEnemyHit(EnemyDamagedEvent evt)
+        {
+            if (evt.IsCritical && criticalEffect != null && evt.Amount >= 0.5f)
                 PoolManager.Spawn(criticalEffect, evt.Position, Quaternion.identity);
 
+            if (evt.IsCritical)
+                Show(evt.Position, evt.Amount, "{0:0}!", true, criticalColor, criticalScale);
+            else
+                Show(evt.Position, evt.Amount, "{0:0}", false, normalColor, normalScale);
+        }
+
+        private void ShowPlayerHit(Health health, DamageResult damage) =>
+            Show(health.transform.position + Vector3.up * playerHitHeight, damage.Amount, "-{0:0}", true, playerHitColor, playerHitScale);
+
+        /// <param name="format">TextMeshPro numeric format; formats without allocating a string.</param>
+        /// <param name="punch">Plays the punch-in scale effect (critical hits and player hits).</param>
+        private void Show(Vector3 position, float amount, string format, bool punch, Color color, float scale)
+        {
             // When saturated, drop the number rather than evicting one mid-animation.
-            if (_activeCount >= capacity)
+            if (amount < 0.5f || _activeCount >= capacity)
                 return;
 
             var index = _activeCount++;
@@ -89,17 +117,13 @@ namespace BattleArena.Vfx
             var jitter = Random.insideUnitCircle * horizontalJitter;
 
             ref var entry = ref _entries[index];
-            entry.Origin = evt.Position + new Vector3(jitter.x, 0.2f, jitter.y);
+            entry.Origin = position + new Vector3(jitter.x, 0.2f, jitter.y);
             entry.Age = 0f;
-            entry.IsCritical = evt.IsCritical;
-            entry.Scale = evt.IsCritical ? criticalScale : normalScale;
+            entry.Punch = punch;
+            entry.Scale = scale;
 
-            // SetText with a numeric argument formats without allocating a string.
-            if (evt.IsCritical)
-                label.SetText("{0:0}!", evt.Amount);
-            else
-                label.SetText("{0:0}", evt.Amount);
-            label.color = evt.IsCritical ? criticalColor : normalColor;
+            label.SetText(format, amount);
+            label.color = color;
 
             entry.Transform.SetPositionAndRotation(entry.Origin, _facing);
             entry.Transform.localScale = Vector3.one * entry.Scale;
@@ -123,10 +147,10 @@ namespace BattleArena.Vfx
                     continue;
                 }
 
-                // Ease-out rise, punch for crits, shrink away at the end.
+                // Ease-out rise, punch for crits and player hits, shrink away at the end.
                 var rise = 1f - (1f - t) * (1f - t);
                 var scale = entry.Scale;
-                if (entry.IsCritical)
+                if (entry.Punch)
                     scale *= criticalPunch.Evaluate(t);
                 if (t > shrinkStart)
                     scale *= 1f - (t - shrinkStart) / (1f - shrinkStart);
