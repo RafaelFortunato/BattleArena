@@ -14,7 +14,7 @@ namespace BattleArena.Spells
         [SerializeField, Min(0.5f)] private float blastRadius = 3.5f;
         [SerializeField, Min(0f)] private float invulnerabilityDuration = 0.6f;
         [SerializeField] private TimedRelease departEffect;
-        [SerializeField] private ExpandingRing arrivalRing;
+        [SerializeField] private AreaEffect arrivalRing;
 
         public override bool Cast(in SpellContext context)
         {

@@ -22,4 +22,4 @@ MonoBehaviour:
   radius: 7
   slowMultiplier: 0.4
   slowDuration: 3
-  ringEffect: {fileID: 9156331991044525663, guid: 75c13a8af3bcddb4683e3ce26db723b3, type: 3}
+  ringEffect: {fileID: 7921174159864692195, guid: f8057b20163db3f4c9d7552cc813b065, type: 3}

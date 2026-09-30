@@ -23,5 +23,5 @@ MonoBehaviour:
   distance: 7
   blastRadius: 3.5
   invulnerabilityDuration: 0.6
-  departEffect: {fileID: 4559969525398211287, guid: dcd01ed3e8a146845a2d5e66842800b9, type: 3}
-  arrivalRing: {fileID: 2183796805138795030, guid: 4c2003751e8162847ae8e3e9e54521d1, type: 3}
+  departEffect: {fileID: 3344896407650270925, guid: c70602ab44341a44cb390c97d92c24f2, type: 3}
+  arrivalRing: {fileID: 6074068930820775936, guid: c5e7e1ab6d72ba0478266907a2e8b18b, type: 3}

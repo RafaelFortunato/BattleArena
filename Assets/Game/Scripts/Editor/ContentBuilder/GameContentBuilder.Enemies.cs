@@ -57,11 +57,11 @@ namespace BattleArena.Editor.ContentBuilder
             var curseEruption = BuildBurst("CurseEruption", m, new Color(0.45f, 1f, 0.3f), 30, 4f, 0.5f, 0.6f, radius: 0.6f, fromGround: true);
             var arrow = BuildProjectile("EnemyArrow", m.EnemyArrow, 0.22f, GameLayers.EnemyProjectile, 2.5f, arrowHit, length: 0.9f);
             var wispBolt = BuildProjectile("WispBolt", m.WispBolt, 0.4f, GameLayers.EnemyProjectile, 3f, wispHit);
-            var bomb = BuildStrike("GoblinBomb", m.EnemyTelegraph, m.EnemyTelegraphFill, bombBlast, m.BombBody, fallingSize: 0.55f);
-            var curse = BuildStrike("ShamanCurse", m.EnemyTelegraph, m.EnemyTelegraphFill, curseEruption, null);
-            var beetleBlast = BuildStrike("BeetleBlast", m.EnemyTelegraph, m.EnemyTelegraphFill, bombBlast, null);
+            var bomb = BuildStrike("GoblinBomb", m.StrikeEnemyRing, m.StrikeEnemyFill, bombBlast, m.BombBody, fallingSize: 0.55f);
+            var curse = BuildStrike("ShamanCurse", m.StrikeEnemyRing, m.StrikeEnemyFill, curseEruption, null);
+            var beetleBlast = BuildStrike("BeetleBlast", m.StrikeEnemyRing, m.StrikeEnemyFill, bombBlast, null);
             var dashLine = BuildLineTelegraph(m);
-            var warlordSlam = BuildStrike("WarlordSlam", m.EnemyTelegraph, m.EnemyTelegraphFill, bombBlast, null);
+            var warlordSlam = BuildStrike("WarlordSlam", m.StrikeEnemyRing, m.StrikeEnemyFill, bombBlast, null);
 
             // --- Melee chasers
             var grunt = Define("Grunt", "Goblin Grunt", SaveEnemy(Melee(kit, "Grunt", 1f, 2.3f, v => Humanoid(v, m.Grunt, m))),

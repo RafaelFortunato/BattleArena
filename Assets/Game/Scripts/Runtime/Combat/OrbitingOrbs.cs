@@ -1,5 +1,6 @@
 using System.Collections;
 using BattleArena.Pooling;
+using BattleArena.Vfx;
 using UnityEngine;
 
 namespace BattleArena.Combat
@@ -27,6 +28,11 @@ namespace BattleArena.Combat
                 orbs[i].transform.localPosition = new Vector3(Mathf.Sin(angle), 0f, Mathf.Cos(angle)) * radius;
                 orbs[i].Damage = damage;
             }
+
+            // Place the ring before the first frame so the orb trails don't streak in from the pool position.
+            transform.SetPositionAndRotation(follow.position + Vector3.up * heightOffset, Quaternion.identity);
+            if (TryGetComponent(out VfxRestart vfx))
+                vfx.ClearTrails();
 
             StartCoroutine(Orbit(follow, duration, degreesPerSecond));
         }

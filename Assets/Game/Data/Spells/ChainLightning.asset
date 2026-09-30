@@ -24,5 +24,4 @@ MonoBehaviour:
   jumpRadius: 7
   maxTargets: 6
   damageFalloff: 0.85
-  arcEffect: {fileID: 3652314641990511989, guid: 31ab1a2d697855a49998f0d735697bf7, type: 3}
-  hitEffect: {fileID: 5139836795645091881, guid: 81fe847f558d4cf45b79bcddbbbd1df5, type: 3}
+  chainEffect: {fileID: 5562031032524359428, guid: 910ef29ad9b4e5d43b29b93268c2bd59, type: 3}

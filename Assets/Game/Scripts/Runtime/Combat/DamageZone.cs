@@ -8,22 +8,21 @@ namespace BattleArena.Combat
     /// <summary>Pooled lingering area that damages and slows everything inside on a fixed tick.</summary>
     public sealed class DamageZone : MonoBehaviour, IPoolable
     {
-        [Tooltip("Flat visual with a unit diameter, scaled to the zone radius.")]
+        [Tooltip("Visual root authored for a radius of 1 (particles use hierarchy scaling); scaled to the zone radius.")]
         [SerializeField] private Transform area;
-        [SerializeField] private ParticleSystem particles;
+        [Tooltip("Seconds the visuals take to fade once the zone stops ticking.")]
+        [SerializeField, Min(0f)] private float fadeOut = 0.8f;
+
+        private ParticleSystem[] _particles;
+
+        private void Awake() => _particles = area.GetComponentsInChildren<ParticleSystem>(true);
 
         public void Activate(float radius, float duration, float tickInterval, DamageProfile damagePerTick, int targetMask,
             float slowMultiplier)
         {
-            var diameter = radius * 2f;
-            area.localScale = new Vector3(diameter, area.localScale.y, diameter);
-
-            if (particles != null)
-            {
-                var shape = particles.shape;
-                shape.radius = radius;
-                particles.Play();
-            }
+            area.localScale = Vector3.one * radius;
+            foreach (var particles in _particles)
+                particles.Play(false);
 
             StartCoroutine(Tick(radius, duration, tickInterval, damagePerTick, targetMask, slowMultiplier));
         }
@@ -33,8 +32,8 @@ namespace BattleArena.Combat
         public void OnDespawned()
         {
             StopAllCoroutines();
-            if (particles != null)
-                particles.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+            foreach (var particles in _particles)
+                particles.Stop(false, ParticleSystemStopBehavior.StopEmittingAndClear);
         }
 
         private IEnumerator Tick(float radius, float duration, float tickInterval, DamageProfile damage, int targetMask,
@@ -51,6 +50,10 @@ namespace BattleArena.Combat
                 yield return wait;
             }
 
+            // Stop emitting and let the live particles (including the ground decal) finish their lifetime.
+            foreach (var particles in _particles)
+                particles.Stop(false, ParticleSystemStopBehavior.StopEmitting);
+            yield return WaitCache.Get(fadeOut);
             this.Despawn();
         }
     }

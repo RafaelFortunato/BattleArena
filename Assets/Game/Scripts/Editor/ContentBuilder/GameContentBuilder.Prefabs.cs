@@ -39,23 +39,17 @@ namespace BattleArena.Editor.ContentBuilder
         private static ContentSet BuildContent(MaterialSet m)
         {
             // Effects
-            var hitSpark = BuildBurst("HitSpark", m, new Color(0.6f, 0.9f, 1f), 10, 5f, 0.25f, 0.3f);
-            var explosion = BuildBurst("FireballExplosion", m, new Color(1f, 0.55f, 0.15f), 40, 9f, 0.7f, 0.5f, radius: 0.5f);
             var deathPuff = BuildBurst("EnemyDeath", m, new Color(1f, 0.9f, 0.6f), 16, 4f, 0.4f, 0.45f, radius: 0.4f);
-            var meteorImpact = BuildBurst("MeteorImpact", m, new Color(1f, 0.45f, 0.1f), 36, 4f, 0.5f, 0.6f, radius: 0.6f, fromGround: true);
             var slamImpact = BuildBurst("BossSlamImpact", m, new Color(0.85f, 0.3f, 1f), 36, 4f, 0.5f, 0.6f, radius: 0.6f, fromGround: true);
             var orbImpact = BuildBurst("BossOrbImpact", m, new Color(0.85f, 0.4f, 1f), 8, 3f, 0.25f, 0.3f);
-            var frostRing = BuildRing("FrostNovaRing", m.FrostRing);
             var critSpark = BuildBurst("CritSpark", m, new Color(1f, 0.7f, 0.15f), 18, 7f, 0.35f, 0.35f, radius: 0.2f);
             var chestSparkle = BuildBurst("ChestSparkle", m, new Color(1f, 0.85f, 0.35f), 30, 5f, 0.4f, 0.6f, radius: 0.6f);
             var wellSplash = BuildBurst("WellSplash", m, new Color(0.45f, 0.95f, 1f), 30, 4.5f, 0.35f, 0.6f, radius: 0.7f);
 
             // Projectiles and telegraphed strikes
-            var playerBolt = BuildProjectile("PlayerBolt", m.PlayerBolt, 0.35f, GameLayers.PlayerProjectile, 1.2f, hitSpark);
-            var fireball = BuildProjectile("Fireball", m.Fireball, 0.8f, GameLayers.PlayerProjectile, 1.6f, explosion);
+            var spellVfx = BuildSpellVfx(m);
             var bossOrb = BuildProjectile("BossOrb", m.BossOrb, 0.55f, GameLayers.EnemyProjectile, 4f, orbImpact);
-            var meteorStrike = BuildStrike("MeteorStrike", m.SpellTelegraph, m.SpellTelegraphFill, meteorImpact, m.Meteor);
-            var bossSlam = BuildStrike("BossSlam", m.EnemyTelegraph, m.EnemyTelegraphFill, slamImpact, null);
+            var bossSlam = BuildStrike("BossSlam", m.StrikeEnemyRing, m.StrikeEnemyFill, slamImpact, null);
 
             var gem = BuildGem(m);
 
@@ -64,7 +58,7 @@ namespace BattleArena.Editor.ContentBuilder
             var missions = BuildMissions(m, roster, collectEffect: chestSparkle);
 
             // Spells and level-up cards
-            var spells = BuildSpells(m, fireball, frostRing, meteorStrike);
+            var spells = BuildSpells(m, spellVfx);
             var levelUp = BuildLevelUpConfig(spells);
 
             // Input
@@ -73,7 +67,7 @@ namespace BattleArena.Editor.ContentBuilder
                 .Set("actions", AssetDatabase.LoadAssetAtPath<InputActionAsset>($"{SettingsFolder}/GameControls.inputactions"))
                 .Apply();
 
-            var player = BuildPlayer(m, input, playerBolt);
+            var player = BuildPlayer(m, input, spellVfx.PlayerBolt);
 
             return new ContentSet
             {
@@ -147,15 +141,6 @@ namespace BattleArena.Editor.ContentBuilder
             return SavePrefab<TimedRelease>(root, $"{PrefabsFolder}/Vfx/{name}.prefab");
         }
 
-        private static ExpandingRing BuildRing(string name, Material material)
-        {
-            var root = CreateRoot(name, GameLayers.Default);
-            var disc = AddVisual(root.transform, PrimitiveType.Cylinder, material, new Vector3(0f, 0.08f, 0f), new Vector3(1f, 0.02f, 1f));
-            DisableShadows(disc);
-            root.AddComponent<ExpandingRing>();
-            return SavePrefab<ExpandingRing>(root, $"{PrefabsFolder}/Vfx/{name}.prefab");
-        }
-
         // ---------------------------------------------------------------- Projectiles & strikes
 
         private static Projectile BuildProjectile(string name, Material material, float diameter, int layer, float lifetime, TimedRelease impact,
@@ -190,10 +175,9 @@ namespace BattleArena.Editor.ContentBuilder
             float fallingSize = 1.3f)
         {
             var root = CreateRoot(name, GameLayers.Default);
-            var outline = AddVisual(root.transform, PrimitiveType.Cylinder, outlineMaterial, new Vector3(0f, 0.04f, 0f), new Vector3(1f, 0.01f, 1f), name: "Outline");
-            var fill = AddVisual(root.transform, PrimitiveType.Cylinder, fillMaterial, new Vector3(0f, 0.06f, 0f), new Vector3(0f, 0.01f, 0f), name: "Fill");
-            DisableShadows(outline);
-            DisableShadows(fill);
+            var outline = FlatQuad(root.transform, "Outline", outlineMaterial, 0.04f);
+            var fill = FlatQuad(root.transform, "Fill", fillMaterial, 0.05f);
+            fill.localScale = new Vector3(0f, 1f, 0f);
 
             GameObject falling = null;
             if (fallingMaterial != null)
@@ -204,8 +188,8 @@ namespace BattleArena.Editor.ContentBuilder
 
             var strike = root.AddComponent<DelayedAreaStrike>();
             SerializedSetter.For(strike)
-                .Set("outline", outline.transform)
-                .Set("fill", fill.transform)
+                .Set("outline", outline)
+                .Set("fill", fill)
                 .Set("fallingObject", falling != null ? falling.transform : null)
                 .Set("impactEffect", impact)
                 .Apply();

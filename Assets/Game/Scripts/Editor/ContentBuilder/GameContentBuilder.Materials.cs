@@ -19,7 +19,7 @@ namespace BattleArena.Editor.ContentBuilder
             public Material WindupGlow, CurseGlow, BombBody, EnemyArrow, WispBolt;
             public Material Flash;
             public Material PlayerBolt, Fireball, BossOrb, Meteor, Gem, ArcaneOrb;
-            public Material EnemyTelegraph, EnemyTelegraphFill, SpellTelegraph, SpellTelegraphFill, FrostRing, ArcaneRing, ToxicZone;
+            public Material EnemyTelegraph, EnemyTelegraphFill, StrikeEnemyRing, StrikeEnemyFill;
             public Material Particles;
             public Material HealthBar, DamageText;
             public Material MissionZone, MissionZoneFill, ArcaneShard, PointerGlow;
@@ -102,11 +102,8 @@ namespace BattleArena.Editor.ContentBuilder
 
                 EnemyTelegraph = Transparent("EnemyTelegraph", new Color(1f, 0.2f, 0.25f, 0.18f)),
                 EnemyTelegraphFill = Transparent("EnemyTelegraphFill", new Color(1f, 0.15f, 0.2f, 0.4f)),
-                SpellTelegraph = Transparent("SpellTelegraph", new Color(1f, 0.55f, 0.1f, 0.15f)),
-                SpellTelegraphFill = Transparent("SpellTelegraphFill", new Color(1f, 0.5f, 0.05f, 0.35f)),
-                FrostRing = Transparent("FrostRing", new Color(0.55f, 0.9f, 1f, 0.45f)),
-                ArcaneRing = Transparent("ArcaneRing", new Color(0.7f, 0.4f, 1f, 0.45f)),
-                ToxicZone = Transparent("ToxicZone", new Color(0.35f, 0.8f, 0.2f, 0.16f)),
+                StrikeEnemyRing = Transparent("TelegraphEnemyRing", new Color(1f, 0.25f, 0.25f, 0.9f), LoadVfxTexture("vfx_ring_thin")),
+                StrikeEnemyFill = Transparent("TelegraphEnemyFill", new Color(1f, 0.15f, 0.2f, 0.4f), LoadVfxTexture("vfx_disc")),
 
                 Particles = ParticleMaterial(),
                 MissionZone = Transparent("MissionZone", new Color(1f, 0.8f, 0.3f, 0.14f)),
@@ -144,10 +141,11 @@ namespace BattleArena.Editor.ContentBuilder
             return material;
         }
 
-        private static Material Transparent(string name, Color color)
+        private static Material Transparent(string name, Color color, Texture2D texture = null)
         {
             var material = LoadOrCreateMaterial(name, "Universal Render Pipeline/Unlit");
             material.SetColor("_BaseColor", color);
+            material.SetTexture("_BaseMap", texture);
             material.SetFloat("_Surface", 1f);
             material.SetFloat("_Blend", 0f);
             material.SetFloat("_Cull", (float)CullMode.Off);
@@ -170,6 +168,9 @@ namespace BattleArena.Editor.ContentBuilder
             material.SetFloat("_Surface", 1f);
             material.SetFloat("_Blend", 0f);
             material.SetFloat("_ReceiveShadows", 1f);
+            // Draw before every other transparent (queue 2950 vs 3000), so effects on the ground land on top of the
+            // paths instead of being blended under them. URP recomputes the queue from this offset.
+            material.SetFloat("_QueueOffset", -50f);
             BaseShaderGUI.SetupMaterialBlendMode(material);
             BaseShaderGUI.SetMaterialKeywords(material);
             EditorUtility.SetDirty(material);
@@ -179,9 +180,8 @@ namespace BattleArena.Editor.ContentBuilder
         private static Material ParticleMaterial()
         {
             var material = LoadOrCreateMaterial("Particles", "Universal Render Pipeline/Particles/Unlit");
-            var template = GraphicsSettings.currentRenderPipeline != null ? GraphicsSettings.currentRenderPipeline.defaultParticleMaterial : null;
-            if (template != null && template.HasProperty("_BaseMap"))
-                material.SetTexture("_BaseMap", template.GetTexture("_BaseMap"));
+            // Soft glow with a hot core: every generic burst reads as light rather than a blurry square.
+            material.SetTexture("_BaseMap", LoadVfxTexture("vfx_glow"));
 
             material.SetColor("_BaseColor", Color.white);
             material.SetFloat("_Surface", 1f);
