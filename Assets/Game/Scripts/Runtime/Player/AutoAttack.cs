@@ -80,7 +80,7 @@ namespace BattleArena.Player
         private void Fire(Vector3 targetPosition)
         {
             var origin = muzzle.position;
-            var aim = CombatQueries.Planar(targetPosition - origin);
+            var aim = CombatQueries.AimAt(origin, targetPosition);
             var bolts = Mathf.Min(maxBolts, 1 + stats.ExtraProjectiles);
             var totalPierce = pierce + stats.ExtraPierce;
             var damage = stats.CreateDamage(baseDamage);

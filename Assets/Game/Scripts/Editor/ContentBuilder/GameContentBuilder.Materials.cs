@@ -13,7 +13,7 @@ namespace BattleArena.Editor.ContentBuilder
             public Material PineBark, PineNeedles, PineNeedlesDark, LanternIron, LanternGlow;
             public Material PropStone, PropStoneDark, PropStoneLight, GraveStone, Moss, Slate, HealingWater, WellDepth, Dirt;
             public Material AutumnWood, LeafRust, LeafRustDark, LeafOchre, RockStone, RockMoss;
-            public Material PlayerRobe, PlayerSkin, PlayerHat, StaffGlow;
+            public Material HuskyBody, HuskyCrystal;
             public Material Grunt, Runner, Brute, Boss, EnemyEyes;
             public Material Bat, Archer, Wisp, Bomber, Shaman, Boar, Beetle, Slime, Wyvern;
             public Material WindupGlow, CurseGlow, BombBody, EnemyArrow, WispBolt;
@@ -65,10 +65,9 @@ namespace BattleArena.Editor.ContentBuilder
                 RockStone = Lit("RockStone", Hex("#716C66"), smoothness: 0.1f),
                 RockMoss = Lit("RockMoss", Hex("#5F6A45"), smoothness: 0.05f),
 
-                PlayerRobe = Lit("PlayerRobe", Hex("#3560C9"), smoothness: 0.25f),
-                PlayerSkin = Lit("PlayerSkin", Hex("#F0C8A0"), smoothness: 0.3f),
-                PlayerHat = Lit("PlayerHat", Hex("#5B34B8"), smoothness: 0.25f),
-                StaffGlow = Lit("StaffGlow", Hex("#9FE8FF"), emission: Hex("#4FD2FF") * 3f),
+                // Colours (fur markings, cloth, gold) are baked into one atlas in Blender.
+                HuskyBody = Lit("WizardHuskyBody", Color.white, smoothness: 0.15f, baseMap: LoadTexture(HuskyAlbedoPath)),
+                HuskyCrystal = Lit("WizardHuskyCrystal", Hex("#B8FFF6"), smoothness: 0.8f, emission: Hex("#3CE8D8") * 3.5f),
 
                 Grunt = Lit("EnemyGrunt", Hex("#7DAE45"), smoothness: 0.2f),
                 Runner = Lit("EnemyRunner", Hex("#D9A534"), smoothness: 0.2f),

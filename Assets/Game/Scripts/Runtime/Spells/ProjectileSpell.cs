@@ -24,7 +24,7 @@ namespace BattleArena.Spells
         public override bool Cast(in SpellContext context)
         {
             var aim = CombatQueries.TryFindNearest(context.Origin, targetingRange, context.TargetMask, out var target)
-                ? CombatQueries.Planar(target.position - context.Origin)
+                ? CombatQueries.AimAt(context.Origin, target.position)
                 : context.Caster.Facing;
 
             var damage = GetDamage(context);

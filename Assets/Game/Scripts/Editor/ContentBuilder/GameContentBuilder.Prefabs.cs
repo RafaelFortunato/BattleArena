@@ -276,18 +276,9 @@ namespace BattleArena.Editor.ContentBuilder
             var progression = root.AddComponent<PlayerProgression>();
             SerializedSetter.For(progression).Set("stats", stats).Apply();
 
-            // Placeholder wizard
-            var visual = AddChild(root.transform, "Visual", Vector3.zero);
-            var robe = AddVisual(visual, PrimitiveType.Capsule, m.PlayerRobe, new Vector3(0f, 0.85f, 0f), new Vector3(0.9f, 0.85f, 0.9f), name: "Robe");
-            var head = AddVisual(visual, PrimitiveType.Sphere, m.PlayerSkin, new Vector3(0f, 1.85f, 0f), Vector3.one * 0.5f, name: "Head");
-            AddVisual(visual, PrimitiveType.Cylinder, m.PlayerHat, new Vector3(0f, 2.08f, 0f), new Vector3(0.9f, 0.03f, 0.9f), name: "HatBrim");
-            AddVisual(visual, PrimitiveType.Cylinder, m.PlayerHat, new Vector3(0f, 2.25f, 0f), new Vector3(0.46f, 0.15f, 0.46f), name: "HatLow");
-            AddVisual(visual, PrimitiveType.Cylinder, m.PlayerHat, new Vector3(0f, 2.49f, -0.04f), new Vector3(0.3f, 0.12f, 0.3f), new Vector3(-8f, 0f, 0f), "HatMid");
-            AddVisual(visual, PrimitiveType.Cylinder, m.PlayerHat, new Vector3(0f, 2.68f, -0.1f), new Vector3(0.15f, 0.09f, 0.15f), new Vector3(-18f, 0f, 0f), "HatTip");
-            AddVisual(visual, PrimitiveType.Cylinder, m.Wood, new Vector3(0.5f, 1.05f, 0.25f), new Vector3(0.07f, 0.85f, 0.07f), name: "Staff");
-            AddVisual(visual, PrimitiveType.Sphere, m.StaffGlow, new Vector3(0.5f, 1.95f, 0.25f), Vector3.one * 0.24f, name: "StaffOrb");
-
-            var muzzle = AddChild(root.transform, "Muzzle", new Vector3(0f, 1.1f, 0.6f));
+            // The wizard husky; shots and spells come out of the crystal on its staff.
+            var character = AddWizardHusky(root, m, movement);
+            var muzzle = character.Muzzle;
 
             var autoAttack = root.AddComponent<AutoAttack>();
             SerializedSetter.For(autoAttack)
@@ -309,7 +300,7 @@ namespace BattleArena.Editor.ContentBuilder
 
             var flash = root.AddComponent<DamageFlash>();
             SerializedSetter.For(flash)
-                .Set("renderers", new[] { robe.GetComponent<Renderer>(), head.GetComponent<Renderer>() })
+                .Set("renderers", new[] { character.Body })
                 .Set("flashMaterial", m.Flash)
                 .Apply();
 

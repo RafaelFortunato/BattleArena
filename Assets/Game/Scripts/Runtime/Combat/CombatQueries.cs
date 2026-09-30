@@ -80,5 +80,15 @@ namespace BattleArena.Combat
             direction.y = 0f;
             return direction.sqrMagnitude > 0.0001f ? direction.normalized : Vector3.forward;
         }
+
+        /// <summary>Height above an enemy's feet that shots aim for, so shots from a raised muzzle still hit short enemies.</summary>
+        public const float AimHeight = 0.9f;
+
+        /// <summary>Direction from <paramref name="origin"/> to the body of an enemy standing at <paramref name="targetFeet"/>.</summary>
+        public static Vector3 AimAt(Vector3 origin, Vector3 targetFeet)
+        {
+            var direction = targetFeet + Vector3.up * AimHeight - origin;
+            return direction.sqrMagnitude > 0.0001f ? direction.normalized : Vector3.forward;
+        }
     }
 }

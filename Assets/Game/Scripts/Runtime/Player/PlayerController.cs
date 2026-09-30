@@ -21,6 +21,12 @@ namespace BattleArena.Player
         /// <summary>Planar direction the character is facing; used to aim spells when no target is nearby.</summary>
         public Vector3 Facing => transform.forward;
 
+        /// <summary>Current planar movement speed in metres per second (drives the run animation).</summary>
+        public float CurrentSpeed { get; private set; }
+
+        /// <summary>Movement speed at full stick, including upgrades.</summary>
+        public float MaxSpeed => moveSpeed * stats.MoveSpeedMultiplier;
+
         private void Awake() => _controller = GetComponent<CharacterController>();
 
         private void OnEnable() => input.MoveChanged += OnMoveChanged;
@@ -45,13 +51,14 @@ namespace BattleArena.Player
         private void Update()
         {
             var isIdle = _moveDirection == Vector3.zero;
+            CurrentSpeed = isIdle ? 0f : _moveDirection.magnitude * MaxSpeed;
             if (isIdle && _controller.isGrounded)
                 return;
 
             var deltaTime = Time.deltaTime;
             _verticalSpeed = _controller.isGrounded ? GroundedVerticalSpeed : _verticalSpeed + gravity * deltaTime;
 
-            var velocity = _moveDirection * (moveSpeed * stats.MoveSpeedMultiplier);
+            var velocity = _moveDirection * MaxSpeed;
             velocity.y = _verticalSpeed;
             _controller.Move(velocity * deltaTime);
 
