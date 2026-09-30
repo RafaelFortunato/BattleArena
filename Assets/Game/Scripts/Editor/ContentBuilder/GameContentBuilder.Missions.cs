@@ -11,8 +11,8 @@ namespace BattleArena.Editor.ContentBuilder
 
         private static MissionDefinition[] BuildMissions(MaterialSet m, EnemyRoster roster, TimedRelease collectEffect)
         {
-            var goldZone = BuildMissionZone("HoldZone", m.MissionZone, m.MissionZoneFill);
-            var campZone = BuildMissionZone("CampZone", m.EnemyTelegraph, m.EnemyTelegraphFill);
+            var goldZone = BuildMissionZone("HoldZone", m.MissionZone, m.MissionZoneFill, FxMaterial("ZoneGoldRune", "vfx_rune_arcane", MissionGold, 1.1f));
+            var campZone = BuildMissionZone("CampZone", m.StrikeEnemyRing, m.StrikeEnemyFill, FxMaterial("ZoneCampRune", "vfx_rune_meteor", EnemyRed, 0.9f));
             var shard = BuildMissionShard(m, collectEffect);
 
             return new MissionDefinition[]
@@ -54,52 +54,5 @@ namespace BattleArena.Editor.ContentBuilder
             return mission;
         }
 
-        private static MissionZone BuildMissionZone(string name, Material outlineMaterial, Material fillMaterial)
-        {
-            var root = CreateRoot(name, GameLayers.Default);
-            var outline = AddVisual(root.transform, PrimitiveType.Cylinder, outlineMaterial, new Vector3(0f, 0.03f, 0f), new Vector3(1f, 0.01f, 1f), name: "Outline");
-            var fill = AddVisual(root.transform, PrimitiveType.Cylinder, fillMaterial, new Vector3(0f, 0.05f, 0f), new Vector3(0f, 0.01f, 0f), name: "Fill");
-            DisableShadows(outline);
-            DisableShadows(fill);
-
-            var zone = root.AddComponent<MissionZone>();
-            SerializedSetter.For(zone).Set("outline", outline.transform).Set("fill", fill.transform).Apply();
-            return SavePrefab<MissionZone>(root, $"{PrefabsFolder}/Missions/{name}.prefab");
-        }
-
-        private static MissionShard BuildMissionShard(MaterialSet m, TimedRelease collectEffect)
-        {
-            var root = CreateRoot("ArcaneShard", GameLayers.Pickup);
-
-            var trigger = root.AddComponent<SphereCollider>();
-            trigger.isTrigger = true;
-            trigger.radius = 1.2f;
-
-            var body = root.AddComponent<Rigidbody>();
-            body.isKinematic = true;
-            body.useGravity = false;
-
-            AddVisual(root.transform, PrimitiveType.Cube, m.ArcaneShard, Vector3.zero, new Vector3(0.45f, 0.9f, 0.45f), new Vector3(0f, 45f, 0f), "Crystal");
-            DisableShadows(AddVisual(root.transform, PrimitiveType.Cylinder, m.MissionZoneFill, new Vector3(0f, -0.95f, 0f), new Vector3(1.6f, 0.01f, 1.6f), name: "Glow"));
-
-            var shard = root.AddComponent<MissionShard>();
-            SerializedSetter.For(shard).Set("collectEffect", collectEffect).Apply();
-            return SavePrefab<MissionShard>(root, $"{PrefabsFolder}/Missions/ArcaneShard.prefab");
-        }
-
-        /// <summary>Scene object: a gold chevron that circles the player and points at the mission objective.</summary>
-        private static MissionPointer BuildMissionPointer(MaterialSet m, Transform player)
-        {
-            var root = new GameObject("MissionPointer");
-            var arrow = new GameObject("Arrow").transform;
-            arrow.SetParent(root.transform, false);
-
-            DisableShadows(AddVisual(arrow, PrimitiveType.Cube, m.PointerGlow, new Vector3(-0.22f, 0f, 0f), new Vector3(0.12f, 0.04f, 0.7f), new Vector3(0f, 40f, 0f), "Left"));
-            DisableShadows(AddVisual(arrow, PrimitiveType.Cube, m.PointerGlow, new Vector3(0.22f, 0f, 0f), new Vector3(0.12f, 0.04f, 0.7f), new Vector3(0f, -40f, 0f), "Right"));
-
-            var pointer = root.AddComponent<MissionPointer>();
-            SerializedSetter.For(pointer).Set("player", player).Set("arrow", arrow.gameObject).Apply();
-            return pointer;
-        }
     }
 }

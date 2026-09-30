@@ -102,9 +102,9 @@ namespace BattleArena.Editor.ContentBuilder
             return SaveTimed(root, 0.7f);
         }
 
-        private static GameObject ProjectileRoot(string name, float radius)
+        private static GameObject ProjectileRoot(string name, float radius, int layer = GameLayers.PlayerProjectile)
         {
-            var root = CreateRoot(name, GameLayers.PlayerProjectile);
+            var root = CreateRoot(name, layer);
             var trigger = root.AddComponent<SphereCollider>();
             trigger.isTrigger = true;
             trigger.radius = radius;

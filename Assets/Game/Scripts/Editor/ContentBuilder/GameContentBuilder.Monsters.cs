@@ -10,7 +10,7 @@ namespace BattleArena.Editor.ContentBuilder
     /// <summary>
     /// Enemy models from Quaternius' "Ultimate Monsters" (CC0): rigged and animated FBX files sharing one colour
     /// atlas. Each enemy gets its model scaled to a target height and an override of a shared animator controller
-    /// (Idle / Move / Attack / Hit) mapped to that model's clips.
+    /// (Idle / Move / Attack) mapped to that model's clips.
     /// </summary>
     internal static partial class GameContentBuilder
     {
@@ -30,13 +30,13 @@ namespace BattleArena.Editor.ContentBuilder
             public readonly float Height;
             /// <summary>Height of the model's lowest point; above zero for hovering monsters.</summary>
             public readonly float Hover;
-            public readonly string Idle, Move, Attack, Hit;
+            public readonly string Idle, Move, Attack;
             /// <summary>Movement speed at which the move clip plays at its authored rate.</summary>
             public readonly float ReferenceSpeed;
             public readonly Material Material;
 
             public MonsterSpec(string model, float height, float referenceSpeed, string move = "Walk", string attack = "Punch",
-                string idle = "Idle", string hit = "HitReact", float hover = 0f, Material material = null)
+                string idle = "Idle", float hover = 0f, Material material = null)
             {
                 Model = model;
                 Height = height;
@@ -44,7 +44,6 @@ namespace BattleArena.Editor.ContentBuilder
                 Move = move;
                 Attack = attack;
                 Idle = idle;
-                Hit = hit;
                 Hover = hover;
                 Material = material;
             }
@@ -53,7 +52,7 @@ namespace BattleArena.Editor.ContentBuilder
                 new(model, height, referenceSpeed, move: "Fast_Flying", attack: attack, idle: "Flying_Idle", hover: hover);
 
             public static MonsterSpec Blob(string model, float height, float referenceSpeed) =>
-                new(model, height, referenceSpeed, attack: "Bite_Front", hit: "HitRecieve");
+                new(model, height, referenceSpeed, attack: "Bite_Front");
         }
 
         private static AnimatorController _monsterController;
@@ -159,7 +158,10 @@ namespace BattleArena.Editor.ContentBuilder
             return clip;
         }
 
-        /// <summary>Shared layout every monster uses: Idle ⇄ Move on Speed, Attack and Hit on triggers.</summary>
+        /// <summary>
+        /// Shared layout every monster uses: Idle ⇄ Move on Speed, Attack on a trigger. No hit reactions: nothing
+        /// stuns enemies, so a flinch would only interrupt their walk.
+        /// </summary>
         private static AnimatorController MonsterController()
         {
             if (_monsterController != null)
@@ -176,7 +178,6 @@ namespace BattleArena.Editor.ContentBuilder
             controller.AddParameter(new AnimatorControllerParameter { name = "MoveRate", type = AnimatorControllerParameterType.Float, defaultFloat = 1f });
             controller.AddParameter(new AnimatorControllerParameter { name = "AttackRate", type = AnimatorControllerParameterType.Float, defaultFloat = 1f });
             controller.AddParameter("Attack", AnimatorControllerParameterType.Trigger);
-            controller.AddParameter("Hit", AnimatorControllerParameterType.Trigger);
 
             var machine = controller.layers[0].stateMachine;
             foreach (var state in machine.states.ToArray())
@@ -195,9 +196,6 @@ namespace BattleArena.Editor.ContentBuilder
             attack.tag = "Attack";
             attack.speedParameterActive = true;
             attack.speedParameter = "AttackRate";
-            var hit = machine.AddState("Hit");
-            hit.motion = Clip(baseClips, "HitReact", "Idle");
-            hit.tag = "Hit";
             machine.defaultState = idle;
 
             var toMove = idle.AddTransition(move);
@@ -218,16 +216,6 @@ namespace BattleArena.Editor.ContentBuilder
             attackDone.hasExitTime = true;
             attackDone.exitTime = 0.92f;
             attackDone.duration = 0.1f;
-
-            var toHit = machine.AddAnyStateTransition(hit);
-            toHit.hasExitTime = false;
-            toHit.duration = 0.05f;
-            toHit.canTransitionToSelf = false;
-            toHit.AddCondition(AnimatorConditionMode.If, 0f, "Hit");
-            var hitDone = hit.AddTransition(idle);
-            hitDone.hasExitTime = true;
-            hitDone.exitTime = 0.85f;
-            hitDone.duration = 0.1f;
 
             EditorUtility.SetDirty(controller);
             _monsterController = controller;
@@ -251,7 +239,6 @@ namespace BattleArena.Editor.ContentBuilder
                 ["Idle"] = Clip(clips, spec.Idle, spec.Idle),
                 ["Move"] = Clip(clips, spec.Move, spec.Idle),
                 ["Attack"] = Clip(clips, spec.Attack, spec.Idle),
-                ["Hit"] = Clip(clips, spec.Hit, spec.Idle),
             };
             var pairs = new List<KeyValuePair<AnimationClip, AnimationClip>>();
             foreach (var state in controller.layers[0].stateMachine.states)

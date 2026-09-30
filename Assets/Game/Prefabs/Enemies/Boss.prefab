@@ -145,7 +145,6 @@ MonoBehaviour:
   referenceSpeed: 2.7
   attackClipLength: 1.1666667
   attackImpactPoint: 0.55
-  hitCooldown: 0.4
 --- !u!114 &437655170594985888
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -54,17 +54,17 @@ namespace BattleArena.Editor.ContentBuilder
             var kit = new EnemyKit(m, gem, deathEffect);
 
             // Enemy weapons
-            var arrowHit = BuildBurst("ArrowHit", m, new Color(1f, 0.6f, 0.2f), 8, 3f, 0.25f, 0.3f);
-            var wispHit = BuildBurst("WispBoltHit", m, new Color(0.4f, 0.85f, 1f), 8, 3f, 0.25f, 0.3f);
+            var arrowHit = BuildSparkHit("ArrowHit", new Color(1f, 0.65f, 0.3f), 0.8f);
+            var wispHit = BuildSparkHit("WispBoltHit", new Color(0.45f, 0.82f, 1f), 0.9f);
             var bombBlast = BuildBurst("BombExplosion", m, new Color(1f, 0.45f, 0.1f), 36, 5f, 0.55f, 0.55f, radius: 0.5f, fromGround: true);
             var curseEruption = BuildBurst("CurseEruption", m, new Color(0.45f, 1f, 0.3f), 30, 4f, 0.5f, 0.6f, radius: 0.6f, fromGround: true);
-            var arrow = BuildProjectile("EnemyArrow", m.EnemyArrow, 0.22f, GameLayers.EnemyProjectile, 2.5f, arrowHit, length: 0.9f);
-            var wispBolt = BuildProjectile("WispBolt", m.WispBolt, 0.4f, GameLayers.EnemyProjectile, 3f, wispHit);
-            var bomb = BuildStrike("GoblinBomb", m.StrikeEnemyRing, m.StrikeEnemyFill, bombBlast, m.BombBody, fallingSize: 0.55f);
-            var curse = BuildStrike("ShamanCurse", m.StrikeEnemyRing, m.StrikeEnemyFill, curseEruption, null);
-            var beetleBlast = BuildStrike("BeetleBlast", m.StrikeEnemyRing, m.StrikeEnemyFill, bombBlast, null);
+            var arrow = BuildEnemyArrow(m, arrowHit);
+            var wispBolt = BuildWispBolt(wispHit);
+            var bomb = BuildStrike("GoblinBomb", m.StrikeEnemyRing, m.StrikeEnemyFill, bombBlast, t => BombVisual(t, m));
+            var curse = BuildStrike("ShamanCurse", m.StrikeEnemyRing, m.StrikeEnemyFill, curseEruption);
+            var beetleBlast = BuildStrike("BeetleBlast", m.StrikeEnemyRing, m.StrikeEnemyFill, bombBlast);
             var dashLine = BuildLineTelegraph(m);
-            var warlordSlam = BuildStrike("WarlordSlam", m.StrikeEnemyRing, m.StrikeEnemyFill, bombBlast, null);
+            var warlordSlam = BuildStrike("WarlordSlam", m.StrikeEnemyRing, m.StrikeEnemyFill, bombBlast);
 
             // --- Melee chasers
             var grunt = Define("Grunt", "Goblin Grunt", SaveEnemy(Melee(kit, "Grunt", 1f, 2.3f, v => Monster(v, new MonsterSpec("Orc", 1.75f, 3.2f, attack: "Weapon", material: m.MonsterGrunt), m, "Grunt"))),
@@ -282,30 +282,7 @@ namespace BattleArena.Editor.ContentBuilder
             setter.Apply();
             return component;
         }
-
-        /// <summary>Glowing marker shown only while an attack winds up.</summary>
-        private static GameObject WindupIndicator(GameObject root, Material material, Vector3 localPosition, float size)
-        {
-            var indicator = AddVisual(root.transform, PrimitiveType.Sphere, material, localPosition, Vector3.one * size, name: "WindupIndicator");
-            DisableShadows(indicator);
-            indicator.SetActive(false);
-            return indicator;
-        }
-
         private static Enemy SaveEnemy(GameObject root) => SavePrefab<Enemy>(root, $"{EnemyPrefabsFolder}/{root.name}.prefab");
-
-        private static LineTelegraph BuildLineTelegraph(MaterialSet m)
-        {
-            var root = CreateRoot("DashTelegraph", GameLayers.Default);
-            var outline = AddVisual(root.transform, PrimitiveType.Cube, m.EnemyTelegraph, Vector3.zero, new Vector3(1f, 0.02f, 1f), name: "Outline");
-            var fill = AddVisual(root.transform, PrimitiveType.Cube, m.EnemyTelegraphFill, new Vector3(0f, 0.01f, 0f), new Vector3(1f, 0.02f, 0f), name: "Fill");
-            DisableShadows(outline);
-            DisableShadows(fill);
-
-            var telegraph = root.AddComponent<LineTelegraph>();
-            SerializedSetter.For(telegraph).Set("outline", outline.transform).Set("fill", fill.transform).Apply();
-            return SavePrefab<LineTelegraph>(root, $"{PrefabsFolder}/Vfx/DashTelegraph.prefab");
-        }
 
         private static EnemyDefinition Define(string file, string displayName, Enemy prefab, float health, float speed,
             float damage, float range, float cooldown, int xp)

@@ -15,13 +15,14 @@ namespace BattleArena.Editor.ContentBuilder
             public Material AutumnWood, LeafRust, LeafRustDark, LeafOchre, RockStone, RockMoss;
             public Material HuskyBody, HuskyCrystal;
             public Material MonsterAtlas, MonsterGold, MonsterGrunt;
-            public Material WindupGlow, CurseGlow, BombBody, EnemyArrow, WispBolt;
+            public Material ChestWood, ChestIron, Fletching, TelegraphLane, TelegraphLaneFill;
+            public Material WindupGlow, CurseGlow, BombBody, WispBolt;
             public Material Flash;
             public Material PlayerBolt, Fireball, BossOrb, Meteor, Gem, ArcaneOrb;
-            public Material EnemyTelegraph, EnemyTelegraphFill, StrikeEnemyRing, StrikeEnemyFill;
+            public Material StrikeEnemyRing, StrikeEnemyFill;
             public Material Particles;
             public Material HealthBar, DamageText;
-            public Material MissionZone, MissionZoneFill, ArcaneShard, PointerGlow;
+            public Material MissionZone, MissionZoneFill, ArcaneShard, MissionCrystal, PointerGlow;
         }
 
         private static MaterialSet BuildMaterials()
@@ -76,28 +77,30 @@ namespace BattleArena.Editor.ContentBuilder
                 WindupGlow = Lit("EnemyWindupGlow", Hex("#FFB070"), emission: Hex("#FF4A10") * 6f),
                 CurseGlow = Lit("EnemyCurseGlow", Hex("#C8FFB0"), emission: Hex("#4DFF3A") * 4f),
                 BombBody = Lit("BombBody", Hex("#1C1C22"), smoothness: 0.6f),
-                EnemyArrow = Lit("EnemyArrow", Hex("#FFD8A0"), emission: Hex("#FF8A20") * 4f),
                 WispBolt = Lit("WispBolt", Hex("#D8FAFF"), emission: Hex("#30B8FF") * 5f),
 
                 Flash = Lit("HitFlash", Color.white, emission: Color.white * 1.5f),
 
                 PlayerBolt = Lit("PlayerBolt", Hex("#BFF3FF"), emission: Hex("#38C8FF") * 5f),
                 Fireball = Lit("Fireball", Hex("#FFC060"), emission: Hex("#FF6A00") * 6f),
-                BossOrb = Lit("BossOrb", Hex("#F0A0FF"), emission: Hex("#C030FF") * 5f),
                 Meteor = Lit("Meteor", Hex("#5A2B18"), emission: Hex("#FF4A00") * 3f),
                 Gem = Lit("ExperienceGem", Hex("#A6FFD8"), emission: Hex("#20E0A0") * 3f),
                 ArcaneOrb = Lit("ArcaneOrb", Hex("#E2C8FF"), emission: Hex("#9A4DFF") * 5f),
 
 
-                EnemyTelegraph = Transparent("EnemyTelegraph", new Color(1f, 0.2f, 0.25f, 0.18f)),
-                EnemyTelegraphFill = Transparent("EnemyTelegraphFill", new Color(1f, 0.15f, 0.2f, 0.4f)),
+                TelegraphLane = Transparent("TelegraphEnemyLane", new Color(1f, 0.28f, 0.25f, 0.9f), LoadVfxTexture("vfx_lane")),
+                TelegraphLaneFill = Transparent("TelegraphEnemyLaneFill", new Color(1f, 0.2f, 0.2f, 0.45f), LoadVfxTexture("vfx_lane")),
                 StrikeEnemyRing = Transparent("TelegraphEnemyRing", new Color(1f, 0.25f, 0.25f, 0.9f), LoadVfxTexture("vfx_ring_thin")),
                 StrikeEnemyFill = Transparent("TelegraphEnemyFill", new Color(1f, 0.15f, 0.2f, 0.4f), LoadVfxTexture("vfx_disc")),
 
                 Particles = ParticleMaterial(),
-                MissionZone = Transparent("MissionZone", new Color(1f, 0.8f, 0.3f, 0.14f)),
-                MissionZoneFill = Transparent("MissionZoneFill", new Color(1f, 0.8f, 0.25f, 0.32f)),
+                MissionZone = Transparent("MissionZone", new Color(1f, 0.8f, 0.3f, 0.95f), LoadVfxTexture("vfx_ring_thin")),
+                MissionZoneFill = Transparent("MissionZoneFill", new Color(1f, 0.78f, 0.25f, 0.4f), LoadVfxTexture("vfx_disc")),
+                ChestWood = Lit("ChestWood", Hex("#7A4E2E"), smoothness: 0.2f),
+                ChestIron = Lit("ChestIron", Hex("#3C3E45"), smoothness: 0.45f, metallic: 0.6f),
+                Fletching = Lit("ArrowFletching", Hex("#C8402E"), smoothness: 0.3f),
                 ArcaneShard = Lit("ArcaneShard", Hex("#F2D0FF"), emission: Hex("#C04DFF") * 5f),
+                MissionCrystal = Lit("MissionCrystal", Hex("#B070E8"), emission: Hex("#9A3BE0") * 1.2f),
                 PointerGlow = Lit("MissionPointer", Hex("#FFE9A8"), emission: Hex("#FFB020") * 3f),
                 HealthBar = HealthBarMaterial(),
                 DamageText = DamageTextMaterial(),

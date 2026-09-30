@@ -41,15 +41,14 @@ namespace BattleArena.Editor.ContentBuilder
             // Effects
             var deathPuff = BuildBurst("EnemyDeath", m, new Color(1f, 0.9f, 0.6f), 16, 4f, 0.4f, 0.45f, radius: 0.4f);
             var slamImpact = BuildBurst("BossSlamImpact", m, new Color(0.85f, 0.3f, 1f), 36, 4f, 0.5f, 0.6f, radius: 0.6f, fromGround: true);
-            var orbImpact = BuildBurst("BossOrbImpact", m, new Color(0.85f, 0.4f, 1f), 8, 3f, 0.25f, 0.3f);
             var critSpark = BuildBurst("CritSpark", m, new Color(1f, 0.7f, 0.15f), 18, 7f, 0.35f, 0.35f, radius: 0.2f);
             var chestSparkle = BuildBurst("ChestSparkle", m, new Color(1f, 0.85f, 0.35f), 30, 5f, 0.4f, 0.6f, radius: 0.6f);
             var wellSplash = BuildBurst("WellSplash", m, new Color(0.45f, 0.95f, 1f), 30, 4.5f, 0.35f, 0.6f, radius: 0.7f);
 
             // Projectiles and telegraphed strikes
             var spellVfx = BuildSpellVfx(m);
-            var bossOrb = BuildProjectile("BossOrb", m.BossOrb, 0.55f, GameLayers.EnemyProjectile, 4f, orbImpact);
-            var bossSlam = BuildStrike("BossSlam", m.StrikeEnemyRing, m.StrikeEnemyFill, slamImpact, null);
+            var bossOrb = BuildBossOrb(BuildSparkHit("BossOrbHit", new Color(0.8f, 0.35f, 1f), 1.2f));
+            var bossSlam = BuildStrike("BossSlam", m.StrikeEnemyRing, m.StrikeEnemyFill, slamImpact);
 
             var gem = BuildGem(m);
 
@@ -143,77 +142,28 @@ namespace BattleArena.Editor.ContentBuilder
 
         // ---------------------------------------------------------------- Projectiles & strikes
 
-        private static Projectile BuildProjectile(string name, Material material, float diameter, int layer, float lifetime, TimedRelease impact,
-            float length = 0f)
-        {
-            var root = CreateRoot(name, layer);
-
-            var trigger = root.AddComponent<SphereCollider>();
-            trigger.isTrigger = true;
-            trigger.radius = diameter * 0.5f;
-
-            var body = root.AddComponent<Rigidbody>();
-            body.useGravity = false;
-            body.isKinematic = false;
-            body.interpolation = RigidbodyInterpolation.None;
-            body.constraints = RigidbodyConstraints.FreezeRotation;
-            body.linearDamping = 0f;
-
-            // Elongated projectiles use a capsule lying along the flight direction (+Z).
-            var visual = length > 0f
-                ? AddVisual(root.transform, PrimitiveType.Capsule, material, Vector3.zero, new Vector3(diameter, length * 0.5f, diameter), new Vector3(90f, 0f, 0f))
-                : AddVisual(root.transform, PrimitiveType.Sphere, material, Vector3.zero, Vector3.one * diameter);
-            DisableShadows(visual);
-
-            var projectile = root.AddComponent<Projectile>();
-            SerializedSetter.For(projectile).Set("lifetime", lifetime).Set("impactEffect", impact).Apply();
-
-            return SavePrefab<Projectile>(root, $"{PrefabsFolder}/Projectiles/{name}.prefab");
-        }
-
-        private static DelayedAreaStrike BuildStrike(string name, Material outlineMaterial, Material fillMaterial, TimedRelease impact, Material fallingMaterial,
-            float fallingSize = 1.3f)
+        /// <param name="buildFalling">Optional builder for the object that drops onto the target (e.g. a lit bomb).</param>
+        private static DelayedAreaStrike BuildStrike(string name, Material outlineMaterial, Material fillMaterial, TimedRelease impact,
+            System.Func<Transform, Transform> buildFalling = null)
         {
             var root = CreateRoot(name, GameLayers.Default);
             var outline = FlatQuad(root.transform, "Outline", outlineMaterial, 0.04f);
             var fill = FlatQuad(root.transform, "Fill", fillMaterial, 0.05f);
             fill.localScale = new Vector3(0f, 1f, 0f);
 
-            GameObject falling = null;
-            if (fallingMaterial != null)
-            {
-                falling = AddVisual(root.transform, PrimitiveType.Sphere, fallingMaterial, new Vector3(0f, 12f, 0f), Vector3.one * fallingSize, name: "Projectile");
-                falling.SetActive(false);
-            }
+            var falling = buildFalling?.Invoke(root.transform);
+            if (falling != null)
+                falling.gameObject.SetActive(false);
 
             var strike = root.AddComponent<DelayedAreaStrike>();
             SerializedSetter.For(strike)
                 .Set("outline", outline)
                 .Set("fill", fill)
-                .Set("fallingObject", falling != null ? falling.transform : null)
+                .Set("fallingObject", falling)
                 .Set("impactEffect", impact)
                 .Apply();
 
             return SavePrefab<DelayedAreaStrike>(root, $"{PrefabsFolder}/Projectiles/{name}.prefab");
-        }
-
-        private static ExperienceGem BuildGem(MaterialSet m)
-        {
-            var root = CreateRoot("ExperienceGem", GameLayers.Pickup);
-
-            var trigger = root.AddComponent<SphereCollider>();
-            trigger.isTrigger = true;
-            trigger.radius = 0.4f;
-
-            var body = root.AddComponent<Rigidbody>();
-            body.isKinematic = true;
-            body.useGravity = false;
-
-            var visual = AddVisual(root.transform, PrimitiveType.Cube, m.Gem, Vector3.zero, Vector3.one * 0.3f, new Vector3(45f, 0f, 45f));
-            DisableShadows(visual);
-
-            root.AddComponent<ExperienceGem>();
-            return SavePrefab<ExperienceGem>(root, $"{PrefabsFolder}/Pickups/ExperienceGem.prefab");
         }
 
         // ---------------------------------------------------------------- Enemy helpers shared with the roster
@@ -361,31 +311,6 @@ namespace BattleArena.Editor.ContentBuilder
             return SavePrefab<HealingWell>(root, $"{PrefabsFolder}/Interactables/HealingWell.prefab");
         }
 
-        private static TreasureChest BuildChest(MaterialSet m, TimedRelease openEffect)
-        {
-            var root = CreateRoot("TreasureChest", GameLayers.Interactable);
-            AddInteractionTrigger(root, 2.2f);
-
-            AddSolid(root.transform, PrimitiveType.Cube, m.Wood, new Vector3(0f, 0.35f, 0f), new Vector3(1.2f, 0.7f, 0.8f), "Body");
-            AddVisual(root.transform, PrimitiveType.Cube, m.Gold, new Vector3(0f, 0.35f, 0f), new Vector3(1.22f, 0.12f, 0.82f), name: "Band");
-
-            var lidPivot = AddChild(root.transform, "LidPivot", new Vector3(0f, 0.7f, -0.4f));
-            AddVisual(lidPivot, PrimitiveType.Cube, m.Wood, new Vector3(0f, 0.12f, 0.42f), new Vector3(1.24f, 0.24f, 0.84f), name: "Lid");
-            AddVisual(lidPivot, PrimitiveType.Cube, m.Gold, new Vector3(0f, 0.02f, 0.85f), new Vector3(0.18f, 0.22f, 0.06f), name: "Lock");
-
-            // Chests spawn at runtime, so they can't be baked into the NavMesh; enemies steer around them instead.
-            var obstacle = root.AddComponent<NavMeshObstacle>();
-            obstacle.shape = NavMeshObstacleShape.Box;
-            obstacle.center = new Vector3(0f, 0.4f, 0f);
-            obstacle.size = new Vector3(1.3f, 0.8f, 0.9f);
-            obstacle.carving = false;
-
-            var chest = root.AddComponent<TreasureChest>();
-            SerializedSetter.For(chest).Set("lid", lidPivot).Set("openEffect", openEffect).Apply();
-
-            return SavePrefab<TreasureChest>(root, $"{PrefabsFolder}/Interactables/TreasureChest.prefab");
-        }
-
         private static void AddInteractionTrigger(GameObject root, float radius)
         {
             var trigger = root.AddComponent<SphereCollider>();
@@ -393,22 +318,6 @@ namespace BattleArena.Editor.ContentBuilder
             trigger.radius = radius;
             trigger.center = new Vector3(0f, 1f, 0f);
         }
-
-        /// <summary>Primitive that keeps its collider on the Default layer, so it blocks movement and the NavMesh.</summary>
-        private static GameObject AddSolid(Transform parent, PrimitiveType type, Material material, Vector3 localPosition,
-            Vector3 localScale, string name, Vector3 localEuler = default)
-        {
-            var go = GameObject.CreatePrimitive(type);
-            go.name = name;
-            go.layer = GameLayers.Default;
-            go.transform.SetParent(parent, false);
-            go.transform.localPosition = localPosition;
-            go.transform.localEulerAngles = localEuler;
-            go.transform.localScale = localScale;
-            go.GetComponent<MeshRenderer>().sharedMaterial = material;
-            return go;
-        }
-
         private static void DisableShadows(GameObject go)
         {
             var meshRenderer = go.GetComponent<Renderer>();
