@@ -29,10 +29,10 @@ Transform:
   m_LocalScale: {x: 0, y: 1, z: 0}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 3560469347830310663}
+  - {fileID: 7874978175506154962}
   m_Father: {fileID: 557485089163218785}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &2907516407400881371
+--- !u!1 &2004343145113675256
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -40,9 +40,9 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 3560469347830310663}
-  - component: {fileID: 1386198923043576619}
-  - component: {fileID: 556196715655180696}
+  - component: {fileID: 7874978175506154962}
+  - component: {fileID: 4749501203497640270}
+  - component: {fileID: 2304605619464330657}
   m_Layer: 0
   m_Name: Quad
   m_TagString: Untagged
@@ -50,13 +50,13 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &3560469347830310663
+--- !u!4 &7874978175506154962
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2907516407400881371}
+  m_GameObject: {fileID: 2004343145113675256}
   serializedVersion: 2
   m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
   m_LocalPosition: {x: 0, y: 0, z: 0}
@@ -65,21 +65,21 @@ Transform:
   m_Children: []
   m_Father: {fileID: 5587599471160675965}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!33 &1386198923043576619
+--- !u!33 &4749501203497640270
 MeshFilter:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2907516407400881371}
+  m_GameObject: {fileID: 2004343145113675256}
   m_Mesh: {fileID: 10210, guid: 0000000000000000e000000000000000, type: 0}
---- !u!23 &556196715655180696
+--- !u!23 &2304605619464330657
 MeshRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2907516407400881371}
+  m_GameObject: {fileID: 2004343145113675256}
   m_Enabled: 1
   m_CastShadows: 0
   m_ReceiveShadows: 0

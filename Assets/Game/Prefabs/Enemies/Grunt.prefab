@@ -158,7 +158,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 1.2, y: 1.2, z: 1.2}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 7787419962661571572}
@@ -367,7 +367,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: bdbee161ebd96954cb8fabcb3fdc485b, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0.06510828
+      value: 0.06510831
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: bdbee161ebd96954cb8fabcb3fdc485b, type: 3}
       propertyPath: m_LocalPosition.y
@@ -375,7 +375,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: bdbee161ebd96954cb8fabcb3fdc485b, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -0.034954265
+      value: -0.034954295
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: bdbee161ebd96954cb8fabcb3fdc485b, type: 3}
       propertyPath: m_LocalRotation.w
@@ -428,7 +428,7 @@ PrefabInstance:
     - target: {fileID: -6073088336778414266, guid: bdbee161ebd96954cb8fabcb3fdc485b, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
-      objectReference: {fileID: 2100000, guid: 508789d61970d4644a35b0b9b0f36631, type: 2}
+      objectReference: {fileID: 2100000, guid: 4500c92128e5207449a1bbe814c607f8, type: 2}
     - target: {fileID: -6030504987341494449, guid: bdbee161ebd96954cb8fabcb3fdc485b, type: 3}
       propertyPath: m_Layer
       value: 8
@@ -564,7 +564,7 @@ PrefabInstance:
     - target: {fileID: 3798214047891171059, guid: bdbee161ebd96954cb8fabcb3fdc485b, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
-      objectReference: {fileID: 2100000, guid: 508789d61970d4644a35b0b9b0f36631, type: 2}
+      objectReference: {fileID: 2100000, guid: 4500c92128e5207449a1bbe814c607f8, type: 2}
     - target: {fileID: 3958123373900463251, guid: bdbee161ebd96954cb8fabcb3fdc485b, type: 3}
       propertyPath: m_Layer
       value: 8

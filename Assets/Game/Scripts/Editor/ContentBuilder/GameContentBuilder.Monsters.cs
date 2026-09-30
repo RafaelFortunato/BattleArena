@@ -16,7 +16,10 @@ namespace BattleArena.Editor.ContentBuilder
     {
         private const string MonstersFolder = Root + "/Art/Characters/Monsters";
         private const string MonsterAnimFolder = MonstersFolder + "/Animation";
-        private const string MonsterAtlasPath = MonstersFolder + "/Atlas_Monsters.png";
+        private const string MonsterAtlasPath = MonstersFolder + "/Atlas_Monsters_Vivid.png";
+        private const string MonsterGruntAtlasPath = MonstersFolder + "/Atlas_Monsters_Grunt.png";
+        /// <summary>Self-illumination from the atlas, so colours keep their punch in shade and under ACES tonemapping.</summary>
+        private const float MonsterEmission = 0.28f;
 
         private static readonly string[] LoopingClips = { "Idle", "Walk", "Run", "Flying_Idle", "Fast_Flying" };
 
@@ -259,18 +262,31 @@ namespace BattleArena.Editor.ContentBuilder
             return overrides;
         }
 
-        /// <summary>The colour atlas is a grid of flat swatches: point sampling, no mips, so colours never bleed.</summary>
-        private static Texture2D LoadMonsterAtlas()
+        /// <summary>
+        /// The colour atlas is a grid of flat swatches: point sampling, no mips and no compression, so colours never
+        /// bleed or shift (it is tiny either way).
+        /// </summary>
+        private static Texture2D LoadMonsterAtlas(string path)
         {
-            if (AssetImporter.GetAtPath(MonsterAtlasPath) is not TextureImporter importer)
+            if (AssetImporter.GetAtPath(path) is not TextureImporter importer)
                 return null;
-            if (importer.filterMode != FilterMode.Point || importer.mipmapEnabled)
+            if (importer.filterMode != FilterMode.Point || importer.mipmapEnabled || importer.textureCompression != TextureImporterCompression.Uncompressed)
             {
                 importer.filterMode = FilterMode.Point;
                 importer.mipmapEnabled = false;
+                importer.textureCompression = TextureImporterCompression.Uncompressed;
                 importer.SaveAndReimport();
             }
-            return AssetDatabase.LoadAssetAtPath<Texture2D>(MonsterAtlasPath);
+            return AssetDatabase.LoadAssetAtPath<Texture2D>(path);
+        }
+
+        private static Material MonsterMaterial(string name, string atlasPath, Color tint, float smoothness, float metallic)
+        {
+            var atlas = LoadMonsterAtlas(atlasPath);
+            var material = Lit(name, tint, smoothness: smoothness, metallic: metallic, emission: tint * MonsterEmission, baseMap: atlas);
+            material.SetTexture("_EmissionMap", atlas);
+            EditorUtility.SetDirty(material);
+            return material;
         }
     }
 }

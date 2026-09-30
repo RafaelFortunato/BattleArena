@@ -14,7 +14,7 @@ namespace BattleArena.Editor.ContentBuilder
             public Material PropStone, PropStoneDark, PropStoneLight, GraveStone, Moss, Slate, HealingWater, WellDepth, Dirt;
             public Material AutumnWood, LeafRust, LeafRustDark, LeafOchre, RockStone, RockMoss;
             public Material HuskyBody, HuskyCrystal;
-            public Material MonsterAtlas, MonsterGold;
+            public Material MonsterAtlas, MonsterGold, MonsterGrunt;
             public Material WindupGlow, CurseGlow, BombBody, EnemyArrow, WispBolt;
             public Material Flash;
             public Material PlayerBolt, Fireball, BossOrb, Meteor, Gem, ArcaneOrb;
@@ -68,9 +68,11 @@ namespace BattleArena.Editor.ContentBuilder
                 HuskyBody = Lit("WizardHuskyBody", Color.white, smoothness: 0.15f, baseMap: LoadTexture(HuskyAlbedoPath)),
                 HuskyCrystal = Lit("WizardHuskyCrystal", Hex("#B8FFF6"), smoothness: 0.8f, emission: Hex("#3CE8D8") * 3.5f),
 
-                // Quaternius monsters share one flat-colour atlas; the golden goblin tints it gold.
-                MonsterAtlas = Lit("MonsterAtlas", Color.white, smoothness: 0.2f, baseMap: LoadMonsterAtlas()),
-                MonsterGold = Lit("MonsterGold", Hex("#FFD166"), smoothness: 0.6f, metallic: 0.65f, baseMap: LoadMonsterAtlas()),
+                // Quaternius monsters share one flat-colour atlas (saturated for the game); the grunt gets its own
+                // copy with a warm skin that reads against the grass, and the golden goblin tints it gold.
+                MonsterAtlas = MonsterMaterial("MonsterAtlas", MonsterAtlasPath, Color.white, 0.2f, 0f),
+                MonsterGrunt = MonsterMaterial("MonsterGrunt", MonsterGruntAtlasPath, Color.white, 0.2f, 0f),
+                MonsterGold = MonsterMaterial("MonsterGold", MonsterAtlasPath, Hex("#FFD166"), 0.6f, 0.65f),
                 WindupGlow = Lit("EnemyWindupGlow", Hex("#FFB070"), emission: Hex("#FF4A10") * 6f),
                 CurseGlow = Lit("EnemyCurseGlow", Hex("#C8FFB0"), emission: Hex("#4DFF3A") * 4f),
                 BombBody = Lit("BombBody", Hex("#1C1C22"), smoothness: 0.6f),
@@ -112,16 +114,14 @@ namespace BattleArena.Editor.ContentBuilder
             material.SetTexture("_BaseMap", baseMap);
             material.SetTextureScale("_BaseMap", tiling ?? Vector2.one);
 
-            if (emission.HasValue)
-            {
-                material.SetColor("_EmissionColor", emission.Value);
-                material.EnableKeyword("_EMISSION");
-                material.globalIlluminationFlags = MaterialGlobalIlluminationFlags.None;
-            }
-            else
-            {
-                material.DisableKeyword("_EMISSION");
-            }
+            // URP re-derives _EMISSION whenever it validates a material, and only keeps it when the GI flags are
+            // emissive, so a hand-set keyword with GI flags "None" silently switches off. The scene has no realtime
+            // GI, so RealtimeEmissive costs nothing.
+            material.SetColor("_EmissionColor", emission ?? Color.black);
+            material.globalIlluminationFlags = emission.HasValue
+                ? MaterialGlobalIlluminationFlags.RealtimeEmissive
+                : MaterialGlobalIlluminationFlags.EmissiveIsBlack;
+            BaseShaderGUI.SetMaterialKeywords(material);
 
             material.enableInstancing = true;
             EditorUtility.SetDirty(material);

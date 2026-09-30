@@ -16,6 +16,8 @@ namespace BattleArena.Editor.ContentBuilder
     {
         private const string EnemyPrefabsFolder = PrefabsFolder + "/Enemies";
         private const string EnemyDataFolder = DataFolder + "/Enemies";
+        /// <summary>Global size of every enemy prefab, on top of each enemy's own scale.</summary>
+        private const float EnemySizeMultiplier = 1.2f;
 
         /// <summary>Shared assets every enemy prefab needs.</summary>
         private readonly struct EnemyKit
@@ -65,7 +67,7 @@ namespace BattleArena.Editor.ContentBuilder
             var warlordSlam = BuildStrike("WarlordSlam", m.StrikeEnemyRing, m.StrikeEnemyFill, bombBlast, null);
 
             // --- Melee chasers
-            var grunt = Define("Grunt", "Goblin Grunt", SaveEnemy(Melee(kit, "Grunt", 1f, 2.3f, v => Monster(v, new MonsterSpec("Orc", 1.75f, 3.2f, attack: "Weapon"), m, "Grunt"))),
+            var grunt = Define("Grunt", "Goblin Grunt", SaveEnemy(Melee(kit, "Grunt", 1f, 2.3f, v => Monster(v, new MonsterSpec("Orc", 1.75f, 3.2f, attack: "Weapon", material: m.MonsterGrunt), m, "Grunt"))),
                 health: 18f, speed: 3.2f, damage: 5f, range: 1.3f, cooldown: 1f, xp: 1);
 
             var runner = Define("Runner", "Swift Imp", SaveEnemy(Melee(kit, "Runner", 0.75f, 2.3f, v => Monster(v, new MonsterSpec("Demon", 1.8f, 5.2f, move: "Run"), m, "Runner"))),
@@ -218,7 +220,8 @@ namespace BattleArena.Editor.ContentBuilder
             Func<Transform, Renderer> buildVisual, bool flying = false)
         {
             var root = CreateRoot(name, GameLayers.Enemy);
-            root.transform.localScale = Vector3.one * scale;
+            // Scaling the root keeps the model, collider, agent, health bar and attack origins in proportion.
+            root.transform.localScale = Vector3.one * (scale * EnemySizeMultiplier);
 
             var agent = root.AddComponent<NavMeshAgent>();
             agent.radius = 0.45f;
