@@ -3,7 +3,7 @@
    text       #FFFFFF   muted      #AEB6C8   soft #C9CFDC   dim #8B93A7
    accent     #7C4DFF   deep       #4D309E   light #B79DFF
    gold       #F2C14E   gold deep  #7A5A12   gold ink #231A05
-   health     #FF6A2A   trough     #3A1712   highlight #FF9E6B
+   health     #E8333A   trough     #3A1214   highlight #FF7A72   trail #FFD2CC
    boss       #FF5A4E   trough     #3A1212   highlight #FF8A80   trail #FFD2CC
    Fonts: Baloo 2 ExtraBold for display text, Nunito for everything else.
 */
@@ -54,6 +54,7 @@
 
 .icon-play { background-image: url("project://database/Assets/Game/UI/Icons/ui-play.svg"); }
 .icon-skull { background-image: url("project://database/Assets/Game/UI/Icons/ui-skull.svg"); }
+.icon-heart { background-image: url("project://database/Assets/Game/UI/Icons/ui-heart.svg"); }
 .icon-exclamation { background-image: url("project://database/Assets/Game/UI/Icons/ui-exclamation.svg"); }
 .icon-check { background-image: url("project://database/Assets/Game/UI/Icons/ui-check.svg"); }
 .icon-lock { background-image: url("project://database/Assets/Game/UI/Icons/ui-lock.svg"); }
@@ -603,7 +604,7 @@
 .spell-bar {
     flex-direction: row;
     align-items: flex-end;
-    margin-bottom: 12px;
+    margin-bottom: 18px;
 }
 
 .spell-slot {
@@ -729,27 +730,88 @@
     color: rgb(201, 207, 220);
 }
 
+/* The heart badge overlaps the bar's left end, so the bar starts 20px in. */
+.health {
+    width: 640px;
+    height: 42px;
+    padding-left: 20px;
+}
+
 .health-bar {
-    width: 560px;
-    height: 28px;
-    border-width: 3px;
+    flex-grow: 1;
+    border-width: 4px;
     border-color: rgb(20, 22, 31);
-    border-radius: 14px;
-    background-color: rgb(58, 23, 18);
+    border-radius: 21px;
+    background-color: rgb(58, 18, 20);
     overflow: hidden;
 }
 
+/* Pale chunk just lost: catches up with the fill after a short delay. */
+.health-trail {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 100%;
+    background-color: rgb(255, 210, 204);
+    transition-property: width;
+    transition-duration: 0.45s;
+    transition-delay: 0.3s;
+    transition-timing-function: ease-out;
+}
+
 .health-fill {
-    background-color: rgb(255, 106, 42);
+    background-color: rgb(232, 51, 58);
 }
 
 .health-highlight {
-    height: 6px;
-    background-color: rgb(255, 158, 107);
+    left: 10px;
+    right: 10px;
+    top: 4px;
+    height: 7px;
+    border-radius: 4px;
+    background-color: rgb(255, 122, 114);
 }
 
 .health-label {
-    font-size: 15px;
+    padding-left: 24px;
+    padding-top: 3px;
+    font-size: 30px;
+    letter-spacing: 3px;
+    -unity-text-outline-width: 2px;
+    -unity-text-outline-color: rgb(20, 22, 31);
+    text-shadow: 0 3px 0 rgb(20, 22, 31);
+}
+
+.health-badge {
+    position: absolute;
+    left: 0;
+    top: -8px;
+    width: 58px;
+    height: 58px;
+    border-width: 4px;
+    border-color: rgb(20, 22, 31);
+    border-radius: 29px;
+    background-color: rgb(232, 51, 58);
+    align-items: center;
+    justify-content: center;
+}
+
+.health-badge-ring {
+    position: absolute;
+    left: 3px;
+    top: 3px;
+    right: 3px;
+    bottom: 3px;
+    border-width: 3px;
+    border-color: rgb(255, 255, 255);
+    border-radius: 22px;
+}
+
+.health-badge-icon {
+    width: 25px;
+    height: 25px;
+    margin-top: 2px;
 }
 
 /* ---------- Level and experience */

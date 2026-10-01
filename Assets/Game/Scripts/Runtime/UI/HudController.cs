@@ -30,6 +30,7 @@ namespace BattleArena.UI
         private Label _levelLabel;
         private VisualElement _xpFill;
         private VisualElement _healthFill;
+        private VisualElement _healthTrail;
         private Label _healthLabel;
 
         private VisualElement _bossPanel;
@@ -116,6 +117,7 @@ namespace BattleArena.UI
             _levelLabel = root.Q<Label>("level-label");
             _xpFill = root.Q("xp-fill");
             _healthFill = root.Q("health-fill");
+            _healthTrail = root.Q("health-trail");
             _healthLabel = root.Q<Label>("health-label");
 
             _bossPanel = root.Q("boss-panel");
@@ -157,7 +159,9 @@ namespace BattleArena.UI
 
         private void OnPlayerHealthChanged(Health health)
         {
+            // The pale trail catches up after a short delay (USS transition), showing the chunk just lost.
             SetFill(_healthFill, health.Normalized);
+            SetFill(_healthTrail, health.Normalized);
             _healthLabel.text = $"{Mathf.CeilToInt(health.Current)} / {Mathf.CeilToInt(health.Max)}";
         }
 

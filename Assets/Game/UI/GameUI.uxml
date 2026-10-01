@@ -127,11 +127,18 @@
                         <ui:Label text="R" class="keycap keycap-small spell-key" picking-mode="Ignore" />
                     </ui:VisualElement>
                 </ui:VisualElement>
-                <ui:VisualElement class="health-bar" picking-mode="Ignore">
-                    <ui:VisualElement name="health-fill" class="bar-fill health-fill" picking-mode="Ignore">
-                        <ui:VisualElement class="bar-highlight health-highlight" picking-mode="Ignore" />
+                <ui:VisualElement class="health" picking-mode="Ignore">
+                    <ui:VisualElement class="health-bar" picking-mode="Ignore">
+                        <ui:VisualElement name="health-trail" class="health-trail" picking-mode="Ignore" />
+                        <ui:VisualElement name="health-fill" class="bar-fill health-fill" picking-mode="Ignore">
+                            <ui:VisualElement class="bar-highlight health-highlight" picking-mode="Ignore" />
+                        </ui:VisualElement>
+                        <ui:Label name="health-label" text="100 / 100" class="display bar-label health-label" picking-mode="Ignore" />
                     </ui:VisualElement>
-                    <ui:Label name="health-label" text="100 / 100" class="bar-label health-label" picking-mode="Ignore" />
+                    <ui:VisualElement class="health-badge" picking-mode="Ignore">
+                        <ui:VisualElement class="health-badge-ring" picking-mode="Ignore" />
+                        <ui:VisualElement class="icon icon-heart health-badge-icon" picking-mode="Ignore" />
+                    </ui:VisualElement>
                 </ui:VisualElement>
             </ui:VisualElement>
 
