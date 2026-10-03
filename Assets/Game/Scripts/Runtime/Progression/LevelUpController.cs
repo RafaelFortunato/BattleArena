@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using BattleArena.Core;
 using BattleArena.Player;
@@ -63,6 +64,8 @@ namespace BattleArena.Progression
         [SerializeField] private SpellCaster spellCaster;
         [Tooltip("Real-time seconds before a card can be picked, to avoid accidental picks while fighting.")]
         [SerializeField, Min(0f)] private float inputDelay = 0.35f;
+        [Tooltip("Real-time seconds between picking a card and the screen closing, so the pick can be seen.")]
+        [SerializeField, Min(0f)] private float closeDelay = 0.45f;
         [Tooltip("How strongly Luck boosts rarer cards: weight × (1 + luck × rarityTier × this).")]
         [SerializeField, Min(0f)] private float luckRarityFactor = 1.5f;
 
@@ -79,6 +82,8 @@ namespace BattleArena.Progression
 
         public event Action<LevelUpPresentation> Presented;
         public event Action<int> SelectionChanged;
+        /// <summary>A card was picked; the screen stays up for <c>closeDelay</c> before <see cref="Closed"/>.</summary>
+        public event Action<int> Chosen;
         public event Action Closed;
 
         private void OnEnable()
@@ -121,6 +126,15 @@ namespace BattleArena.Progression
 
             _offers[index].Apply();
             IsChoosing = false;
+            Chosen?.Invoke(index);
+            StartCoroutine(CloseAfterDelay());
+        }
+
+        // Real time: the game stays paused (timeScale 0) until the choice closes.
+        private IEnumerator CloseAfterDelay()
+        {
+            if (closeDelay > 0f)
+                yield return new WaitForSecondsRealtime(closeDelay);
             Closed?.Invoke();
             PresentNext();
         }

@@ -9799,7 +9799,7 @@ GameObject:
   - component: {fileID: 7004046694812420298}
   - component: {fileID: 2976567394253808067}
   - component: {fileID: 3724580455459577300}
-  - component: {fileID: 7980885515524115548}
+  - component: {fileID: 4931762491495595605}
   m_Layer: 0
   m_Name: BoltHit
   m_TagString: Untagged
@@ -9850,7 +9850,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 637539eb732c000418abbebb953fea7c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: BattleArena.Runtime::BattleArena.Vfx.VfxRestart
---- !u!114 &7980885515524115548
+--- !u!114 &4931762491495595605
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

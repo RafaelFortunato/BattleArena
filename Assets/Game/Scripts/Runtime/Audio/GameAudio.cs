@@ -1,5 +1,6 @@
 using BattleArena.Combat;
 using BattleArena.Core;
+using BattleArena.Progression;
 using UnityEngine;
 
 namespace BattleArena.Audio
@@ -12,6 +13,7 @@ namespace BattleArena.Audio
     public sealed class GameAudio : MonoBehaviour
     {
         [SerializeField] private Health playerHealth;
+        [SerializeField] private LevelUpController levelUpChoices;
 
         [Header("Combat")]
         [SerializeField] private SoundEvent enemyHit;
@@ -40,6 +42,7 @@ namespace BattleArena.Audio
         {
             playerHealth.Damaged += OnPlayerDamaged;
             playerHealth.Died += OnPlayerDied;
+            levelUpChoices.Chosen += OnCardChosen;
             EventBus<EnemyDamagedEvent>.Subscribe(OnEnemyDamaged);
             EventBus<EnemyKilledEvent>.Subscribe(OnEnemyKilled);
             EventBus<PlayerLevelUpEvent>.Subscribe(OnLevelUp);
@@ -53,6 +56,7 @@ namespace BattleArena.Audio
         {
             playerHealth.Damaged -= OnPlayerDamaged;
             playerHealth.Died -= OnPlayerDied;
+            levelUpChoices.Chosen -= OnCardChosen;
             EventBus<EnemyDamagedEvent>.Unsubscribe(OnEnemyDamaged);
             EventBus<EnemyKilledEvent>.Unsubscribe(OnEnemyKilled);
             EventBus<PlayerLevelUpEvent>.Unsubscribe(OnLevelUp);
@@ -76,6 +80,8 @@ namespace BattleArena.Audio
 
         private void OnLevelUp(PlayerLevelUpEvent evt) => AudioManager.PlayUI(levelUp);
 
+        private void OnCardChosen(int index) => AudioManager.PlayUI(upgradePicked);
+
         private void OnMissionStarted(MissionStartedEvent evt) => AudioManager.PlayUI(missionStarted);
 
         private void OnMissionEnded(MissionEndedEvent evt) => AudioManager.PlayUI(evt.Succeeded ? missionCompleted : missionFailed);
@@ -84,10 +90,6 @@ namespace BattleArena.Audio
 
         private void OnGameStateChanged(GameStateChangedEvent evt)
         {
-            // Leaving the level-up screen back into the fight means a card was chosen.
-            if (evt.Previous == GameState.LevelUp && evt.Current.IsCombat())
-                AudioManager.PlayUI(upgradePicked);
-
             var sting = evt.Current switch
             {
                 GameState.Victory => victory,

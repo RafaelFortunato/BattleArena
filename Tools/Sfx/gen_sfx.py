@@ -24,6 +24,12 @@ SOUNDS = [
     ("fireball_cast", 2.0, "fireball spell cast, quick roaring flame burst whoosh launched forward with crackling fire, fantasy game spell"),
     ("fireball_explosion", 2.5, "fireball explosion impact, punchy fiery boom with crackling flames and small debris, medium size explosion, fantasy game"),
     ("chain_lightning", 2.0, "chain lightning spell, sharp electric zap and crackling thunder snap jumping between targets, buzzing electricity, fantasy game spell"),
+    # Chain lightning, built from layers by mix_layers.py: strike crack, high-voltage arc, short thunder thump.
+    ("chain_layer_strike", 1.5, "violent lightning strike very close, a single loud sharp tearing crack of high voltage electricity like a whip, no rain, fantasy game"),
+    ("chain_layer_arc", 1.5, "high voltage electric discharge, a powerful buzzing tesla coil arc zapping and tearing, intense burst of electricity, fantasy game"),
+    ("chain_layer_boom", 1.5, "single short deep thunder thump, one low thunderclap boom with no long rumble, fantasy game"),
+    # Played on every enemy the chain jumps to, so it is short and snappy.
+    ("lightning_hit", 1.5, "quick electric zap hitting a monster, a short sharp crackling electric shock burst, snappy and bright, fantasy game spell impact"),
     ("frost_nova", 2.5, "frost nova spell, icy blast bursting outward, crackling ice crystals forming and shattering, cold wind whoosh, fantasy game spell"),
     ("meteor_fall", 2.5, "flaming meteor falling from the sky, descending fiery whoosh with a rumbling roar getting louder, fantasy game"),
     ("meteor_impact", 3.0, "meteor crashing into the ground, heavy deep explosion boom with rocks and earth debris and a rumbling ground shake, fantasy game"),
@@ -68,7 +74,7 @@ SOUNDS = [
 ]
 
 # Per-sound additions to the negative prompt, for takes that drifted toward the wrong kind of sound.
-EXTRA_NEGATIVE = {"crit_hit": ", gunshot, bullet, firearm, crunch, low rumble, muddy", "bolt_hit": ", gunshot, bullet, firearm, ricochet, metal impact, crackle, electricity, static, fizz, noise burst"}
+EXTRA_NEGATIVE = {"lightning_hit": ", gunshot, bullet, firearm, rain, rumble", "chain_layer_strike": ", rain, wind, long rumble", "chain_layer_boom": ", rain, wind, long rumble", "crit_hit": ", gunshot, bullet, firearm, crunch, low rumble, muddy", "bolt_hit": ", gunshot, bullet, firearm, ricochet, metal impact, crackle, electricity, static, fizz, noise burst"}
 
 # Jingles keep their music; everything else gets the one-shot tail.
 MUSICAL = {"victory", "defeat", "level_up", "mission_complete", "mission_failed"}
@@ -108,7 +114,8 @@ def main():
         if only and name not in only:
             continue
         takes = 2 if name.startswith("ambience") else 4
-        pending[post("/prompt", {"prompt": workflow(name, seconds, prompt, takes)})["prompt_id"]] = name
+        # Jump ahead of other work on the shared queue (long image batches) rather than wait behind it.
+        pending[post("/prompt", {"prompt": workflow(name, seconds, prompt, takes), "front": True})["prompt_id"]] = name
     print(f"queued {len(pending)}", flush=True)
 
     while pending:

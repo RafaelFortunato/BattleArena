@@ -14,7 +14,7 @@ DST = pathlib.Path(r"C:\Users\GatO\Documentos\Unity\BattleArena\Assets\Game\Audi
 
 # Longest a sound may run after trimming; everything else keeps its natural tail.
 MAX_SECONDS = {
-    "ui_click": 0.25, "ui_hover": 0.15, "gem_pickup": 0.6, "bolt_shoot": 0.6, "bolt_hit": 0.6, "enemy_hit": 0.45,
+    "ui_click": 0.25, "ui_hover": 0.15, "gem_pickup": 0.6, "bolt_shoot": 0.6, "bolt_hit": 0.6, "lightning_hit": 0.3, "enemy_hit": 0.45,
     "crit_hit": 0.9, "enemy_death": 1.0, "player_hurt": 0.7, "arrow_hit": 0.5, "arrow_shoot": 1.0, "shard_pickup": 1.2,
     "phase_step": 1.0, "enemy_windup": 1.2, "enemy_magic_shoot": 1.0, "enemy_magic_hit": 0.8, "bomb_throw": 1.2,
     "upgrade_pick": 1.5, "chest_appear": 1.5,
@@ -88,7 +88,8 @@ def main():
     only = set(sys.argv[1:])
     for folder in sorted(p for p in SRC.iterdir() if p.is_dir()):
         name = folder.name
-        if only and name not in only:
+        # Layers are mixed by mix_layers.py, and rejected takes are only kept for reference.
+        if "_layer_" in name or "_rejected" in name or (only and name not in only):
             continue
         for old in DST.glob(f"{name}_*.wav"):
             old.unlink()

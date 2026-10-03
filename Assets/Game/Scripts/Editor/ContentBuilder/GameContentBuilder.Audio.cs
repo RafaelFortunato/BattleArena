@@ -8,6 +8,7 @@ using BattleArena.Enemies;
 using BattleArena.Interaction;
 using BattleArena.Missions;
 using BattleArena.Pickups;
+using BattleArena.Progression;
 using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -57,6 +58,8 @@ namespace BattleArena.Editor.ContentBuilder
             Sound(s, "fireball_cast", 0.7f, 0.1f);
             Sound(s, "fireball_explosion", 0.75f, 0.08f);
             Sound(s, "chain_lightning", 0.6f, 0.1f);
+            // One zap per enemy the chain reaches; the jumps are 0.1 s apart, so the limit sits just under that.
+            Sound(s, "lightning_hit", 0.4f, 0.05f, 0.9f, 1.15f);
             Sound(s, "frost_nova", 0.8f, 0.2f);
             Sound(s, "meteor_fall", 0.45f, 0.2f);
             Sound(s, "meteor_impact", 0.8f, 0.12f);
@@ -117,7 +120,8 @@ namespace BattleArena.Editor.ContentBuilder
                 ("Projectiles/ArcaneLance", "arcane_lance_cast"), ("Vfx/Spells/ArcaneHit", "arcane_hit"),
                 ("Projectiles/ArcaneOrbit", "arcane_orbit_cast"),
                 ("Projectiles/Fireball", "fireball_cast"), ("Vfx/Spells/FireballExplosion", "fireball_explosion"),
-                ("Vfx/Spells/ChainLightning", "chain_lightning"), ("Vfx/Spells/FrostNova", "frost_nova"),
+                ("Vfx/Spells/ChainLightning", "chain_lightning"), ("Vfx/Spells/LightningHit", "lightning_hit"),
+                ("Vfx/Spells/FrostNova", "frost_nova"),
                 ("Projectiles/MeteorStrike", "meteor_fall"), ("Vfx/Spells/MeteorImpact", "meteor_impact"),
                 ("Vfx/Spells/PhaseDepart", "phase_step"), ("Projectiles/ToxicMiasma", "toxic_miasma"),
                 ("Vfx/CritSpark", "crit_hit"),
@@ -169,6 +173,7 @@ namespace BattleArena.Editor.ContentBuilder
             var gameAudio = audioObject.AddComponent<GameAudio>();
             SerializedSetter.For(gameAudio)
                 .Set("playerHealth", playerHealth)
+                .Set("levelUpChoices", Object.FindFirstObjectByType<LevelUpController>())
                 .Set("enemyHit", s["enemy_hit"])
                 .Set("enemyDeath", s["enemy_death"])
                 .Set("playerHurt", s["player_hurt"])

@@ -9799,6 +9799,7 @@ GameObject:
   - component: {fileID: 4820222301003940437}
   - component: {fileID: 2637877760985136569}
   - component: {fileID: 2062100999356872450}
+  - component: {fileID: 1206217532637365059}
   m_Layer: 0
   m_Name: LightningHit
   m_TagString: Untagged
@@ -9849,6 +9850,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 637539eb732c000418abbebb953fea7c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: BattleArena.Runtime::BattleArena.Vfx.VfxRestart
+--- !u!114 &1206217532637365059
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1299959399413815848}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 49086573c29ce72449d37f3cb0018175, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: BattleArena.Runtime::BattleArena.Audio.SpawnSound
+  sound: {fileID: 11400000, guid: 0d9d8484abe7b6b4bae1954431fb078d, type: 2}
 --- !u!1 &7503467414035584424
 GameObject:
   m_ObjectHideFlags: 0

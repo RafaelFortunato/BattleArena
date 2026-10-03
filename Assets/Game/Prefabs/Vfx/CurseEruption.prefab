@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 5079436285232187803}
   - component: {fileID: 2903034035368195172}
   - component: {fileID: 2912591771770678287}
-  - component: {fileID: 843260132117351768}
+  - component: {fileID: 2941494256172142310}
   m_Layer: 0
   m_Name: CurseEruption
   m_TagString: Untagged
@@ -4909,7 +4909,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: BattleArena.Runtime::BattleArena.Pooling.TimedRelease
   lifetime: 0.90000004
---- !u!114 &843260132117351768
+--- !u!114 &2941494256172142310
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
