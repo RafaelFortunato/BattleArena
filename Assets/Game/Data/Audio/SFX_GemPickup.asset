@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f3a8d3d29e580274a8841734f5dadd25, type: 3}
+  m_Name: SFX_GemPickup
+  m_EditorClassIdentifier: BattleArena.Runtime::BattleArena.Audio.SoundEvent
+  clips:
+  - {fileID: 8300000, guid: 26c03d7f0edc81b4580c11491c5da5d4, type: 3}
+  - {fileID: 8300000, guid: b8d7523d328e4ee4ea3bd5f08bd449f3, type: 3}
+  - {fileID: 8300000, guid: e3c700b0b90402340a9031d94bdd8c33, type: 3}
+  volume: 0.35
+  pitchRange: {x: 0.95, y: 1.25}
+  minRetriggerInterval: 0.05
+  startDelay: 0
+  spatialBlend: -1
+  fullVolumeDistance: -1
+  silenceDistance: -1

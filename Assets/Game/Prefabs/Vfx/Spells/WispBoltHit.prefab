@@ -14693,6 +14693,7 @@ GameObject:
   - component: {fileID: 5871625064558274538}
   - component: {fileID: 1863907443747172841}
   - component: {fileID: 7391079860653646134}
+  - component: {fileID: 8792584536108854524}
   m_Layer: 0
   m_Name: WispBoltHit
   m_TagString: Untagged
@@ -14743,3 +14744,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 637539eb732c000418abbebb953fea7c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: BattleArena.Runtime::BattleArena.Vfx.VfxRestart
+--- !u!114 &8792584536108854524
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5357041836381889599}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 49086573c29ce72449d37f3cb0018175, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: BattleArena.Runtime::BattleArena.Audio.SpawnSound
+  sound: {fileID: 11400000, guid: 15dc2daccc5f2dd48892cf350460d0e6, type: 2}

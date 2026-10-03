@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f3a8d3d29e580274a8841734f5dadd25, type: 3}
+  m_Name: SFX_Defeat
+  m_EditorClassIdentifier: BattleArena.Runtime::BattleArena.Audio.SoundEvent
+  clips:
+  - {fileID: 8300000, guid: 3b83cf8cd73967c4e8c83ee35e7b3b34, type: 3}
+  - {fileID: 8300000, guid: 12e21666b688d5345b69595704b5d3bf, type: 3}
+  - {fileID: 8300000, guid: 6346f24a6f0518048974b72be5cf45d3, type: 3}
+  volume: 0.9
+  pitchRange: {x: 1, y: 1}
+  minRetriggerInterval: 1
+  startDelay: 0
+  spatialBlend: -1
+  fullVolumeDistance: -1
+  silenceDistance: -1

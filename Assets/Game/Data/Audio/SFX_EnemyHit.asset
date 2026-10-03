@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f3a8d3d29e580274a8841734f5dadd25, type: 3}
+  m_Name: SFX_EnemyHit
+  m_EditorClassIdentifier: BattleArena.Runtime::BattleArena.Audio.SoundEvent
+  clips:
+  - {fileID: 8300000, guid: da0425532a0ee924ea9d5c2de1a05bb1, type: 3}
+  - {fileID: 8300000, guid: b3d5970103337074eaa6a7b4b7fc988e, type: 3}
+  - {fileID: 8300000, guid: 14ca62a60f7990b499fa2892eb47a4fc, type: 3}
+  volume: 0.28
+  pitchRange: {x: 0.88, y: 1.12}
+  minRetriggerInterval: 0.07
+  startDelay: 0
+  spatialBlend: -1
+  fullVolumeDistance: -1
+  silenceDistance: -1

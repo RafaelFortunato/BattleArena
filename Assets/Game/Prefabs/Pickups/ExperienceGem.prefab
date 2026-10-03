@@ -95,6 +95,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9ff7839e77b6d3e468232d1dbef77765, type: 3}
   m_Name: 
   m_EditorClassIdentifier: BattleArena.Runtime::BattleArena.Pickups.ExperienceGem
+  collectSound: {fileID: 11400000, guid: c94eb8dd35f288d4ab735afb3f206351, type: 2}
 --- !u!1 &4741183355372050021
 GameObject:
   m_ObjectHideFlags: 0

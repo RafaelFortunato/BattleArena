@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 2404526007835698026}
   - component: {fileID: 5476097515918484922}
   - component: {fileID: 184167237548904296}
+  - component: {fileID: 7835069415751462496}
   m_Layer: 0
   m_Name: BossOrbHit
   m_TagString: Untagged
@@ -61,6 +62,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 637539eb732c000418abbebb953fea7c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: BattleArena.Runtime::BattleArena.Vfx.VfxRestart
+--- !u!114 &7835069415751462496
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 570636357125916254}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 49086573c29ce72449d37f3cb0018175, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: BattleArena.Runtime::BattleArena.Audio.SpawnSound
+  sound: {fileID: 11400000, guid: 52bf3b6e3613c654ba0da898a12e69f8, type: 2}
 --- !u!1 &4618455668115754789
 GameObject:
   m_ObjectHideFlags: 0

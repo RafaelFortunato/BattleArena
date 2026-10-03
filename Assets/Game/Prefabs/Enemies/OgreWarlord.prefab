@@ -5102,6 +5102,7 @@ MonoBehaviour:
   cooldown: 4
   windup: 0.9
   windupIndicator: {fileID: 1865318746847681341}
+  windupSound: {fileID: 11400000, guid: 93c9d56c43290b24ba7d9c57afe907fc, type: 2}
   baseDamage: 22
   strikePrefab: {fileID: 5850562244830546186, guid: 5e795b7dddeac2a4a8b266e125564824, type: 3}
   strikeRadius: 3.5

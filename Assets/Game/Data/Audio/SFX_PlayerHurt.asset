@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f3a8d3d29e580274a8841734f5dadd25, type: 3}
+  m_Name: SFX_PlayerHurt
+  m_EditorClassIdentifier: BattleArena.Runtime::BattleArena.Audio.SoundEvent
+  clips:
+  - {fileID: 8300000, guid: 2191b628c9bd4294187d23220a0afc34, type: 3}
+  - {fileID: 8300000, guid: 1be1ed8e9ff3d3a4ebc01644147f6143, type: 3}
+  - {fileID: 8300000, guid: da2fed7cc9650e14dab4b15b864bfa77, type: 3}
+  volume: 0.8
+  pitchRange: {x: 0.95, y: 1.05}
+  minRetriggerInterval: 0.25
+  startDelay: 0
+  spatialBlend: -1
+  fullVolumeDistance: -1
+  silenceDistance: -1

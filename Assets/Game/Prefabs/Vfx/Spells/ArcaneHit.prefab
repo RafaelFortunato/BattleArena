@@ -19587,6 +19587,7 @@ GameObject:
   - component: {fileID: 4335747087850892756}
   - component: {fileID: 7137819328412311864}
   - component: {fileID: 7312756208912287665}
+  - component: {fileID: 542980820654373680}
   m_Layer: 0
   m_Name: ArcaneHit
   m_TagString: Untagged
@@ -19638,3 +19639,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 637539eb732c000418abbebb953fea7c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: BattleArena.Runtime::BattleArena.Vfx.VfxRestart
+--- !u!114 &542980820654373680
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6526510954850628303}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 49086573c29ce72449d37f3cb0018175, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: BattleArena.Runtime::BattleArena.Audio.SpawnSound
+  sound: {fileID: 11400000, guid: 68d2b6e4f7a73454bbcc7d382c97f471, type: 2}

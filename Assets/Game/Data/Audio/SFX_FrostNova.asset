@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f3a8d3d29e580274a8841734f5dadd25, type: 3}
+  m_Name: SFX_FrostNova
+  m_EditorClassIdentifier: BattleArena.Runtime::BattleArena.Audio.SoundEvent
+  clips:
+  - {fileID: 8300000, guid: 57807754d736e6649bc63b4185f80973, type: 3}
+  - {fileID: 8300000, guid: 4d67cc5bbd3264842b554a6b957ea201, type: 3}
+  - {fileID: 8300000, guid: e2fc3242875c85c479b5c81e32ef3c4a, type: 3}
+  volume: 0.8
+  pitchRange: {x: 0.95, y: 1.05}
+  minRetriggerInterval: 0.2
+  startDelay: 0
+  spatialBlend: -1
+  fullVolumeDistance: -1
+  silenceDistance: -1

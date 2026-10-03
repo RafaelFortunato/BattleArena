@@ -44,7 +44,7 @@ namespace BattleArena.Editor.ContentBuilder
             (new Vector3(-4f, 0f, 26f), -6f),
         };
 
-        private static void BuildScene(Scene scene, MaterialSet m, ContentSet content)
+        private static void BuildScene(Scene scene, MaterialSet m, ContentSet content, SoundSet sounds)
         {
             BuildLighting();
             var environment = BuildEnvironment(m, content.Well);
@@ -56,6 +56,7 @@ namespace BattleArena.Editor.ContentBuilder
             var gameManager = BuildSystems(m, content, player, playerHealth, out var levelUp);
             BuildCamera(player.transform);
             BuildUserInterface(gameManager, levelUp, content.LevelUp, player, playerHealth);
+            BuildSceneAudio(sounds, playerHealth);
 
             EditorSceneManager.SaveScene(scene, ScenePath);
             EditorBuildSettings.scenes = new[] { new EditorBuildSettingsScene(ScenePath, true) };

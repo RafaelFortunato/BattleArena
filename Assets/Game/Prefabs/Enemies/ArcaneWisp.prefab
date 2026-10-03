@@ -5058,6 +5058,7 @@ MonoBehaviour:
   cooldown: 3
   windup: 0.45
   windupIndicator: {fileID: 5263153554126061020}
+  windupSound: {fileID: 11400000, guid: 93c9d56c43290b24ba7d9c57afe907fc, type: 2}
   baseDamage: 6
   projectilePrefab: {fileID: 1688191868098289378, guid: 887bc3c7d2c69a644862b121b1b46809, type: 3}
   muzzle: {fileID: 2072149190664161378}

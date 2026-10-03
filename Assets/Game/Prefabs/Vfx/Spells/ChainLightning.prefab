@@ -4770,6 +4770,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2548520289750234396}
   - component: {fileID: 5562031032524359428}
+  - component: {fileID: 5853159306280337314}
   m_Layer: 0
   m_Name: ChainLightning
   m_TagString: Untagged
@@ -4911,6 +4912,19 @@ MonoBehaviour:
   coreWidth: 0.17
   hitEffect: {fileID: 2637877760985136569, guid: 4c6b593a447e61f4e927713466ded3e5, type: 3}
   shockEffect: {fileID: 2305595782213727299, guid: 2efdda019213071438792fc881fc55a0, type: 3}
+--- !u!114 &5853159306280337314
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6759803973136457102}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 49086573c29ce72449d37f3cb0018175, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: BattleArena.Runtime::BattleArena.Audio.SpawnSound
+  sound: {fileID: 11400000, guid: ba53f2ac06207b84bb0b0fa4d374cdbe, type: 2}
 --- !u!1 &6770013208060186075
 GameObject:
   m_ObjectHideFlags: 0

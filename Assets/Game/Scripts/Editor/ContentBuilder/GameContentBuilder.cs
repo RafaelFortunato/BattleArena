@@ -45,8 +45,11 @@ namespace BattleArena.Editor.ContentBuilder
                 EditorUtility.DisplayProgressBar("BattleArena", "Prefabs and data", 0.35f);
                 var content = BuildContent(materials);
 
+                EditorUtility.DisplayProgressBar("BattleArena", "Sound effects", 0.6f);
+                var sounds = BuildAudio();
+
                 EditorUtility.DisplayProgressBar("BattleArena", "Arena scene", 0.7f);
-                BuildScene(scene, materials, content);
+                BuildScene(scene, materials, content, sounds);
 
                 AssetDatabase.SaveAssets();
                 Debug.Log("[BattleArena] Game content built. Open Assets/Game/Scenes/Arena.unity and press Play.");

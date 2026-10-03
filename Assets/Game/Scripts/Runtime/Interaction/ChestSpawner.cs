@@ -1,4 +1,5 @@
 using System.Collections;
+using BattleArena.Audio;
 using BattleArena.Core;
 using BattleArena.Pooling;
 using UnityEngine;
@@ -22,6 +23,7 @@ namespace BattleArena.Interaction
         [SerializeField] private LayerMask blockingLayers = 1;
         [SerializeField, Min(0.1f)] private float clearanceRadius = 1.2f;
         [SerializeField] private TimedRelease spawnEffect;
+        [SerializeField] private SoundEvent spawnSound;
 
         private Coroutine _spawnLoop;
         private int _activeChests;
@@ -66,6 +68,7 @@ namespace BattleArena.Interaction
 
             if (spawnEffect != null)
                 PoolManager.Spawn(spawnEffect, position + Vector3.up * 0.5f, Quaternion.identity);
+            AudioManager.PlayAt(spawnSound, position);
             EventBus<NotificationEvent>.Raise(new NotificationEvent("A treasure chest appeared nearby!"));
         }
 

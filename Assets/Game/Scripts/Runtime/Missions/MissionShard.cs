@@ -1,4 +1,5 @@
 using System;
+using BattleArena.Audio;
 using BattleArena.Player;
 using BattleArena.Pooling;
 using UnityEngine;
@@ -10,6 +11,7 @@ namespace BattleArena.Missions
     public sealed class MissionShard : MonoBehaviour, IPoolable
     {
         [SerializeField] private TimedRelease collectEffect;
+        [SerializeField] private SoundEvent collectSound;
 
         private bool _collected;
 
@@ -28,6 +30,7 @@ namespace BattleArena.Missions
             _collected = true;
             if (collectEffect != null)
                 PoolManager.Spawn(collectEffect, transform.position, Quaternion.identity);
+            AudioManager.PlayAt(collectSound, transform.position);
             Collected?.Invoke(this);
             this.Despawn();
         }

@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 5132147954320819548}
   - component: {fileID: 5751361084115014846}
   - component: {fileID: 1617620341499651606}
+  - component: {fileID: 134537044661093967}
   m_Layer: 0
   m_Name: BossSlamImpact
   m_TagString: Untagged
@@ -4908,3 +4909,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: BattleArena.Runtime::BattleArena.Pooling.TimedRelease
   lifetime: 0.90000004
+--- !u!114 &134537044661093967
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4625150312412249176}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 49086573c29ce72449d37f3cb0018175, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: BattleArena.Runtime::BattleArena.Audio.SpawnSound
+  sound: {fileID: 11400000, guid: 6bf6d266bfbd57445943ddedb5e2f3c5, type: 2}

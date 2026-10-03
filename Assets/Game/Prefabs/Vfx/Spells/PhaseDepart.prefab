@@ -14693,6 +14693,7 @@ GameObject:
   - component: {fileID: 6833258731950362380}
   - component: {fileID: 3344896407650270925}
   - component: {fileID: 8517190502204954311}
+  - component: {fileID: 3044258869289845659}
   m_Layer: 0
   m_Name: PhaseDepart
   m_TagString: Untagged
@@ -14744,6 +14745,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 637539eb732c000418abbebb953fea7c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: BattleArena.Runtime::BattleArena.Vfx.VfxRestart
+--- !u!114 &3044258869289845659
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6171446125468399153}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 49086573c29ce72449d37f3cb0018175, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: BattleArena.Runtime::BattleArena.Audio.SpawnSound
+  sound: {fileID: 11400000, guid: 2cfb33bf7041e89478b8a8c43cbbeef4, type: 2}
 --- !u!1 &7686418407833147914
 GameObject:
   m_ObjectHideFlags: 0

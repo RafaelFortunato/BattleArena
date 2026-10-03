@@ -59,6 +59,9 @@ namespace BattleArena.Editor.ContentBuilder
                 case Color c:
                     property.colorValue = c;
                     break;
+                case Vector2 v:
+                    property.vector2Value = v;
+                    break;
                 case Vector3 v:
                     property.vector3Value = v;
                     break;

@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f3a8d3d29e580274a8841734f5dadd25, type: 3}
+  m_Name: SFX_BoltShoot
+  m_EditorClassIdentifier: BattleArena.Runtime::BattleArena.Audio.SoundEvent
+  clips:
+  - {fileID: 8300000, guid: 05084f539db053b43a7c76bd38bf459a, type: 3}
+  - {fileID: 8300000, guid: 111d4dabfafe5d04f99075d9c0eb1d61, type: 3}
+  - {fileID: 8300000, guid: bff46b0f0e4713646bac86cb584a642b, type: 3}
+  volume: 0.28
+  pitchRange: {x: 0.92, y: 1.1}
+  minRetriggerInterval: 0.12
+  startDelay: 0
+  spatialBlend: -1
+  fullVolumeDistance: -1
+  silenceDistance: -1

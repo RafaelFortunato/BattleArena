@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f3a8d3d29e580274a8841734f5dadd25, type: 3}
+  m_Name: SFX_UpgradePick
+  m_EditorClassIdentifier: BattleArena.Runtime::BattleArena.Audio.SoundEvent
+  clips:
+  - {fileID: 8300000, guid: 37ea9964dd053a547ad9170a0e0ecc1e, type: 3}
+  - {fileID: 8300000, guid: c4ed388eb2ec0314a96d09fdcaa9b831, type: 3}
+  - {fileID: 8300000, guid: f8384e195e3607747b59ae7f82ebdb2b, type: 3}
+  volume: 0.7
+  pitchRange: {x: 1, y: 1}
+  minRetriggerInterval: 0.2
+  startDelay: 0
+  spatialBlend: -1
+  fullVolumeDistance: -1
+  silenceDistance: -1

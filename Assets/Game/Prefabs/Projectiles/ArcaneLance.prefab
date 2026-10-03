@@ -9686,6 +9686,7 @@ GameObject:
   - component: {fileID: 3818977165450012955}
   - component: {fileID: 4249973404948091102}
   - component: {fileID: 2608081123600284994}
+  - component: {fileID: 3397854721854522330}
   m_Layer: 9
   m_Name: ArcaneLance
   m_TagString: Untagged
@@ -9904,6 +9905,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 637539eb732c000418abbebb953fea7c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: BattleArena.Runtime::BattleArena.Vfx.VfxRestart
+--- !u!114 &3397854721854522330
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8955609101620302377}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 49086573c29ce72449d37f3cb0018175, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: BattleArena.Runtime::BattleArena.Audio.SpawnSound
+  sound: {fileID: 11400000, guid: 496a344aaa95cf6428d88abe21afba35, type: 2}
 --- !u!1 &8968299414700180329
 GameObject:
   m_ObjectHideFlags: 0

@@ -14693,6 +14693,7 @@ GameObject:
   - component: {fileID: 8472764635880973797}
   - component: {fileID: 2145322285613450077}
   - component: {fileID: 5009946273862426767}
+  - component: {fileID: 8287145032205877549}
   m_Layer: 0
   m_Name: ArrowHit
   m_TagString: Untagged
@@ -14743,3 +14744,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 637539eb732c000418abbebb953fea7c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: BattleArena.Runtime::BattleArena.Vfx.VfxRestart
+--- !u!114 &8287145032205877549
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3337187950723145080}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 49086573c29ce72449d37f3cb0018175, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: BattleArena.Runtime::BattleArena.Audio.SpawnSound
+  sound: {fileID: 11400000, guid: 39b9a70a9c9c07048bc5037f121c2016, type: 2}

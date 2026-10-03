@@ -4905,6 +4905,7 @@ GameObject:
   - component: {fileID: 3243469083524703273}
   - component: {fileID: 1427030413833361029}
   - component: {fileID: 8209551380621463428}
+  - component: {fileID: 1645176681237268668}
   m_Layer: 0
   m_Name: MeteorImpact
   m_TagString: Untagged
@@ -4959,6 +4960,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 637539eb732c000418abbebb953fea7c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: BattleArena.Runtime::BattleArena.Vfx.VfxRestart
+--- !u!114 &1645176681237268668
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2188136358630125000}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 49086573c29ce72449d37f3cb0018175, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: BattleArena.Runtime::BattleArena.Audio.SpawnSound
+  sound: {fileID: 11400000, guid: d7df108015ffc324fb5f4a4a47f64ee1, type: 2}
 --- !u!1 &4916595933484147729
 GameObject:
   m_ObjectHideFlags: 0

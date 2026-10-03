@@ -29420,6 +29420,7 @@ GameObject:
   - component: {fileID: 1204287741727629292}
   - component: {fileID: 7921174159864692195}
   - component: {fileID: 90995633031975152}
+  - component: {fileID: 1539353212379096204}
   m_Layer: 0
   m_Name: FrostNova
   m_TagString: Untagged
@@ -29473,3 +29474,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 637539eb732c000418abbebb953fea7c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: BattleArena.Runtime::BattleArena.Vfx.VfxRestart
+--- !u!114 &1539353212379096204
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9174952642527494135}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 49086573c29ce72449d37f3cb0018175, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: BattleArena.Runtime::BattleArena.Audio.SpawnSound
+  sound: {fileID: 11400000, guid: 6bcc4095aeeac4141b11fcf8c19c065e, type: 2}

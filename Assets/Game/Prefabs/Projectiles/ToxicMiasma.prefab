@@ -4882,6 +4882,7 @@ GameObject:
   m_Component:
   - component: {fileID: 794425074319841454}
   - component: {fileID: 8815232819073640600}
+  - component: {fileID: 5069227556515480687}
   m_Layer: 0
   m_Name: ToxicMiasma
   m_TagString: Untagged
@@ -4919,6 +4920,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: BattleArena.Runtime::BattleArena.Combat.DamageZone
   area: {fileID: 5527315465623937543}
   fadeOut: 0.8
+--- !u!114 &5069227556515480687
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1581194833989886456}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 49086573c29ce72449d37f3cb0018175, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: BattleArena.Runtime::BattleArena.Audio.SpawnSound
+  sound: {fileID: 11400000, guid: a1b654a7cc2693740ba9acde5b401913, type: 2}
 --- !u!1 &3486428761007586746
 GameObject:
   m_ObjectHideFlags: 0

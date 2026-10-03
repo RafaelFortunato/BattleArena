@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f3a8d3d29e580274a8841734f5dadd25, type: 3}
+  m_Name: SFX_EnemyWindup
+  m_EditorClassIdentifier: BattleArena.Runtime::BattleArena.Audio.SoundEvent
+  clips:
+  - {fileID: 8300000, guid: faec0445636b2844c95c011049a69ec4, type: 3}
+  - {fileID: 8300000, guid: 72bf31f1d0dc38944844f1c419907552, type: 3}
+  - {fileID: 8300000, guid: 4af240d0060b59e44a8246be548cae45, type: 3}
+  volume: 0.5
+  pitchRange: {x: 0.95, y: 1.05}
+  minRetriggerInterval: 0.15
+  startDelay: 0
+  spatialBlend: -1
+  fullVolumeDistance: -1
+  silenceDistance: -1

@@ -1,3 +1,4 @@
+using BattleArena.Audio;
 using BattleArena.Combat;
 using BattleArena.Pooling;
 using UnityEngine;
@@ -53,6 +54,7 @@ namespace BattleArena.Enemies
         [SerializeField, Min(0f)] private float windup = 0.5f;
         [Tooltip("Optional object shown during the wind-up (e.g. a glowing charge at the weapon).")]
         [SerializeField] private GameObject windupIndicator;
+        [SerializeField] private SoundEvent windupSound;
         [SerializeField, Min(0f)] protected float baseDamage = 10f;
 
         private Phase _phase;
@@ -94,6 +96,7 @@ namespace BattleArena.Enemies
                     Owner.Face(context.TargetPosition);
                     Owner.NotifyAttack(windup);
                     SetIndicator(true);
+                    AudioManager.PlayAt(windupSound, transform.position);
                     OnWindupStarted(context);
                     break;
 

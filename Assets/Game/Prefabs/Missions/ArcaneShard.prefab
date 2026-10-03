@@ -4948,6 +4948,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: BattleArena.Runtime::BattleArena.Missions.MissionShard
   collectEffect: {fileID: 6571992726357587247, guid: 86e79c42e8d899d41b542b8cbcbb2d03, type: 3}
+  collectSound: {fileID: 11400000, guid: c6d0d80a7d6f51543bf54ec5ecbf2bc9, type: 2}
 --- !u!1 &2810584688403129628
 GameObject:
   m_ObjectHideFlags: 0

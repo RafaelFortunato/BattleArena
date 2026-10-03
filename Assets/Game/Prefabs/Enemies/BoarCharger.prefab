@@ -231,6 +231,7 @@ MonoBehaviour:
   cooldown: 4
   windup: 0.75
   windupIndicator: {fileID: 8877426609877338164}
+  windupSound: {fileID: 0}
   baseDamage: 16
   telegraphPrefab: {fileID: 4135950912277720549, guid: 2f00c44c7c00ef04889472b5b15d14f6, type: 3}
   minRange: 3

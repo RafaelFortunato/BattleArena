@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 5989849696959091805}
   - component: {fileID: 4889448097919743724}
   - component: {fileID: 1297444347710428259}
+  - component: {fileID: 1486478752952025785}
   m_Layer: 0
   m_Name: BombExplosion
   m_TagString: Untagged
@@ -4908,3 +4909,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: BattleArena.Runtime::BattleArena.Pooling.TimedRelease
   lifetime: 0.85
+--- !u!114 &1486478752952025785
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8760312100385911363}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 49086573c29ce72449d37f3cb0018175, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: BattleArena.Runtime::BattleArena.Audio.SpawnSound
+  sound: {fileID: 11400000, guid: ad522f26cabc9b94d9b11ffd4f8376bb, type: 2}

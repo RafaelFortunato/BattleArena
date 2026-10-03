@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using BattleArena.Audio;
 using BattleArena.Core;
 using BattleArena.Pooling;
 using UnityEngine;
@@ -21,6 +22,7 @@ namespace BattleArena.Interaction
         [SerializeField, Min(0.01f)] private float appearDuration = 0.35f;
         [SerializeField, Min(0.01f)] private float vanishDuration = 0.35f;
         [SerializeField] private TimedRelease openEffect;
+        [SerializeField] private SoundEvent openSound;
 
         private Quaternion _closedLidRotation;
         private bool _isOpen;
@@ -57,6 +59,7 @@ namespace BattleArena.Interaction
 
             if (openEffect != null)
                 PoolManager.Spawn(openEffect, transform.position + Vector3.up, Quaternion.identity);
+            AudioManager.PlayAt(openSound, transform.position);
 
             var progression = interactor.Progression;
             var reward = baseExperience + experiencePerLevel * progression.Level;
