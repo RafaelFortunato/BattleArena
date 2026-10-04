@@ -87,7 +87,7 @@ namespace BattleArena.Player
             return _recharging[slot] ? Mathf.Max(0f, _rechargeReadyAt[slot] - Time.time) : 0f;
         }
 
-        /// <summary>Length of the current recharge, after cast speed and upgrades.</summary>
+        /// <summary>Length of the current recharge, after cooldown reduction and upgrades.</summary>
         public float GetCooldownDuration(int slot) => _rechargeDuration[slot];
 
         public bool Owns(SpellDefinition spell)
@@ -165,7 +165,8 @@ namespace BattleArena.Player
         private float GetCooldown(int slot)
         {
             var reduction = Mathf.Min(maxCooldownReduction, _upgrades[slot].Total(SpellUpgradeKind.CooldownReduction));
-            return _spells[slot].Cooldown * (1f - reduction) / stats.CastSpeedMultiplier;
+            // The spell's own Quick Recharge upgrades and the Cooldown reduction stat stack multiplicatively.
+            return _spells[slot].Cooldown * (1f - reduction) * (1f - stats.CooldownReduction);
         }
 
         /// <summary>Converts elapsed recharge time into charges, one recharge after another.</summary>

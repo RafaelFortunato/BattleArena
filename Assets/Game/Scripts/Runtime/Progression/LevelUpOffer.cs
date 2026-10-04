@@ -57,6 +57,8 @@ namespace BattleArena.Progression
         public override string Summary => _upgrade.Stat switch
         {
             StatType.Attack => "All damage scales with Attack.",
+            StatType.AttackSpeed => "Basic attacks fire more often.",
+            StatType.CooldownReduction => "Every spell recharges faster.",
             StatType.Armor => $"+{ArmorGain().ToString("0", CultureInfo.InvariantCulture)} Armor · 100 Armor halves damage",
             _ => null
         };

@@ -65,8 +65,8 @@ namespace BattleArena.Player
                 if (CombatQueries.TryFindNearest(muzzle.position, range, GameLayers.EnemyMask, out var target))
                     Fire(target.position);
 
-                // Cast speed shortens the interval; only rebuild the yield instruction when it changes.
-                var current = fireInterval / stats.CastSpeedMultiplier;
+                // Attack speed shortens the interval; only rebuild the yield instruction when it changes.
+                var current = fireInterval / stats.AttackSpeedMultiplier;
                 if (wait == null || !Mathf.Approximately(current, interval))
                 {
                     interval = current;

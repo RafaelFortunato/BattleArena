@@ -16,5 +16,5 @@ MonoBehaviour:
   stat: 6
   amount: 0.4
   rarity: 2
-  weight: 0.108
+  weight: 0.103
   icon: {fileID: 7388822144124034973, guid: dd0ead599c436e343b3efe245c3db032, type: 3}

@@ -9799,7 +9799,7 @@ GameObject:
   - component: {fileID: 4820222301003940437}
   - component: {fileID: 2637877760985136569}
   - component: {fileID: 2062100999356872450}
-  - component: {fileID: 4482440418229000600}
+  - component: {fileID: 3797298175452055004}
   m_Layer: 0
   m_Name: LightningHit
   m_TagString: Untagged
@@ -9850,7 +9850,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 637539eb732c000418abbebb953fea7c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: BattleArena.Runtime::BattleArena.Vfx.VfxRestart
---- !u!114 &4482440418229000600
+--- !u!114 &3797298175452055004
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 2404526007835698026}
   - component: {fileID: 5476097515918484922}
   - component: {fileID: 184167237548904296}
-  - component: {fileID: 2855570019232816866}
+  - component: {fileID: 4982231472727894176}
   m_Layer: 0
   m_Name: BossOrbHit
   m_TagString: Untagged
@@ -62,7 +62,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 637539eb732c000418abbebb953fea7c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: BattleArena.Runtime::BattleArena.Vfx.VfxRestart
---- !u!114 &2855570019232816866
+--- !u!114 &4982231472727894176
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

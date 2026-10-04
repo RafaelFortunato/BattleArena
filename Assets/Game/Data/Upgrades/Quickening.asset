@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: BattleArena.Runtime::BattleArena.Progression.StatUpgradeDefinition
   displayName: Quickening
   stat: 5
-  amount: 0.15
+  amount: 0.2
   rarity: 1
   weight: 0.45
-  icon: {fileID: 7388822144124034973, guid: 4e07f6f18be41e64ba1236558b6a311b, type: 3}
+  icon: {fileID: 7388822144124034973, guid: 93de9a26fc5a45dfb7fa2fd9a9ea5546, type: 3}

@@ -96,8 +96,10 @@ namespace BattleArena.Editor.ContentBuilder
                 Upgrade("EagleEye", "Eagle Eye", StatType.CritChance, 0.1f, UpgradeRarity.Rare),
                 Upgrade("Brutality", "Brutality", StatType.CritDamage, 0.25f, UpgradeRarity.Common),
                 Upgrade("Executioner", "Executioner", StatType.CritDamage, 0.5f, UpgradeRarity.Rare),
-                Upgrade("Haste", "Haste", StatType.CastSpeed, 0.08f, UpgradeRarity.Common),
-                Upgrade("Quickening", "Quickening", StatType.CastSpeed, 0.15f, UpgradeRarity.Rare),
+                Upgrade("Haste", "Haste", StatType.AttackSpeed, 0.1f, UpgradeRarity.Common),
+                Upgrade("Quickening", "Quickening", StatType.AttackSpeed, 0.2f, UpgradeRarity.Rare),
+                Upgrade("Focus", "Focus", StatType.CooldownReduction, 0.05f, UpgradeRarity.Common),
+                Upgrade("Clarity", "Clarity", StatType.CooldownReduction, 0.1f, UpgradeRarity.Rare),
                 Upgrade("Expansion", "Expansion", StatType.Area, 0.1f, UpgradeRarity.Common),
                 Upgrade("Colossus", "Colossus", StatType.Area, 0.2f, UpgradeRarity.Rare),
                 Upgrade("Persistence", "Persistence", StatType.Duration, 0.12f, UpgradeRarity.Common),
@@ -111,9 +113,10 @@ namespace BattleArena.Editor.ContentBuilder
                 Upgrade("Wisdom", "Wisdom", StatType.ExperienceGain, 0.1f, UpgradeRarity.Common),
                 Upgrade("Fortune", "Fortune", StatType.Luck, 0.15f, UpgradeRarity.Common, weight: 0.8f),
 
-                // Epics: roughly double the rare card for the same stat. Seven at the default epic weight put an
+                // Epics: roughly double the rare card for the same stat. Eight at the default epic weight put an
                 // epic on about 12% of level-ups (more with Luck), each individual epic under 2%.
-                Upgrade("TimeWarp", "Time Warp", StatType.CastSpeed, 0.3f, UpgradeRarity.Epic),
+                Upgrade("Frenzy", "Frenzy", StatType.AttackSpeed, 0.4f, UpgradeRarity.Epic),
+                Upgrade("TimeWarp", "Time Warp", StatType.CooldownReduction, 0.2f, UpgradeRarity.Epic),
                 Upgrade("Archmage", "Archmage", StatType.Attack, 5f, UpgradeRarity.Epic),
                 Upgrade("Cataclysm", "Cataclysm", StatType.Area, 0.4f, UpgradeRarity.Epic),
                 Upgrade("Eternity", "Eternity", StatType.Duration, 0.4f, UpgradeRarity.Epic),
@@ -161,7 +164,7 @@ namespace BattleArena.Editor.ContentBuilder
         {
             // Rarer cards show up less often unless a weight is given explicitly.
             if (weight < 0f)
-                weight = rarity switch { UpgradeRarity.Rare => 0.45f, UpgradeRarity.Epic => 0.108f, _ => 1f };
+                weight = rarity switch { UpgradeRarity.Rare => 0.45f, UpgradeRarity.Epic => 0.103f, _ => 1f };
 
             var upgrade = LoadOrCreateAsset<StatUpgradeDefinition>($"{UpgradesFolder}/{file}.asset");
             SerializedSetter.For(upgrade)

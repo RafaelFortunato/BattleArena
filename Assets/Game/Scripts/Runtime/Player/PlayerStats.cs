@@ -16,7 +16,8 @@ namespace BattleArena.Player
         Attack,
         CritChance,
         CritDamage,
-        CastSpeed,
+        /// <summary>How often basic attacks fire. Spells are unaffected (see <see cref="CooldownReduction"/>).</summary>
+        AttackSpeed,
         Area,
         Duration,
         Multishot,
@@ -25,7 +26,9 @@ namespace BattleArena.Player
         Armor,
         Regeneration,
         ExperienceGain,
-        Luck
+        Luck,
+        /// <summary>Share taken off every spell cooldown. Basic attacks are unaffected (see <see cref="AttackSpeed"/>).</summary>
+        CooldownReduction
     }
 
     /// <summary>
@@ -81,7 +84,7 @@ namespace BattleArena.Player
             new("Attack", DisplayKind.Absolute, 50f),
             new("Critical chance", DisplayKind.Percent, 100f),
             new("Critical damage", DisplayKind.Percent, 500f),
-            new("Cast speed", DisplayKind.Bonus, 300f),
+            new("Attack speed", DisplayKind.Bonus, 300f),
             new("Area", DisplayKind.Bonus, 300f),
             new("Duration", DisplayKind.Bonus, 300f),
             // Matches the auto attack's 11-bolt fan (1 + 10).
@@ -92,6 +95,8 @@ namespace BattleArena.Player
             new("Regeneration", DisplayKind.Count, 50f, "/s"),
             new("Experience gain", DisplayKind.Bonus, 300f),
             new("Luck", DisplayKind.Bonus, 200f),
+            // 75% quarters cooldowns.
+            new("Cooldown reduction", DisplayKind.Percent, 75f),
         };
 
         public static int StatCount => Info.Length;
@@ -111,8 +116,10 @@ namespace BattleArena.Player
         public float Attack => baseAttack + Bonus(StatType.Attack);
         public float CritChance => Mathf.Clamp01(baseCritChance + Bonus(StatType.CritChance));
         public float CritMultiplier => baseCritMultiplier + Bonus(StatType.CritDamage);
-        /// <summary>Divides spell cooldowns and the auto attack interval.</summary>
-        public float CastSpeedMultiplier => 1f + Bonus(StatType.CastSpeed);
+        /// <summary>Divides the basic attack interval.</summary>
+        public float AttackSpeedMultiplier => 1f + Bonus(StatType.AttackSpeed);
+        /// <summary>Fraction (0 to 0.75) taken off every spell cooldown.</summary>
+        public float CooldownReduction => Bonus(StatType.CooldownReduction);
         public float AreaMultiplier => 1f + Bonus(StatType.Area);
         public float DurationMultiplier => 1f + Bonus(StatType.Duration);
         public int ExtraProjectiles => Mathf.RoundToInt(Bonus(StatType.Multishot));
@@ -217,7 +224,7 @@ namespace BattleArena.Player
             StatType.Attack => Attack,
             StatType.CritChance => CritChance * 100f,
             StatType.CritDamage => CritMultiplier * 100f,
-            _ => Info[(int)stat].Kind == DisplayKind.Bonus ? Bonus(stat) * 100f : Bonus(stat)
+            _ => Info[(int)stat].Kind is DisplayKind.Bonus or DisplayKind.Percent ? Bonus(stat) * 100f : Bonus(stat)
         };
 
         // Invariant culture so numbers read the same in every locale (e.g. "0.5", not "0,5").

@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 5600747312507724838}
   - component: {fileID: 6975366524625187198}
   - component: {fileID: 2703811656987988194}
-  - component: {fileID: 6875363945583312857}
+  - component: {fileID: 537626267224348112}
   m_Layer: 0
   m_Name: WellSplash
   m_TagString: Untagged
@@ -4909,7 +4909,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: BattleArena.Runtime::BattleArena.Pooling.TimedRelease
   lifetime: 0.90000004
---- !u!114 &6875363945583312857
+--- !u!114 &537626267224348112
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

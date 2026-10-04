@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: TimeWarp
   m_EditorClassIdentifier: BattleArena.Runtime::BattleArena.Progression.StatUpgradeDefinition
   displayName: Time Warp
-  stat: 5
-  amount: 0.3
+  stat: 15
+  amount: 0.2
   rarity: 2
-  weight: 0.108
+  weight: 0.103
   icon: {fileID: 7388822144124034973, guid: 4e07f6f18be41e64ba1236558b6a311b, type: 3}
