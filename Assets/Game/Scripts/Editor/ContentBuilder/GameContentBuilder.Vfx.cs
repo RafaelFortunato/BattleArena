@@ -130,6 +130,30 @@ namespace BattleArena.Editor.ContentBuilder
                 .Loop(0.5f).Rate(40f).Life(0.1f, 0.14f).Size(size * 0.85f, size).Max(12).ColorOverLife(Fade(0f, 0.6f, 0.3f, 1f, 1f, 0f));
         }
 
+        /// <summary>
+        /// Shield bubble shown around the player while Phase Step's immunity lasts: a steady translucent shell, thin
+        /// ripples running out across it and sparkles on its surface. Starts hidden; ImmunityCue toggles it.
+        /// </summary>
+        private static GameObject BuildImmunityBubble(Transform player)
+        {
+            var bubble = new GameObject("ImmunityBubble") { layer = player.gameObject.layer };
+            bubble.transform.SetParent(player, false);
+            bubble.transform.localPosition = new Vector3(0f, 1f, 0f);
+            var t = bubble.transform;
+
+            new Fx(t, "Shell", FxMaterial("ImmunityShell", "vfx_bubble", ArcanePink, 1.3f))
+                .Loop(1f).Burst(1).Rate(0f).Life(9999f, 9999f).Size(3.1f, 3.1f).Max(1);
+            new Fx(t, "Ripples", FxMaterial("ImmunityRipple", "vfx_ring_thin", ArcanePink, 1.8f))
+                .Loop(1f).Rate(2.2f).Life(0.9f, 0.9f).Size(3.1f, 3.1f).Max(4)
+                .SizeOverLife(Curve(0f, 0.7f, 1f, 1.05f)).ColorOverLife(Fade(0f, 0f, 0.3f, 0.8f, 1f, 0f));
+            new Fx(t, "Sparkles", FxMaterial("ImmunitySparkle", "vfx_star", ArcanePink, 2.5f))
+                .Loop(1f).Rate(14f).Sphere(1.45f, 0.05f).Life(0.35f, 0.6f).Size(0.12f, 0.22f).Rotation().Max(16)
+                .ColorOverLife(Fade(0f, 0f, 0.3f, 1f, 1f, 0f));
+
+            bubble.SetActive(false);
+            return bubble;
+        }
+
         // ---------------------------------------------------------------- Projectiles
 
         private static Projectile BuildBoltProjectile(TimedRelease impact)
@@ -398,8 +422,8 @@ namespace BattleArena.Editor.ContentBuilder
 
         private static OrbitingOrbs BuildArcaneOrbit(MaterialSet m, TimedRelease hitEffect)
         {
-            // Holds the maximum orb count; the spell enables 3 plus any Split Cast upgrades.
-            const int orbCount = 6;
+            // Holds the maximum orb count: 3 base + 10 projectiles (the stat cap) + 3 Split Cast upgrades.
+            const int orbCount = 16;
             var root = FxRoot("ArcaneOrbit");
             var orbs = new ContactDamage[orbCount];
             var mesh = LoadVfxMesh("CrystalOrb");

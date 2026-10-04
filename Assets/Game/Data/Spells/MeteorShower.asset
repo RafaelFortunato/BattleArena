@@ -16,8 +16,9 @@ MonoBehaviour:
   description: Calls down a volley of meteors on the enemies around you.
   color: {r: 1, g: 0.4, b: 0.15, a: 1}
   icon: {fileID: 7388822144124034973, guid: 8023f02875bcb0e40b9b22563ae100e1, type: 3}
-  cooldown: 14
-  baseDamage: 90
+  cooldown: 20
+  attackRatio: 7.5
+  damageUnit: per meteor
   supportedUpgrades: 0000000001000000020000000300000005000000
   meteorPrefab: {fileID: 7810031274077524975, guid: fdcdbf4f57d1f314c922572b49e9fce0, type: 3}
   meteorCount: 10

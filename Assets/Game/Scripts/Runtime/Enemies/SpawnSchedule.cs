@@ -4,7 +4,10 @@ using UnityEngine;
 
 namespace BattleArena.Enemies
 {
-    /// <summary>Time-based wave phases plus difficulty scaling for the whole match.</summary>
+    /// <summary>
+    /// Time-based wave phases. Enemies never scale: each type has fixed base stats, and later phases get harder by
+    /// bringing in tougher enemy types and retiring the early ones.
+    /// </summary>
     [CreateAssetMenu(fileName = "SpawnSchedule", menuName = "BattleArena/Spawn Schedule")]
     public sealed class SpawnSchedule : ScriptableObject
     {
@@ -44,12 +47,6 @@ namespace BattleArena.Enemies
 
         [Tooltip("Phases sorted by start time.")]
         [SerializeField] private Phase[] phases = Array.Empty<Phase>();
-        [SerializeField, Min(0f)] private float healthScalingPerMinute = 0.25f;
-        [SerializeField, Min(0f)] private float damageScalingPerMinute = 0.1f;
-
-        public float GetHealthMultiplier(float elapsedSeconds) => 1f + healthScalingPerMinute * elapsedSeconds / 60f;
-        public float GetDamageMultiplier(float elapsedSeconds) => 1f + damageScalingPerMinute * elapsedSeconds / 60f;
-
         public Phase GetPhase(float elapsedSeconds)
         {
             Phase current = null;

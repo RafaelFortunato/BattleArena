@@ -1,4 +1,3 @@
-using BattleArena.Combat;
 using BattleArena.Pooling;
 using BattleArena.Vfx;
 using UnityEngine;
@@ -6,15 +5,20 @@ using UnityEngine.AI;
 
 namespace BattleArena.Spells
 {
-    /// <summary>Blinks forward, becoming briefly invulnerable and blasting enemies at the destination.</summary>
+    /// <summary>An escape: blinks forward and makes the caster immune to damage for a moment. Deals no damage.</summary>
     [CreateAssetMenu(fileName = "PhaseStep", menuName = "BattleArena/Spells/Phase Step")]
     public sealed class PhaseStepSpell : SpellDefinition
     {
-        [SerializeField, Min(1f)] private float distance = 7f;
-        [SerializeField, Min(0.5f)] private float blastRadius = 3.5f;
-        [SerializeField, Min(0f)] private float invulnerabilityDuration = 0.6f;
+        [SerializeField, Min(1f)] private float distance = 11f;
+        [Tooltip("Seconds of damage immunity after the blink; scales with the Duration stat.")]
+        [SerializeField, Min(0f)] private float invulnerabilityDuration = 2f;
         [SerializeField] private TimedRelease departEffect;
+        [Tooltip("Arrival flourish, drawn at a fixed small size so it does not read as a damage area.")]
         [SerializeField] private AreaEffect arrivalRing;
+        [SerializeField, Min(0.1f)] private float arrivalRingRadius = 1.5f;
+
+        public override (string Label, string Value) CardHeadline =>
+            ("Immunity", invulnerabilityDuration.ToString("0.#", System.Globalization.CultureInfo.InvariantCulture) + "s");
 
         public override bool Cast(in SpellContext context)
         {
@@ -32,11 +36,9 @@ namespace BattleArena.Spells
 
             context.Caster.Teleport(destination);
             context.Caster.Health.GrantInvulnerability(context.Duration(invulnerabilityDuration));
-            var radius = context.Area(blastRadius);
-            CombatQueries.DamageInRadius(destination, radius, GetDamage(context), context.TargetMask);
 
             if (arrivalRing != null)
-                PoolManager.Spawn(arrivalRing, destination, Quaternion.identity).Play(radius);
+                PoolManager.Spawn(arrivalRing, destination, Quaternion.identity).Play(arrivalRingRadius);
 
             return true;
         }

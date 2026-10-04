@@ -14,9 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: BattleArena.Runtime::BattleArena.Enemies.EnemyDefinition
   displayName: Arcane Wisp
   prefab: {fileID: 9124286447211118572, guid: ac2bbd88dafdd4c41b415b35c5c950c4, type: 3}
-  maxHealth: 14
+  maxHealth: 168
   moveSpeed: 4.2
-  contactDamage: 3
+  contactDamage: 8
   attackRange: 1.1
   attackCooldown: 1
-  experienceReward: 2
+  experienceReward: 5

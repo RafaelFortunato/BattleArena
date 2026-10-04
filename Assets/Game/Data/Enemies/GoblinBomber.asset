@@ -14,9 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: BattleArena.Runtime::BattleArena.Enemies.EnemyDefinition
   displayName: Goblin Bomber
   prefab: {fileID: 4956020720834356272, guid: 900dd210092d344498e4613ce2c88f8a, type: 3}
-  maxHealth: 22
-  moveSpeed: 3.1
-  contactDamage: 4
+  maxHealth: 66
+  moveSpeed: 2.9
+  contactDamage: 5
   attackRange: 1.2
   attackCooldown: 1
   experienceReward: 3

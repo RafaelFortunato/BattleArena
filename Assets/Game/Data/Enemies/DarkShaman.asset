@@ -14,9 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: BattleArena.Runtime::BattleArena.Enemies.EnemyDefinition
   displayName: Dark Shaman
   prefab: {fileID: 6411930770601623032, guid: 05f89a803d937ce4dafcbb5b5d1db579, type: 3}
-  maxHealth: 36
+  maxHealth: 84
   moveSpeed: 2.5
-  contactDamage: 4
+  contactDamage: 5
   attackRange: 1.2
   attackCooldown: 1
   experienceReward: 4

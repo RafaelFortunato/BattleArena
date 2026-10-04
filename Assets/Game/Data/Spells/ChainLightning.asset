@@ -13,12 +13,12 @@ MonoBehaviour:
   m_Name: ChainLightning
   m_EditorClassIdentifier: BattleArena.Runtime::BattleArena.Spells.ChainLightningSpell
   displayName: Chain Lightning
-  description: Lightning strikes the nearest enemy and jumps between up to 6 foes,
-    weakening with each jump.
+  description: Strikes the nearest enemy and jumps to up to 6 foes, weaker each jump.
   color: {r: 0.6, g: 0.85, b: 1, a: 1}
   icon: {fileID: 7388822144124034973, guid: acafadbc0c31e324badc7479850d93c8, type: 3}
   cooldown: 5
-  baseDamage: 40
+  attackRatio: 3.5
+  damageUnit: to the first target
   supportedUpgrades: 00000000010000000200000006000000
   range: 14
   jumpRadius: 7

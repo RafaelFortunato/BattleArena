@@ -26,7 +26,7 @@ namespace BattleArena.Spells
         {
             SpellUpgradeKind.ExtraCharge => "Store an extra cast",
             SpellUpgradeKind.CooldownReduction => "Recharges faster",
-            SpellUpgradeKind.Damage => "Hits harder",
+            SpellUpgradeKind.Damage => "Deals a bigger share of Attack",
             SpellUpgradeKind.ExtraProjectiles => "Casts more at once",
             SpellUpgradeKind.Duration => "Lasts longer",
             SpellUpgradeKind.Area => "Covers more ground",
@@ -34,8 +34,8 @@ namespace BattleArena.Spells
             _ => string.Empty
         };
 
-        /// <summary>What the card changes for a slot with <paramref name="state"/>; the bar tracks upgrade ranks.</summary>
-        public StatPreview Preview(SpellUpgradeState state)
+        /// <summary>What the card changes for <paramref name="spell"/> with <paramref name="state"/>; the bar tracks upgrade ranks.</summary>
+        public StatPreview Preview(SpellUpgradeState state, SpellDefinition spell)
         {
             var current = state.Total(kind);
             var next = current + amount;
@@ -47,7 +47,13 @@ namespace BattleArena.Spells
             {
                 SpellUpgradeKind.ExtraCharge => Build("Charges", Count(1f + current, false), Count(1f + next, false), Count(amount, true)),
                 SpellUpgradeKind.CooldownReduction => Build("Cooldown", Percent(-current), Percent(-next), Percent(-amount)),
-                SpellUpgradeKind.Damage => Build("Damage", Percent(current), Percent(next), Percent(amount)),
+                // Shown as the spell's share of Attack, so the card says exactly how hard the spell will hit.
+                // Shares are rounded first so "375% now" plus the gain adds up to the value shown.
+                SpellUpgradeKind.Damage => Build("Damage",
+                    SpellDefinition.FormatAttackShare(spell.AttackRatio * (1f + current)),
+                    SpellDefinition.FormatAttackShare(spell.AttackRatio * (1f + next)) + " ATK",
+                    "+" + SpellDefinition.FormatAttackShare(
+                        Mathf.Round(spell.AttackRatio * (1f + next) * 100f) / 100f - Mathf.Round(spell.AttackRatio * (1f + current) * 100f) / 100f)),
                 SpellUpgradeKind.ExtraProjectiles => Build("Projectiles", Count(current, true), Count(next, true), Count(amount, true)),
                 SpellUpgradeKind.Duration => Build("Duration", Percent(current), Percent(next), Percent(amount)),
                 SpellUpgradeKind.Area => Build("Area", Percent(current), Percent(next), Percent(amount)),

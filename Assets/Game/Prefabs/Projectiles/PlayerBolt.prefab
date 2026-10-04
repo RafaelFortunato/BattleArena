@@ -14522,7 +14522,7 @@ GameObject:
   - component: {fileID: 7075245654566261072}
   - component: {fileID: 3927578984583903370}
   - component: {fileID: 6906769191514594576}
-  - component: {fileID: 8458379504404761032}
+  - component: {fileID: 3596729611388818693}
   m_Layer: 9
   m_Name: PlayerBolt
   m_TagString: Untagged
@@ -14741,7 +14741,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 637539eb732c000418abbebb953fea7c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: BattleArena.Runtime::BattleArena.Vfx.VfxRestart
---- !u!114 &8458379504404761032
+--- !u!114 &3596729611388818693
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

@@ -46,8 +46,7 @@ namespace BattleArena.Missions
                     return;
                 }
 
-                _enemy = Enemy.Spawn(_mission.target, position, Quaternion.identity,
-                    spawner.CurrentHealthMultiplier * _mission.healthScale, spawner.CurrentDamageMultiplier);
+                _enemy = Enemy.Spawn(_mission.target, position, Quaternion.identity, _mission.healthScale, 1f);
                 _enemy.Health.Died += OnTargetDied;
             }
 

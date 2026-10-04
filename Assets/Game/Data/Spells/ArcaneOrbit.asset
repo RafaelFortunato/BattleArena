@@ -13,12 +13,12 @@ MonoBehaviour:
   m_Name: ArcaneOrbit
   m_EditorClassIdentifier: BattleArena.Runtime::BattleArena.Spells.ArcaneOrbitSpell
   displayName: Arcane Orbit
-  description: Three arcane orbs circle you for 6 seconds, damaging every enemy they
-    touch.
+  description: Three orbs circle you for 6 seconds, hitting every enemy they touch.
   color: {r: 0.75, g: 0.45, b: 1, a: 1}
   icon: {fileID: 7388822144124034973, guid: eb45212fb20fd6a409468c0450c62ab4, type: 3}
   cooldown: 12
-  baseDamage: 22
+  attackRatio: 1.75
+  damageUnit: per hit
   supportedUpgrades: 0100000002000000030000000400000005000000
   orbsPrefab: {fileID: 5161623284445319767, guid: ed100b954f43e5f41b9d94a9110c3e11, type: 3}
   orbCount: 3

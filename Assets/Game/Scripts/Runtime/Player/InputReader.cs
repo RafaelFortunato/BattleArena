@@ -15,16 +15,19 @@ namespace BattleArena.Player
 
         [SerializeField] private InputActionAsset actions;
 
-        private InputActionMap _gameplayMap;
-        private InputActionMap _systemMap;
-        private InputAction _move;
-        private InputAction _interact;
-        private InputAction _pause;
-        private InputAction _choicePrevious;
-        private InputAction _choiceNext;
-        private InputAction _confirm;
-        private readonly InputAction[] _spells = new InputAction[SpellSlotCount];
-        private bool _initialized;
+        // Runtime cache, never serialized: a script reload saves and restores an asset's private fields, which would
+        // bring back "initialized" with detached copies of the action maps that the Input System no longer tracks
+        // ("Map must be contained in state"), and gameplay input would never enable again.
+        [NonSerialized] private InputActionMap _gameplayMap;
+        [NonSerialized] private InputActionMap _systemMap;
+        [NonSerialized] private InputAction _move;
+        [NonSerialized] private InputAction _interact;
+        [NonSerialized] private InputAction _pause;
+        [NonSerialized] private InputAction _choicePrevious;
+        [NonSerialized] private InputAction _choiceNext;
+        [NonSerialized] private InputAction _confirm;
+        [NonSerialized] private readonly InputAction[] _spells = new InputAction[SpellSlotCount];
+        [NonSerialized] private bool _initialized;
 
         public Vector2 Move { get; private set; }
 

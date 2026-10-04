@@ -218,7 +218,7 @@ namespace BattleArena.Editor.ContentBuilder
             SerializedSetter.For(health).Set("maxHealth", 150f).Set("invulnerabilityDuration", 0.5f).Apply();
 
             var stats = root.AddComponent<PlayerStats>();
-            SerializedSetter.For(stats).Set("health", health).Apply();
+            SerializedSetter.For(stats).Set("health", health).Set("baseAttack", 10f).Apply();
 
             var movement = root.AddComponent<PlayerController>();
             SerializedSetter.For(movement).Set("input", input).Set("stats", stats).Set("moveSpeed", 6.5f).Apply();
@@ -235,7 +235,6 @@ namespace BattleArena.Editor.ContentBuilder
                 .Set("projectilePrefab", bolt)
                 .Set("muzzle", muzzle)
                 .Set("stats", stats)
-                .Set("baseDamage", 12f)
                 .Set("fireInterval", 0.5f)
                 .Apply();
 
@@ -253,6 +252,10 @@ namespace BattleArena.Editor.ContentBuilder
                 .Set("renderers", new[] { character.Body })
                 .Set("flashMaterial", m.Flash)
                 .Apply();
+
+            // Shield bubble while Phase Step's immunity lasts.
+            var immunityCue = root.AddComponent<ImmunityCue>();
+            SerializedSetter.For(immunityCue).Set("bubble", BuildImmunityBubble(root.transform)).Apply();
 
             // Sensors: kinematic trigger volumes on their own layer, so they only see pickups/interactables.
             var magnet = CreateSensor(root.transform, "PickupMagnet", 3.5f);

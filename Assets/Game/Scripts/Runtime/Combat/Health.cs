@@ -17,17 +17,25 @@ namespace BattleArena.Combat
         public float Max => maxHealth;
         public float Normalized => Current / maxHealth;
         public bool IsAlive => Current > 0f;
+        public bool IsInvulnerable => Time.time < _invulnerableUntil;
+        public float InvulnerableRemaining => Mathf.Max(0f, _invulnerableUntil - Time.time);
 
-        /// <summary>Flat reduction applied to every hit. A hit always deals at least <see cref="MinimumDamageFraction"/> of its damage.</summary>
+        /// <summary>Reduces every hit with diminishing returns; see <see cref="ArmorDamageMultiplier"/>.</summary>
         public float Armor { get; set; }
 
-        private const float MinimumDamageFraction = 0.2f;
+        /// <summary>Armor that halves incoming damage. Twice as much takes a third, and it never reaches immunity.</summary>
+        public const float ArmorHalvingPoint = 100f;
+
+        /// <summary>Share of a hit that gets through <paramref name="armor"/>: 100 / (100 + armor), so 100 armor halves damage.</summary>
+        public static float ArmorDamageMultiplier(float armor) => ArmorHalvingPoint / (ArmorHalvingPoint + Mathf.Max(0f, armor));
 
         /// <summary>Raised whenever current or max health changes.</summary>
         public event Action<Health> Changed;
         /// <summary>Raised with the full damage of the hit after armor, even if it exceeds the remaining health.</summary>
         public event Action<Health, DamageResult> Damaged;
         public event Action<Health> Died;
+        /// <summary>Raised by <see cref="GrantInvulnerability"/> (e.g. Phase Step), not by the short grace period after a hit.</summary>
+        public event Action<float> InvulnerabilityGranted;
 
         private void Awake() => Current = maxHealth;
 
@@ -57,7 +65,7 @@ namespace BattleArena.Combat
                 return;
 
             if (Armor > 0f)
-                amount = Mathf.Max(amount - Armor, amount * MinimumDamageFraction);
+                amount *= ArmorDamageMultiplier(Armor);
 
             Current = Mathf.Max(0f, Current - amount);
             if (invulnerabilityDuration > 0f)
@@ -72,8 +80,11 @@ namespace BattleArena.Combat
         }
 
         /// <summary>Ignores all damage for <paramref name="duration"/> seconds.</summary>
-        public void GrantInvulnerability(float duration) =>
+        public void GrantInvulnerability(float duration)
+        {
             _invulnerableUntil = Mathf.Max(_invulnerableUntil, Time.time + duration);
+            InvulnerabilityGranted?.Invoke(duration);
+        }
 
         public void Heal(float amount)
         {

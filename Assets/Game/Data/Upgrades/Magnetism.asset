@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: BattleArena.Runtime::BattleArena.Progression.StatUpgradeDefinition
   displayName: Magnetism
   stat: 10
-  amount: 0.25
+  amount: 0.5
   rarity: 0
   weight: 1
   icon: {fileID: 7388822144124034973, guid: 92b21903a8e180f45ac1c6ccbac3462a, type: 3}

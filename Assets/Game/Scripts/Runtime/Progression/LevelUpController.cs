@@ -211,7 +211,7 @@ namespace BattleArena.Progression
         {
             _statCandidates.Clear();
             foreach (var upgrade in config.StatUpgrades)
-                if (upgrade != null && upgrade.Weight > 0f)
+                if (upgrade != null && upgrade.Weight > 0f && !stats.IsCapped(upgrade.Stat))
                     _statCandidates.Add(upgrade);
 
             while (_offers.Count < config.ChoiceCount && _statCandidates.Count > 0)

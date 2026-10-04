@@ -14,9 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: BattleArena.Runtime::BattleArena.Enemies.EnemyDefinition
   displayName: Giant Slime
   prefab: {fileID: 277132272214608614, guid: 9e6f4e1d9098e594791adcf0d6894eea, type: 3}
-  maxHealth: 55
+  maxHealth: 54
   moveSpeed: 2.1
-  contactDamage: 9
+  contactDamage: 7
   attackRange: 1.8
   attackCooldown: 1.2
   experienceReward: 3

@@ -212,22 +212,22 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: BattleArena.Runtime::BattleArena.Enemies.BossController
   openingDelay: 2
-  attackInterval: 3.5
+  attackInterval: 2.8
   enrageHealthFraction: 0.5
   enragedIntervalMultiplier: 0.6
   slamPrefab: {fileID: 6951891554309759469, guid: b163fb8e673dbb2458b1468b320b4ab3, type: 3}
-  slamCount: 3
+  slamCount: 4
   slamRadius: 3.5
   slamDelay: 1.1
   slamSpacing: 0.45
-  slamDamage: 25
+  slamDamage: 40
   projectilePrefab: {fileID: 8891251351451254207, guid: 5ad7340235de26445989e040f4db9748, type: 3}
   projectileOrigin: {fileID: 3057850615514974940}
-  projectilesPerRing: 16
+  projectilesPerRing: 20
   ringsPerBurst: 2
   delayBetweenRings: 0.5
   projectileSpeed: 9
-  projectileDamage: 10
+  projectileDamage: 16
 --- !u!1 &3553934332470325338
 GameObject:
   m_ObjectHideFlags: 0

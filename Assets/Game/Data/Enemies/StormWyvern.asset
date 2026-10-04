@@ -14,9 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: BattleArena.Runtime::BattleArena.Enemies.EnemyDefinition
   displayName: Storm Wyvern
   prefab: {fileID: 1235947753586911672, guid: 2e4e075084fa27245b9f524933ce13c7, type: 3}
-  maxHealth: 20
+  maxHealth: 192
   moveSpeed: 9.5
-  contactDamage: 9
+  contactDamage: 18
   attackRange: 1.3
   attackCooldown: 1
-  experienceReward: 3
+  experienceReward: 6

@@ -38,7 +38,12 @@ MonoBehaviour:
   - {fileID: 11400000, guid: f464364f838f250478df84fde89ba7a3, type: 2}
   - {fileID: 11400000, guid: d827c99ca4b726249af80ba2a164b069, type: 2}
   - {fileID: 11400000, guid: 4de48ee9796052343928706e8f59c832, type: 2}
-  - {fileID: 11400000, guid: e78be96e860da27439d85d61ca8711b1, type: 2}
+  - {fileID: 11400000, guid: 8f75b3069bfa1194a8b6c8f6234ea539, type: 2}
+  - {fileID: 11400000, guid: 9c48835843223f7439d019277584bb3e, type: 2}
+  - {fileID: 11400000, guid: 5b82f36aa91b75545b9b292a2ee1a6b3, type: 2}
+  - {fileID: 11400000, guid: b3f5ca77b41d85d4193d9d2523263f55, type: 2}
+  - {fileID: 11400000, guid: 178e60e452045a8459321d0d16d0be8d, type: 2}
+  - {fileID: 11400000, guid: 6a17e5c312700f248b5748aa8ee3953e, type: 2}
   spellPool:
   - {fileID: 11400000, guid: 3a1225a6b700ada42b9b64da02cd47d8, type: 2}
   - {fileID: 11400000, guid: afd3c31578bd8754c939b7d41f64f98a, type: 2}

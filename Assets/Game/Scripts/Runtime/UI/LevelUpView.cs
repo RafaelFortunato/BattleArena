@@ -229,13 +229,15 @@ namespace BattleArena.UI
 
             private void BindStat(in StatPreview stat, Color accent)
             {
+                // Cards that change a value lead with what you gain; the line underneath says where you will end up.
+                // Spell cards have no "before", so they show their value (e.g. "375% ATK") instead.
                 _statLabel.text = stat.Label;
-                _statValue.text = stat.Value;
+                _statValue.text = stat.Bar == StatBarStyle.None ? stat.Value : stat.Gain;
                 _statValue.style.color = stat.Bar == StatBarStyle.None ? Color.white : _highlight;
 
                 _bar.EnableInClassList("hidden", stat.Bar != StatBarStyle.Continuous);
                 _segments.EnableInClassList("hidden", stat.Bar != StatBarStyle.Segmented);
-                _footnote.EnableInClassList("hidden", stat.Bar == StatBarStyle.None);
+                _footnote.EnableInClassList("hidden", stat.Bar == StatBarStyle.None && string.IsNullOrEmpty(stat.Note));
 
                 switch (stat.Bar)
                 {
@@ -253,7 +255,11 @@ namespace BattleArena.UI
                 if (stat.Bar != StatBarStyle.None)
                 {
                     _footnote.text =
-                        $"{stat.Current} now · <color=#{ColorUtility.ToHtmlStringRGB(_highlight)}>{stat.Gain} from this card</color>";
+                        $"{stat.Label} after picking: <color=#{ColorUtility.ToHtmlStringRGB(_highlight)}>{stat.Value}</color>";
+                }
+                else if (!string.IsNullOrEmpty(stat.Note))
+                {
+                    _footnote.text = stat.Note;
                 }
             }
 

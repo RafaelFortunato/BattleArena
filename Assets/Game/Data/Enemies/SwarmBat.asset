@@ -14,9 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: BattleArena.Runtime::BattleArena.Enemies.EnemyDefinition
   displayName: Swarm Bat
   prefab: {fileID: 3664793199428547830, guid: c0bbec2375c51334b8373d25afc4f8a8, type: 3}
-  maxHealth: 8
+  maxHealth: 54
   moveSpeed: 6
-  contactDamage: 3
+  contactDamage: 8
   attackRange: 1.1
   attackCooldown: 0.8
-  experienceReward: 1
+  experienceReward: 3

@@ -14,8 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: BattleArena.Runtime::BattleArena.Enemies.EnemyDefinition
   displayName: Goblin Grunt
   prefab: {fileID: 957518877667334477, guid: 2c152f30d2b0c8d43a14fa658ba28fad, type: 3}
-  maxHealth: 18
-  moveSpeed: 3.2
+  maxHealth: 22
+  moveSpeed: 3
   contactDamage: 5
   attackRange: 1.3
   attackCooldown: 1

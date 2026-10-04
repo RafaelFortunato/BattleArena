@@ -29,10 +29,6 @@ namespace BattleArena.Enemies
 
         public EnemyDefinition BossDefinition => boss;
 
-        /// <summary>Difficulty scaling at the current match time (used by missions spawning their own enemies).</summary>
-        public float CurrentHealthMultiplier => schedule.GetHealthMultiplier(Time.time - _matchStartTime);
-        public float CurrentDamageMultiplier => schedule.GetDamageMultiplier(Time.time - _matchStartTime);
-
         private void Start() => Prewarm();
 
         public void Begin(float matchStartTime)
@@ -74,15 +70,13 @@ namespace BattleArena.Enemies
             {
                 var elapsed = Time.time - _matchStartTime;
                 var phase = schedule.GetPhase(elapsed);
-                var healthMultiplier = schedule.GetHealthMultiplier(elapsed);
-                var damageMultiplier = schedule.GetDamageMultiplier(elapsed);
 
                 var room = phase.MaxAlive - EnemyRegistry.Count;
                 var count = Mathf.Min(room, phase.SpawnsPerTick);
                 for (var i = 0; i < count; i++)
                 {
                     if (TryFindSpawnPoint(player.position, minSpawnDistance, maxSpawnDistance, out var position))
-                        Spawn(phase.PickEnemy(), position, healthMultiplier, damageMultiplier);
+                        Spawn(phase.PickEnemy(), position, 1f, 1f);
                 }
 
                 yield return WaitCache.Get(phase.SpawnInterval);

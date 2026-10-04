@@ -14,9 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: BattleArena.Runtime::BattleArena.Enemies.EnemyDefinition
   displayName: Slimeling
   prefab: {fileID: 6095154581162138193, guid: 642e1e41f29a6db408147d8a2efc26d3, type: 3}
-  maxHealth: 14
-  moveSpeed: 3.4
-  contactDamage: 4
+  maxHealth: 12
+  moveSpeed: 3
+  contactDamage: 3
   attackRange: 1.1
   attackCooldown: 1
   experienceReward: 1

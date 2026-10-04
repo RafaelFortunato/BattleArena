@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: BattleArena.Runtime::BattleArena.Enemies.EnemyDefinition
   displayName: Ogre Warlord
   prefab: {fileID: 980114494396668616, guid: 794f723b1af80174692f408d328e9142, type: 3}
-  maxHealth: 400
+  maxHealth: 480
   moveSpeed: 2.6
   contactDamage: 18
   attackRange: 2.6

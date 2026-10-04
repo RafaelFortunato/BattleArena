@@ -14693,7 +14693,7 @@ GameObject:
   - component: {fileID: 6833258731950362380}
   - component: {fileID: 3344896407650270925}
   - component: {fileID: 8517190502204954311}
-  - component: {fileID: 6181147861311984225}
+  - component: {fileID: 4333112227767085435}
   m_Layer: 0
   m_Name: PhaseDepart
   m_TagString: Untagged
@@ -14745,7 +14745,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 637539eb732c000418abbebb953fea7c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: BattleArena.Runtime::BattleArena.Vfx.VfxRestart
---- !u!114 &6181147861311984225
+--- !u!114 &4333112227767085435
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

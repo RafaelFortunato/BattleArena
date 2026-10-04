@@ -10,11 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 730d68dd65611a9448cfe7557b8b0ead, type: 3}
-  m_Name: SoulHarvest
+  m_Name: TimeWarp
   m_EditorClassIdentifier: BattleArena.Runtime::BattleArena.Progression.StatUpgradeDefinition
-  displayName: Soul Harvest
-  stat: 15
-  amount: 1
-  rarity: 1
-  weight: 0.7
-  icon: {fileID: 7388822144124034973, guid: 1154305f9454e744b9c47725447819d9, type: 3}
+  displayName: Time Warp
+  stat: 5
+  amount: 0.3
+  rarity: 2
+  weight: 0.108
+  icon: {fileID: 7388822144124034973, guid: 4e07f6f18be41e64ba1236558b6a311b, type: 3}

@@ -53,6 +53,18 @@ namespace BattleArena.Progression
         public override VectorImage Icon => _upgrade.Icon;
         public override StatPreview Stat => _stats.Preview(_upgrade.Stat, _upgrade.Amount);
 
+        // One line each, so the card keeps room for its stat, bar and footnote.
+        public override string Summary => _upgrade.Stat switch
+        {
+            StatType.Attack => "All damage scales with Attack.",
+            StatType.Armor => $"+{ArmorGain().ToString("0", CultureInfo.InvariantCulture)} Armor · 100 Armor halves damage",
+            _ => null
+        };
+
+        // Only what still fits under the armor cap.
+        private float ArmorGain() =>
+            Mathf.Min(_upgrade.Amount, PlayerStats.GetCap(StatType.Armor) - _stats.Armor);
+
         public override Color Color => _upgrade.Rarity switch
         {
             UpgradeRarity.Rare => RareColor,
@@ -92,7 +104,7 @@ namespace BattleArena.Progression
         public override CardMotif Motif => CardMotif.Diamonds;
         public override VectorImage Icon => Spell.Icon;
         public override string Summary => _upgrade.Summary;
-        public override StatPreview Stat => _upgrade.Preview(_caster.GetUpgrades(_slot));
+        public override StatPreview Stat => _upgrade.Preview(_caster.GetUpgrades(_slot), Spell);
 
         public override void Apply() => _caster.ApplyUpgrade(_slot, _upgrade.Kind, _upgrade.Amount);
     }
@@ -120,8 +132,25 @@ namespace BattleArena.Progression
         public override CardMotif Motif => CardMotif.Hexagons;
         public override VectorImage Icon => _spell.Icon;
         public override string Summary => _spell.Description;
-        public override StatPreview Stat =>
-            StatPreview.Plain("Cooldown", _spell.Cooldown.ToString("0.#", CultureInfo.InvariantCulture) + "s");
+        // "375% ATK", then the same in numbers at the current Attack, plus the cooldown.
+        public override StatPreview Stat
+        {
+            get
+            {
+                var cooldown = _spell.Cooldown.ToString("0.#", CultureInfo.InvariantCulture);
+                if (_spell.AttackRatio <= 0f)
+                {
+                    // A utility spell: its own headline (e.g. "Immunity 2s") instead of a damage share.
+                    var (label, value) = _spell.CardHeadline;
+                    return StatPreview.Plain(label ?? "Cooldown", value ?? cooldown + "s", $"{cooldown}s cooldown");
+                }
+
+                var damage = Mathf.RoundToInt(_spell.AttackRatio * _caster.Attack).ToString(CultureInfo.InvariantCulture);
+                var unit = string.IsNullOrEmpty(_spell.DamageUnit) ? string.Empty : " " + _spell.DamageUnit;
+                return StatPreview.Plain("Damage", SpellDefinition.FormatAttackShare(_spell.AttackRatio) + " ATK",
+                    $"{damage} damage{unit} · {cooldown}s cooldown");
+            }
+        }
 
         public override void Apply() => _caster.Equip(_slot, _spell);
     }

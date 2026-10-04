@@ -17,13 +17,12 @@ namespace BattleArena.Player
         [SerializeField] private PlayerStats stats;
 
         [Header("Stats")]
-        [SerializeField, Min(0f)] private float baseDamage = 10f;
         [SerializeField, Min(0.05f)] private float fireInterval = 0.6f;
         [SerializeField, Min(1f)] private float range = 14f;
         [SerializeField, Min(1f)] private float projectileSpeed = 18f;
         [SerializeField, Min(0)] private int pierce;
         [SerializeField, Range(0f, 45f)] private float spreadAngle = 12f;
-        [SerializeField, Min(1)] private int maxBolts = 7;
+        [SerializeField, Min(1)] private int maxBolts = 11;
 
         private Coroutine _fireLoop;
 
@@ -83,7 +82,8 @@ namespace BattleArena.Player
             var aim = CombatQueries.AimAt(origin, targetPosition);
             var bolts = Mathf.Min(maxBolts, 1 + stats.ExtraProjectiles);
             var totalPierce = pierce + stats.ExtraPierce;
-            var damage = stats.CreateDamage(baseDamage);
+            // Basic attacks always deal 100% of Attack; they grow through attack speed, projectiles and pierce.
+            var damage = stats.CreateDamage(1f);
             var firstAngle = -spreadAngle * (bolts - 1) * 0.5f;
 
             for (var i = 0; i < bolts; i++)

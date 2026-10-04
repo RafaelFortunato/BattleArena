@@ -14,9 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: BattleArena.Runtime::BattleArena.Enemies.EnemyDefinition
   displayName: Archlich Morvath
   prefab: {fileID: 437655170594985888, guid: d2976d829bb889a45b2e257601c2229d, type: 3}
-  maxHealth: 12000
-  moveSpeed: 2.7
-  contactDamage: 20
+  maxHealth: 24000
+  moveSpeed: 3
+  contactDamage: 30
   attackRange: 3.4
   attackCooldown: 1.2
   experienceReward: 0

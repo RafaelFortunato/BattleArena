@@ -13,15 +13,16 @@ MonoBehaviour:
   m_Name: PhaseStep
   m_EditorClassIdentifier: BattleArena.Runtime::BattleArena.Spells.PhaseStepSpell
   displayName: Phase Step
-  description: Blink forward through danger, becoming briefly invulnerable and blasting
-    enemies where you land.
+  description: Blink forward and become immune to damage for 2 seconds. Deals no
+    damage.
   color: {r: 0.85, g: 0.6, b: 1, a: 1}
   icon: {fileID: 7388822144124034973, guid: def9b8485eb9b5948bf8cd9c5a82c53d, type: 3}
   cooldown: 6
-  baseDamage: 30
-  supportedUpgrades: 00000000010000000200000005000000
-  distance: 7
-  blastRadius: 3.5
-  invulnerabilityDuration: 0.6
+  attackRatio: 0
+  damageUnit: 
+  supportedUpgrades: 0000000001000000
+  distance: 11
+  invulnerabilityDuration: 2
   departEffect: {fileID: 3344896407650270925, guid: c70602ab44341a44cb390c97d92c24f2, type: 3}
   arrivalRing: {fileID: 6074068930820775936, guid: c5e7e1ab6d72ba0478266907a2e8b18b, type: 3}
+  arrivalRingRadius: 1.5

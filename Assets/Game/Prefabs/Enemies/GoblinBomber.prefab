@@ -5060,7 +5060,7 @@ MonoBehaviour:
   windup: 0.6
   windupIndicator: {fileID: 3612359434125761186}
   windupSound: {fileID: 0}
-  baseDamage: 14
+  baseDamage: 16
   bombPrefab: {fileID: 8964976784316096295, guid: 0f2d8d4622fe39745894d605707e57d8, type: 3}
   muzzle: {fileID: 2903485903477731753}
   flightTime: 1.1

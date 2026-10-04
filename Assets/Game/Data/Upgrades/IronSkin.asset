@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: BattleArena.Runtime::BattleArena.Progression.StatUpgradeDefinition
   displayName: Iron Skin
   stat: 11
-  amount: 1
+  amount: 10
   rarity: 0
   weight: 1
   icon: {fileID: 7388822144124034973, guid: 265b6e4f7a614be48ae1a3cb62f8a019, type: 3}

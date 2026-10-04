@@ -13,7 +13,8 @@ namespace BattleArena.Vfx
     /// </summary>
     public sealed class ChainLightningEffect : MonoBehaviour, IPoolable
     {
-        public const int MaxLinks = 16;
+        // 6 targets + 10 pierce (its cap) + 6 from three Arc Jump upgrades, with a spare.
+        public const int MaxLinks = 24;
         private const int MaxSegments = 24;
 
         [Tooltip("One wide glow line per link.")]

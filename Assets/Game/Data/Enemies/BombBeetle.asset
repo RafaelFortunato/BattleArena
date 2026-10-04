@@ -14,9 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: BattleArena.Runtime::BattleArena.Enemies.EnemyDefinition
   displayName: Bomb Beetle
   prefab: {fileID: 2532660570161304531, guid: f818a5849cac923489180b074039f715, type: 3}
-  maxHealth: 12
+  maxHealth: 60
   moveSpeed: 4.4
   contactDamage: 0
   attackRange: 1
   attackCooldown: 1
-  experienceReward: 2
+  experienceReward: 3

@@ -2,7 +2,6 @@ using System;
 using System.Collections;
 using System.Globalization;
 using BattleArena.Combat;
-using BattleArena.Core;
 using BattleArena.Progression;
 using BattleArena.Spells;
 using UnityEngine;
@@ -13,7 +12,8 @@ namespace BattleArena.Player
     {
         MoveSpeed,
         MaxHealth,
-        Damage,
+        /// <summary>Flat attack: basic attacks deal 100% of it, spells a percentage.</summary>
+        Attack,
         CritChance,
         CritDamage,
         CastSpeed,
@@ -25,8 +25,7 @@ namespace BattleArena.Player
         Armor,
         Regeneration,
         ExperienceGain,
-        Luck,
-        LifeOnKill
+        Luck
     }
 
     /// <summary>
@@ -56,45 +55,50 @@ namespace BattleArena.Player
             public readonly string Name;
             public readonly DisplayKind Kind;
             public readonly string Suffix;
-            /// <summary>Display value that fills a card's comparison bar.</summary>
-            public readonly float BarMax;
+            /// <summary>
+            /// Highest value the stat can reach, in display units ("+150%" is 150, "500 HP" is 500). Upgrades stop
+            /// at it, cards for it stop being offered, and it is what fills a card's comparison bar.
+            /// </summary>
+            public readonly float Cap;
             /// <summary>Whole-number stats are drawn as this many segments instead of a bar.</summary>
             public readonly int Segments;
 
-            public StatInfo(string name, DisplayKind kind, float barMax, string suffix = "", int segments = 0)
+            public StatInfo(string name, DisplayKind kind, float cap, string suffix = "", int segments = 0)
             {
                 Name = name;
                 Kind = kind;
-                BarMax = barMax;
+                Cap = cap;
                 Suffix = suffix;
                 Segments = segments;
             }
         }
 
-        // Indexed by StatType.
+        // Indexed by StatType. The third value is the stat's cap (see StatInfo.Cap).
         private static readonly StatInfo[] Info =
         {
-            new("Move speed", DisplayKind.Bonus, 60f),
-            new("Max health", DisplayKind.Absolute, 400f),
-            new("Damage", DisplayKind.Bonus, 100f),
-            new("Critical chance", DisplayKind.Percent, 50f),
-            new("Critical damage", DisplayKind.Percent, 300f),
-            new("Cast speed", DisplayKind.Bonus, 60f),
-            new("Area", DisplayKind.Bonus, 60f),
-            new("Duration", DisplayKind.Bonus, 60f),
-            new("Projectiles", DisplayKind.Count, 3f, segments: 3),
-            new("Pierce", DisplayKind.Count, 3f, segments: 3),
-            new("Pickup radius", DisplayKind.Bonus, 100f),
-            new("Armor", DisplayKind.Count, 8f),
-            new("Regeneration", DisplayKind.Count, 4f, "/s"),
-            new("Experience gain", DisplayKind.Bonus, 50f),
-            new("Luck", DisplayKind.Bonus, 60f),
-            new("Heal on kill", DisplayKind.Count, 4f, " HP"),
+            new("Move speed", DisplayKind.Bonus, 100f),
+            new("Max health", DisplayKind.Absolute, 500f),
+            new("Attack", DisplayKind.Absolute, 50f),
+            new("Critical chance", DisplayKind.Percent, 100f),
+            new("Critical damage", DisplayKind.Percent, 500f),
+            new("Cast speed", DisplayKind.Bonus, 300f),
+            new("Area", DisplayKind.Bonus, 300f),
+            new("Duration", DisplayKind.Bonus, 300f),
+            // Matches the auto attack's 11-bolt fan (1 + 10).
+            new("Projectiles", DisplayKind.Count, 10f, segments: 10),
+            new("Pierce", DisplayKind.Count, 10f, segments: 10),
+            new("Pickup radius", DisplayKind.Bonus, 500f),
+            new("Armor", DisplayKind.Count, 200f),
+            new("Regeneration", DisplayKind.Count, 50f, "/s"),
+            new("Experience gain", DisplayKind.Bonus, 300f),
+            new("Luck", DisplayKind.Bonus, 200f),
         };
 
         public static int StatCount => Info.Length;
 
         [SerializeField] private Health health;
+        [Tooltip("Attack before upgrades. Basic attacks deal exactly this; spells deal a percentage of it.")]
+        [SerializeField, Min(0f)] private float baseAttack = 10f;
         [SerializeField, Range(0f, 1f)] private float baseCritChance = 0.05f;
         [SerializeField, Min(1f)] private float baseCritMultiplier = 1.5f;
 
@@ -103,7 +107,8 @@ namespace BattleArena.Player
         private Coroutine _regeneration;
 
         public float MoveSpeedMultiplier => 1f + Bonus(StatType.MoveSpeed);
-        public float DamageMultiplier => 1f + Bonus(StatType.Damage);
+        /// <summary>Flat damage number everything scales from: basic attacks deal 100%, spells a % of it.</summary>
+        public float Attack => baseAttack + Bonus(StatType.Attack);
         public float CritChance => Mathf.Clamp01(baseCritChance + Bonus(StatType.CritChance));
         public float CritMultiplier => baseCritMultiplier + Bonus(StatType.CritDamage);
         /// <summary>Divides spell cooldowns and the auto attack interval.</summary>
@@ -114,27 +119,32 @@ namespace BattleArena.Player
         public int ExtraPierce => Mathf.RoundToInt(Bonus(StatType.Pierce));
         public float PickupRadiusMultiplier => 1f + Bonus(StatType.PickupRadius);
         public float ExperienceMultiplier => 1f + Bonus(StatType.ExperienceGain);
+        public float Armor => Bonus(StatType.Armor);
         /// <summary>0..1+, raises the odds of rare and epic cards.</summary>
         public float Luck => Bonus(StatType.Luck);
 
         public event Action<StatType> Changed;
 
-        private void OnEnable() => EventBus<EnemyKilledEvent>.Subscribe(OnEnemyKilled);
+        private void OnDisable() => _regeneration = null;
 
-        private void OnDisable()
-        {
-            EventBus<EnemyKilledEvent>.Unsubscribe(OnEnemyKilled);
-            _regeneration = null;
-        }
-
-        public DamageProfile CreateDamage(float baseDamage) =>
-            new(baseDamage * DamageMultiplier, CritChance, CritMultiplier);
+        /// <summary>Damage worth <paramref name="attackRatio"/> of Attack (1 = 100%), with the player's crit.</summary>
+        public DamageProfile CreateDamage(float attackRatio) =>
+            new(Attack * attackRatio, CritChance, CritMultiplier);
 
         public SpellModifiers CreateSpellModifiers() =>
-            new(DamageMultiplier, CritChance, CritMultiplier, AreaMultiplier, DurationMultiplier, ExtraProjectiles, ExtraPierce);
+            new(Attack, CritChance, CritMultiplier, AreaMultiplier, DurationMultiplier, ExtraProjectiles, ExtraPierce);
 
+        /// <summary>True when <paramref name="stat"/> has reached its cap, so its cards are no longer offered.</summary>
+        public bool IsCapped(StatType stat) => GetDisplayValue(stat) >= Info[(int)stat].Cap - 0.001f;
+
+        /// <summary>Adds an upgrade, stopping at the stat's cap.</summary>
         public void Apply(StatType stat, float amount)
         {
+            var info = Info[(int)stat];
+            amount = Mathf.Min(amount, Mathf.Max(0f, (info.Cap - GetDisplayValue(stat)) / DisplayScale(info)));
+            if (amount <= 0f)
+                return;
+
             _bonuses[(int)stat] += amount;
 
             switch (stat)
@@ -153,23 +163,48 @@ namespace BattleArena.Player
             Changed?.Invoke(stat);
         }
 
-        /// <summary>Card preview for adding <paramref name="amount"/> to <paramref name="stat"/>: "5% → 15%" plus bar fills.</summary>
+        /// <summary>
+        /// Card preview for adding <paramref name="amount"/> to <paramref name="stat"/>: "5% → 15%", with the bar
+        /// filling at the stat's cap. A card that would pass the cap shows only what it can still add.
+        /// </summary>
         public StatPreview Preview(StatType stat, float amount)
         {
+            if (stat == StatType.Armor)
+                return ArmorPreview(amount);
+
             var info = Info[(int)stat];
             var current = GetDisplayValue(stat);
-            var delta = info.Kind is DisplayKind.Bonus or DisplayKind.Percent ? amount * 100f : amount;
-            var next = current + delta;
-            if (stat == StatType.CritChance)
-                next = Mathf.Min(100f, next);
+            var next = Mathf.Min(info.Cap, current + amount * DisplayScale(info));
 
-            var gain = FormatSigned(delta, info.Kind is DisplayKind.Bonus or DisplayKind.Percent ? "%" : info.Suffix);
+            var gain = FormatSigned(next - current, info.Kind is DisplayKind.Bonus or DisplayKind.Percent ? "%" : info.Suffix);
             var bar = info.Segments > 0 ? StatBarStyle.Segmented : StatBarStyle.Continuous;
             return new StatPreview(info.Name, Format(info, next), Format(info, current), gain, bar,
-                Mathf.Clamp01(current / info.BarMax), Mathf.Clamp01(next / info.BarMax), info.Segments);
+                Mathf.Clamp01(current / info.Cap), Mathf.Clamp01(next / info.Cap), info.Segments);
         }
 
+        /// <summary>
+        /// Armor reads as the damage reduction it gives, since that is what the player cares about and armor has
+        /// diminishing returns: "Damage reduction +20%", filling the bar at the reduction the armor cap gives.
+        /// </summary>
+        private StatPreview ArmorPreview(float amount)
+        {
+            var cap = Info[(int)StatType.Armor].Cap;
+            var now = Mathf.RoundToInt(DamageReduction(Armor));
+            var after = Mathf.RoundToInt(DamageReduction(Mathf.Min(cap, Armor + amount)));
+            var max = DamageReduction(cap);
+            return new StatPreview("Damage reduction", after + "%", now + "%", "+" + (after - now) + "%",
+                StatBarStyle.Continuous, now / max, after / max);
+
+            static float DamageReduction(float armor) => (1f - Health.ArmorDamageMultiplier(armor)) * 100f;
+        }
+
+        /// <summary>Display units per upgrade unit: percentage stats store fractions (0.1) but read as 10%.</summary>
+        private static float DisplayScale(in StatInfo info) => info.Kind is DisplayKind.Bonus or DisplayKind.Percent ? 100f : 1f;
+
         public static string GetStatName(StatType stat) => Info[(int)stat].Name;
+
+        /// <summary>Highest value <paramref name="stat"/> can reach, in display units.</summary>
+        public static float GetCap(StatType stat) => Info[(int)stat].Cap;
 
         /// <summary>Current value as shown on screen, e.g. "+8%", "15%", "240".</summary>
         public string FormatCurrent(StatType stat) => Format(Info[(int)stat], GetDisplayValue(stat));
@@ -179,6 +214,7 @@ namespace BattleArena.Player
         private float GetDisplayValue(StatType stat) => stat switch
         {
             StatType.MaxHealth => health.Max,
+            StatType.Attack => Attack,
             StatType.CritChance => CritChance * 100f,
             StatType.CritDamage => CritMultiplier * 100f,
             _ => Info[(int)stat].Kind == DisplayKind.Bonus ? Bonus(stat) * 100f : Bonus(stat)
@@ -195,13 +231,6 @@ namespace BattleArena.Player
 
         private static string FormatSigned(float value, string suffix) =>
             (value < 0f ? "-" : "+") + Mathf.Abs(value).ToString("0.#", CultureInfo.InvariantCulture) + suffix;
-
-        private void OnEnemyKilled(EnemyKilledEvent _)
-        {
-            var heal = Bonus(StatType.LifeOnKill);
-            if (heal > 0f)
-                health.Heal(heal);
-        }
 
         private IEnumerator Regenerate()
         {

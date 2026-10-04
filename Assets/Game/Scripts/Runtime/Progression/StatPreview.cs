@@ -22,10 +22,13 @@ namespace BattleArena.Progression
         public readonly float CurrentFill;
         public readonly float AfterFill;
         public readonly int Segments;
+        /// <summary>Extra line under a preview without a bar, e.g. a new spell's damage in numbers and its cooldown.</summary>
+        public readonly string Note;
 
         public StatPreview(string label, string value, string current, string gain, StatBarStyle bar,
-            float currentFill, float afterFill, int segments = 0)
+            float currentFill, float afterFill, int segments = 0, string note = null)
         {
+            Note = note;
             Label = label;
             Value = value;
             Current = current;
@@ -36,8 +39,8 @@ namespace BattleArena.Progression
             Segments = segments;
         }
 
-        /// <summary>A label and value with no comparison bar, e.g. a new spell's cooldown.</summary>
-        public static StatPreview Plain(string label, string value) =>
-            new(label, value, null, null, StatBarStyle.None, 0f, 0f);
+        /// <summary>A label and value with no comparison bar, e.g. a new spell's damage, plus an optional note line.</summary>
+        public static StatPreview Plain(string label, string value, string note = null) =>
+            new(label, value, null, null, StatBarStyle.None, 0f, 0f, note: note);
     }
 }

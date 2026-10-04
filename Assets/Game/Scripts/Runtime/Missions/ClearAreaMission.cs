@@ -70,8 +70,7 @@ namespace BattleArena.Missions
                     if (!NavMesh.SamplePosition(_center + new Vector3(offset.x, 0f, offset.y), out var hit, 2f, NavMesh.AllAreas))
                         continue;
 
-                    var enemy = Enemy.Spawn(definition, hit.position, Quaternion.Euler(0f, Random.Range(0f, 360f), 0f),
-                        spawner.CurrentHealthMultiplier, spawner.CurrentDamageMultiplier);
+                    var enemy = Enemy.Spawn(definition, hit.position, Quaternion.Euler(0f, Random.Range(0f, 360f), 0f), 1f, 1f);
                     enemy.Health.Died += OnCampEnemyDied;
                     _remaining.Add(enemy);
                 }

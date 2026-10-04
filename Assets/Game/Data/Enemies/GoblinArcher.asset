@@ -14,9 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: BattleArena.Runtime::BattleArena.Enemies.EnemyDefinition
   displayName: Goblin Archer
   prefab: {fileID: 499557176951332223, guid: 4347b11a75fc2e04885ea32321119bb3, type: 3}
-  maxHealth: 16
-  moveSpeed: 3.4
-  contactDamage: 3
+  maxHealth: 48
+  moveSpeed: 3
+  contactDamage: 4
   attackRange: 1.2
   attackCooldown: 1
   experienceReward: 2

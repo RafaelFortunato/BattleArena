@@ -31,6 +31,9 @@ namespace BattleArena.Player
 
         public int SlotCount => slotUnlockLevels.Length;
 
+        /// <summary>The player's Attack, which every spell deals a share of.</summary>
+        public float Attack => stats.Attack;
+
         Transform ISpellCaster.Transform => transform;
         Health ISpellCaster.Health => health;
         Vector3 ISpellCaster.Facing => controller.Facing;

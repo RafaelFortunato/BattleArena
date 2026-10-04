@@ -17,7 +17,8 @@ MonoBehaviour:
   color: {r: 0.8, g: 0.55, b: 1, a: 1}
   icon: {fileID: 7388822144124034973, guid: 5535d511fedd1d7498bbf481151e8b1c, type: 3}
   cooldown: 3
-  baseDamage: 55
+  attackRatio: 4.5
+  damageUnit: per enemy
   supportedUpgrades: 00000000010000000200000003000000
   projectilePrefab: {fileID: 4249973404948091102, guid: 370646b7a55f98643aa4903f919eb3b5, type: 3}
   speed: 28

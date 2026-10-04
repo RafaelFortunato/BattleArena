@@ -9986,7 +9986,7 @@ MonoBehaviour:
   windup: 0.55
   windupIndicator: {fileID: 8364365268599392486}
   windupSound: {fileID: 0}
-  baseDamage: 8
+  baseDamage: 10
   projectilePrefab: {fileID: 3093658075960622971, guid: 31a14e23e2e85294d92f292dc0e07866, type: 3}
   muzzle: {fileID: 4007584335197509773}
   projectileSpeed: 12
