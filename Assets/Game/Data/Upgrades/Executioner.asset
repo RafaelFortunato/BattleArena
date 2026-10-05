@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: BattleArena.Runtime::BattleArena.Progression.StatUpgradeDefinition
   displayName: Executioner
   stat: 4
-  amount: 0.5
+  amount: 0.3
   rarity: 1
   weight: 0.45
   icon: {fileID: 7388822144124034973, guid: 75350de080debd7418e7ce084f9a4961, type: 3}

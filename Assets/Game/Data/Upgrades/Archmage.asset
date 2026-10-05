@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: BattleArena.Runtime::BattleArena.Progression.StatUpgradeDefinition
   displayName: Archmage
   stat: 2
-  amount: 5
+  amount: 4
   rarity: 2
   weight: 0.103
   icon: {fileID: 7388822144124034973, guid: e958099110129df48a7e1da5b206a967, type: 3}

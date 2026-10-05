@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: BattleArena.Runtime::BattleArena.Progression.StatUpgradeDefinition
   displayName: Eternity
   stat: 7
-  amount: 0.4
+  amount: 0.3
   rarity: 2
   weight: 0.103
   icon: {fileID: 7388822144124034973, guid: 0dd1ae4509a51a14d8837fef17f84f49, type: 3}

@@ -92,17 +92,17 @@ namespace BattleArena.Editor.ContentBuilder
                 Upgrade("GiantsHeart", "Giant's Heart", StatType.MaxHealth, 45f, UpgradeRarity.Rare),
                 Upgrade("Power", "Power", StatType.Attack, 1f, UpgradeRarity.Common),
                 Upgrade("ArcaneMight", "Arcane Might", StatType.Attack, 2f, UpgradeRarity.Rare),
-                Upgrade("Precision", "Precision", StatType.CritChance, 0.05f, UpgradeRarity.Common),
-                Upgrade("EagleEye", "Eagle Eye", StatType.CritChance, 0.1f, UpgradeRarity.Rare),
-                Upgrade("Brutality", "Brutality", StatType.CritDamage, 0.25f, UpgradeRarity.Common),
-                Upgrade("Executioner", "Executioner", StatType.CritDamage, 0.5f, UpgradeRarity.Rare),
+                Upgrade("Precision", "Precision", StatType.CritChance, 0.03f, UpgradeRarity.Common),
+                Upgrade("EagleEye", "Eagle Eye", StatType.CritChance, 0.06f, UpgradeRarity.Rare),
+                Upgrade("Brutality", "Brutality", StatType.CritDamage, 0.15f, UpgradeRarity.Common),
+                Upgrade("Executioner", "Executioner", StatType.CritDamage, 0.3f, UpgradeRarity.Rare),
                 Upgrade("Haste", "Haste", StatType.AttackSpeed, 0.1f, UpgradeRarity.Common),
                 Upgrade("Quickening", "Quickening", StatType.AttackSpeed, 0.2f, UpgradeRarity.Rare),
-                Upgrade("Focus", "Focus", StatType.CooldownReduction, 0.05f, UpgradeRarity.Common),
-                Upgrade("Clarity", "Clarity", StatType.CooldownReduction, 0.1f, UpgradeRarity.Rare),
-                Upgrade("Expansion", "Expansion", StatType.Area, 0.1f, UpgradeRarity.Common),
-                Upgrade("Colossus", "Colossus", StatType.Area, 0.2f, UpgradeRarity.Rare),
-                Upgrade("Persistence", "Persistence", StatType.Duration, 0.12f, UpgradeRarity.Common),
+                Upgrade("Focus", "Focus", StatType.CooldownReduction, 0.04f, UpgradeRarity.Common),
+                Upgrade("Clarity", "Clarity", StatType.CooldownReduction, 0.08f, UpgradeRarity.Rare),
+                Upgrade("Expansion", "Expansion", StatType.Area, 0.08f, UpgradeRarity.Common),
+                Upgrade("Colossus", "Colossus", StatType.Area, 0.15f, UpgradeRarity.Rare),
+                Upgrade("Persistence", "Persistence", StatType.Duration, 0.1f, UpgradeRarity.Common),
                 Upgrade("Multishot", "Multishot", StatType.Multishot, 1f, UpgradeRarity.Epic),
                 Upgrade("Penetration", "Penetration", StatType.Pierce, 1f, UpgradeRarity.Rare, weight: 0.7f),
                 Upgrade("Magnetism", "Magnetism", StatType.PickupRadius, 0.5f, UpgradeRarity.Common),
@@ -116,22 +116,24 @@ namespace BattleArena.Editor.ContentBuilder
                 // Epics: roughly double the rare card for the same stat. Eight at the default epic weight put an
                 // epic on about 12% of level-ups (more with Luck), each individual epic under 2%.
                 Upgrade("Frenzy", "Frenzy", StatType.AttackSpeed, 0.4f, UpgradeRarity.Epic),
-                Upgrade("TimeWarp", "Time Warp", StatType.CooldownReduction, 0.2f, UpgradeRarity.Epic),
-                Upgrade("Archmage", "Archmage", StatType.Attack, 5f, UpgradeRarity.Epic),
-                Upgrade("Cataclysm", "Cataclysm", StatType.Area, 0.4f, UpgradeRarity.Epic),
-                Upgrade("Eternity", "Eternity", StatType.Duration, 0.4f, UpgradeRarity.Epic),
-                Upgrade("Deadeye", "Deadeye", StatType.CritChance, 0.2f, UpgradeRarity.Epic),
-                Upgrade("Annihilation", "Annihilation", StatType.CritDamage, 1f, UpgradeRarity.Epic),
+                Upgrade("TimeWarp", "Time Warp", StatType.CooldownReduction, 0.15f, UpgradeRarity.Epic),
+                Upgrade("Archmage", "Archmage", StatType.Attack, 4f, UpgradeRarity.Epic),
+                Upgrade("Cataclysm", "Cataclysm", StatType.Area, 0.3f, UpgradeRarity.Epic),
+                Upgrade("Eternity", "Eternity", StatType.Duration, 0.3f, UpgradeRarity.Epic),
+                Upgrade("Deadeye", "Deadeye", StatType.CritChance, 0.12f, UpgradeRarity.Epic),
+                Upgrade("Annihilation", "Annihilation", StatType.CritDamage, 0.6f, UpgradeRarity.Epic),
             };
 
+            // Mission rewards that improve one spell. Each is stronger than the best shared card for the same effect
+            // (Time Warp -15% cooldown, Cataclysm/Eternity +30% area/duration), since it only helps one spell.
             SpellUpgradeDefinition[] spellUpgrades =
             {
                 SpellUpgrade("ExtraCharge", "Extra Charge", K.ExtraCharge, 1f, maxRank: 2, weight: 0.8f),
-                SpellUpgrade("QuickRecharge", "Quick Recharge", K.CooldownReduction, 0.15f, maxRank: 3),
-                SpellUpgrade("Empowered", "Empowered", K.Damage, 0.3f, maxRank: 5),
+                SpellUpgrade("QuickRecharge", "Quick Recharge", K.CooldownReduction, 0.2f, maxRank: 3),
+                SpellUpgrade("Empowered", "Empowered", K.Damage, 0.4f, maxRank: 5),
                 SpellUpgrade("SplitCast", "Split Cast", K.ExtraProjectiles, 1f, maxRank: 3, weight: 0.9f),
-                SpellUpgrade("Lingering", "Lingering", K.Duration, 0.3f, maxRank: 3),
-                SpellUpgrade("Amplified", "Amplified", K.Area, 0.2f, maxRank: 3),
+                SpellUpgrade("Lingering", "Lingering", K.Duration, 0.5f, maxRank: 3),
+                SpellUpgrade("Amplified", "Amplified", K.Area, 0.5f, maxRank: 3),
                 SpellUpgrade("ArcJump", "Arc Jump", K.ExtraBounces, 2f, maxRank: 3),
             };
 

@@ -4882,7 +4882,7 @@ GameObject:
   m_Component:
   - component: {fileID: 794425074319841454}
   - component: {fileID: 8815232819073640600}
-  - component: {fileID: 193856668659317138}
+  - component: {fileID: 6170799843078188212}
   m_Layer: 0
   m_Name: ToxicMiasma
   m_TagString: Untagged
@@ -4920,7 +4920,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: BattleArena.Runtime::BattleArena.Combat.DamageZone
   area: {fileID: 5527315465623937543}
   fadeOut: 0.8
---- !u!114 &193856668659317138
+--- !u!114 &6170799843078188212
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

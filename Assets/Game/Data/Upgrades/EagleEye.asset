@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: BattleArena.Runtime::BattleArena.Progression.StatUpgradeDefinition
   displayName: Eagle Eye
   stat: 3
-  amount: 0.1
+  amount: 0.06
   rarity: 1
   weight: 0.45
   icon: {fileID: 7388822144124034973, guid: d5c42e3da068da241a75b0e3c2cb4e8e, type: 3}

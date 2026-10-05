@@ -14,6 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: BattleArena.Runtime::BattleArena.Spells.SpellUpgradeDefinition
   displayName: Empowered
   kind: 2
-  amount: 0.3
+  amount: 0.4
   maxRank: 5
   weight: 1

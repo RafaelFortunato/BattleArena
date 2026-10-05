@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: BattleArena.Runtime::BattleArena.Progression.StatUpgradeDefinition
   displayName: Clarity
   stat: 15
-  amount: 0.1
+  amount: 0.08
   rarity: 1
   weight: 0.45
   icon: {fileID: 7388822144124034973, guid: 4e07f6f18be41e64ba1236558b6a311b, type: 3}

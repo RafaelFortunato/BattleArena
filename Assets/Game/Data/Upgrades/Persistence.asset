@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: BattleArena.Runtime::BattleArena.Progression.StatUpgradeDefinition
   displayName: Persistence
   stat: 7
-  amount: 0.12
+  amount: 0.1
   rarity: 0
   weight: 1
   icon: {fileID: 7388822144124034973, guid: 0dd1ae4509a51a14d8837fef17f84f49, type: 3}

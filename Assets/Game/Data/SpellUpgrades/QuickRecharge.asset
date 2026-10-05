@@ -14,6 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: BattleArena.Runtime::BattleArena.Spells.SpellUpgradeDefinition
   displayName: Quick Recharge
   kind: 1
-  amount: 0.15
+  amount: 0.2
   maxRank: 3
   weight: 1

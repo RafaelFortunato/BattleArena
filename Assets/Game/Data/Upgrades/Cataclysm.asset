@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: BattleArena.Runtime::BattleArena.Progression.StatUpgradeDefinition
   displayName: Cataclysm
   stat: 6
-  amount: 0.4
+  amount: 0.3
   rarity: 2
   weight: 0.103
   icon: {fileID: 7388822144124034973, guid: dd0ead599c436e343b3efe245c3db032, type: 3}

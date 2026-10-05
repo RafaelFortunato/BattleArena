@@ -71,7 +71,7 @@ namespace BattleArena.Editor.ContentBuilder
                 health: 22f, speed: 3f, damage: 5f, range: 1.3f, cooldown: 1f, xp: 1);
 
             var runner = Define("Runner", "Swift Imp", SaveEnemy(Melee(kit, "Runner", 0.75f, 2.3f, v => Monster(v, new MonsterSpec("Demon", 1.8f, 5.2f, move: "Run"), m, "Runner"))),
-                health: 72f, speed: 5.2f, damage: 10f, range: 1.1f, cooldown: 0.8f, xp: 3);
+                health: 72f, speed: 5.2f, damage: 13f, range: 1.1f, cooldown: 0.8f, xp: 3);
 
             var brute = Define("Brute", "Ogre Brute", SaveEnemy(Melee(kit, "Brute", 1.5f, 2.3f, v => Monster(v, new MonsterSpec("Yeti", 1.75f, 2.3f), m, "Brute"))),
                 health: 96f, speed: 2.3f, damage: 12f, range: 2f, cooldown: 1.4f, xp: 4);
@@ -80,7 +80,7 @@ namespace BattleArena.Editor.ContentBuilder
             var batRoot = NewEnemy(kit, "SwarmBat", 0.9f, 2.1f, v => Monster(v, MonsterSpec.Flyer("Armabee", 1.0f, 0.6f, 6f), m, "SwarmBat"));
             Behaviour<ZigZagMovement>(batRoot, ("amplitude", 2.5f), ("frequency", 1.1f));
             batRoot.AddComponent<ContactAttack>();
-            var bat = Define("SwarmBat", "Swarm Bat", SaveEnemy(batRoot), health: 54f, speed: 6f, damage: 8f, range: 1.1f, cooldown: 0.8f, xp: 3);
+            var bat = Define("SwarmBat", "Swarm Bat", SaveEnemy(batRoot), health: 54f, speed: 6f, damage: 10f, range: 1.1f, cooldown: 0.8f, xp: 3);
 
             // --- Goblin Archer: keeps its distance and fires aimed arrows.
             var archerRoot = NewEnemy(kit, "GoblinArcher", 0.9f, 2.3f, v => Monster(v, new MonsterSpec("Tribal", 1.8f, 3.4f, attack: "Weapon"), m, "GoblinArcher"));
@@ -97,12 +97,12 @@ namespace BattleArena.Editor.ContentBuilder
             var wispRoot = NewEnemy(kit, "ArcaneWisp", 1f, 2.4f, v => Monster(v, MonsterSpec.Flyer("Ghost", 1.35f, 0.35f, 4.2f, attack: "Punch"), m, "ArcaneWisp"));
             Behaviour<OrbitMovement>(wispRoot, ("radius", 7.5f), ("leadAngle", 35f));
             Behaviour<ProjectileAttack>(wispRoot,
-                ("range", 11f), ("cooldown", 3f), ("windup", 0.45f), ("baseDamage", 18f),
+                ("range", 11f), ("cooldown", 3f), ("windup", 0.45f), ("baseDamage", 23f),
                 ("windupIndicator", WindupIndicator(wispRoot, m.WispBolt, new Vector3(0f, 1.4f, 0f), 1.15f)),
                 ("projectilePrefab", wispBolt), ("muzzle", AddChild(wispRoot.transform, "Muzzle", new Vector3(0f, 1.3f, 0.5f))),
                 ("projectileSpeed", 9f), ("projectileCount", 3), ("spreadAngle", 22f));
             wispRoot.AddComponent<ContactAttack>();
-            var wisp = Define("ArcaneWisp", "Arcane Wisp", SaveEnemy(wispRoot), health: 168f, speed: 4.2f, damage: 8f, range: 1.1f, cooldown: 1f, xp: 5);
+            var wisp = Define("ArcaneWisp", "Arcane Wisp", SaveEnemy(wispRoot), health: 168f, speed: 4.2f, damage: 10f, range: 1.1f, cooldown: 1f, xp: 5);
 
             // --- Goblin Bomber: lobs bombs that land where the player stood.
             var bomberRoot = NewEnemy(kit, "GoblinBomber", 1f, 2.3f, v => Monster(v, new MonsterSpec("Monkroose", 1.75f, 3.1f, attack: "Weapon"), m, "GoblinBomber"));
@@ -130,16 +130,16 @@ namespace BattleArena.Editor.ContentBuilder
             boarRoot.AddComponent<ChaseMovement>();
             boarRoot.AddComponent<ContactAttack>();
             Behaviour<DashAttack>(boarRoot,
-                ("range", 9f), ("cooldown", 4f), ("windup", 0.75f), ("baseDamage", 30f),
+                ("range", 9f), ("cooldown", 4f), ("windup", 0.75f), ("baseDamage", 38f),
                 ("windupIndicator", WindupIndicator(boarRoot, m.WindupGlow, new Vector3(0f, 0.85f, 1.2f), 0.5f)),
                 ("telegraphPrefab", dashLine), ("minRange", 3f), ("dashDistance", 11f), ("dashSpeed", 20f), ("hitRadius", 1.4f));
-            var boar = Define("BoarCharger", "Boar Charger", SaveEnemy(boarRoot), health: 264f, speed: 3.3f, damage: 16f, range: 1.6f, cooldown: 1.2f, xp: 6);
+            var boar = Define("BoarCharger", "Boar Charger", SaveEnemy(boarRoot), health: 264f, speed: 3.3f, damage: 20f, range: 1.6f, cooldown: 1.2f, xp: 6);
 
             // --- Bomb Beetle: rushes in and explodes after a short fuse.
             var beetleRoot = NewEnemy(kit, "BombBeetle", 0.85f, 1.4f, v => Monster(v, MonsterSpec.Blob("GreenSpikyBlob", 0.95f, 4.4f), m, "BombBeetle"));
             beetleRoot.AddComponent<ChaseMovement>();
             Behaviour<SelfDestructAttack>(beetleRoot,
-                ("range", 2.4f), ("cooldown", 5f), ("windup", 0.9f), ("baseDamage", 30f),
+                ("range", 2.4f), ("cooldown", 5f), ("windup", 0.9f), ("baseDamage", 38f),
                 ("windupIndicator", WindupIndicator(beetleRoot, m.WindupGlow, new Vector3(0f, 0.5f, 0f), 1.3f)),
                 ("blastPrefab", beetleBlast), ("blastRadius", 3f));
             var beetle = Define("BombBeetle", "Bomb Beetle", SaveEnemy(beetleRoot), health: 60f, speed: 4.4f, damage: 0f, range: 1f, cooldown: 1f, xp: 3);
@@ -155,7 +155,7 @@ namespace BattleArena.Editor.ContentBuilder
             var wyvernRoot = NewEnemy(kit, "StormWyvern", 1f, 3f, v => Monster(v, MonsterSpec.Flyer("Dragon", 1.3f, 1.0f, 9.5f), m, "StormWyvern"), flying: true);
             Behaviour<FlyingMovement>(wyvernRoot, ("turnRateDegrees", 75f), ("arenaHalfExtent", ArenaHalfSize - 1.5f));
             wyvernRoot.AddComponent<ContactAttack>();
-            var wyvern = Define("StormWyvern", "Storm Wyvern", SaveEnemy(wyvernRoot), health: 192f, speed: 9.5f, damage: 18f, range: 1.3f, cooldown: 1f, xp: 6);
+            var wyvern = Define("StormWyvern", "Storm Wyvern", SaveEnemy(wyvernRoot), health: 192f, speed: 9.5f, damage: 23f, range: 1.3f, cooldown: 1f, xp: 6);
 
             // --- Mission targets (never spawned by the schedule)
             var goblinRoot = NewEnemy(kit, "GoldenGoblin", 0.85f, 2.3f, v =>

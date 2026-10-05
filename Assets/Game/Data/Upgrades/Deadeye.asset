@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: BattleArena.Runtime::BattleArena.Progression.StatUpgradeDefinition
   displayName: Deadeye
   stat: 3
-  amount: 0.2
+  amount: 0.12
   rarity: 2
   weight: 0.103
   icon: {fileID: 7388822144124034973, guid: d5c42e3da068da241a75b0e3c2cb4e8e, type: 3}

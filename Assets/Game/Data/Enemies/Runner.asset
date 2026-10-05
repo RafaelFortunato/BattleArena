@@ -16,7 +16,7 @@ MonoBehaviour:
   prefab: {fileID: 9050947424265256308, guid: 69f26402acfbd024cbc6a8e6715c0370, type: 3}
   maxHealth: 72
   moveSpeed: 5.2
-  contactDamage: 10
+  contactDamage: 13
   attackRange: 1.1
   attackCooldown: 0.8
   experienceReward: 3

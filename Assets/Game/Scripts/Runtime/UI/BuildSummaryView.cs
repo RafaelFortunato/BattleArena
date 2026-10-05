@@ -16,6 +16,20 @@ namespace BattleArena.UI
         private static readonly string[] Numerals = { "I", "II", "III", "IV", "V", "VI" };
         private static readonly string[] SlotKeys = { "Q", "E", "R" };
 
+        // Order in the two-column grid, so related stats share a row (Attack beside Attack speed). Independent of the
+        // StatType values, which card assets store.
+        private static readonly StatType[] StatOrder =
+        {
+            StatType.MoveSpeed, StatType.MaxHealth,
+            StatType.Attack, StatType.AttackSpeed,
+            StatType.CritDamage, StatType.CritChance,
+            StatType.Area, StatType.Duration,
+            StatType.Multishot, StatType.Pierce,
+            StatType.PickupRadius, StatType.Armor,
+            StatType.Regeneration, StatType.ExperienceGain,
+            StatType.Luck, StatType.CooldownReduction,
+        };
+
         private readonly SpellCaster _caster;
         private readonly PlayerStats _stats;
         private readonly LevelUpConfig _config;
@@ -37,12 +51,14 @@ namespace BattleArena.UI
             }
 
             var statsGrid = root.Q("build-stats");
-            _statValues = new Label[PlayerStats.StatCount];
+            if (StatOrder.Length != PlayerStats.StatCount)
+                Debug.LogWarning($"Build summary lists {StatOrder.Length} of {PlayerStats.StatCount} stats; add new stats to StatOrder.");
+            _statValues = new Label[StatOrder.Length];
             for (var i = 0; i < _statValues.Length; i++)
             {
                 var item = new VisualElement();
                 item.AddToClassList("build-stat");
-                item.Add(CreateLabel(PlayerStats.GetStatName((StatType)i), "build-stat-label"));
+                item.Add(CreateLabel(PlayerStats.GetStatName(StatOrder[i]), "build-stat-label"));
                 _statValues[i] = CreateLabel(string.Empty, "build-stat-value");
                 item.Add(_statValues[i]);
                 statsGrid.Add(item);
@@ -61,7 +77,7 @@ namespace BattleArena.UI
             }
 
             for (var i = 0; i < _statValues.Length; i++)
-                _statValues[i].text = _stats.FormatCurrent((StatType)i);
+                _statValues[i].text = _stats.FormatCurrent(StatOrder[i]);
         }
 
         private static Label CreateLabel(string text, string className)

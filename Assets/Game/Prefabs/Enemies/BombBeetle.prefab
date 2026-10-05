@@ -5088,7 +5088,7 @@ MonoBehaviour:
   windup: 0.9
   windupIndicator: {fileID: 8053956814217414763}
   windupSound: {fileID: 11400000, guid: 93c9d56c43290b24ba7d9c57afe907fc, type: 2}
-  baseDamage: 30
+  baseDamage: 38
   blastPrefab: {fileID: 3725476470672048172, guid: 8c12bdc3d4e8c214c8d5236f42e87f41, type: 3}
   blastRadius: 3
 --- !u!1 &4183464589605031418
