@@ -10,7 +10,7 @@ namespace BattleArena.Spells
     public sealed class MeteorShowerSpell : SpellDefinition
     {
         [SerializeField] private DelayedAreaStrike meteorPrefab;
-        [SerializeField, Min(1)] private int meteorCount = 10;
+        [SerializeField, Min(1)] private int meteorCount = 6;
         [SerializeField, Min(0.5f)] private float impactRadius = 3f;
         [SerializeField, Min(1f)] private float areaRadius = 12f;
         [SerializeField, Min(0.1f)] private float firstImpactDelay = 0.8f;

@@ -9686,7 +9686,7 @@ GameObject:
   - component: {fileID: 3818977165450012955}
   - component: {fileID: 4249973404948091102}
   - component: {fileID: 2608081123600284994}
-  - component: {fileID: 3416277296541764401}
+  - component: {fileID: 6494634208138688945}
   m_Layer: 9
   m_Name: ArcaneLance
   m_TagString: Untagged
@@ -9905,7 +9905,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 637539eb732c000418abbebb953fea7c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: BattleArena.Runtime::BattleArena.Vfx.VfxRestart
---- !u!114 &3416277296541764401
+--- !u!114 &6494634208138688945
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

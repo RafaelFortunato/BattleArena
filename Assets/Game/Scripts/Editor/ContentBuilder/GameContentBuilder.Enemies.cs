@@ -151,9 +151,10 @@ namespace BattleArena.Editor.ContentBuilder
             Behaviour<SplitOnDeath>(bigSlimeRoot, ("splitInto", smallSlime), ("count", 2), ("spread", 1.2f));
             var bigSlime = Define("BigSlime", "Giant Slime", SaveEnemy(bigSlimeRoot), health: 54f, speed: 2.1f, damage: 7f, range: 1.8f, cooldown: 1.2f, xp: 3);
 
-            // --- Storm Wyvern: flies over obstacles faster than the player, but turns very slowly.
+            // --- Storm Wyvern: flies over obstacles faster than the player, but turns very slowly (35°/s at 9.5 m/s is a
+            // ~31 m turning circle, about 5 s for a U-turn), so it overshoots and makes long loops back.
             var wyvernRoot = NewEnemy(kit, "StormWyvern", 1f, 3f, v => Monster(v, MonsterSpec.Flyer("Dragon", 1.3f, 1.0f, 9.5f), m, "StormWyvern"), flying: true);
-            Behaviour<FlyingMovement>(wyvernRoot, ("turnRateDegrees", 75f), ("arenaHalfExtent", ArenaHalfSize - 1.5f));
+            Behaviour<FlyingMovement>(wyvernRoot, ("turnRateDegrees", 35f), ("arenaHalfExtent", ArenaHalfSize - 1.5f));
             wyvernRoot.AddComponent<ContactAttack>();
             var wyvern = Define("StormWyvern", "Storm Wyvern", SaveEnemy(wyvernRoot), health: 192f, speed: 9.5f, damage: 23f, range: 1.3f, cooldown: 1f, xp: 6);
 
@@ -186,18 +187,19 @@ namespace BattleArena.Editor.ContentBuilder
             //   Tier 2 (2:30) slow ranged: archer, bomber, dark shaman.
             //   Tier 3 (4:30) fast swarmers: swift imp, swarm bat, bomb beetle.
             //   Tier 4 (6:30) elites: boar charger, arcane wisp, storm wyvern.
-            // Older tiers thin out as new ones arrive; the last stage spawns only tiers 3 and 4.
+            // Older tiers thin out as new ones arrive; the last stage spawns only tiers 3 and 4. Ranged enemies
+            // (archer, bomber, shaman, wisp) stay at 20-30% of each phase so melee pressure leads the fight.
             var schedule = LoadOrCreateAsset<SpawnSchedule>($"{DataFolder}/SpawnSchedule.asset");
             schedule.SetPhases(new[]
             {
                 Phase(0f, interval: 1.6f, perTick: 1, maxAlive: 12, (grunt, 0.75f), (bigSlime, 0.25f)),
                 Phase(75f, interval: 1.3f, perTick: 2, maxAlive: 25, (grunt, 0.55f), (bigSlime, 0.25f), (brute, 0.2f)),
                 Phase(150f, interval: 1.2f, perTick: 2, maxAlive: 35,
-                    (grunt, 0.25f), (bigSlime, 0.15f), (brute, 0.15f), (archer, 0.2f), (bomber, 0.13f), (shaman, 0.12f)),
+                    (grunt, 0.3f), (bigSlime, 0.2f), (brute, 0.2f), (archer, 0.12f), (bomber, 0.1f), (shaman, 0.08f)),
                 Phase(270f, interval: 1.1f, perTick: 2, maxAlive: 45,
-                    (brute, 0.1f), (archer, 0.17f), (bomber, 0.13f), (shaman, 0.12f), (runner, 0.2f), (bat, 0.16f), (beetle, 0.12f)),
+                    (brute, 0.18f), (runner, 0.25f), (bat, 0.2f), (beetle, 0.12f), (archer, 0.1f), (bomber, 0.08f), (shaman, 0.07f)),
                 Phase(390f, interval: 1.05f, perTick: 3, maxAlive: 55,
-                    (archer, 0.1f), (shaman, 0.1f), (runner, 0.18f), (bat, 0.15f), (beetle, 0.12f), (boar, 0.13f), (wisp, 0.12f), (wyvern, 0.1f)),
+                    (runner, 0.2f), (bat, 0.16f), (beetle, 0.1f), (boar, 0.2f), (wyvern, 0.12f), (archer, 0.06f), (shaman, 0.06f), (wisp, 0.1f)),
                 Phase(510f, interval: 1f, perTick: 3, maxAlive: 65,
                     (runner, 0.16f), (bat, 0.14f), (beetle, 0.12f), (boar, 0.2f), (wisp, 0.2f), (wyvern, 0.18f)),
             });

@@ -201,7 +201,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 37bf05680141e364d95292ad3712d2f0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: BattleArena.Runtime::BattleArena.Enemies.FlyingMovement
-  turnRateDegrees: 75
+  turnRateDegrees: 35
   arenaHalfExtent: 38.5
 --- !u!114 &794666472376841540
 MonoBehaviour:

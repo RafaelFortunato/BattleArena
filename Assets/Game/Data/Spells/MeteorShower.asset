@@ -21,7 +21,7 @@ MonoBehaviour:
   damageUnit: per meteor
   supportedUpgrades: 0000000001000000020000000300000005000000
   meteorPrefab: {fileID: 7810031274077524975, guid: fdcdbf4f57d1f314c922572b49e9fce0, type: 3}
-  meteorCount: 10
+  meteorCount: 6
   impactRadius: 3
   areaRadius: 12
   firstImpactDelay: 0.8
