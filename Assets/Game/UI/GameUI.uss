@@ -55,6 +55,10 @@
 .icon-play { background-image: url("project://database/Assets/Game/UI/Icons/ui-play.svg"); }
 .icon-skull { background-image: url("project://database/Assets/Game/UI/Icons/ui-skull.svg"); }
 .icon-heart { background-image: url("project://database/Assets/Game/UI/Icons/ui-heart.svg"); }
+.icon-settings { background-image: url("project://database/Assets/Game/UI/Icons/ui-settings.svg"); }
+.icon-volume { background-image: url("project://database/Assets/Game/UI/Icons/ui-volume.svg"); }
+.icon-ambience { background-image: url("project://database/Assets/Game/UI/Icons/ui-ambience.svg"); }
+.icon-close { background-image: url("project://database/Assets/Game/UI/Icons/ui-close.svg"); }
 .icon-stat-area { background-image: url("project://database/Assets/Game/UI/Icons/stat-area.svg"); }
 .icon-stat-duration { background-image: url("project://database/Assets/Game/UI/Icons/stat-duration.svg"); }
 .icon-stat-projectiles { background-image: url("project://database/Assets/Game/UI/Icons/stat-multishot.svg"); }
@@ -221,6 +225,13 @@
     height: 84px;
     margin-top: 52px;
     font-size: 36px;
+}
+
+.btn-menu-settings {
+    width: 340px;
+    height: 64px;
+    margin-top: 16px;
+    font-size: 26px;
 }
 
 .btn-large {
@@ -1727,4 +1738,188 @@
 .end-screen-defeat .end-title {
     color: rgb(255, 90, 78);
     text-shadow: 0 9px 0 rgb(90, 20, 16);
+}
+
+/* ================================================================ Settings */
+
+/* Darker than the menus it covers, so their text does not compete with the dialog. */
+.settings-screen {
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(8, 10, 16, 0.92);
+}
+
+/* Same panel as the pause menu's build summary, drawn at the same 125% so the two read as one family. */
+.settings-panel {
+    width: 760px;
+    padding: 30px 34px 28px 34px;
+    border-width: 3px;
+    border-color: rgba(255, 255, 255, 0.18);
+    border-radius: 24px;
+    background-color: rgba(20, 22, 31, 0.96);
+    scale: 1.25 1.25;
+}
+
+.settings-header {
+    flex-direction: row;
+    align-items: center;
+    margin-bottom: 26px;
+}
+
+.settings-badge {
+    width: 56px;
+    height: 56px;
+    margin-right: 18px;
+    border-radius: 16px;
+    border-bottom-width: 5px;
+    border-bottom-color: rgb(77, 48, 158);
+    background-color: rgb(124, 77, 255);
+    align-items: center;
+    justify-content: center;
+}
+
+.settings-badge-icon {
+    width: 30px;
+    height: 30px;
+}
+
+.settings-title {
+    flex-grow: 1;
+    font-size: 52px;
+    letter-spacing: 3px;
+    text-shadow: 0 5px 0 rgb(77, 48, 158);
+}
+
+.settings-close {
+    width: 48px;
+    height: 48px;
+    border-width: 2px;
+    border-color: rgba(255, 255, 255, 0.35);
+    border-radius: 14px;
+    background-color: rgba(255, 255, 255, 0.06);
+    align-items: center;
+    justify-content: center;
+}
+
+.settings-close:hover,
+.settings-close:focus {
+    border-color: rgba(255, 255, 255, 0.85);
+    background-color: rgba(255, 255, 255, 0.16);
+}
+
+.settings-close-icon {
+    width: 20px;
+    height: 20px;
+}
+
+.settings-row {
+    flex-direction: row;
+    align-items: center;
+    height: 84px;
+    margin-bottom: 12px;
+    padding: 0 22px 0 18px;
+    border-width: 2px;
+    border-color: rgba(255, 255, 255, 0.08);
+    border-radius: 18px;
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+.settings-row-badge {
+    width: 46px;
+    height: 46px;
+    margin-right: 16px;
+    border-radius: 12px;
+    background-color: rgba(124, 77, 255, 0.22);
+    align-items: center;
+    justify-content: center;
+}
+
+.settings-row-icon {
+    width: 26px;
+    height: 26px;
+    -unity-background-image-tint-color: rgb(196, 176, 255);
+}
+
+.settings-row-label {
+    width: 170px;
+    font-size: 20px;
+    color: rgb(230, 233, 240);
+}
+
+/* ---------- Volume slider: a thick rounded track, violet fill and a white knob ringed in violet. */
+
+.settings-slider {
+    flex-grow: 1;
+    margin: 0 20px 0 0;
+}
+
+.settings-slider .unity-base-slider__input {
+    height: 36px;
+}
+
+.settings-slider .unity-base-slider__tracker {
+    height: 12px;
+    margin-top: -6px;
+    border-width: 0;
+    border-radius: 6px;
+    background-color: rgba(255, 255, 255, 0.14);
+}
+
+.settings-slider .unity-base-slider__fill {
+    border-radius: 6px;
+    background-color: rgb(124, 77, 255);
+}
+
+.settings-slider .unity-base-slider__dragger {
+    width: 28px;
+    height: 28px;
+    margin-top: -14px;
+    border-width: 4px;
+    border-color: rgb(124, 77, 255);
+    border-radius: 14px;
+    background-color: rgb(255, 255, 255);
+}
+
+.settings-slider .unity-base-slider__dragger-border {
+    display: none;
+}
+
+.settings-slider:hover .unity-base-slider__dragger,
+.settings-slider:focus .unity-base-slider__dragger {
+    border-color: rgb(167, 139, 255);
+    scale: 1.15 1.15;
+}
+
+.settings-value {
+    width: 76px;
+    font-size: 28px;
+    -unity-text-align: middle-right;
+}
+
+.settings-divider {
+    margin-top: 10px;
+}
+
+.settings-footer {
+    flex-direction: row;
+    align-items: center;
+}
+
+.settings-credit {
+    flex-grow: 1;
+    font-size: 15px;
+    color: rgb(139, 147, 167);
+}
+
+.settings-done {
+    width: 220px;
+    height: 64px;
+    font-size: 26px;
+}
+
+/* Just under the panel. Its 125% scale draws past its layout box, hence the large gap. */
+.settings-hint {
+    flex-direction: row;
+    align-items: center;
+    margin-top: 96px;
 }

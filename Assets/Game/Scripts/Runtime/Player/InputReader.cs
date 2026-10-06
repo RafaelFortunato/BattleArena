@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.Controls;
 
 namespace BattleArena.Player
 {
@@ -34,10 +35,11 @@ namespace BattleArena.Player
         public event Action<Vector2> MoveChanged;
         public event Action<int> SpellRequested;
         public event Action InteractRequested;
-        public event Action PauseRequested;
+        /// <summary>Esc, Enter or Start. True when it was Enter, which also presses the focused menu button.</summary>
+        public event Action<bool> PauseRequested;
         /// <summary>-1 / +1 to move the highlighted card (A/D, arrows, d-pad).</summary>
         public event Action<int> ChoiceNavigated;
-        /// <summary>Confirms the highlighted card (F, Enter, Space, south button).</summary>
+        /// <summary>Confirms the highlighted card (F, Space, south button).</summary>
         public event Action ConfirmRequested;
 
         public void EnableGameplay()
@@ -52,6 +54,31 @@ namespace BattleArena.Player
             Initialize();
             _gameplayMap.Disable();
             SetMove(Vector2.zero);
+        }
+
+        /// <summary>
+        /// Enables only the system map (pause key, card navigation) with gameplay left off: a dialog over the main
+        /// menu uses it so Esc can close it.
+        /// </summary>
+        public void EnableSystem()
+        {
+            Initialize();
+            _systemMap.Enable();
+        }
+
+        public void DisableSystem()
+        {
+            Initialize();
+            _systemMap.Disable();
+        }
+
+        public bool IsSystemEnabled
+        {
+            get
+            {
+                Initialize();
+                return _systemMap.enabled;
+            }
         }
 
         /// <summary>Disables every map, e.g. on the end screen.</summary>
@@ -122,7 +149,9 @@ namespace BattleArena.Player
 
         private void OnMove(InputAction.CallbackContext context) => SetMove(context.ReadValue<Vector2>());
         private void OnInteract(InputAction.CallbackContext _) => InteractRequested?.Invoke();
-        private void OnPause(InputAction.CallbackContext _) => PauseRequested?.Invoke();
+        private void OnPause(InputAction.CallbackContext context) => PauseRequested?.Invoke(IsEnterKey(context.control));
+
+        private static bool IsEnterKey(InputControl control) => control is KeyControl { keyCode: Key.Enter or Key.NumpadEnter };
         private void OnChoicePrevious(InputAction.CallbackContext _) => ChoiceNavigated?.Invoke(-1);
         private void OnChoiceNext(InputAction.CallbackContext _) => ChoiceNavigated?.Invoke(1);
         private void OnConfirm(InputAction.CallbackContext _) => ConfirmRequested?.Invoke();

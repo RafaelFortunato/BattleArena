@@ -19587,7 +19587,7 @@ GameObject:
   - component: {fileID: 4335747087850892756}
   - component: {fileID: 7137819328412311864}
   - component: {fileID: 7312756208912287665}
-  - component: {fileID: 1403491296684822377}
+  - component: {fileID: 8520103924371076301}
   m_Layer: 0
   m_Name: ArcaneHit
   m_TagString: Untagged
@@ -19639,7 +19639,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 637539eb732c000418abbebb953fea7c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: BattleArena.Runtime::BattleArena.Vfx.VfxRestart
---- !u!114 &1403491296684822377
+--- !u!114 &8520103924371076301
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

@@ -12,8 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7a60593a5064fb2469a97c2f8a62d384, type: 3}
   m_Name: ClearTheCamp
   m_EditorClassIdentifier: BattleArena.Runtime::BattleArena.Missions.ClearAreaMission
-  title: Clear the Camp
-  description: A war camp has been raised nearby. Defeat 20 enemies inside it.
+  title: Blood Ritual
+  description: A blood ritual has begun nearby. Slay 20 enemies inside its circle
+    to stop it.
   timeLimit: 60
   weight: 1
   zonePrefab: {fileID: 1023620512201245814, guid: 998cbca8c1bb47b4bb9459ffcff98c43, type: 3}

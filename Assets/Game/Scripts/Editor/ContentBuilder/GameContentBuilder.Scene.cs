@@ -55,7 +55,7 @@ namespace BattleArena.Editor.ContentBuilder
 
             var gameManager = BuildSystems(m, content, player, playerHealth, out var levelUp);
             BuildCamera(player.transform);
-            BuildUserInterface(gameManager, levelUp, content.LevelUp, player, playerHealth);
+            BuildUserInterface(gameManager, levelUp, content.LevelUp, player, playerHealth, content.Input);
             BuildSceneAudio(sounds, playerHealth);
 
             EditorSceneManager.SaveScene(scene, ScenePath);
@@ -358,7 +358,7 @@ namespace BattleArena.Editor.ContentBuilder
         }
 
         private static void BuildUserInterface(GameManager gameManager, LevelUpController levelUp, LevelUpConfig levelUpConfig,
-            GameObject player, Health playerHealth)
+            GameObject player, Health playerHealth, InputReader input)
         {
             var panelSettings = LoadOrCreateAsset<PanelSettings>($"{UIFolder}/GamePanelSettings.asset");
             panelSettings.themeStyleSheet = AssetDatabase.LoadAssetAtPath<ThemeStyleSheet>($"{UIFolder}/GameTheme.tss");
@@ -379,6 +379,9 @@ namespace BattleArena.Editor.ContentBuilder
                 .Set("playerHealth", playerHealth)
                 .Set("spellCaster", player.GetComponent<SpellCaster>())
                 .Apply();
+
+            var settings = uiObject.AddComponent<SettingsMenu>();
+            SerializedSetter.For(settings).Set("input", input).Apply();
 
             var menus = uiObject.AddComponent<MenuController>();
             SerializedSetter.For(menus)

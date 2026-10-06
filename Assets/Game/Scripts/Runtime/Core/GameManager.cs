@@ -21,12 +21,16 @@ namespace BattleArena.Core
         [SerializeField] private EnemySpawner spawner;
         [SerializeField, Min(1f)] private float matchDuration = 600f;
         [SerializeField, Min(0f)] private float endScreenDelay = 1.5f;
+        [Tooltip("Real-time seconds after any state change during which pause toggles are ignored. Enter both pauses and " +
+                 "presses the focused menu button, so one press must not start the match and pause it, or resume twice.")]
+        [SerializeField, Min(0f)] private float pauseToggleGuard = 0.25f;
 
         private GameState _stateBeforeSuspend;
         private float _matchStartTime;
         private Coroutine _matchTimer;
         private Health _bossHealth;
         private bool _isEnding;
+        private float _stateChangedAt = float.NegativeInfinity;
 
         public GameState State { get; private set; } = GameState.MainMenu;
         public float ElapsedTime { get; private set; }
@@ -35,16 +39,19 @@ namespace BattleArena.Core
 
         public event Action<int> KillsChanged;
 
+        /// <summary>Gets the pause key before the game toggles pause (the menus, for the settings dialog).</summary>
+        public IPauseKeyHandler PauseKeyHandler { get; set; }
+
         private void OnEnable()
         {
-            input.PauseRequested += TogglePause;
+            input.PauseRequested += OnPauseKey;
             playerHealth.Died += OnPlayerDied;
             EventBus<EnemyKilledEvent>.Subscribe(OnEnemyKilled);
         }
 
         private void OnDisable()
         {
-            input.PauseRequested -= TogglePause;
+            input.PauseRequested -= OnPauseKey;
             playerHealth.Died -= OnPlayerDied;
             EventBus<EnemyKilledEvent>.Unsubscribe(OnEnemyKilled);
             if (_bossHealth != null)
@@ -73,8 +80,18 @@ namespace BattleArena.Core
             SetState(GameState.Playing);
         }
 
+        private void OnPauseKey(bool viaEnter)
+        {
+            if (PauseKeyHandler != null && PauseKeyHandler.HandlePauseKey(viaEnter))
+                return;
+            TogglePause();
+        }
+
         public void TogglePause()
         {
+            if (Time.unscaledTime - _stateChangedAt < pauseToggleGuard)
+                return;
+
             if (State.IsCombat())
                 Suspend(GameState.Paused);
             else if (State == GameState.Paused)
@@ -209,6 +226,7 @@ namespace BattleArena.Core
 
             var previous = State;
             State = next;
+            _stateChangedAt = Time.unscaledTime;
             EventBus<GameStateChangedEvent>.Raise(new GameStateChangedEvent(previous, next));
         }
     }

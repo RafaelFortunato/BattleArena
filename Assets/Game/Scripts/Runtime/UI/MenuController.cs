@@ -7,9 +7,12 @@ using UnityEngine.UIElements;
 
 namespace BattleArena.UI
 {
-    /// <summary>Main menu, pause menu and end screen. Screens are switched from game state changes.</summary>
-    [RequireComponent(typeof(UIDocument))]
-    public sealed class MenuController : MonoBehaviour
+    /// <summary>
+    /// Main menu, pause menu and end screen. Screens are switched from game state changes. Also gets the pause key
+    /// before the game does, for the settings dialog and for Enter on a menu button.
+    /// </summary>
+    [RequireComponent(typeof(UIDocument), typeof(SettingsMenu))]
+    public sealed class MenuController : MonoBehaviour, IPauseKeyHandler
     {
         [SerializeField] private GameManager gameManager;
         [SerializeField] private PlayerProgression progression;
@@ -33,11 +36,17 @@ namespace BattleArena.UI
         private Button _resumeButton;
         private Button _pauseRestartButton;
         private Button _endRestartButton;
+        private Button _menuSettingsButton;
+        private Button _pauseSettingsButton;
         private BuildSummaryView _build;
+        private SettingsMenu _settings;
+        private VisualElement _root;
 
         private void OnEnable()
         {
             var root = GetComponent<UIDocument>().rootVisualElement;
+            _root = root;
+            _settings = GetComponent<SettingsMenu>();
             _mainMenu = root.Q("main-menu");
             _pauseMenu = root.Q("pause-menu");
             _endScreen = root.Q("end-screen");
@@ -54,12 +63,17 @@ namespace BattleArena.UI
             _resumeButton = root.Q<Button>("resume-button");
             _pauseRestartButton = root.Q<Button>("pause-restart-button");
             _endRestartButton = root.Q<Button>("end-restart-button");
+            _menuSettingsButton = root.Q<Button>("menu-settings-button");
+            _pauseSettingsButton = root.Q<Button>("pause-settings-button");
             _build ??= new BuildSummaryView(root, spellCaster, stats, levelUpConfig);
 
             _startButton.clicked += gameManager.StartMatch;
             _resumeButton.clicked += gameManager.TogglePause;
             _pauseRestartButton.clicked += gameManager.Restart;
             _endRestartButton.clicked += gameManager.Restart;
+            _menuSettingsButton.clicked += _settings.Open;
+            _pauseSettingsButton.clicked += _settings.Open;
+            gameManager.PauseKeyHandler = this;
             EventBus<GameStateChangedEvent>.Subscribe(OnGameStateChanged);
         }
 
@@ -69,7 +83,27 @@ namespace BattleArena.UI
             _resumeButton.clicked -= gameManager.TogglePause;
             _pauseRestartButton.clicked -= gameManager.Restart;
             _endRestartButton.clicked -= gameManager.Restart;
+            _menuSettingsButton.clicked -= _settings.Open;
+            _pauseSettingsButton.clicked -= _settings.Open;
+            if (ReferenceEquals(gameManager.PauseKeyHandler, this))
+                gameManager.PauseKeyHandler = null;
             EventBus<GameStateChangedEvent>.Unsubscribe(OnGameStateChanged);
+        }
+
+        public bool HandlePauseKey(bool viaEnter)
+        {
+            // Esc closes the dialog and the game stays paused; Enter is left to the dialog's focused button.
+            if (_settings.IsOpen)
+            {
+                if (!viaEnter)
+                    _settings.Close();
+                return true;
+            }
+
+            // On the pause menu Enter resumes only from Resume (focused on open). On any other button the player
+            // moved to, Enter presses that button instead.
+            return viaEnter && gameManager.State == GameState.Paused
+                            && _root.focusController?.focusedElement is Button focused && focused != _resumeButton;
         }
 
         private void OnGameStateChanged(GameStateChangedEvent evt)

@@ -179,6 +179,7 @@
                 <ui:Label text="ARENA" class="display menu-title menu-title-second" />
                 <ui:Label text="Survive ten minutes. Then defeat what comes for you." class="menu-subtitle" />
                 <ui:Button name="start-button" text="PLAY" class="display btn btn-primary btn-play" />
+                <ui:Button name="menu-settings-button" text="SETTINGS" class="display btn btn-secondary btn-menu-settings" />
             </ui:VisualElement>
             <ui:VisualElement class="menu-controls">
                 <ui:VisualElement class="control-group">
@@ -236,6 +237,7 @@
                 </ui:VisualElement>
                 <ui:VisualElement class="pause-buttons">
                     <ui:Button name="resume-button" text="RESUME" class="display btn btn-primary btn-large" />
+                    <ui:Button name="pause-settings-button" text="SETTINGS" class="display btn btn-secondary btn-medium" />
                     <ui:Button name="pause-restart-button" text="RESTART" class="display btn btn-secondary btn-medium" />
                 </ui:VisualElement>
                 <ui:VisualElement class="pause-hint">
@@ -281,6 +283,39 @@
                     </ui:VisualElement>
                 </ui:VisualElement>
                 <ui:Button name="end-restart-button" text="PLAY AGAIN" class="display btn btn-primary btn-large end-button" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+
+        <!-- ================================================================ Settings (over the main and pause menus) -->
+        <ui:VisualElement name="settings-menu" class="screen screen-dim-strong settings-screen hidden">
+            <ui:VisualElement class="settings-panel">
+                <ui:VisualElement class="settings-header">
+                    <ui:VisualElement class="settings-badge"><ui:VisualElement class="icon icon-settings settings-badge-icon" /></ui:VisualElement>
+                    <ui:Label text="SETTINGS" class="display settings-title" />
+                    <ui:Button name="settings-close" class="btn settings-close"><ui:VisualElement class="icon icon-close settings-close-icon" /></ui:Button>
+                </ui:VisualElement>
+                <ui:Label text="AUDIO" class="section-label" />
+                <ui:VisualElement class="settings-row">
+                    <ui:VisualElement class="settings-row-badge"><ui:VisualElement class="icon icon-volume settings-row-icon" /></ui:VisualElement>
+                    <ui:Label text="Sound effects" class="settings-row-label" />
+                    <ui:Slider name="sfx-slider" low-value="0" high-value="1" value="1" fill="true" class="settings-slider" />
+                    <ui:Label name="sfx-value" text="100%" class="display settings-value" />
+                </ui:VisualElement>
+                <ui:VisualElement class="settings-row">
+                    <ui:VisualElement class="settings-row-badge"><ui:VisualElement class="icon icon-ambience settings-row-icon" /></ui:VisualElement>
+                    <ui:Label text="Ambience" class="settings-row-label" />
+                    <ui:Slider name="ambience-slider" low-value="0" high-value="1" value="1" fill="true" class="settings-slider" />
+                    <ui:Label name="ambience-value" text="100%" class="display settings-value" />
+                </ui:VisualElement>
+                <ui:VisualElement class="build-divider settings-divider" />
+                <ui:VisualElement class="settings-footer">
+                    <ui:Label name="settings-credit" text="" class="settings-credit" />
+                    <ui:Button name="settings-done" text="DONE" class="display btn btn-primary settings-done" />
+                </ui:VisualElement>
+            </ui:VisualElement>
+            <ui:VisualElement class="settings-hint">
+                <ui:Label text="Esc" class="keycap keycap-wide" />
+                <ui:Label text="Close" class="control-label" />
             </ui:VisualElement>
         </ui:VisualElement>
 

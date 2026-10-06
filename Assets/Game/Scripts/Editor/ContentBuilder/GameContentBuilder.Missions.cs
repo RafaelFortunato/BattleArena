@@ -27,8 +27,8 @@ namespace BattleArena.Editor.ContentBuilder
                 Mission<HoldZoneMission>("HoldTheCircle", "Hold the Circle",
                     "Stand inside the marked circle for 12 seconds.", timeLimit: 40f,
                     s => s.Set("zonePrefab", goldZone).Set("radius", 4f).Set("requiredSeconds", 12f)),
-                Mission<ClearAreaMission>("ClearTheCamp", "Clear the Camp",
-                    "A war camp has been raised nearby. Defeat 20 enemies inside it.", timeLimit: 60f,
+                Mission<ClearAreaMission>("ClearTheCamp", "Blood Ritual",
+                    "A blood ritual has begun nearby. Slay 20 enemies inside its circle to stop it.", timeLimit: 60f,
                     s => s.Set("zonePrefab", campZone).Set("camp", roster.Camp).Set("campRadius", 9f).Set("killsRequired", 20)
                         .Set("minDistance", 18f).Set("maxDistance", 26f)),
                 Mission<CollectShardsMission>("ArcaneShards", "Arcane Shards",

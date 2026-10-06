@@ -4894,7 +4894,7 @@ ParticleSystemRenderer:
   m_MeshWeighting1: 1
   m_MeshWeighting2: 1
   m_MeshWeighting3: 1
---- !u!1 &3948515662007431348
+--- !u!1 &4470475164721593416
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -4902,9 +4902,9 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 8309093734401400668}
-  - component: {fileID: 3844215529215603431}
-  - component: {fileID: 1083216882793673478}
+  - component: {fileID: 4707579440440395882}
+  - component: {fileID: 5155722160755881144}
+  - component: {fileID: 6066987443208713371}
   m_Layer: 0
   m_Name: Quad
   m_TagString: Untagged
@@ -4912,13 +4912,13 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &8309093734401400668
+--- !u!4 &4707579440440395882
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3948515662007431348}
+  m_GameObject: {fileID: 4470475164721593416}
   serializedVersion: 2
   m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
   m_LocalPosition: {x: 0, y: 0, z: 0}
@@ -4927,21 +4927,21 @@ Transform:
   m_Children: []
   m_Father: {fileID: 2793981790061892294}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!33 &3844215529215603431
+--- !u!33 &5155722160755881144
 MeshFilter:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3948515662007431348}
+  m_GameObject: {fileID: 4470475164721593416}
   m_Mesh: {fileID: 10210, guid: 0000000000000000e000000000000000, type: 0}
---- !u!23 &1083216882793673478
+--- !u!23 &6066987443208713371
 MeshRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3948515662007431348}
+  m_GameObject: {fileID: 4470475164721593416}
   m_Enabled: 1
   m_CastShadows: 0
   m_ReceiveShadows: 0
@@ -5046,7 +5046,7 @@ Transform:
   m_LocalScale: {x: 0, y: 1, z: 0}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 8309093734401400668}
+  - {fileID: 4707579440440395882}
   m_Father: {fileID: 4916338564045922813}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &7222084351941652999

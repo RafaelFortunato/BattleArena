@@ -319,6 +319,28 @@
                 },
                 {
                     "name": "",
+                    "id": "ea1dd86b-20a3-4cfe-a44e-a711e728eb7a",
+                    "path": "<Keyboard>/enter",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Pause",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "dc18b89f-c2d0-4aed-9def-96da73a89e8a",
+                    "path": "<Keyboard>/numpadEnter",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Pause",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
                     "id": "0bc7bd55-c060-4693-8141-91e18f79baa8",
                     "path": "<Gamepad>/start",
                     "interactions": "",
@@ -398,17 +420,6 @@
                     "name": "",
                     "id": "f2e3f2be-a575-4567-8c1a-753d0d625b31",
                     "path": "<Keyboard>/f",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Confirm",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "d3f3ce22-811f-42dc-8cb4-82158ceda93b",
-                    "path": "<Keyboard>/enter",
                     "interactions": "",
                     "processors": "",
                     "groups": "",

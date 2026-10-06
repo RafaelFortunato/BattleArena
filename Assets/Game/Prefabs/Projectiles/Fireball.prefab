@@ -24194,7 +24194,7 @@ GameObject:
   - component: {fileID: 1978144678620938033}
   - component: {fileID: 8606313463938774560}
   - component: {fileID: 8035574727290991454}
-  - component: {fileID: 7151562691337246248}
+  - component: {fileID: 3860154583193712906}
   m_Layer: 9
   m_Name: Fireball
   m_TagString: Untagged
@@ -24415,7 +24415,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 637539eb732c000418abbebb953fea7c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: BattleArena.Runtime::BattleArena.Vfx.VfxRestart
---- !u!114 &7151562691337246248
+--- !u!114 &3860154583193712906
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

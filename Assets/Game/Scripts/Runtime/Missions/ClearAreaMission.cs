@@ -35,7 +35,7 @@ namespace BattleArena.Missions
 
             public override float Progress => (float)_kills / _mission.killsRequired;
 
-            public override string ProgressText => CachedText("Defeated in the camp  {0} / {1}", _kills, _mission.killsRequired);
+            public override string ProgressText => CachedText("Slain in the circle  {0} / {1}", _kills, _mission.killsRequired);
 
             // Lead the player to the camp; once inside, the circle itself is the guide.
             public override bool TryGetTarget(out Vector3 position)
