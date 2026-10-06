@@ -10,7 +10,7 @@ namespace BattleArena.Player
 
         [SerializeField] private InputReader input;
         [SerializeField] private PlayerStats stats;
-        [SerializeField, Min(0f)] private float moveSpeed = 6f;
+        [SerializeField, Min(0f)] private float moveSpeed = 5.2f;
         [SerializeField, Min(0f)] private float turnSpeed = 900f;
         [SerializeField] private float gravity = -25f;
 

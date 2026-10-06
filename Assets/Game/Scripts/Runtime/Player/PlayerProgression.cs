@@ -11,14 +11,25 @@ namespace BattleArena.Player
     {
         [SerializeField] private PlayerStats stats;
 
-        [Header("Experience curve: required = base + growth * (level - 1)")]
+        // Early levels come quickly (the spell unlocks at 5, 10 and 15 land within a run), then the cubic term takes
+        // over: about level 20 in a typical ten-minute run, while level 40 needs several runs' worth of experience.
+        [Header("Experience curve: required = base + growth*n + squared*n² + cubed*n³, n = level - 1")]
         [SerializeField, Min(1)] private int baseExperience = 6;
-        [SerializeField, Min(0)] private int experienceGrowth = 5;
+        [SerializeField, Min(0)] private float experienceGrowth = 5f;
+        [SerializeField, Min(0)] private float experienceGrowthSquared = 0.25f;
+        [SerializeField, Min(0)] private float experienceGrowthCubed = 0.03f;
         [SerializeField, Min(1)] private int maxLevel = 40;
 
         public int Level { get; private set; } = 1;
         public int Experience { get; private set; }
-        public int RequiredExperience => baseExperience + experienceGrowth * (Level - 1);
+        public int RequiredExperience
+        {
+            get
+            {
+                var n = Level - 1;
+                return Mathf.RoundToInt(baseExperience + experienceGrowth * n + experienceGrowthSquared * n * n + experienceGrowthCubed * n * n * n);
+            }
+        }
         public bool IsMaxLevel => Level >= maxLevel;
 
         // Fractional experience left over after applying the Experience Gain multiplier.

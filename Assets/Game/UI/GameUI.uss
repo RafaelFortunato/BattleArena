@@ -55,6 +55,10 @@
 .icon-play { background-image: url("project://database/Assets/Game/UI/Icons/ui-play.svg"); }
 .icon-skull { background-image: url("project://database/Assets/Game/UI/Icons/ui-skull.svg"); }
 .icon-heart { background-image: url("project://database/Assets/Game/UI/Icons/ui-heart.svg"); }
+.icon-stat-area { background-image: url("project://database/Assets/Game/UI/Icons/stat-area.svg"); }
+.icon-stat-duration { background-image: url("project://database/Assets/Game/UI/Icons/stat-duration.svg"); }
+.icon-stat-projectiles { background-image: url("project://database/Assets/Game/UI/Icons/stat-multishot.svg"); }
+.icon-stat-pierce { background-image: url("project://database/Assets/Game/UI/Icons/stat-pierce.svg"); }
 .icon-exclamation { background-image: url("project://database/Assets/Game/UI/Icons/ui-exclamation.svg"); }
 .icon-check { background-image: url("project://database/Assets/Game/UI/Icons/ui-check.svg"); }
 .icon-lock { background-image: url("project://database/Assets/Game/UI/Icons/ui-lock.svg"); }
@@ -1075,11 +1079,13 @@
     color: rgb(201, 207, 220);
 }
 
-.choice-screen.mission .choice-chip {
+.choice-screen.mission .choice-chip,
+.choice-screen.treasure .choice-chip {
     background-color: rgb(242, 193, 78);
 }
 
-.choice-screen.mission .choice-chip-label {
+.choice-screen.mission .choice-chip-label,
+.choice-screen.treasure .choice-chip-label {
     color: rgb(35, 26, 5);
 }
 
@@ -1087,7 +1093,8 @@
     display: flex;
 }
 
-.choice-screen.mission .choice-title {
+.choice-screen.mission .choice-title,
+.choice-screen.treasure .choice-title {
     color: rgb(242, 193, 78);
     text-shadow: 0 7px 0 rgb(122, 90, 18);
 }
@@ -1096,7 +1103,7 @@
     position: absolute;
     left: 0;
     right: 0;
-    top: 330px;
+    top: 310px;
     flex-direction: row;
     justify-content: center;
     align-items: flex-start;
@@ -1163,7 +1170,7 @@
     left: 0;
     top: 14px;
     width: 370px;
-    height: 500px;
+    height: 560px;
     border-radius: 22px;
 }
 
@@ -1173,7 +1180,7 @@
 
 .card {
     width: 370px;
-    height: 500px;
+    height: 560px;
     margin: 0;
     padding: 0;
     border-width: 3px;
@@ -1273,6 +1280,12 @@
     top: 290px;
 }
 
+/* Spell cards hold the most text: anchor it to the bottom so it always keeps the same margin to the border. */
+.card-slot.spell-card .card-body {
+    top: auto;
+    bottom: 24px;
+}
+
 .card-title {
     margin-bottom: -8px;
     font-size: 42px;
@@ -1343,6 +1356,34 @@
     color: rgb(139, 147, 167);
 }
 
+/* Which shared stats change a spell: Area, Duration, Projectiles, Pierce (LevelUpView colours them). */
+.card-scaling {
+    flex-direction: row;
+    justify-content: space-between;
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top-width: 1px;
+    border-color: rgba(255, 255, 255, 0.08);
+}
+
+.card-scaling-item {
+    width: 66px;
+    height: 34px;
+    border-width: 1.5px;
+    border-radius: 9px;
+    align-items: center;
+    justify-content: center;
+}
+
+.card-scaling-item.used {
+    background-color: rgba(255, 255, 255, 0.06);
+}
+
+.card-scaling-icon {
+    width: 20px;
+    height: 20px;
+}
+
 .card-pointer {
     width: 34px;
     height: 20px;
@@ -1390,12 +1431,16 @@
 
 /* ---------- Pause */
 
+/* Both pause blocks are drawn 25% larger than authored. The column grows from its top-left corner and the panel
+   from the middle of its right edge, so their outer margins stay put and the gap between them shrinks. */
 .pause-column {
     position: absolute;
-    left: 180px;
+    left: 140px;
     top: 250px;
     width: 700px;
     align-items: flex-start;
+    scale: 1.25 1.25;
+    transform-origin: 0 0;
 }
 
 .pause-title {
@@ -1438,11 +1483,67 @@
     left: 1000px;
     top: 150px;
     width: 740px;
+    scale: 1.25 1.25;
+    transform-origin: 100% 50%;
     padding: 30px 34px 20px 34px;
     border-width: 3px;
     border-color: rgba(255, 255, 255, 0.18);
     border-radius: 24px;
     background-color: rgba(20, 22, 31, 0.92);
+}
+
+.build-spells-header {
+    flex-direction: row;
+    align-items: flex-end;
+    margin-bottom: 14px;
+}
+
+.build-spells-header .section-label {
+    flex-grow: 1;
+    margin-bottom: 0;
+}
+
+/* Lines up with .build-spell-dots, leaving room for the keycap (30px) and the gap before it. */
+.build-scaling-head {
+    flex-direction: row;
+    margin-right: 42px;
+}
+
+.build-scaling-col {
+    width: 46px;
+    align-items: center;
+}
+
+.build-scaling-col-icon {
+    width: 16px;
+    height: 16px;
+    -unity-background-image-tint-color: rgb(201, 207, 220);
+}
+
+.build-scaling-col-label {
+    margin-top: 3px;
+    font-size: 10px;
+    letter-spacing: 1px;
+    color: rgb(139, 147, 167);
+}
+
+.build-spell-dots {
+    flex-direction: row;
+    flex-shrink: 0;
+    margin-right: 12px;
+}
+
+.build-spell-dot-cell {
+    width: 46px;
+    align-items: center;
+    justify-content: center;
+}
+
+.build-spell-dot {
+    width: 12px;
+    height: 12px;
+    border-width: 2px;
+    border-radius: 6px;
 }
 
 .build-spells {

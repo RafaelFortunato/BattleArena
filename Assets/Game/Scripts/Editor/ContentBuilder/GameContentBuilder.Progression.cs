@@ -29,8 +29,9 @@ namespace BattleArena.Editor.ContentBuilder
                     s => s.Set("projectilePrefab", fx.Fireball).Set("speed", 16f).Set("explosionRadius", 3.5f).Set("pierce", 0)
                         .Set("supportedUpgrades", new[] { K.ExtraCharge, K.CooldownReduction, K.Damage, K.ExtraProjectiles, K.Area })),
                 Spell<ProjectileSpell>("ArcaneLance", "Arcane Lance",
-                    "A lance of pure arcane energy that pierces every enemy in its path.", new Color(0.8f, 0.55f, 1f), cooldown: 3f, attackRatio: 4.5f, damageUnit: "per enemy",
-                    s => s.Set("projectilePrefab", fx.ArcaneLance).Set("speed", 28f).Set("pierce", 50).Set("explosionRadius", 0f)
+                    "A long-range lance of arcane energy that pierces every enemy in its path.", new Color(0.8f, 0.55f, 1f), cooldown: 3f, attackRatio: 4.5f, damageUnit: "per enemy",
+                    s => s.Set("projectilePrefab", fx.ArcaneLance).Set("speed", 24f).Set("pierce", 0).Set("infinitePierce", true)
+                        .Set("targetingRange", 40f).Set("explosionRadius", 0f).Set("flightHeight", 1.1f)
                         .Set("supportedUpgrades", new[] { K.ExtraCharge, K.CooldownReduction, K.Damage, K.ExtraProjectiles })),
                 Spell<FrostNovaSpell>("FrostNova", "Frost Nova",
                     "Freezing burst around you that damages and slows every enemy hit.", new Color(0.55f, 0.9f, 1f), cooldown: 8f, attackRatio: 3f, damageUnit: "",
@@ -103,17 +104,20 @@ namespace BattleArena.Editor.ContentBuilder
                 Upgrade("Expansion", "Expansion", StatType.Area, 0.08f, UpgradeRarity.Common),
                 Upgrade("Colossus", "Colossus", StatType.Area, 0.15f, UpgradeRarity.Rare),
                 Upgrade("Persistence", "Persistence", StatType.Duration, 0.1f, UpgradeRarity.Common),
+                Upgrade("Longevity", "Longevity", StatType.Duration, 0.2f, UpgradeRarity.Rare),
                 Upgrade("Multishot", "Multishot", StatType.Multishot, 1f, UpgradeRarity.Epic),
                 Upgrade("Penetration", "Penetration", StatType.Pierce, 1f, UpgradeRarity.Rare, weight: 0.7f),
                 Upgrade("Magnetism", "Magnetism", StatType.PickupRadius, 0.5f, UpgradeRarity.Common),
                 Upgrade("IronSkin", "Iron Skin", StatType.Armor, 10f, UpgradeRarity.Common),
                 Upgrade("Fortress", "Fortress", StatType.Armor, 25f, UpgradeRarity.Rare),
                 Upgrade("Regeneration", "Regeneration", StatType.Regeneration, 0.5f, UpgradeRarity.Common),
-                Upgrade("TrollBlood", "Troll Blood", StatType.Regeneration, 1.2f, UpgradeRarity.Rare),
+                Upgrade("TrollBlood", "Troll Blood", StatType.Regeneration, 1f, UpgradeRarity.Rare),
                 Upgrade("Wisdom", "Wisdom", StatType.ExperienceGain, 0.1f, UpgradeRarity.Common),
+                Upgrade("Insight", "Insight", StatType.ExperienceGain, 0.2f, UpgradeRarity.Rare),
                 Upgrade("Fortune", "Fortune", StatType.Luck, 0.15f, UpgradeRarity.Common, weight: 0.8f),
+                Upgrade("Serendipity", "Serendipity", StatType.Luck, 0.3f, UpgradeRarity.Rare),
 
-                // Epics: roughly double the rare card for the same stat. Eight at the default epic weight put an
+                // Epics: roughly double the rare card for the same stat. Nine at the default epic weight put an
                 // epic on about 12% of level-ups (more with Luck), each individual epic under 2%.
                 Upgrade("Frenzy", "Frenzy", StatType.AttackSpeed, 0.4f, UpgradeRarity.Epic),
                 Upgrade("TimeWarp", "Time Warp", StatType.CooldownReduction, 0.15f, UpgradeRarity.Epic),
@@ -122,6 +126,7 @@ namespace BattleArena.Editor.ContentBuilder
                 Upgrade("Eternity", "Eternity", StatType.Duration, 0.3f, UpgradeRarity.Epic),
                 Upgrade("Deadeye", "Deadeye", StatType.CritChance, 0.12f, UpgradeRarity.Epic),
                 Upgrade("Annihilation", "Annihilation", StatType.CritDamage, 0.6f, UpgradeRarity.Epic),
+                Upgrade("Impaler", "Impaler", StatType.Pierce, 2f, UpgradeRarity.Epic),
             };
 
             // Mission rewards that improve one spell. Each is stronger than the best shared card for the same effect
@@ -166,7 +171,7 @@ namespace BattleArena.Editor.ContentBuilder
         {
             // Rarer cards show up less often unless a weight is given explicitly.
             if (weight < 0f)
-                weight = rarity switch { UpgradeRarity.Rare => 0.45f, UpgradeRarity.Epic => 0.103f, _ => 1f };
+                weight = rarity switch { UpgradeRarity.Rare => 0.45f, UpgradeRarity.Epic => 0.098f, _ => 1f };
 
             var upgrade = LoadOrCreateAsset<StatUpgradeDefinition>($"{UpgradesFolder}/{file}.asset");
             SerializedSetter.For(upgrade)

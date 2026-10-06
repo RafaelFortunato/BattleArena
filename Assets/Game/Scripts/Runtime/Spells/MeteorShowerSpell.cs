@@ -16,6 +16,9 @@ namespace BattleArena.Spells
         [SerializeField, Min(0.1f)] private float firstImpactDelay = 0.8f;
         [SerializeField, Min(0f)] private float delayBetweenImpacts = 0.15f;
 
+        // Area is each impact's size; Projectiles adds meteors.
+        public override SpellStats ScalesWith => SpellStats.Area | SpellStats.Projectiles;
+
         public override bool Cast(in SpellContext context)
         {
             var center = context.CasterPosition;

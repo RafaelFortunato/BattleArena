@@ -8,13 +8,11 @@ using UnityEngine;
 namespace BattleArena.Interaction
 {
     /// <summary>
-    /// Pooled single-use chest spawned by <see cref="ChestSpawner"/>. Grants experience scaled to the
-    /// player's level, then shrinks away and returns to its pool.
+    /// Pooled single-use chest spawned by <see cref="ChestSpawner"/>. Once its lid is open it rewards a choice of
+    /// upgrade cards (raised as <see cref="TreasureOpenedEvent"/>), then shrinks away and returns to its pool.
     /// </summary>
     public sealed class TreasureChest : MonoBehaviour, IInteractable, IPoolable
     {
-        [SerializeField, Min(0)] private int baseExperience = 15;
-        [SerializeField, Min(0)] private int experiencePerLevel = 4;
         [SerializeField] private Transform lid;
         [SerializeField] private float openAngle = -110f;
         [SerializeField, Min(0.01f)] private float openDuration = 0.4f;
@@ -61,12 +59,6 @@ namespace BattleArena.Interaction
                 PoolManager.Spawn(openEffect, transform.position + Vector3.up, Quaternion.identity);
             AudioManager.PlayAt(openSound, transform.position);
 
-            var progression = interactor.Progression;
-            var reward = baseExperience + experiencePerLevel * progression.Level;
-            EventBus<NotificationEvent>.Raise(new NotificationEvent($"Treasure! +{reward} XP"));
-            // May trigger a level-up, which freezes time; the open animation simply resumes afterwards.
-            progression.AddExperience(reward);
-
             StartCoroutine(OpenAndVanish());
         }
 
@@ -79,6 +71,9 @@ namespace BattleArena.Interaction
                 yield return null;
             }
             lid.localRotation = open;
+
+            // The card choice freezes time, so it waits until the lid is open; the chest vanishes after it closes.
+            EventBus<TreasureOpenedEvent>.Raise(default);
 
             yield return WaitCache.Get(lingerAfterOpen);
             yield return ScaleTo(Vector3.one, Vector3.zero, vanishDuration, overshoot: false);

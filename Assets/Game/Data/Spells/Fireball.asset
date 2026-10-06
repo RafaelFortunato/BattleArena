@@ -25,5 +25,7 @@ MonoBehaviour:
   projectileCount: 1
   spreadAngle: 10
   pierce: 0
+  infinitePierce: 0
   explosionRadius: 3.5
   targetingRange: 18
+  flightHeight: 0

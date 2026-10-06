@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using BattleArena.Progression;
+using BattleArena.Spells;
 using BattleArena.UI.Elements;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -61,6 +62,7 @@ namespace BattleArena.UI
             _title.text = presentation.Title;
             _subtitle.text = presentation.Subtitle;
             _screen.EnableInClassList("mission", presentation.Kind == ChoiceKind.MissionReward);
+            _screen.EnableInClassList("treasure", presentation.Kind == ChoiceKind.Treasure);
 
             var offers = presentation.Offers;
             while (_cards.Count < offers.Count)
@@ -134,6 +136,8 @@ namespace BattleArena.UI
             private readonly VisualElement _barGain;
             private readonly VisualElement _segments;
             private readonly Label _footnote;
+            private readonly VisualElement _scaling;
+            private readonly VisualElement[] _scalingItems;
             private Color _highlight = Color.white;
 
             public CardView(VisualElement slot)
@@ -156,6 +160,8 @@ namespace BattleArena.UI
                 _barGain = slot.Q(className: "card-bar-gain");
                 _segments = slot.Q(className: "card-segments");
                 _footnote = slot.Q<Label>(className: "card-footnote");
+                _scaling = slot.Q(className: "card-scaling");
+                _scalingItems = _scaling.Query(className: "card-scaling-item").ToList().ToArray();
             }
 
             public Button Button { get; }
@@ -204,10 +210,13 @@ namespace BattleArena.UI
                 _icon.style.backgroundImage = new StyleBackground(offer.Icon);
                 _shadow.style.backgroundColor = Color.Lerp(accent, Color.black, 0.45f);
 
+                _badge.EnableInClassList("hidden", string.IsNullOrEmpty(offer.Badge));
                 _badge.style.backgroundColor = accent;
                 _badgeGem.style.backgroundColor = ink;
                 _badgeLabel.style.color = ink;
                 _badgeLabel.text = offer.Badge;
+                // Spell cards carry more (damage line and stat row), so their text sits on the bottom edge instead.
+                _slot.EnableInClassList("spell-card", offer.Scaling != null);
 
                 _title.text = offer.Title;
                 var summary = offer.Summary;
@@ -215,6 +224,28 @@ namespace BattleArena.UI
                 _summary.EnableInClassList("hidden", string.IsNullOrEmpty(summary));
 
                 BindStat(offer.Stat, accent);
+                BindScaling(offer.Scaling);
+            }
+
+            /// <summary>Lights the Area / Duration / Projectiles / Pierce icons this spell uses, in its colour.</summary>
+            private void BindScaling(SpellStats? scaling)
+            {
+                _scaling.EnableInClassList("hidden", scaling == null);
+                if (scaling == null)
+                    return;
+
+                for (var i = 0; i < _scalingItems.Length; i++)
+                {
+                    var item = _scalingItems[i];
+                    var used = (scaling.Value & SpellScalingOrder.Stats[i]) != 0;
+                    item.EnableInClassList("used", used);
+                    var border = used ? _highlight : SpellScalingOrder.UnusedColor;
+                    item.style.borderTopColor = border;
+                    item.style.borderRightColor = border;
+                    item.style.borderBottomColor = border;
+                    item.style.borderLeftColor = border;
+                    item[0].style.unityBackgroundImageTintColor = used ? _highlight : SpellScalingOrder.UnusedColor;
+                }
             }
 
             public void SetSelected(bool selected)

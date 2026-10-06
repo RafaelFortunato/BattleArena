@@ -15,7 +15,7 @@ MonoBehaviour:
   displayName: Golden Goblin
   prefab: {fileID: 3863090257257939894, guid: 58800738be977914688a15f2b4d870d6, type: 3}
   maxHealth: 108
-  moveSpeed: 5.8
+  moveSpeed: 4.6
   contactDamage: 0
   attackRange: 1
   attackCooldown: 1

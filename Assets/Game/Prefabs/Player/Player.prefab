@@ -5008,7 +5008,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: BattleArena.Runtime::BattleArena.Player.PlayerController
   input: {fileID: 11400000, guid: 484cc701bfc576a41a5b9cb92aa571c6, type: 2}
   stats: {fileID: 6236550476368623128}
-  moveSpeed: 6.5
+  moveSpeed: 5.2
   turnSpeed: 900
   gravity: -25
 --- !u!114 &7569190660119117929
@@ -5026,6 +5026,8 @@ MonoBehaviour:
   stats: {fileID: 6236550476368623128}
   baseExperience: 6
   experienceGrowth: 5
+  experienceGrowthSquared: 0.25
+  experienceGrowthCubed: 0.03
   maxLevel: 40
 --- !u!114 &1286634265492103926
 MonoBehaviour:

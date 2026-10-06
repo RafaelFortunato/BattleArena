@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 5989849696959091805}
   - component: {fileID: 4889448097919743724}
   - component: {fileID: 1297444347710428259}
-  - component: {fileID: 2011387168248802518}
+  - component: {fileID: 4483214215367237694}
   m_Layer: 0
   m_Name: BombExplosion
   m_TagString: Untagged
@@ -4909,7 +4909,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: BattleArena.Runtime::BattleArena.Pooling.TimedRelease
   lifetime: 0.85
---- !u!114 &2011387168248802518
+--- !u!114 &4483214215367237694
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

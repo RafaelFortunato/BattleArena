@@ -159,9 +159,9 @@ namespace BattleArena.Editor.ContentBuilder
 
             // --- Mission targets (never spawned by the schedule)
             var goblinRoot = NewEnemy(kit, "GoldenGoblin", 0.85f, 2.3f, v =>
-                Monster(v, new MonsterSpec("Orc", 1.75f, 5.8f, move: "Run", attack: "Weapon", material: m.MonsterGold), m, "GoldenGoblin"));
+                Monster(v, new MonsterSpec("Orc", 1.75f, 4.6f, move: "Run", attack: "Weapon", material: m.MonsterGold), m, "GoldenGoblin"));
             Behaviour<FleeMovement>(goblinRoot, ("fleeDistance", 14f), ("fleeStep", 6f), ("wanderRadius", 6f));
-            var goldenGoblin = Define("GoldenGoblin", "Golden Goblin", SaveEnemy(goblinRoot), health: 108f, speed: 5.8f, damage: 0f, range: 1f, cooldown: 1f, xp: 25);
+            var goldenGoblin = Define("GoldenGoblin", "Golden Goblin", SaveEnemy(goblinRoot), health: 108f, speed: 4.6f, damage: 0f, range: 1f, cooldown: 1f, xp: 25);
 
             var warlordRoot = NewEnemy(kit, "OgreWarlord", 2.1f, 2.4f, v => Monster(v, new MonsterSpec("Orc_Skull", 1.8f, 2.6f, attack: "Weapon"), m, "OgreWarlord"));
             warlordRoot.AddComponent<ChaseMovement>();
@@ -209,7 +209,7 @@ namespace BattleArena.Editor.ContentBuilder
                 Boss = boss,
                 GoldenGoblin = goldenGoblin,
                 Warlord = warlord,
-                Camp = new[] { grunt, grunt, grunt, grunt, archer, archer, brute },
+                Camp = new[] { grunt, grunt, grunt, grunt, grunt, grunt, archer, archer, archer, brute, brute },
             };
         }
 

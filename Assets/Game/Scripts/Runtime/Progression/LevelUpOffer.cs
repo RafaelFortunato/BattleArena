@@ -21,7 +21,7 @@ namespace BattleArena.Progression
     public abstract class LevelUpOffer
     {
         public abstract string Title { get; }
-        /// <summary>Short upper-case label on the card badge, e.g. "RARE" or "FIREBALL · Q".</summary>
+        /// <summary>Short upper-case label on the card badge, e.g. "RARE" or "FIREBALL · Q"; null hides the badge.</summary>
         public abstract string Badge { get; }
         public abstract Color Color { get; }
         public abstract CardMotif Motif { get; }
@@ -29,6 +29,8 @@ namespace BattleArena.Progression
         /// <summary>Optional line(s) under the title.</summary>
         public virtual string Summary => null;
         public abstract StatPreview Stat { get; }
+        /// <summary>For a spell card, which shared stats change the spell; null hides the row.</summary>
+        public virtual SpellStats? Scaling => null;
 
         public abstract void Apply();
     }
@@ -129,11 +131,13 @@ namespace BattleArena.Progression
         public static string GetSlotKey(int slot) => slot >= 0 && slot < SlotKeys.Length ? SlotKeys[slot] : "?";
 
         public override string Title => _spell.DisplayName;
-        public override string Badge => $"NEW SPELL · {GetSlotKey(_slot)}";
+        // The screen's subtitle already says which key the new spell goes on, so the card needs no badge.
+        public override string Badge => null;
         public override Color Color => _spell.Color;
         public override CardMotif Motif => CardMotif.Hexagons;
         public override VectorImage Icon => _spell.Icon;
         public override string Summary => _spell.Description;
+        public override SpellStats? Scaling => _spell.ScalesWith;
         // "375% ATK", then the same in numbers at the current Attack, plus the cooldown.
         public override StatPreview Stat
         {

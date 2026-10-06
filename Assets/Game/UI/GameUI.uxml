@@ -245,7 +245,11 @@
             </ui:VisualElement>
 
             <ui:VisualElement class="build-panel">
-                <ui:Label text="SPELLS" class="section-label" />
+                <ui:VisualElement class="build-spells-header">
+                    <ui:Label text="SPELLS" class="section-label" />
+                    <!-- Column heads for the stat dots on each spell row (BuildSummaryView fills them). -->
+                    <ui:VisualElement name="build-scaling-head" class="build-scaling-head" />
+                </ui:VisualElement>
                 <ui:VisualElement name="build-spells" class="build-spells" />
                 <ui:VisualElement class="build-divider" />
                 <ui:Label text="STATS" class="section-label" />

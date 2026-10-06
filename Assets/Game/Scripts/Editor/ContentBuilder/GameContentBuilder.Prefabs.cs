@@ -221,7 +221,7 @@ namespace BattleArena.Editor.ContentBuilder
             SerializedSetter.For(stats).Set("health", health).Set("baseAttack", 10f).Apply();
 
             var movement = root.AddComponent<PlayerController>();
-            SerializedSetter.For(movement).Set("input", input).Set("stats", stats).Set("moveSpeed", 6.5f).Apply();
+            SerializedSetter.For(movement).Set("input", input).Set("stats", stats).Set("moveSpeed", 5.2f).Apply();
 
             var progression = root.AddComponent<PlayerProgression>();
             SerializedSetter.For(progression).Set("stats", stats).Apply();

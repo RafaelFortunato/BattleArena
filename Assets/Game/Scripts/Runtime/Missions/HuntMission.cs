@@ -10,6 +10,8 @@ namespace BattleArena.Missions
     {
         [SerializeField] private EnemyDefinition target;
         [SerializeField, Min(0.1f)] private float healthScale = 1f;
+        [Tooltip("Extra health per minute of the match, as a fraction of the base (1 = +100% of base health per minute).")]
+        [SerializeField, Min(0f)] private float healthGrowthPerMinute;
         [SerializeField, Min(1f)] private float minSpawnDistance = 14f;
         [SerializeField, Min(1f)] private float maxSpawnDistance = 20f;
 
@@ -46,7 +48,8 @@ namespace BattleArena.Missions
                     return;
                 }
 
-                _enemy = Enemy.Spawn(_mission.target, position, Quaternion.identity, _mission.healthScale, 1f);
+                var health = _mission.healthScale * (1f + _mission.healthGrowthPerMinute * Context.ElapsedMinutes);
+                _enemy = Enemy.Spawn(_mission.target, position, Quaternion.identity, health, 1f);
                 _enemy.Health.Died += OnTargetDied;
             }
 

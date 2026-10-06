@@ -29420,7 +29420,7 @@ GameObject:
   - component: {fileID: 1204287741727629292}
   - component: {fileID: 7921174159864692195}
   - component: {fileID: 90995633031975152}
-  - component: {fileID: 6114880520956041665}
+  - component: {fileID: 3505895207526302776}
   m_Layer: 0
   m_Name: FrostNova
   m_TagString: Untagged
@@ -29474,7 +29474,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 637539eb732c000418abbebb953fea7c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: BattleArena.Runtime::BattleArena.Vfx.VfxRestart
---- !u!114 &6114880520956041665
+--- !u!114 &3505895207526302776
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

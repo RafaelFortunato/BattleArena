@@ -13,7 +13,8 @@ namespace BattleArena.Progression
     {
         LevelUp,
         NewSpell,
-        MissionReward
+        MissionReward,
+        Treasure
     }
 
     /// <summary>What the card screen should show.</summary>
@@ -37,21 +38,21 @@ namespace BattleArena.Progression
     }
 
     /// <summary>
-    /// Card choices that pause combat: level-ups (a new spell at 5/10/15, stat upgrades otherwise) and
-    /// mission rewards (upgrades for equipped spells). Choices arriving together are queued and shown
-    /// one after another.
+    /// Card choices that pause combat: level-ups (a new spell at 5/10/15, stat upgrades otherwise), treasure chests
+    /// (stat upgrades, like a level-up) and mission rewards (upgrades for equipped spells). Choices arriving together
+    /// are queued and shown one after another.
     /// </summary>
     public sealed class LevelUpController : MonoBehaviour
     {
         private readonly struct PendingChoice
         {
-            public readonly bool IsSpellUpgradeReward;
+            public readonly ChoiceKind Kind;
             public readonly int Level;
             public readonly string Source;
 
-            public PendingChoice(bool isSpellUpgradeReward, int level, string source)
+            public PendingChoice(ChoiceKind kind, int level, string source)
             {
-                IsSpellUpgradeReward = isSpellUpgradeReward;
+                Kind = kind;
                 Level = level;
                 Source = source;
             }
@@ -89,6 +90,7 @@ namespace BattleArena.Progression
         private void OnEnable()
         {
             EventBus<PlayerLevelUpEvent>.Subscribe(OnLevelUp);
+            EventBus<TreasureOpenedEvent>.Subscribe(OnTreasureOpened);
             input.ChoiceNavigated += Navigate;
             input.ConfirmRequested += Confirm;
         }
@@ -96,12 +98,13 @@ namespace BattleArena.Progression
         private void OnDisable()
         {
             EventBus<PlayerLevelUpEvent>.Unsubscribe(OnLevelUp);
+            EventBus<TreasureOpenedEvent>.Unsubscribe(OnTreasureOpened);
             input.ChoiceNavigated -= Navigate;
             input.ConfirmRequested -= Confirm;
         }
 
         /// <summary>Queues a choice of upgrades for the player's equipped spells (e.g. a mission reward).</summary>
-        public void QueueSpellUpgradeReward(string source) => Enqueue(new PendingChoice(true, 0, source));
+        public void QueueSpellUpgradeReward(string source) => Enqueue(new PendingChoice(ChoiceKind.MissionReward, 0, source));
 
         /// <summary>Highlights a card (keyboard navigation or mouse hover).</summary>
         public void Select(int index)
@@ -139,7 +142,9 @@ namespace BattleArena.Progression
             PresentNext();
         }
 
-        private void OnLevelUp(PlayerLevelUpEvent evt) => Enqueue(new PendingChoice(false, evt.Level, null));
+        private void OnLevelUp(PlayerLevelUpEvent evt) => Enqueue(new PendingChoice(ChoiceKind.LevelUp, evt.Level, null));
+
+        private void OnTreasureOpened(TreasureOpenedEvent evt) => Enqueue(new PendingChoice(ChoiceKind.Treasure, 0, null));
 
         private void Enqueue(in PendingChoice choice)
         {
@@ -157,7 +162,12 @@ namespace BattleArena.Progression
                     return;
 
                 var choice = _pending.Dequeue();
-                var presentation = choice.IsSpellUpgradeReward ? BuildSpellUpgradeReward(choice.Source) : BuildLevelUp(choice.Level);
+                var presentation = choice.Kind switch
+                {
+                    ChoiceKind.MissionReward => BuildSpellUpgradeReward(choice.Source),
+                    ChoiceKind.Treasure => BuildTreasure(),
+                    _ => BuildLevelUp(choice.Level)
+                };
                 if (_offers.Count == 0)
                     continue;
 
@@ -188,6 +198,13 @@ namespace BattleArena.Progression
 
             AddStatOffers();
             return new LevelUpPresentation(ChoiceKind.LevelUp, $"LEVEL {level}", "LEVEL UP!", "Choose an upgrade", _offers);
+        }
+
+        private LevelUpPresentation BuildTreasure()
+        {
+            _offers.Clear();
+            AddStatOffers();
+            return new LevelUpPresentation(ChoiceKind.Treasure, "TREASURE CHEST", "TREASURE!", "Choose an upgrade", _offers);
         }
 
         private void AddSpellOffers(int slot)

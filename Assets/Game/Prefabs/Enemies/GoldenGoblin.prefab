@@ -263,7 +263,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: BattleArena.Runtime::BattleArena.Enemies.EnemyAnimator
   animator: {fileID: 5046525062625267062}
-  referenceSpeed: 5.8
+  referenceSpeed: 4.6
   attackClipLength: 0.86666673
   attackImpactPoint: 0.55
 --- !u!114 &3863090257257939894

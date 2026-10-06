@@ -10,12 +10,15 @@ namespace BattleArena.Spells
     public sealed class PhaseStepSpell : SpellDefinition
     {
         [SerializeField, Min(1f)] private float distance = 11f;
-        [Tooltip("Seconds of damage immunity after the blink; scales with the Duration stat.")]
+        [Tooltip("Seconds of damage immunity after the blink. Fixed: the Duration stat does not extend it.")]
         [SerializeField, Min(0f)] private float invulnerabilityDuration = 2f;
         [SerializeField] private TimedRelease departEffect;
         [Tooltip("Arrival flourish, drawn at a fixed small size so it does not read as a damage area.")]
         [SerializeField] private AreaEffect arrivalRing;
         [SerializeField, Min(0.1f)] private float arrivalRingRadius = 1.5f;
+
+        // A fixed escape: none of the shared stats change it.
+        public override SpellStats ScalesWith => SpellStats.None;
 
         public override (string Label, string Value) CardHeadline =>
             ("Immunity", invulnerabilityDuration.ToString("0.#", System.Globalization.CultureInfo.InvariantCulture) + "s");
@@ -35,7 +38,7 @@ namespace BattleArena.Spells
                 PoolManager.Spawn(departEffect, start + Vector3.up, Quaternion.identity);
 
             context.Caster.Teleport(destination);
-            context.Caster.Health.GrantInvulnerability(context.Duration(invulnerabilityDuration));
+            context.Caster.Health.GrantInvulnerability(invulnerabilityDuration);
 
             if (arrivalRing != null)
                 PoolManager.Spawn(arrivalRing, destination, Quaternion.identity).Play(arrivalRingRadius);

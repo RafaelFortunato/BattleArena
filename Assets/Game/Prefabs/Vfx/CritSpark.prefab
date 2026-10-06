@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 666275196812708526}
   - component: {fileID: 5902766279878724131}
   - component: {fileID: 4121875502036190172}
-  - component: {fileID: 5080591111442442066}
+  - component: {fileID: 6380286588971572016}
   m_Layer: 0
   m_Name: CritSpark
   m_TagString: Untagged
@@ -4909,7 +4909,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: BattleArena.Runtime::BattleArena.Pooling.TimedRelease
   lifetime: 0.65
---- !u!114 &5080591111442442066
+--- !u!114 &6380286588971572016
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

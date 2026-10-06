@@ -83,6 +83,11 @@ namespace BattleArena.Core
         }
     }
 
+    /// <summary>A treasure chest was opened; it rewards a choice of upgrade cards.</summary>
+    public readonly struct TreasureOpenedEvent : IGameEvent
+    {
+    }
+
     public readonly struct PlayerLevelUpEvent : IGameEvent
     {
         public readonly int Level;

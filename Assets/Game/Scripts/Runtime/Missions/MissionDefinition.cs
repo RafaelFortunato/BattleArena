@@ -1,4 +1,5 @@
 using BattleArena.Combat;
+using BattleArena.Core;
 using BattleArena.Enemies;
 using UnityEngine;
 
@@ -17,13 +18,18 @@ namespace BattleArena.Missions
         public readonly Transform Player;
         public readonly Health PlayerHealth;
         public readonly EnemySpawner Spawner;
+        private readonly GameManager _game;
 
-        public MissionContext(Transform player, Health playerHealth, EnemySpawner spawner)
+        public MissionContext(Transform player, Health playerHealth, EnemySpawner spawner, GameManager game)
         {
             Player = player;
             PlayerHealth = playerHealth;
             Spawner = spawner;
+            _game = game;
         }
+
+        /// <summary>Minutes since the match started.</summary>
+        public float ElapsedMinutes => _game.ElapsedTime / 60f;
     }
 
     /// <summary>

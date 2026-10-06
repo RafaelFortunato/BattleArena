@@ -5,6 +5,20 @@ using UnityEngine.UIElements;
 
 namespace BattleArena.Spells
 {
+    /// <summary>
+    /// Shared stats that change how a spell behaves, shown on its card and in the pause menu. Attack, crit and
+    /// cooldown reduction are left out: every damaging spell uses them.
+    /// </summary>
+    [System.Flags]
+    public enum SpellStats
+    {
+        None = 0,
+        Area = 1,
+        Duration = 2,
+        Projectiles = 4,
+        Pierce = 8
+    }
+
     /// <summary>What a spell may ask of whoever casts it. Keeps spells independent of player classes.</summary>
     public interface ISpellCaster
     {
@@ -119,6 +133,12 @@ namespace BattleArena.Spells
         /// Damaging spells leave it empty.
         /// </summary>
         public virtual (string Label, string Value) CardHeadline => default;
+
+        /// <summary>
+        /// Which of the shared Area, Duration, Projectiles and Pierce stats change this spell. Declared by each spell
+        /// beside the code that reads them, so the tags shown to the player cannot drift from what the spell does.
+        /// </summary>
+        public abstract SpellStats ScalesWith { get; }
 
         /// <summary>A share of Attack as players read it: 3.75 → "375%".</summary>
         public static string FormatAttackShare(float ratio) =>

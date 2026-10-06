@@ -18,6 +18,7 @@ namespace BattleArena.Missions
         [SerializeField] private Transform player;
         [SerializeField] private Health playerHealth;
         [SerializeField] private EnemySpawner spawner;
+        [SerializeField] private GameManager gameManager;
         [SerializeField] private MissionPointer pointer;
 
         [Header("Pacing")]
@@ -31,7 +32,7 @@ namespace BattleArena.Missions
         private MissionDefinition _previous;
         private Coroutine _loop;
 
-        private void Awake() => _context = new MissionContext(player, playerHealth, spawner);
+        private void Awake() => _context = new MissionContext(player, playerHealth, spawner, gameManager);
 
         private void OnEnable()
         {

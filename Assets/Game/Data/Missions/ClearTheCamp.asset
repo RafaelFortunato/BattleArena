@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: ClearTheCamp
   m_EditorClassIdentifier: BattleArena.Runtime::BattleArena.Missions.ClearAreaMission
   title: Clear the Camp
-  description: A war camp has been raised nearby. Defeat every enemy in it.
-  timeLimit: 50
+  description: A war camp has been raised nearby. Defeat 20 enemies inside it.
+  timeLimit: 60
   weight: 1
   zonePrefab: {fileID: 1023620512201245814, guid: 998cbca8c1bb47b4bb9459ffcff98c43, type: 3}
   camp:
@@ -22,9 +22,14 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 4f5fc1729056ce54fb9e125aede96ccc, type: 2}
   - {fileID: 11400000, guid: 4f5fc1729056ce54fb9e125aede96ccc, type: 2}
   - {fileID: 11400000, guid: 4f5fc1729056ce54fb9e125aede96ccc, type: 2}
+  - {fileID: 11400000, guid: 4f5fc1729056ce54fb9e125aede96ccc, type: 2}
+  - {fileID: 11400000, guid: 4f5fc1729056ce54fb9e125aede96ccc, type: 2}
+  - {fileID: 11400000, guid: bc6250db604f0be4f96b43071d544b82, type: 2}
   - {fileID: 11400000, guid: bc6250db604f0be4f96b43071d544b82, type: 2}
   - {fileID: 11400000, guid: bc6250db604f0be4f96b43071d544b82, type: 2}
   - {fileID: 11400000, guid: 270c8ececbdcc8a4cb32b224374438ff, type: 2}
-  campRadius: 4.5
-  minDistance: 15
-  maxDistance: 21
+  - {fileID: 11400000, guid: 270c8ececbdcc8a4cb32b224374438ff, type: 2}
+  campRadius: 9
+  killsRequired: 20
+  minDistance: 18
+  maxDistance: 26

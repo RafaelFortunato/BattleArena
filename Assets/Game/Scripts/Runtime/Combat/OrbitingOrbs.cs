@@ -14,7 +14,9 @@ namespace BattleArena.Combat
         [SerializeField] private ContactDamage[] orbs;
         [SerializeField, Min(0f)] private float heightOffset = 1f;
 
-        public void Activate(Transform follow, DamageProfile damage, int count, float radius, float duration, float degreesPerSecond)
+        /// <param name="orbScale">Size of each orb (its hit area and visuals), 1 = as authored.</param>
+        public void Activate(Transform follow, DamageProfile damage, int count, float radius, float orbScale, float duration,
+            float degreesPerSecond)
         {
             count = Mathf.Clamp(count, 1, orbs.Length);
             for (var i = 0; i < orbs.Length; i++)
@@ -26,6 +28,7 @@ namespace BattleArena.Combat
 
                 var angle = 360f / count * i * Mathf.Deg2Rad;
                 orbs[i].transform.localPosition = new Vector3(Mathf.Sin(angle), 0f, Mathf.Cos(angle)) * radius;
+                orbs[i].transform.localScale = Vector3.one * orbScale;
                 orbs[i].Damage = damage;
             }
 

@@ -13,7 +13,8 @@ MonoBehaviour:
   m_Name: ArcaneLance
   m_EditorClassIdentifier: BattleArena.Runtime::BattleArena.Spells.ProjectileSpell
   displayName: Arcane Lance
-  description: A lance of pure arcane energy that pierces every enemy in its path.
+  description: A long-range lance of arcane energy that pierces every enemy in its
+    path.
   color: {r: 0.8, g: 0.55, b: 1, a: 1}
   icon: {fileID: 7388822144124034973, guid: 5535d511fedd1d7498bbf481151e8b1c, type: 3}
   cooldown: 3
@@ -21,9 +22,11 @@ MonoBehaviour:
   damageUnit: per enemy
   supportedUpgrades: 00000000010000000200000003000000
   projectilePrefab: {fileID: 4249973404948091102, guid: 370646b7a55f98643aa4903f919eb3b5, type: 3}
-  speed: 28
+  speed: 24
   projectileCount: 1
   spreadAngle: 10
-  pierce: 50
+  pierce: 0
+  infinitePierce: 1
   explosionRadius: 0
-  targetingRange: 18
+  targetingRange: 40
+  flightHeight: 1.1

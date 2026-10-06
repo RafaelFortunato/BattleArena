@@ -315,6 +315,7 @@ namespace BattleArena.Editor.ContentBuilder
                 .Set("player", player.transform)
                 .Set("playerHealth", playerHealth)
                 .Set("spawner", spawner)
+                .Set("gameManager", gameManager)
                 .Set("pointer", BuildMissionPointer(m, player.transform))
                 .Apply();
 

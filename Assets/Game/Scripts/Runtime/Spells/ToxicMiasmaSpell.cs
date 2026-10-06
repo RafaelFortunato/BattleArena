@@ -16,6 +16,9 @@ namespace BattleArena.Spells
         [SerializeField, Min(1f)] private float targetingRange = 15f;
         [SerializeField, Min(0f)] private float fallbackDistance = 5f;
 
+        // Area is the cloud's size, Duration how long it lingers.
+        public override SpellStats ScalesWith => SpellStats.Area | SpellStats.Duration;
+
         public override bool Cast(in SpellContext context)
         {
             var position = CombatQueries.TryFindNearest(context.Origin, targetingRange, context.TargetMask, out var target)

@@ -15,9 +15,10 @@ MonoBehaviour:
   title: Golden Goblin
   description: A greedy goblin is fleeing with treasure. Chase it down before it
     escapes!
-  timeLimit: 35
+  timeLimit: 60
   weight: 1
   target: {fileID: 11400000, guid: 4dd6d9828a590e848b98edcf44ac1108, type: 2}
   healthScale: 1
+  healthGrowthPerMinute: 1
   minSpawnDistance: 14
   maxSpawnDistance: 20

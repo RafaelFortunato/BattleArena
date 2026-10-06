@@ -25,6 +25,9 @@ namespace BattleArena.Spells
         private static readonly List<Collider> Targets = new(MaxTargetsLimit);
         private static readonly HashSet<Collider> Visited = new();
 
+        // Area is the jump range; each point of Pierce adds a target to the chain.
+        public override SpellStats ScalesWith => SpellStats.Area | SpellStats.Pierce;
+
         public override bool Cast(in SpellContext context)
         {
             if (!CombatQueries.TryFindNearest(context.Origin, range, context.TargetMask, out var first))

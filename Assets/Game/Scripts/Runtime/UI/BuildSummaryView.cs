@@ -22,7 +22,7 @@ namespace BattleArena.UI
         {
             StatType.MoveSpeed, StatType.MaxHealth,
             StatType.Attack, StatType.AttackSpeed,
-            StatType.CritDamage, StatType.CritChance,
+            StatType.CritChance, StatType.CritDamage,
             StatType.Area, StatType.Duration,
             StatType.Multishot, StatType.Pierce,
             StatType.PickupRadius, StatType.Armor,
@@ -41,6 +41,20 @@ namespace BattleArena.UI
             _caster = caster;
             _stats = stats;
             _config = config;
+
+            var head = root.Q("build-scaling-head");
+            for (var i = 0; i < SpellScalingOrder.Stats.Length; i++)
+            {
+                var column = new VisualElement { pickingMode = PickingMode.Ignore };
+                column.AddToClassList("build-scaling-col");
+                var icon = new VisualElement { pickingMode = PickingMode.Ignore };
+                icon.AddToClassList("icon");
+                icon.AddToClassList(SpellScalingOrder.IconClasses[i]);
+                icon.AddToClassList("build-scaling-col-icon");
+                column.Add(icon);
+                column.Add(CreateLabel(SpellScalingOrder.ShortNames[i], "build-scaling-col-label"));
+                head.Add(column);
+            }
 
             var spells = root.Q("build-spells");
             _spellRows = new SpellRow[caster.SlotCount];
@@ -93,6 +107,7 @@ namespace BattleArena.UI
             private readonly Label _name;
             private readonly Label _locked;
             private readonly VisualElement _chips;
+            private readonly VisualElement _dots;
 
             public SpellRow(string key)
             {
@@ -123,12 +138,42 @@ namespace BattleArena.UI
                 info.Add(_chips);
                 Root.Add(info);
 
+                // One dot per shared stat, lit in the spell's colour when it changes this spell.
+                _dots = new VisualElement { pickingMode = PickingMode.Ignore };
+                _dots.AddToClassList("build-spell-dots");
+                for (var i = 0; i < SpellScalingOrder.Stats.Length; i++)
+                {
+                    var cell = new VisualElement { pickingMode = PickingMode.Ignore };
+                    cell.AddToClassList("build-spell-dot-cell");
+                    var dot = new VisualElement { pickingMode = PickingMode.Ignore };
+                    dot.AddToClassList("build-spell-dot");
+                    cell.Add(dot);
+                    _dots.Add(cell);
+                }
+                Root.Add(_dots);
+
                 var keycap = CreateLabel(key, "keycap");
                 keycap.AddToClassList("keycap-small");
                 Root.Add(keycap);
             }
 
             public VisualElement Root { get; }
+
+            private void ShowScaling(SpellDefinition spell)
+            {
+                _dots.style.visibility = Visibility.Visible;
+                for (var i = 0; i < SpellScalingOrder.Stats.Length; i++)
+                {
+                    var used = (spell.ScalesWith & SpellScalingOrder.Stats[i]) != 0;
+                    var dot = _dots[i][0];
+                    var color = used ? spell.Color : SpellScalingOrder.UnusedColor;
+                    dot.style.backgroundColor = used ? spell.Color : Color.clear;
+                    dot.style.borderTopColor = color;
+                    dot.style.borderRightColor = color;
+                    dot.style.borderBottomColor = color;
+                    dot.style.borderLeftColor = color;
+                }
+            }
 
             public void ShowLocked(int unlockLevel)
             {
@@ -137,6 +182,8 @@ namespace BattleArena.UI
                 _icon.style.backgroundImage = StyleKeyword.Null;
                 _name.AddToClassList("hidden");
                 _chips.AddToClassList("hidden");
+                // Hidden but still laid out, so the columns stay aligned with the rows above and below.
+                _dots.style.visibility = Visibility.Hidden;
                 _locked.RemoveFromClassList("hidden");
                 _locked.text = $"Unlocks at level {unlockLevel}";
             }
@@ -147,6 +194,7 @@ namespace BattleArena.UI
                 _icon.RemoveFromClassList("icon-lock");
                 _icon.style.backgroundImage = new StyleBackground(spell.Icon);
                 _icon.style.unityBackgroundImageTintColor = spell.Color;
+                ShowScaling(spell);
                 _name.RemoveFromClassList("hidden");
                 _name.text = spell.DisplayName;
 

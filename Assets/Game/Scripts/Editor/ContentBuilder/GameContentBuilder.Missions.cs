@@ -18,8 +18,9 @@ namespace BattleArena.Editor.ContentBuilder
             return new MissionDefinition[]
             {
                 Mission<HuntMission>("GoldenGoblin", "Golden Goblin",
-                    "A greedy goblin is fleeing with treasure. Chase it down before it escapes!", timeLimit: 35f,
-                    s => s.Set("target", roster.GoldenGoblin).Set("healthScale", 1f).Set("minSpawnDistance", 14f).Set("maxSpawnDistance", 20f)),
+                    "A greedy goblin is fleeing with treasure. Chase it down before it escapes!", timeLimit: 60f,
+                    s => s.Set("target", roster.GoldenGoblin).Set("healthScale", 1f).Set("healthGrowthPerMinute", 1f)
+                        .Set("minSpawnDistance", 14f).Set("maxSpawnDistance", 20f)),
                 Mission<HuntMission>("WarlordHunt", "Warlord Hunt",
                     "An Ogre Warlord has entered the arena. Defeat it.", timeLimit: 50f, weight: 0.8f,
                     configure: s => s.Set("target", roster.Warlord).Set("healthScale", 1f).Set("minSpawnDistance", 14f).Set("maxSpawnDistance", 20f)),
@@ -27,8 +28,9 @@ namespace BattleArena.Editor.ContentBuilder
                     "Stand inside the marked circle for 12 seconds.", timeLimit: 40f,
                     s => s.Set("zonePrefab", goldZone).Set("radius", 4f).Set("requiredSeconds", 12f)),
                 Mission<ClearAreaMission>("ClearTheCamp", "Clear the Camp",
-                    "A war camp has been raised nearby. Defeat every enemy in it.", timeLimit: 50f,
-                    s => s.Set("zonePrefab", campZone).Set("camp", roster.Camp).Set("campRadius", 4.5f)),
+                    "A war camp has been raised nearby. Defeat 20 enemies inside it.", timeLimit: 60f,
+                    s => s.Set("zonePrefab", campZone).Set("camp", roster.Camp).Set("campRadius", 9f).Set("killsRequired", 20)
+                        .Set("minDistance", 18f).Set("maxDistance", 26f)),
                 Mission<CollectShardsMission>("ArcaneShards", "Arcane Shards",
                     "Collect the 3 arcane shards scattered around the arena.", timeLimit: 45f,
                     s => s.Set("shardPrefab", shard).Set("shardCount", 3)),

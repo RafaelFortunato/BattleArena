@@ -220,7 +220,8 @@ namespace BattleArena.Editor.ContentBuilder
             new Fx(t, "Sparkles", FxMaterial("LanceSparkle", "vfx_star", ArcanePink, 2.5f))
                 .World().Loop().RatePerMeter(4f).Sphere(0.2f).Life(0.3f, 0.6f).Size(0.12f, 0.26f).Rotation()
                 .Velocity(-Vector3.one * 0.5f, Vector3.one * 0.5f).ColorOverLife(Fade(0f, 1f, 1f, 0f));
-            return SaveProjectile(root, 1.2f, impact);
+            // Long range: 4 s at 24 m/s (96 m) carries it across the whole arena.
+            return SaveProjectile(root, 4f, impact);
         }
 
         // ---------------------------------------------------------------- Explosions
