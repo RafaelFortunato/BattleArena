@@ -39,7 +39,7 @@ namespace BattleArena.Editor.ContentBuilder
                         .Set("supportedUpgrades", new[] { K.ExtraCharge, K.CooldownReduction, K.Damage, K.Area, K.Duration })),
                 Spell<MeteorShowerSpell>("MeteorShower", "Meteor Shower",
                     "Calls down a volley of meteors on the enemies around you.", new Color(1f, 0.4f, 0.15f), cooldown: 20f, attackRatio: 7.5f, damageUnit: "per meteor",
-                    s => s.Set("meteorPrefab", fx.MeteorStrike).Set("meteorCount", 6).Set("impactRadius", 3f).Set("areaRadius", 12f)
+                    s => s.Set("meteorPrefab", fx.MeteorStrike).Set("meteorCount", 6).Set("meteorsPerProjectileUpgrade", 2).Set("impactRadius", 3f).Set("areaRadius", 12f)
                         .Set("supportedUpgrades", new[] { K.ExtraCharge, K.CooldownReduction, K.Damage, K.ExtraProjectiles, K.Area })),
                 Spell<ChainLightningSpell>("ChainLightning", "Chain Lightning",
                     "Strikes the nearest enemy and jumps to up to 6 foes, weaker each jump.", new Color(0.6f, 0.85f, 1f), cooldown: 5f, attackRatio: 3.5f, damageUnit: "to the first target",
@@ -162,6 +162,16 @@ namespace BattleArena.Editor.ContentBuilder
                 .Set("amount", amount)
                 .Set("maxRank", maxRank)
                 .Set("weight", weight)
+                .Set("icon", LoadIcon(kind switch
+                {
+                    K.ExtraCharge => "upgrade-charge",
+                    K.CooldownReduction => "stat-cooldown-reduction",
+                    K.Damage => "stat-attack",
+                    K.ExtraProjectiles => "stat-multishot",
+                    K.Duration => "stat-duration",
+                    K.Area => "stat-area",
+                    _ => "spell-chain-lightning"
+                }))
                 .Apply();
             return upgrade;
         }

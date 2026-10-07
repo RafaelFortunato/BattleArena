@@ -24,6 +24,7 @@ namespace BattleArena.Player
         [NonSerialized] private InputAction _move;
         [NonSerialized] private InputAction _interact;
         [NonSerialized] private InputAction _pause;
+        [NonSerialized] private InputAction _back;
         [NonSerialized] private InputAction _choicePrevious;
         [NonSerialized] private InputAction _choiceNext;
         [NonSerialized] private InputAction _confirm;
@@ -37,6 +38,8 @@ namespace BattleArena.Player
         public event Action InteractRequested;
         /// <summary>Esc, Enter or Start. True when it was Enter, which also presses the focused menu button.</summary>
         public event Action<bool> PauseRequested;
+        /// <summary>B / Circle: backs out of menus. In play the same button casts a spell, so it never pauses.</summary>
+        public event Action BackRequested;
         /// <summary>-1 / +1 to move the highlighted card (A/D, arrows, d-pad).</summary>
         public event Action<int> ChoiceNavigated;
         /// <summary>Confirms the highlighted card (F, Space, south button).</summary>
@@ -99,6 +102,7 @@ namespace BattleArena.Player
             _move = _gameplayMap.FindAction("Move", throwIfNotFound: true);
             _interact = _gameplayMap.FindAction("Interact", throwIfNotFound: true);
             _pause = _systemMap.FindAction("Pause", throwIfNotFound: true);
+            _back = _systemMap.FindAction("Back", throwIfNotFound: true);
             _choicePrevious = _systemMap.FindAction("ChoicePrevious", throwIfNotFound: true);
             _choiceNext = _systemMap.FindAction("ChoiceNext", throwIfNotFound: true);
             _confirm = _systemMap.FindAction("Confirm", throwIfNotFound: true);
@@ -109,6 +113,7 @@ namespace BattleArena.Player
             _move.canceled += OnMove;
             _interact.performed += OnInteract;
             _pause.performed += OnPause;
+            _back.performed += OnBack;
             _choicePrevious.performed += OnChoicePrevious;
             _choiceNext.performed += OnChoiceNext;
             _confirm.performed += OnConfirm;
@@ -128,6 +133,7 @@ namespace BattleArena.Player
             _move.canceled -= OnMove;
             _interact.performed -= OnInteract;
             _pause.performed -= OnPause;
+            _back.performed -= OnBack;
             _choicePrevious.performed -= OnChoicePrevious;
             _choiceNext.performed -= OnChoiceNext;
             _confirm.performed -= OnConfirm;
@@ -150,6 +156,8 @@ namespace BattleArena.Player
         private void OnMove(InputAction.CallbackContext context) => SetMove(context.ReadValue<Vector2>());
         private void OnInteract(InputAction.CallbackContext _) => InteractRequested?.Invoke();
         private void OnPause(InputAction.CallbackContext context) => PauseRequested?.Invoke(IsEnterKey(context.control));
+
+        private void OnBack(InputAction.CallbackContext _) => BackRequested?.Invoke();
 
         private static bool IsEnterKey(InputControl control) => control is KeyControl { keyCode: Key.Enter or Key.NumpadEnter };
         private void OnChoicePrevious(InputAction.CallbackContext _) => ChoiceNavigated?.Invoke(-1);

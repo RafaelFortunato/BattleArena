@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 5132147954320819548}
   - component: {fileID: 5751361084115014846}
   - component: {fileID: 1617620341499651606}
-  - component: {fileID: 1993069304360006905}
+  - component: {fileID: 5476809098828226731}
   m_Layer: 0
   m_Name: BossSlamImpact
   m_TagString: Untagged
@@ -4909,7 +4909,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: BattleArena.Runtime::BattleArena.Pooling.TimedRelease
   lifetime: 0.90000004
---- !u!114 &1993069304360006905
+--- !u!114 &5476809098828226731
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

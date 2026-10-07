@@ -31,6 +31,8 @@ namespace BattleArena.Progression
         public abstract StatPreview Stat { get; }
         /// <summary>For a spell card, which shared stats change the spell; null hides the row.</summary>
         public virtual SpellStats? Scaling => null;
+        /// <summary>For a spell upgrade card, the spell it improves (named in the card's header); otherwise null.</summary>
+        public virtual SpellDefinition UpgradedSpell => null;
 
         public abstract void Apply();
     }
@@ -103,19 +105,23 @@ namespace BattleArena.Progression
         private SpellDefinition Spell => _caster.GetSpell(_slot);
 
         public override string Title => _upgrade.DisplayName;
-        public override string Badge => $"{Spell.DisplayName.ToUpperInvariant()} · {SpellOffer.GetSlotKey(_slot)}";
+        // The header names the spell, so no badge.
+        public override string Badge => null;
         public override Color Color => Spell.Color;
         public override CardMotif Motif => CardMotif.Diamonds;
-        public override VectorImage Icon => Spell.Icon;
+        public override VectorImage Icon => _upgrade.Icon != null ? _upgrade.Icon : Spell.Icon;
         public override string Summary => _upgrade.Summary;
+        public override SpellDefinition UpgradedSpell => Spell;
         public override StatPreview Stat => _upgrade.Preview(_caster.GetUpgrades(_slot), Spell);
 
-        public override void Apply() => _caster.ApplyUpgrade(_slot, _upgrade.Kind, _upgrade.Amount);
+        public override void Apply() => _caster.ApplyUpgrade(_slot, _upgrade.Kind, _upgrade.AmountFor(Spell));
     }
 
     public sealed class SpellOffer : LevelUpOffer
     {
         private static readonly string[] SlotKeys = { "Q", "E", "R" };
+        private static readonly string[] XboxButtons = { "X", "Y", "B" };
+        private static readonly string[] PlayStationButtons = { "Square", "Triangle", "Circle" };
 
         private readonly SpellDefinition _spell;
         private readonly SpellCaster _caster;
@@ -128,7 +134,17 @@ namespace BattleArena.Progression
             _slot = slot;
         }
 
-        public static string GetSlotKey(int slot) => slot >= 0 && slot < SlotKeys.Length ? SlotKeys[slot] : "?";
+        /// <summary>The key or gamepad button that casts the spell in <paramref name="slot"/>, for the device in use.</summary>
+        public static string GetSlotKey(int slot)
+        {
+            var names = ControlScheme.Current switch
+            {
+                ControlDevice.Xbox => XboxButtons,
+                ControlDevice.PlayStation => PlayStationButtons,
+                _ => SlotKeys
+            };
+            return slot >= 0 && slot < names.Length ? names[slot] : "?";
+        }
 
         public override string Title => _spell.DisplayName;
         // The screen's subtitle already says which key the new spell goes on, so the card needs no badge.

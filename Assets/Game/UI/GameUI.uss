@@ -602,13 +602,8 @@
 }
 
 .interact-key {
-    width: 34px;
-    height: 34px;
-    border-width: 2px;
-    border-color: rgb(255, 255, 255);
-    border-radius: 17px;
-    font-size: 16px;
-    -unity-text-align: middle-center;
+    flex-direction: row;
+    align-items: center;
 }
 
 .interact-label {
@@ -639,7 +634,7 @@
 }
 
 .spell-hex {
-    --shape-fill: rgba(20, 22, 31, 0.92);
+    --shape-fill: rgba(20, 22, 31, 0.96);
     --shape-border: rgb(255, 255, 255);
     --shape-border-width: 4;
 }
@@ -675,20 +670,21 @@
     left: 0;
     top: 0;
     right: 0;
-    bottom: 0;
+    bottom: 6px;
     align-items: center;
     justify-content: center;
 }
 
 .spell-lock-caption {
-    font-size: 13px;
-    letter-spacing: 1px;
-    color: rgb(139, 147, 167);
+    font-size: 17px;
+    letter-spacing: 1.5px;
+    color: rgb(201, 207, 220);
 }
 
 .spell-lock-level {
-    font-size: 30px;
-    color: rgb(201, 207, 220);
+    margin-top: -6px;
+    font-size: 36px;
+    color: rgb(255, 255, 255);
 }
 
 .spell-charges {
@@ -709,12 +705,12 @@
 }
 
 .spell-key {
-    margin-top: 6px;
+    margin-top: -20px;
 }
 
 .spell-slot.locked .spell-hex {
-    --shape-fill: rgba(20, 22, 31, 0.8);
-    --shape-border: rgba(255, 255, 255, 0.18);
+    --shape-fill: rgba(20, 22, 31, 0.94);
+    --shape-border: rgba(255, 255, 255, 0.45);
 }
 
 .spell-slot.locked .spell-lock {
@@ -725,27 +721,88 @@
     display: none;
 }
 
-.spell-slot.locked .spell-key {
-    border-color: rgba(255, 255, 255, 0.2);
-    background-color: rgba(0, 0, 0, 0);
-    color: rgb(139, 147, 167);
-}
 
 .spell-slot.cooling .spell-hex {
-    --shape-fill: rgba(52, 58, 78, 0.92);
-    --shape-border: rgba(255, 255, 255, 0.4);
+    --shape-fill: rgba(52, 58, 78, 0.96);
+    --shape-border: rgba(255, 255, 255, 0.55);
 }
 
 .spell-slot.cooling .spell-icon {
     opacity: 0.5;
 }
 
-.spell-slot.cooling .spell-key {
-    border-color: rgba(255, 255, 255, 0.45);
+
+/* The heart badge overlaps the bar's left end, so the bar starts 20px in. */
+/* Below the hexagon, offset down: lifts the slot off busy ground. */
+.spell-hex-shadow {
+    position: absolute;
+    left: 0;
+    top: 6px;
+    width: 92px;
+    height: 100px;
+    --shape-fill: rgba(8, 10, 16, 0.55);
+    --shape-border-width: 0;
+}
+
+/* The slot's key as a solid tab clipped onto the hexagon's bottom edge. */
+.spell-keycap {
+    min-width: 40px;
+    width: 40px;
+    height: 32px;
+    padding: 3px 0 0 0;
+    margin-right: 0;
+    border-width: 3px;
+    border-color: rgb(255, 255, 255);
+    border-radius: 9px;
+    background-color: rgb(20, 22, 31);
+    font-size: 19px;
+}
+
+.spell-key .pad-glyph {
+    width: 46px;
+    height: 46px;
+    margin-right: 0;
+    border-radius: 23px;
+}
+
+.spell-key .pad-letter {
+    font-size: 23px;
+}
+
+.spell-key .pad-symbol {
+    width: 24px;
+    height: 24px;
+}
+
+.spell-slot.locked .spell-keycap {
+    border-color: rgba(255, 255, 255, 0.55);
     color: rgb(201, 207, 220);
 }
 
-/* The heart badge overlaps the bar's left end, so the bar starts 20px in. */
+.spell-slot.locked .pad-xbox {
+    background-color: rgb(74, 80, 99);
+}
+
+.spell-slot.locked .pad-letter {
+    color: rgb(201, 207, 220);
+}
+
+.spell-slot.locked .pad-ps {
+    border-color: rgba(255, 255, 255, 0.45);
+}
+
+.spell-slot.locked .pad-symbol {
+    -unity-background-image-tint-color: rgb(139, 147, 167);
+}
+
+.spell-slot.cooling .spell-keycap {
+    border-color: rgba(255, 255, 255, 0.7);
+}
+
+.spell-slot.cooling .pad-glyph {
+    opacity: 0.7;
+}
+
 .health {
     width: 640px;
     height: 42px;
@@ -1259,29 +1316,31 @@
     -unity-background-scale-mode: scale-to-fit;
 }
 
+/* Sits on the art's slanted edge: big enough to read the rarity at a glance. */
 .card-badge {
     position: absolute;
-    left: 22px;
-    top: 238px;
-    height: 34px;
+    left: 18px;
+    top: 230px;
+    height: 46px;
     flex-direction: row;
     align-items: center;
-    padding: 0 14px 0 11px;
+    padding: 0 18px 0 14px;
     border-width: 3px;
     border-color: rgb(20, 22, 31);
-    border-radius: 10px;
+    border-radius: 12px;
 }
 
 .card-badge-gem {
-    width: 9px;
-    height: 9px;
-    margin-right: 9px;
+    width: 12px;
+    height: 12px;
+    margin-right: 11px;
     rotate: 45deg;
 }
 
 .card-badge-label {
-    font-size: 13px;
-    letter-spacing: 3px;
+    font-size: 21px;
+    letter-spacing: 2px;
+    padding-top: 3px;
 }
 
 .card-body {
@@ -1393,6 +1452,56 @@
 .card-scaling-icon {
     width: 20px;
     height: 20px;
+}
+
+/* ---------- Spell upgrade cards: the spell's header on top, the art and a smaller emblem beneath it. */
+
+.card-header {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    height: 74px;
+    flex-direction: row;
+    align-items: center;
+    padding: 0 16px 0 16px;
+    border-bottom-width: 4px;
+    border-color: rgb(20, 22, 31);
+}
+
+.card-header-badge {
+    width: 44px;
+    height: 44px;
+    margin-right: 12px;
+    border-radius: 12px;
+    align-items: center;
+    justify-content: center;
+}
+
+.card-header-icon {
+    width: 26px;
+    height: 26px;
+    -unity-background-scale-mode: scale-to-fit;
+}
+
+.card-header-label {
+    flex-grow: 1;
+    font-size: 30px;
+    white-space: nowrap;
+}
+
+.card-slot.spell-upgrade-card .card-art {
+    top: 70px;
+    height: 200px;
+}
+
+.card-slot.spell-upgrade-card .card-emblem {
+    top: 92px;
+}
+
+.card-slot.spell-upgrade-card .card-emblem-frame {
+    scale: 0.84 0.84;
+    transform-origin: 50% 0;
 }
 
 .card-pointer {
@@ -1923,3 +2032,66 @@
     align-items: center;
     margin-top: 96px;
 }
+
+/* ================================================================ Button prompts (ControlGlyph) */
+
+.control-glyph {
+    flex-direction: row;
+    align-items: center;
+}
+
+.pad-glyph {
+    width: 36px;
+    height: 36px;
+    margin-right: 5px;
+    border-width: 3px;
+    border-color: rgb(20, 22, 31);
+    border-radius: 18px;
+    align-items: center;
+    justify-content: center;
+}
+
+.pad-letter {
+    padding-top: 3px;
+    font-size: 19px;
+    color: rgb(255, 255, 255);
+    -unity-text-align: middle-center;
+}
+
+.pad-xbox-a { background-color: rgb(93, 187, 63); }
+.pad-xbox-b { background-color: rgb(226, 72, 61); }
+.pad-xbox-x { background-color: rgb(61, 130, 240); }
+.pad-xbox-y { background-color: rgb(244, 193, 60); }
+.pad-xbox-y .pad-letter { color: rgb(35, 26, 5); }
+
+/* PlayStation: the coloured symbol on a dark, white-ringed button. */
+.pad-ps,
+.pad-ring {
+    border-width: 2px;
+    border-color: rgba(255, 255, 255, 0.85);
+    background-color: rgb(20, 22, 31);
+}
+
+.pad-symbol {
+    width: 20px;
+    height: 20px;
+    -unity-background-scale-mode: scale-to-fit;
+}
+
+.pad-ring .pad-symbol {
+    width: 22px;
+    height: 22px;
+}
+
+.pad-ps-cross .pad-symbol { -unity-background-image-tint-color: rgb(127, 167, 255); }
+.pad-ps-circle .pad-symbol { -unity-background-image-tint-color: rgb(255, 107, 107); }
+.pad-ps-square .pad-symbol { -unity-background-image-tint-color: rgb(240, 140, 200); }
+.pad-ps-triangle .pad-symbol { -unity-background-image-tint-color: rgb(56, 211, 160); }
+
+.pad-icon-cross { background-image: url("project://database/Assets/Game/UI/Icons/pad-cross.svg"); }
+.pad-icon-circle { background-image: url("project://database/Assets/Game/UI/Icons/pad-circle.svg"); }
+.pad-icon-square { background-image: url("project://database/Assets/Game/UI/Icons/pad-square.svg"); }
+.pad-icon-triangle { background-image: url("project://database/Assets/Game/UI/Icons/pad-triangle.svg"); }
+.pad-icon-stick { background-image: url("project://database/Assets/Game/UI/Icons/pad-stick.svg"); }
+.pad-icon-dpad { background-image: url("project://database/Assets/Game/UI/Icons/pad-dpad.svg"); }
+.pad-icon-menu { background-image: url("project://database/Assets/Game/UI/Icons/pad-menu.svg"); }

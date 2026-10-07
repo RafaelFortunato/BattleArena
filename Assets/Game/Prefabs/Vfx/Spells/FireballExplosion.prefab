@@ -19596,7 +19596,7 @@ GameObject:
   - component: {fileID: 8065318846400396554}
   - component: {fileID: 3542071816030216021}
   - component: {fileID: 5381055188819538013}
-  - component: {fileID: 4878461884406786953}
+  - component: {fileID: 7167423376219352397}
   m_Layer: 0
   m_Name: FireballExplosion
   m_TagString: Untagged
@@ -19650,7 +19650,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 637539eb732c000418abbebb953fea7c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: BattleArena.Runtime::BattleArena.Vfx.VfxRestart
---- !u!114 &4878461884406786953
+--- !u!114 &7167423376219352397
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

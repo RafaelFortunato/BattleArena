@@ -124,6 +124,10 @@ namespace BattleArena.UI
             private readonly CardArtElement _art;
             private readonly ShapeElement _hex;
             private readonly VisualElement _icon;
+            private readonly VisualElement _header;
+            private readonly VisualElement _headerBadge;
+            private readonly VisualElement _headerIcon;
+            private readonly Label _headerLabel;
             private readonly VisualElement _badge;
             private readonly VisualElement _badgeGem;
             private readonly Label _badgeLabel;
@@ -139,6 +143,7 @@ namespace BattleArena.UI
             private readonly VisualElement _scaling;
             private readonly VisualElement[] _scalingItems;
             private Color _highlight = Color.white;
+            private Color _idleBorder = IdleBorder;
 
             public CardView(VisualElement slot)
             {
@@ -148,6 +153,10 @@ namespace BattleArena.UI
                 _art = slot.Q<CardArtElement>(className: "card-art");
                 _hex = slot.Q<ShapeElement>(className: "card-hex");
                 _icon = slot.Q(className: "card-icon");
+                _header = slot.Q(className: "card-header");
+                _headerBadge = slot.Q(className: "card-header-badge");
+                _headerIcon = slot.Q(className: "card-header-icon");
+                _headerLabel = slot.Q<Label>(className: "card-header-label");
                 _badge = slot.Q(className: "card-badge");
                 _badgeGem = slot.Q(className: "card-badge-gem");
                 _badgeLabel = slot.Q<Label>(className: "card-badge-label");
@@ -206,7 +215,22 @@ namespace BattleArena.UI
                     CardMotif.Diamonds => CardPattern.Diamonds,
                     _ => CardPattern.Hexagons
                 };
-                _hex.SetColors(null, accent);
+                // Spell upgrade cards: the spell in a header of its colour, framed in it too, so they stand apart
+                // from stat cards and the emblem can show what the upgrade does.
+                var upgradedSpell = offer.UpgradedSpell;
+                _slot.EnableInClassList("spell-upgrade-card", upgradedSpell != null);
+                _header.EnableInClassList("hidden", upgradedSpell == null);
+                if (upgradedSpell != null)
+                {
+                    _header.style.backgroundColor = accent;
+                    _headerBadge.style.backgroundColor = ink;
+                    _headerIcon.style.backgroundImage = new StyleBackground(upgradedSpell.Icon);
+                    _headerIcon.style.unityBackgroundImageTintColor = accent;
+                    _headerLabel.text = upgradedSpell.DisplayName;
+                    _headerLabel.style.color = ink;
+                }
+                _idleBorder = upgradedSpell != null ? accent : IdleBorder;
+                _hex.SetColors(null, upgradedSpell != null ? _highlight : accent);
                 _icon.style.backgroundImage = new StyleBackground(offer.Icon);
                 _shadow.style.backgroundColor = Color.Lerp(accent, Color.black, 0.45f);
 
@@ -251,7 +275,7 @@ namespace BattleArena.UI
             public void SetSelected(bool selected)
             {
                 _slot.EnableInClassList("selected", selected);
-                var border = selected ? _highlight : IdleBorder;
+                var border = selected ? _highlight : _idleBorder;
                 Button.style.borderTopColor = border;
                 Button.style.borderRightColor = border;
                 Button.style.borderBottomColor = border;

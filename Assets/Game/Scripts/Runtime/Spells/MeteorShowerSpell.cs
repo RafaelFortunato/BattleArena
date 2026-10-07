@@ -11,6 +11,8 @@ namespace BattleArena.Spells
     {
         [SerializeField] private DelayedAreaStrike meteorPrefab;
         [SerializeField, Min(1)] private int meteorCount = 6;
+        [Tooltip("Meteors added per Split Cast pick. Shared projectile stats (Multishot) still add one meteor each.")]
+        [SerializeField, Min(1)] private int meteorsPerProjectileUpgrade = 2;
         [SerializeField, Min(0.5f)] private float impactRadius = 3f;
         [SerializeField, Min(1f)] private float areaRadius = 12f;
         [SerializeField, Min(0.1f)] private float firstImpactDelay = 0.8f;
@@ -18,6 +20,9 @@ namespace BattleArena.Spells
 
         // Area is each impact's size; Projectiles adds meteors.
         public override SpellStats ScalesWith => SpellStats.Area | SpellStats.Projectiles;
+
+        public override float UpgradeScale(SpellUpgradeKind kind) =>
+            kind == SpellUpgradeKind.ExtraProjectiles ? meteorsPerProjectileUpgrade : 1f;
 
         public override bool Cast(in SpellContext context)
         {

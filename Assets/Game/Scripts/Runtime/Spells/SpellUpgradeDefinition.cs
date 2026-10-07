@@ -1,6 +1,7 @@
 using System.Globalization;
 using BattleArena.Progression;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 namespace BattleArena.Spells
 {
@@ -14,12 +15,18 @@ namespace BattleArena.Spells
         [SerializeField] private float amount = 0.2f;
         [SerializeField, Min(1)] private int maxRank = 3;
         [SerializeField, Min(0f)] private float weight = 1f;
+        [Tooltip("Shown in the card's emblem: what the upgrade does. The spell itself is named in the card's header.")]
+        [SerializeField] private VectorImage icon;
 
         public string DisplayName => displayName;
         public SpellUpgradeKind Kind => kind;
         public float Amount => amount;
+
+        /// <summary>What one pick gives <paramref name="spell"/>: the base amount times the spell's own scale for this kind.</summary>
+        public float AmountFor(SpellDefinition spell) => amount * spell.UpgradeScale(kind);
         public int MaxRank => maxRank;
         public float Weight => weight;
+        public VectorImage Icon => icon;
 
         /// <summary>One-line pitch shown under the card title.</summary>
         public string Summary => kind switch
@@ -37,6 +44,7 @@ namespace BattleArena.Spells
         /// <summary>What the card changes for <paramref name="spell"/> with <paramref name="state"/>; the bar tracks upgrade ranks.</summary>
         public StatPreview Preview(SpellUpgradeState state, SpellDefinition spell)
         {
+            var amount = AmountFor(spell);
             var current = state.Total(kind);
             var next = current + amount;
             var rank = state.Rank(kind);

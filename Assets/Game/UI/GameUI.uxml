@@ -80,51 +80,54 @@
             <!-- Spells and health -->
             <ui:VisualElement class="hud-bottom" picking-mode="Ignore">
                 <ui:VisualElement name="interact-prompt" class="interact-prompt hidden" picking-mode="Ignore">
-                    <ui:Label text="F" class="interact-key" picking-mode="Ignore" />
+                    <ba:ControlGlyph action="Interact" class="interact-key" />
                     <ui:Label name="interact-label" text="Interact" class="interact-label" picking-mode="Ignore" />
                 </ui:VisualElement>
                 <ui:VisualElement name="spell-bar" class="spell-bar" picking-mode="Ignore">
                     <ui:VisualElement name="spell-0" class="spell-slot locked" picking-mode="Ignore">
                         <ui:VisualElement class="spell-frame" picking-mode="Ignore">
+                            <ba:ShapeElement kind="Hexagon" class="spell-hex-shadow" />
                             <ba:ShapeElement kind="Hexagon" class="fill spell-hex" />
                             <ui:VisualElement class="spell-icon" picking-mode="Ignore" />
                             <ba:HexCooldownElement class="fill spell-sweep" />
                             <ui:Label text="" class="display spell-cooldown-text" picking-mode="Ignore" />
                             <ui:VisualElement class="spell-lock" picking-mode="Ignore">
-                                <ui:Label text="LVL" class="spell-lock-caption" picking-mode="Ignore" />
+                                <ui:Label text="LVL" class="display spell-lock-caption" picking-mode="Ignore" />
                                 <ui:Label text="5" class="display spell-lock-level" picking-mode="Ignore" />
                             </ui:VisualElement>
                             <ui:Label text="" class="spell-charges" picking-mode="Ignore" />
                         </ui:VisualElement>
-                        <ui:Label text="Q" class="keycap keycap-small spell-key" picking-mode="Ignore" />
+                        <ba:ControlGlyph action="Spell1" keycap-class="display spell-keycap" class="spell-key" />
                     </ui:VisualElement>
                     <ui:VisualElement name="spell-1" class="spell-slot locked" picking-mode="Ignore">
                         <ui:VisualElement class="spell-frame" picking-mode="Ignore">
+                            <ba:ShapeElement kind="Hexagon" class="spell-hex-shadow" />
                             <ba:ShapeElement kind="Hexagon" class="fill spell-hex" />
                             <ui:VisualElement class="spell-icon" picking-mode="Ignore" />
                             <ba:HexCooldownElement class="fill spell-sweep" />
                             <ui:Label text="" class="display spell-cooldown-text" picking-mode="Ignore" />
                             <ui:VisualElement class="spell-lock" picking-mode="Ignore">
-                                <ui:Label text="LVL" class="spell-lock-caption" picking-mode="Ignore" />
+                                <ui:Label text="LVL" class="display spell-lock-caption" picking-mode="Ignore" />
                                 <ui:Label text="10" class="display spell-lock-level" picking-mode="Ignore" />
                             </ui:VisualElement>
                             <ui:Label text="" class="spell-charges" picking-mode="Ignore" />
                         </ui:VisualElement>
-                        <ui:Label text="E" class="keycap keycap-small spell-key" picking-mode="Ignore" />
+                        <ba:ControlGlyph action="Spell2" keycap-class="display spell-keycap" class="spell-key" />
                     </ui:VisualElement>
                     <ui:VisualElement name="spell-2" class="spell-slot locked" picking-mode="Ignore">
                         <ui:VisualElement class="spell-frame" picking-mode="Ignore">
+                            <ba:ShapeElement kind="Hexagon" class="spell-hex-shadow" />
                             <ba:ShapeElement kind="Hexagon" class="fill spell-hex" />
                             <ui:VisualElement class="spell-icon" picking-mode="Ignore" />
                             <ba:HexCooldownElement class="fill spell-sweep" />
                             <ui:Label text="" class="display spell-cooldown-text" picking-mode="Ignore" />
                             <ui:VisualElement class="spell-lock" picking-mode="Ignore">
-                                <ui:Label text="LVL" class="spell-lock-caption" picking-mode="Ignore" />
+                                <ui:Label text="LVL" class="display spell-lock-caption" picking-mode="Ignore" />
                                 <ui:Label text="15" class="display spell-lock-level" picking-mode="Ignore" />
                             </ui:VisualElement>
                             <ui:Label text="" class="spell-charges" picking-mode="Ignore" />
                         </ui:VisualElement>
-                        <ui:Label text="R" class="keycap keycap-small spell-key" picking-mode="Ignore" />
+                        <ba:ControlGlyph action="Spell3" keycap-class="display spell-keycap" class="spell-key" />
                     </ui:VisualElement>
                 </ui:VisualElement>
                 <ui:VisualElement class="health" picking-mode="Ignore">
@@ -183,19 +186,19 @@
             </ui:VisualElement>
             <ui:VisualElement class="menu-controls">
                 <ui:VisualElement class="control-group">
-                    <ui:Label text="W" class="keycap" /><ui:Label text="A" class="keycap" /><ui:Label text="S" class="keycap" /><ui:Label text="D" class="keycap" />
+                    <ba:ControlGlyph action="Move" />
                     <ui:Label text="Move" class="control-label" />
                 </ui:VisualElement>
                 <ui:VisualElement class="control-group">
-                    <ui:Label text="Q" class="keycap" /><ui:Label text="E" class="keycap" /><ui:Label text="R" class="keycap" />
+                    <ba:ControlGlyph action="Spells" />
                     <ui:Label text="Spells" class="control-label" />
                 </ui:VisualElement>
                 <ui:VisualElement class="control-group">
-                    <ui:Label text="F" class="keycap" />
+                    <ba:ControlGlyph action="Interact" />
                     <ui:Label text="Interact" class="control-label" />
                 </ui:VisualElement>
                 <ui:VisualElement class="control-group">
-                    <ui:Label text="Esc" class="keycap keycap-wide" />
+                    <ba:ControlGlyph action="Pause" />
                     <ui:Label text="Pause" class="control-label" />
                 </ui:VisualElement>
             </ui:VisualElement>
@@ -215,13 +218,10 @@
             <ui:VisualElement name="card-row" class="card-row" />
 
             <ui:VisualElement class="nav-hint">
-                <ui:Label text="A" class="keycap" /><ui:Label text="D" class="keycap" />
-                <ui:Label text="or" class="nav-hint-or" />
-                <ui:VisualElement class="keycap"><ui:VisualElement class="icon icon-arrow-left keycap-icon" /></ui:VisualElement>
-                <ui:VisualElement class="keycap"><ui:VisualElement class="icon icon-arrow-right keycap-icon" /></ui:VisualElement>
+                <ba:ControlGlyph action="Browse" />
                 <ui:Label text="Browse" class="nav-hint-label" />
                 <ui:VisualElement class="nav-hint-divider" />
-                <ui:Label text="F" class="keycap keycap-accent" />
+                <ba:ControlGlyph action="Confirm" keycap-class="keycap-accent" />
                 <ui:Label text="Confirm" class="nav-hint-label" />
             </ui:VisualElement>
         </ui:VisualElement>
@@ -241,7 +241,7 @@
                     <ui:Button name="pause-restart-button" text="RESTART" class="display btn btn-secondary btn-medium" />
                 </ui:VisualElement>
                 <ui:VisualElement class="pause-hint">
-                    <ui:Label text="Esc" class="keycap keycap-wide" />
+                    <ba:ControlGlyph action="Pause" />
                     <ui:Label text="Resume" class="control-label" />
                 </ui:VisualElement>
             </ui:VisualElement>
@@ -314,7 +314,7 @@
                 </ui:VisualElement>
             </ui:VisualElement>
             <ui:VisualElement class="settings-hint">
-                <ui:Label text="Esc" class="keycap keycap-wide" />
+                <ba:ControlGlyph action="Back" />
                 <ui:Label text="Close" class="control-label" />
             </ui:VisualElement>
         </ui:VisualElement>

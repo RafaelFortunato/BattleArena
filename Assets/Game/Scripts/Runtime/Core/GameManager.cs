@@ -45,6 +45,7 @@ namespace BattleArena.Core
         private void OnEnable()
         {
             input.PauseRequested += OnPauseKey;
+            input.BackRequested += OnBackKey;
             playerHealth.Died += OnPlayerDied;
             EventBus<EnemyKilledEvent>.Subscribe(OnEnemyKilled);
         }
@@ -52,6 +53,7 @@ namespace BattleArena.Core
         private void OnDisable()
         {
             input.PauseRequested -= OnPauseKey;
+            input.BackRequested -= OnBackKey;
             playerHealth.Died -= OnPlayerDied;
             EventBus<EnemyKilledEvent>.Unsubscribe(OnEnemyKilled);
             if (_bossHealth != null)
@@ -85,6 +87,15 @@ namespace BattleArena.Core
             if (PauseKeyHandler != null && PauseKeyHandler.HandlePauseKey(viaEnter))
                 return;
             TogglePause();
+        }
+
+        // Closes an open dialog first, like Esc; otherwise only leaves the pause menu, never enters it.
+        private void OnBackKey()
+        {
+            if (PauseKeyHandler != null && PauseKeyHandler.HandlePauseKey(false))
+                return;
+            if (State == GameState.Paused)
+                TogglePause();
         }
 
         public void TogglePause()

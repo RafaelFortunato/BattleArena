@@ -140,6 +140,12 @@ namespace BattleArena.Spells
         /// </summary>
         public abstract SpellStats ScalesWith { get; }
 
+        /// <summary>
+        /// How much more a spell upgrade card gives this spell than its base amount (1 = as printed). Lets a spell whose
+        /// single unit is small, like one meteor, get a bigger step from the same card.
+        /// </summary>
+        public virtual float UpgradeScale(SpellUpgradeKind kind) => 1f;
+
         /// <summary>A share of Attack as players read it: 3.75 → "375%".</summary>
         public static string FormatAttackShare(float ratio) =>
             Mathf.RoundToInt(ratio * 100f).ToString(CultureInfo.InvariantCulture) + "%";

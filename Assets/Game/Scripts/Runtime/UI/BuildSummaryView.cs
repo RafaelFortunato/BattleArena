@@ -14,7 +14,6 @@ namespace BattleArena.UI
     internal sealed class BuildSummaryView
     {
         private static readonly string[] Numerals = { "I", "II", "III", "IV", "V", "VI" };
-        private static readonly string[] SlotKeys = { "Q", "E", "R" };
 
         // Order in the two-column grid, so related stats share a row (Attack beside Attack speed). Independent of the
         // StatType values, which card assets store.
@@ -60,7 +59,7 @@ namespace BattleArena.UI
             _spellRows = new SpellRow[caster.SlotCount];
             for (var i = 0; i < _spellRows.Length; i++)
             {
-                _spellRows[i] = new SpellRow(i < SlotKeys.Length ? SlotKeys[i] : "?");
+                _spellRows[i] = new SpellRow(i);
                 spells.Add(_spellRows[i].Root);
             }
 
@@ -109,7 +108,7 @@ namespace BattleArena.UI
             private readonly VisualElement _chips;
             private readonly VisualElement _dots;
 
-            public SpellRow(string key)
+            public SpellRow(int slot)
             {
                 Root = new VisualElement { pickingMode = PickingMode.Ignore };
                 Root.AddToClassList("build-spell");
@@ -152,9 +151,8 @@ namespace BattleArena.UI
                 }
                 Root.Add(_dots);
 
-                var keycap = CreateLabel(key, "keycap");
-                keycap.AddToClassList("keycap-small");
-                Root.Add(keycap);
+                // Keycap or gamepad button, whichever the player is using.
+                Root.Add(new ControlGlyph { Action = ControlAction.Spell1 + slot, KeycapClass = "keycap-small", pickingMode = PickingMode.Ignore });
             }
 
             public VisualElement Root { get; }

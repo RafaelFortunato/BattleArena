@@ -4,6 +4,13 @@
         <ui:VisualElement class="card-shadow" picking-mode="Ignore" />
         <ui:Button class="card">
             <ba:CardArtElement class="card-art" />
+            <!-- Spell upgrade cards only: the spell they improve, in its colour (LevelUpView). -->
+            <ui:VisualElement class="card-header hidden" picking-mode="Ignore">
+                <ui:VisualElement class="card-header-badge" picking-mode="Ignore">
+                    <ui:VisualElement class="card-header-icon" picking-mode="Ignore" />
+                </ui:VisualElement>
+                <ui:Label text="" class="display card-header-label" picking-mode="Ignore" />
+            </ui:VisualElement>
             <ui:VisualElement class="card-emblem" picking-mode="Ignore">
                 <ui:VisualElement class="card-emblem-frame" picking-mode="Ignore">
                     <ba:ShapeElement kind="Hexagon" class="fill card-hex" />
@@ -13,7 +20,7 @@
             </ui:VisualElement>
             <ui:VisualElement class="card-badge" picking-mode="Ignore">
                 <ui:VisualElement class="card-badge-gem" picking-mode="Ignore" />
-                <ui:Label text="RARE" class="card-badge-label" picking-mode="Ignore" />
+                <ui:Label text="RARE" class="display card-badge-label" picking-mode="Ignore" />
             </ui:VisualElement>
             <ui:VisualElement class="card-body" picking-mode="Ignore">
                 <ui:Label text="Upgrade" class="display card-title" picking-mode="Ignore" />

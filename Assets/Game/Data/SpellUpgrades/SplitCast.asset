@@ -17,3 +17,4 @@ MonoBehaviour:
   amount: 1
   maxRank: 3
   weight: 0.9
+  icon: {fileID: 7388822144124034973, guid: 5a63849a4197a9e4f8efc797973629c6, type: 3}
