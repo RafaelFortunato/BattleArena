@@ -67,7 +67,8 @@ namespace BattleArena.Editor.ContentBuilder
 
                 // Colours (fur markings, cloth, gold) are baked into one atlas in Blender.
                 HuskyBody = Lit("WizardHuskyBody", Color.white, smoothness: 0.15f, baseMap: LoadTexture(HuskyAlbedoPath)),
-                HuskyCrystal = Lit("WizardHuskyCrystal", Hex("#B8FFF6"), smoothness: 0.8f, emission: Hex("#3CE8D8") * 3.5f),
+                // The staff orb is purple on the Tripo model; glow to match.
+                HuskyCrystal = Lit("WizardHuskyCrystal", Hex("#E4CCFF"), smoothness: 0.8f, emission: Hex("#9B4DFF") * 3.5f),
 
                 // Quaternius monsters share one flat-colour atlas (saturated for the game); the grunt gets its own
                 // copy with a warm skin that reads against the grass, and the golden goblin tints it gold.
