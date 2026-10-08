@@ -74,13 +74,22 @@ namespace BattleArena.Core
         public readonly int Level;
         public readonly int Current;
         public readonly int Required;
+        public readonly int MaxLevel;
 
-        public ExperienceChangedEvent(int level, int current, int required)
+        public ExperienceChangedEvent(int level, int current, int required, int maxLevel)
         {
             Level = level;
             Current = current;
             Required = required;
+            MaxLevel = maxLevel;
         }
+
+        /// <summary>
+        /// Levels gained so far as a share of the climb to the cap: 0 at level 1, 1 at the cap. Whole levels only, so
+        /// it moves on level-ups and not with every gem.
+        /// </summary>
+        public float ProgressToMaxLevel =>
+            MaxLevel <= 1 ? 1f : Mathf.Clamp01((float)(Level - 1) / (MaxLevel - 1));
     }
 
     /// <summary>A treasure chest was opened; it rewards a choice of upgrade cards.</summary>

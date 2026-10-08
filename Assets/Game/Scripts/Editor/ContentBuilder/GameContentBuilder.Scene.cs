@@ -88,6 +88,15 @@ namespace BattleArena.Editor.ContentBuilder
             RenderSettings.ambientEquatorColor = Hex("#5E6B55");
             RenderSettings.ambientGroundColor = Hex("#2A2826");
 
+            // Light haze toward the far side of the view. Linear, starting just past the player (about 22 m from the
+            // camera), so the action stays crisp and only the top of the screen softens. Per-vertex in the lit and
+            // particle shaders, so it costs next to nothing on WebGL.
+            RenderSettings.fog = true;
+            RenderSettings.fogMode = FogMode.Linear;
+            RenderSettings.fogColor = Hex("#7E8FA6");
+            RenderSettings.fogStartDistance = 22f;
+            RenderSettings.fogEndDistance = 52f;
+
             var volume = new GameObject("Global Volume").AddComponent<Volume>();
             volume.isGlobal = true;
             volume.sharedProfile = BuildVolumeProfile();

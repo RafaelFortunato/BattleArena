@@ -588,7 +588,7 @@
     position: absolute;
     left: 0;
     right: 0;
-    bottom: 96px;
+    bottom: 116px;
     align-items: center;
 }
 
@@ -895,13 +895,13 @@
     position: absolute;
     left: 24px;
     right: 24px;
-    bottom: 12px;
+    bottom: 32px;
     height: 88px;
 }
 
 .xp-bar {
     position: absolute;
-    left: 44px;
+    left: 68px;
     right: 0;
     top: 29px;
     height: 30px;
@@ -931,12 +931,17 @@
     background-color: rgb(255, 255, 255);
 }
 
+/* The arcane seal: a star-backed seal drawn as one vector image (Icons/ui-level-seal.svg), with the level number set
+   in its recessed centre. The seal's centre (72/146 of the image) lines up with the bar's centre, 44px down the row;
+   the row sits high enough off the screen edge for the star's lower point and shadow. */
 .level-badge {
     position: absolute;
     left: 0;
-    top: 0;
-    width: 80px;
-    height: 88px;
+    top: -26px;
+    width: 136px;
+    height: 142px;
+    background-image: url("project://database/Assets/Game/UI/Icons/ui-level-seal.svg");
+    -unity-background-scale-mode: scale-to-fit;
     transition-property: scale;
     transition-duration: 0.25s;
 }
@@ -945,42 +950,39 @@
     scale: 1.25 1.25;
 }
 
-.level-hex-outer {
-    --shape-fill: rgb(77, 48, 158);
-    --shape-border: rgb(255, 255, 255);
-    --shape-border-width: 4.5;
-}
-
-.level-hex-inner {
+/* Progress to the level cap, drawn over the seal's dark rim track (radius 43 of the 140-wide image, so 41.8px here,
+   centred at 68, 69.9). */
+.level-ring {
     position: absolute;
-    left: 11px;
-    right: 11px;
-    top: 12px;
-    bottom: 12px;
-    --shape-fill: rgb(20, 22, 31);
-    --shape-border: rgb(124, 77, 255);
-    --shape-border-width: 3;
+    left: 24px;
+    top: 26px;
+    width: 88px;
+    height: 88px;
+    --ring-color: rgb(255, 255, 255);
+    --ring-width: 4;
 }
 
+/* Centred on the seal's well, which sits 1.5px above the image's middle. */
 .level-text {
     position: absolute;
     left: 0;
     top: 0;
     right: 0;
-    bottom: 0;
+    bottom: 3px;
     align-items: center;
     justify-content: center;
 }
 
 .level-caption {
-    font-size: 12px;
+    font-size: 11px;
     letter-spacing: 2px;
     color: rgb(183, 157, 255);
 }
 
 .level-value {
-    font-size: 34px;
-    margin-top: -4px;
+    font-size: 31px;
+    margin-top: -8px;
+    text-shadow: 0 3px 0 rgb(6, 7, 10);
 }
 
 /* ================================================================ Screens */

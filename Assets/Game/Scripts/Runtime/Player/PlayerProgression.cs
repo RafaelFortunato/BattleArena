@@ -61,6 +61,6 @@ namespace BattleArena.Player
         }
 
         private void RaiseExperienceChanged() =>
-            EventBus<ExperienceChangedEvent>.Raise(new ExperienceChangedEvent(Level, Experience, RequiredExperience));
+            EventBus<ExperienceChangedEvent>.Raise(new ExperienceChangedEvent(Level, Experience, RequiredExperience, maxLevel));
     }
 }

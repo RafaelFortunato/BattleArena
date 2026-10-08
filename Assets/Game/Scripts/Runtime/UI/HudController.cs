@@ -2,6 +2,7 @@ using System.Globalization;
 using BattleArena.Combat;
 using BattleArena.Core;
 using BattleArena.Player;
+using BattleArena.UI.Elements;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -28,6 +29,7 @@ namespace BattleArena.UI
 
         private VisualElement _levelBadge;
         private Label _levelLabel;
+        private RadialProgressElement _levelRing;
         private VisualElement _xpFill;
         private VisualElement _healthFill;
         private VisualElement _healthTrail;
@@ -115,6 +117,7 @@ namespace BattleArena.UI
 
             _levelBadge = root.Q("level-badge");
             _levelLabel = root.Q<Label>("level-label");
+            _levelRing = root.Q<RadialProgressElement>("level-ring");
             _xpFill = root.Q("xp-fill");
             _healthFill = root.Q("health-fill");
             _healthTrail = root.Q("health-trail");
@@ -169,6 +172,8 @@ namespace BattleArena.UI
         {
             _levelLabel.text = evt.Level.ToString();
             SetFill(_xpFill, evt.Required > 0 ? (float)evt.Current / evt.Required : 1f);
+            // Whole levels only, so this only changes value (and repaints) on a level-up.
+            _levelRing.Value = evt.ProgressToMaxLevel;
         }
 
         private void OnLevelUp(PlayerLevelUpEvent evt)

@@ -159,8 +159,7 @@
                     </ui:VisualElement>
                 </ui:VisualElement>
                 <ui:VisualElement name="level-badge" class="level-badge" picking-mode="Ignore">
-                    <ba:ShapeElement kind="Hexagon" class="fill level-hex-outer" />
-                    <ba:ShapeElement kind="Hexagon" class="level-hex-inner" />
+                    <ba:RadialProgressElement name="level-ring" class="level-ring" />
                     <ui:VisualElement class="level-text" picking-mode="Ignore">
                         <ui:Label text="LV" class="level-caption" picking-mode="Ignore" />
                         <ui:Label name="level-label" text="1" class="display level-value" picking-mode="Ignore" />

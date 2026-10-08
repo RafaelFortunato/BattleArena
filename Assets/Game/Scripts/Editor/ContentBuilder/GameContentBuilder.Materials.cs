@@ -158,6 +158,9 @@ namespace BattleArena.Editor.ContentBuilder
             material.SetFloat("_Smoothness", 0.05f);
             material.SetFloat("_Surface", 1f);
             material.SetFloat("_Blend", 0f);
+            // Plain alpha blending, not premultiplied: with premultiply the fog colour is mixed in after the alpha
+            // scaling, so the fading fringe glows with fog-coloured outlines. The dirt is near-matte anyway.
+            material.SetFloat("_BlendModePreserveSpecular", 0f);
             material.SetFloat("_ReceiveShadows", 1f);
             // Draw before every other transparent (queue 2950 vs 3000), so effects on the ground land on top of the
             // paths instead of being blended under them. URP recomputes the queue from this offset.
