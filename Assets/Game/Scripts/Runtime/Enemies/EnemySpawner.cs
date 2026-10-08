@@ -23,9 +23,12 @@ namespace BattleArena.Enemies
         [Header("Boss")]
         [SerializeField] private EnemyDefinition boss;
         [SerializeField, Min(1f)] private float bossSpawnDistance = 12f;
+        [Tooltip("Share of the normal spawn rate kept during the boss fight (the last phase's enemies keep coming, slower).")]
+        [SerializeField, Range(0f, 1f)] private float bossFightSpawnRate = 0.3f;
 
         private Coroutine _spawnLoop;
         private float _matchStartTime;
+        private float _rateScale = 1f;
 
         public EnemyDefinition BossDefinition => boss;
 
@@ -34,6 +37,7 @@ namespace BattleArena.Enemies
         public void Begin(float matchStartTime)
         {
             _matchStartTime = matchStartTime;
+            _rateScale = 1f;
             StopSpawning();
             _spawnLoop = StartCoroutine(SpawnLoop());
         }
@@ -44,6 +48,14 @@ namespace BattleArena.Enemies
                 return;
             StopCoroutine(_spawnLoop);
             _spawnLoop = null;
+        }
+
+        /// <summary>Keeps the regular spawns going under the boss, at <c>bossFightSpawnRate</c> of the usual rate.</summary>
+        public void EnterBossFight()
+        {
+            _rateScale = bossFightSpawnRate;
+            if (_rateScale <= 0f)
+                StopSpawning();
         }
 
         public Enemy SpawnBoss()
@@ -79,7 +91,8 @@ namespace BattleArena.Enemies
                         Spawn(phase.PickEnemy(), position, 1f, 1f);
                 }
 
-                yield return WaitCache.Get(phase.SpawnInterval);
+                // A lower rate means the same spawns per tick, further apart.
+                yield return WaitCache.Get(phase.SpawnInterval / _rateScale);
             }
         }
 

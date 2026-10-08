@@ -184,10 +184,11 @@ namespace BattleArena.Editor.ContentBuilder
         {
             var root = CreateRoot("DamageNumber", GameLayers.Default);
             var text = root.AddComponent<TextMeshPro>();
-            text.font = AssetDatabase.LoadAssetAtPath<TMP_FontAsset>(DefaultFontPath);
+            text.font = LoadOrCreateDamageFont();
             text.fontSharedMaterial = m.DamageText;
             text.fontSize = 6f;
-            text.fontStyle = FontStyles.Bold;
+            // Baloo ExtraBold is heavy already; TMP's fake bold would only blur it.
+            text.fontStyle = FontStyles.Normal;
             text.alignment = TextAlignmentOptions.Center;
             text.textWrappingMode = TextWrappingModes.NoWrap;
             text.rectTransform.sizeDelta = new Vector2(4f, 1.5f);

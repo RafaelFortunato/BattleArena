@@ -14522,7 +14522,7 @@ GameObject:
   - component: {fileID: 5777732338664771390}
   - component: {fileID: 8891251351451254207}
   - component: {fileID: 5138441312653542639}
-  - component: {fileID: 2496730211687022149}
+  - component: {fileID: 3433075707177502012}
   m_Layer: 10
   m_Name: BossOrb
   m_TagString: Untagged
@@ -14741,7 +14741,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 637539eb732c000418abbebb953fea7c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: BattleArena.Runtime::BattleArena.Vfx.VfxRestart
---- !u!114 &2496730211687022149
+--- !u!114 &3433075707177502012
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

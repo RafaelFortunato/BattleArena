@@ -22,7 +22,10 @@ namespace BattleArena.Editor.ContentBuilder
         private const string SettingsFolder = Root + "/Settings";
         private const string ScenesFolder = Root + "/Scenes";
         private const string ScenePath = ScenesFolder + "/Arena.unity";
-        private const string DefaultFontPath = "Assets/TextMesh Pro/Resources/Fonts & Materials/LiberationSans SDF.asset";
+        // Damage numbers are world-space TextMesh Pro text, so they need Baloo 2 as a TMP font asset of their own.
+        private const string DamageFontSourcePath = UIFolder + "/Fonts/Baloo2-ExtraBold.ttf";
+        private const string DamageFontPath = UIFolder + "/Fonts/Baloo2-ExtraBold SDF.asset";
+        private const string DamageFontCharacters = "0123456789!-+.%";
 
         [MenuItem("BattleArena/Build Game Content", priority = 0)]
         public static void BuildAll()

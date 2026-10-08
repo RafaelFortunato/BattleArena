@@ -196,16 +196,43 @@ namespace BattleArena.Editor.ContentBuilder
             return material;
         }
 
-        /// <summary>Copy of the default TMP font material that draws on top of everything, with an outline for readability.</summary>
+        /// <summary>
+        /// Baloo 2 ExtraBold (the UI's display face) as a TextMesh Pro font, so damage numbers match the timer and titles.
+        /// Baked once with only the glyphs damage numbers use, into a static atlas: builds need no font file at runtime.
+        /// </summary>
+        private static TMPro.TMP_FontAsset LoadOrCreateDamageFont()
+        {
+            var existing = AssetDatabase.LoadAssetAtPath<TMPro.TMP_FontAsset>(DamageFontPath);
+            if (existing != null)
+                return existing;
+
+            var source = AssetDatabase.LoadAssetAtPath<Font>(DamageFontSourcePath);
+            var font = TMPro.TMP_FontAsset.CreateFontAsset(source, 90, 9, UnityEngine.TextCore.LowLevel.GlyphRenderMode.SDFAA,
+                512, 512, TMPro.AtlasPopulationMode.Dynamic, enableMultiAtlasSupport: false);
+            font.name = "Baloo2-ExtraBold SDF";
+            font.TryAddCharacters(DamageFontCharacters, out _);
+            font.atlasPopulationMode = TMPro.AtlasPopulationMode.Static;
+
+            AssetDatabase.CreateAsset(font, DamageFontPath);
+            font.atlasTexture.name = font.name + " Atlas";
+            AssetDatabase.AddObjectToAsset(font.atlasTexture, font);
+            font.material.name = font.name + " Material";
+            AssetDatabase.AddObjectToAsset(font.material, font);
+            EditorUtility.SetDirty(font);
+            AssetDatabase.SaveAssets();
+            return font;
+        }
+
+        /// <summary>Copy of the damage font's material that draws on top of everything, with an outline for readability.</summary>
         private static Material DamageTextMaterial()
         {
-            var font = AssetDatabase.LoadAssetAtPath<TMPro.TMP_FontAsset>(DefaultFontPath);
+            var font = LoadOrCreateDamageFont();
             var material = LoadOrCreateMaterial("DamageText", "TextMeshPro/Mobile/Distance Field Overlay");
             material.CopyPropertiesFromMaterial(font.material);
             material.SetColor("_OutlineColor", new Color(0.08f, 0.04f, 0.02f, 1f));
-            // A thin outline plus a slightly dilated face keeps the numbers bright and readable.
+            // A thin outline keeps the numbers readable over effects; Baloo is already heavy, so the face is barely dilated.
             material.SetFloat("_OutlineWidth", 0.2f);
-            material.SetFloat("_FaceDilate", 0.25f);
+            material.SetFloat("_FaceDilate", 0.1f);
             material.EnableKeyword("OUTLINE_ON");
             EditorUtility.SetDirty(material);
             return material;

@@ -670,7 +670,7 @@
     left: 0;
     top: 0;
     right: 0;
-    bottom: 6px;
+    bottom: 10px;
     align-items: center;
     justify-content: center;
 }
@@ -681,8 +681,9 @@
     color: rgb(201, 207, 220);
 }
 
+/* Baloo sits low in its line box: pull the number up against "LVL" so the pair reads as one centred block. */
 .spell-lock-level {
-    margin-top: -6px;
+    margin-top: -13px;
     font-size: 36px;
     color: rgb(255, 255, 255);
 }
@@ -749,7 +750,7 @@
     min-width: 40px;
     width: 40px;
     height: 32px;
-    padding: 3px 0 0 0;
+    padding: 0 0 2px 0;
     margin-right: 0;
     border-width: 3px;
     border-color: rgb(255, 255, 255);

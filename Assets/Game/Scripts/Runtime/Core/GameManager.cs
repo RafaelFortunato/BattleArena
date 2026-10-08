@@ -174,7 +174,7 @@ namespace BattleArena.Core
 
         private void BeginBossFight()
         {
-            spawner.StopSpawning();
+            spawner.EnterBossFight();
 
             var boss = spawner.SpawnBoss();
             if (boss.TryGetComponent(out BossController controller))

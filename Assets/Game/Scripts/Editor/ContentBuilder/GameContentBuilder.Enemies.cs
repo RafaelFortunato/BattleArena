@@ -178,9 +178,9 @@ namespace BattleArena.Editor.ContentBuilder
             bossRoot.AddComponent<ChaseMovement>();
             bossRoot.AddComponent<ContactAttack>();
             Behaviour<BossController>(bossRoot, ("slamPrefab", bossSlam), ("projectilePrefab", bossOrb),
-                ("attackInterval", 2.8f), ("slamCount", 4), ("slamDamage", 40f), ("projectilesPerRing", 20), ("projectileDamage", 16f),
+                ("attackInterval", 2.8f), ("slamCount", 4), ("slamDamage", 50f), ("projectilesPerRing", 20), ("projectileDamage", 30f),
                 ("projectileOrigin", AddChild(bossRoot.transform, "ProjectileOrigin", new Vector3(0f, 0.42f, 0.2f))));
-            var boss = Define("Boss", "Archlich Morvath", SaveEnemy(bossRoot), health: 24000f, speed: 3f, damage: 30f, range: 3.4f, cooldown: 1.2f, xp: 0);
+            var boss = Define("Boss", "Archlich Morvath", SaveEnemy(bossRoot), health: 24000f, speed: 3f, damage: 36f, range: 3.4f, cooldown: 1.2f, xp: 0);
 
             // --- Spawn schedule. Enemies never scale; danger rises by enemy type, one tier at a time:
             //   Tier 1 (0:00) slow melee: grunt, giant slime, ogre brute.

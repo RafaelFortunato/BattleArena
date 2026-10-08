@@ -7850,7 +7850,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2548520289750234396}
   - component: {fileID: 5562031032524359428}
-  - component: {fileID: 1795105529903790928}
+  - component: {fileID: 4270308893570733657}
   m_Layer: 0
   m_Name: ChainLightning
   m_TagString: Untagged
@@ -8040,7 +8040,7 @@ MonoBehaviour:
   coreWidth: 0.17
   hitEffect: {fileID: 2637877760985136569, guid: 4c6b593a447e61f4e927713466ded3e5, type: 3}
   shockEffect: {fileID: 2305595782213727299, guid: 2efdda019213071438792fc881fc55a0, type: 3}
---- !u!114 &1795105529903790928
+--- !u!114 &4270308893570733657
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

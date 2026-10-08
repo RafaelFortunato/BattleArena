@@ -14,17 +14,18 @@ namespace BattleArena.Spells
         [SerializeField, Min(0.1f)] private float duration = 6f;
         [SerializeField] private float degreesPerSecond = 220f;
 
-        // Area widens the ring and grows the orbs, Duration keeps them out longer, Projectiles adds orbs.
+        // Area grows the orbs (and widens the ring a little), Duration keeps them out longer, Projectiles adds orbs.
         public override SpellStats ScalesWith => SpellStats.Area | SpellStats.Duration | SpellStats.Projectiles;
 
         public override bool Cast(in SpellContext context)
         {
             var caster = context.Caster.Transform;
             var orbs = PoolManager.Spawn(orbsPrefab, caster.position, Quaternion.identity);
-            // Area widens the circle and grows the orbs; the orbs by the square root, so even a large Area bonus
-            // keeps them as distinct orbs rather than one blob filling the ring.
+            // Area grows the orbs like any other area effect (hit size scales linearly) but widens the ring only by the
+            // square root, so a bigger Area means bigger orbs close to you rather than small orbs drifting further away.
+            var area = context.Modifiers.AreaMultiplier;
             orbs.Activate(caster, GetDamage(context), orbCount + context.Modifiers.ExtraProjectiles,
-                context.Area(radius), Mathf.Sqrt(context.Modifiers.AreaMultiplier), context.Duration(duration), degreesPerSecond);
+                radius * Mathf.Sqrt(area), area, context.Duration(duration), degreesPerSecond);
             return true;
         }
     }
