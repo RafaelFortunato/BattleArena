@@ -27,6 +27,8 @@ namespace BattleArena.Editor.ContentBuilder
                 Spell<ProjectileSpell>("Fireball", "Fireball",
                     "Hurls a fireball at the nearest enemy that explodes on impact.", new Color(1f, 0.6f, 0.2f), cooldown: 4f, attackRatio: 3.75f, damageUnit: "",
                     s => s.Set("projectilePrefab", fx.Fireball).Set("speed", 16f).Set("explosionRadius", 3.5f).Set("pierce", 0)
+                        // Level flight: with Pierce it carries on past its first blast, and a downward shot would hit the floor.
+                        .Set("flightHeight", 1.1f)
                         .Set("supportedUpgrades", new[] { K.ExtraCharge, K.CooldownReduction, K.Damage, K.ExtraProjectiles, K.Area })),
                 Spell<ProjectileSpell>("ArcaneLance", "Arcane Lance",
                     "A long-range lance of arcane energy that pierces every enemy in its path.", new Color(0.8f, 0.55f, 1f), cooldown: 3f, attackRatio: 4.5f, damageUnit: "per enemy",

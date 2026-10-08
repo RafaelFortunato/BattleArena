@@ -27,7 +27,7 @@ namespace BattleArena.Audio
         [Header("Mix")]
         [SerializeField, Range(0f, 1f)] private float masterVolume = 1f;
         [SerializeField, Range(0f, 1f)] private float sfxVolume = 1f;
-        [SerializeField, Range(0f, 1f)] private float ambienceVolume = 0.35f;
+        [SerializeField, Range(0f, 1f)] private float musicVolume = 0.5f;
 
         [Header("World space")]
         // Measured from the AudioListener, which rides the camera about 22 units above and behind the player.
@@ -42,9 +42,11 @@ namespace BattleArena.Audio
                  "fades, which keeps a distant event present in the mix rather than lost. A sound can override this.")]
         [SerializeField, Range(0f, 1f)] private float worldSpatialBlend = 0.6f;
 
-        [Header("Ambience")]
-        [Tooltip("Looping bed under everything else (wind, birdsong). Optional.")]
-        [SerializeField] private AudioClip ambienceLoop;
+        [Header("Music")]
+        [Tooltip("The track that starts with the scene and plays under the menu and the match. Optional.")]
+        [SerializeField] private AudioClip music;
+        [Tooltip("How long one track takes to hand over to the next.")]
+        [SerializeField, Min(0.01f)] private float musicCrossfadeSeconds = 2f;
 
         // Sounds that are the same everywhere they happen: a button click is a button click whichever panel it is on.
         [Header("Shared cues")]
@@ -61,14 +63,21 @@ namespace BattleArena.Audio
         // Player-set levels live here rather than in a settings UI, so audio starts at the saved level on the very
         // first frame. The serialized fields double as the defaults.
         private const string SfxVolumeKey = "audio.sfxVolume";
-        private const string AmbienceVolumeKey = "audio.ambienceVolume";
+        private const string MusicVolumeKey = "audio.musicVolume";
 
         private AudioSource[] _voices;
         private float[] _voiceStartedAt;
-        private AudioSource _ambienceSource;
 
-        /// <summary>Temporary multiplier on the ambience bed, 1 when nothing is ducking it.</summary>
-        private float _ambienceDuck = 1f;
+        // Two music voices so a change of track is a crossfade: the outgoing one fades on its own level while the
+        // incoming one rises on its own.
+        private AudioSource _musicCurrent;
+        private AudioSource _musicPrevious;
+        private float _musicCurrentFade;
+        private float _musicPreviousFade;
+        private Coroutine _crossfadeRoutine;
+
+        /// <summary>Temporary multiplier on the music, 1 when nothing is ducking it.</summary>
+        private float _musicDuck = 1f;
         private Coroutine _duckRoutine;
 
         /// <summary>
@@ -91,8 +100,8 @@ namespace BattleArena.Audio
         /// <summary>Current SFX level, 0-1. Safe to read with no manager in the scene.</summary>
         public static float SfxVolume => Instance != null ? Instance.sfxVolume : 0f;
 
-        /// <summary>Current ambience level, 0-1. Safe to read with no manager in the scene.</summary>
-        public static float AmbienceVolume => Instance != null ? Instance.ambienceVolume : 0f;
+        /// <summary>Current music level, 0-1. Safe to read with no manager in the scene.</summary>
+        public static float MusicVolume => Instance != null ? Instance.musicVolume : 0f;
 
         /// <summary>A plain button press.</summary>
         public static void PlayClick() => PlayUI(Instance != null ? Instance.uiClick : null);
@@ -157,13 +166,24 @@ namespace BattleArena.Audio
                 Instance.sfxVolume = Mathf.Clamp01(value);
         }
 
-        /// <summary>Sets the ambience level immediately, re-scaling the live bed so the change is heard at once.</summary>
-        public static void SetAmbienceVolume(float value)
+        /// <summary>Sets the music level immediately, re-scaling the playing track so the change is heard at once.</summary>
+        public static void SetMusicVolume(float value)
         {
             if (Instance == null)
                 return;
-            Instance.ambienceVolume = Mathf.Clamp01(value);
-            Instance.ApplyAmbienceVolume();
+            Instance.musicVolume = Mathf.Clamp01(value);
+            Instance.ApplyMusicVolume();
+        }
+
+        /// <summary>
+        /// Crossfades to <paramref name="clip"/>, looping. Asking for the track already playing does nothing, so
+        /// callers can announce their moment without checking what is on.
+        /// </summary>
+        public static void PlayMusic(AudioClip clip)
+        {
+            if (Instance == null || clip == null)
+                return;
+            Instance.CrossfadeTo(clip);
         }
 
         /// <summary>Writes the current levels to PlayerPrefs; call once when a settings panel closes, not per tick.</summary>
@@ -172,16 +192,16 @@ namespace BattleArena.Audio
             if (Instance == null)
                 return;
             PlayerPrefs.SetFloat(SfxVolumeKey, Instance.sfxVolume);
-            PlayerPrefs.SetFloat(AmbienceVolumeKey, Instance.ambienceVolume);
+            PlayerPrefs.SetFloat(MusicVolumeKey, Instance.musicVolume);
             PlayerPrefs.Save();
         }
 
         /// <summary>
-        /// Pulls the ambience bed down for a moment so something else can be heard over it (the victory fanfare),
-        /// then eases it back. Unscaled time throughout, because end screens freeze the clock. A second call
-        /// replaces the first rather than stacking.
+        /// Pulls the music down for a moment so something else can be heard over it (the victory fanfare), then
+        /// eases it back. Unscaled time throughout, because end screens freeze the clock. A second call replaces the
+        /// first rather than stacking.
         /// </summary>
-        public static void DuckAmbience(float toFraction, float holdSeconds, float fadeSeconds = 0.8f)
+        public static void DuckMusic(float toFraction, float holdSeconds, float fadeSeconds = 0.8f)
         {
             if (Instance == null)
                 return;
@@ -192,8 +212,8 @@ namespace BattleArena.Audio
         }
 
         /// <summary>
-        /// Restores saved levels, then builds the voice pool and starts the ambience, in that order so the bed
-        /// starts at the player's own volume. The guard makes a second bind (after a domain reload) harmless.
+        /// Restores saved levels, then builds the voice pool and starts the music, in that order so the music starts
+        /// at the player's own volume. The guard makes a second bind (after a domain reload) harmless.
         /// </summary>
         protected override void OnBind()
         {
@@ -201,9 +221,10 @@ namespace BattleArena.Audio
                 return;
 
             sfxVolume = Mathf.Clamp01(PlayerPrefs.GetFloat(SfxVolumeKey, sfxVolume));
-            ambienceVolume = Mathf.Clamp01(PlayerPrefs.GetFloat(AmbienceVolumeKey, ambienceVolume));
+            musicVolume = Mathf.Clamp01(PlayerPrefs.GetFloat(MusicVolumeKey, musicVolume));
             BuildVoices();
-            StartAmbience();
+            if (music != null)
+                StartMusic(music);
         }
 
         private void BuildVoices()
@@ -226,53 +247,111 @@ namespace BattleArena.Audio
             }
         }
 
-        /// <summary>Starts the looping bed, flat stereo: a bed that panned with the action would draw attention to itself.</summary>
-        private void StartAmbience()
+        /// <summary>A looping music voice, flat stereo: music that panned with the action would draw attention to itself.</summary>
+        private AudioSource CreateMusicVoice(string voiceName)
         {
-            if (ambienceLoop == null)
-                return;
-
-            _ambienceSource = new GameObject("Ambience").AddComponent<AudioSource>();
-            _ambienceSource.transform.SetParent(transform, false);
-            _ambienceSource.clip = ambienceLoop;
-            _ambienceSource.loop = true;
-            _ambienceSource.playOnAwake = false;
-            _ambienceSource.spatialBlend = 0f;
-            ApplyAmbienceVolume();
-            _ambienceSource.Play();
+            var source = new GameObject(voiceName).AddComponent<AudioSource>();
+            source.transform.SetParent(transform, false);
+            source.loop = true;
+            source.playOnAwake = false;
+            source.spatialBlend = 0f;
+            return source;
         }
 
-        /// <summary>The bed's actual level: the player's setting times the current duck, kept apart so a duck never touches the setting.</summary>
-        private void ApplyAmbienceVolume()
+        /// <summary>Starts a track at full level with no fade: the first one plays from the scene's first frame.</summary>
+        private void StartMusic(AudioClip clip)
         {
-            if (_ambienceSource != null)
-                _ambienceSource.volume = ambienceVolume * masterVolume * _ambienceDuck;
+            if (_musicCurrent == null)
+                _musicCurrent = CreateMusicVoice("Music A");
+            _musicCurrent.clip = clip;
+            _musicCurrentFade = 1f;
+            ApplyMusicVolume();
+            _musicCurrent.Play();
+        }
+
+        private void CrossfadeTo(AudioClip clip)
+        {
+            if (_musicCurrent != null && _musicCurrent.clip == clip && _musicCurrent.isPlaying)
+                return;
+            if (_musicCurrent == null)
+            {
+                StartMusic(clip);
+                return;
+            }
+
+            if (_musicPrevious == null)
+                _musicPrevious = CreateMusicVoice("Music B");
+            if (_crossfadeRoutine != null)
+                StopCoroutine(_crossfadeRoutine);
+
+            // The incoming track takes the idle voice; the outgoing one keeps playing and fades from where it is.
+            (_musicCurrent, _musicPrevious) = (_musicPrevious, _musicCurrent);
+            _musicPreviousFade = _musicCurrentFade;
+            _musicCurrentFade = 0f;
+            _musicCurrent.clip = clip;
+            ApplyMusicVolume();
+            _musicCurrent.Play();
+            _crossfadeRoutine = StartCoroutine(CrossfadeRoutine());
+        }
+
+        private IEnumerator CrossfadeRoutine()
+        {
+            // Unscaled: the boss can appear just before a level-up card freezes the clock.
+            var outFrom = _musicPreviousFade;
+            for (var t = 0f; t < musicCrossfadeSeconds; t += Time.unscaledDeltaTime)
+            {
+                var k = t / musicCrossfadeSeconds;
+                _musicCurrentFade = k;
+                _musicPreviousFade = outFrom * (1f - k);
+                ApplyMusicVolume();
+                yield return null;
+            }
+
+            _musicCurrentFade = 1f;
+            _musicPreviousFade = 0f;
+            ApplyMusicVolume();
+            _musicPrevious.Stop();
+            _musicPrevious.clip = null;
+            _crossfadeRoutine = null;
+        }
+
+        /// <summary>
+        /// Each music voice's level: the player's setting times its own fade times the current duck, kept apart so a
+        /// fade or duck never touches the setting.
+        /// </summary>
+        private void ApplyMusicVolume()
+        {
+            var level = musicVolume * masterVolume * _musicDuck;
+            if (_musicCurrent != null)
+                _musicCurrent.volume = level * _musicCurrentFade;
+            if (_musicPrevious != null)
+                _musicPrevious.volume = level * _musicPreviousFade;
         }
 
         private IEnumerator DuckRoutine(float to, float hold, float fade)
         {
             // Down fast, so the cue is clear from its first note; back up slowly, so the return is not itself an event.
-            var from = _ambienceDuck;
+            var from = _musicDuck;
             for (var t = 0f; t < 0.15f; t += Time.unscaledDeltaTime)
             {
-                _ambienceDuck = Mathf.Lerp(from, to, t / 0.15f);
-                ApplyAmbienceVolume();
+                _musicDuck = Mathf.Lerp(from, to, t / 0.15f);
+                ApplyMusicVolume();
                 yield return null;
             }
-            _ambienceDuck = to;
-            ApplyAmbienceVolume();
+            _musicDuck = to;
+            ApplyMusicVolume();
 
             if (hold > 0f)
                 yield return new WaitForSecondsRealtime(hold);
 
             for (var t = 0f; t < fade; t += Time.unscaledDeltaTime)
             {
-                _ambienceDuck = Mathf.Lerp(to, 1f, t / fade);
-                ApplyAmbienceVolume();
+                _musicDuck = Mathf.Lerp(to, 1f, t / fade);
+                ApplyMusicVolume();
                 yield return null;
             }
-            _ambienceDuck = 1f;
-            ApplyAmbienceVolume();
+            _musicDuck = 1f;
+            ApplyMusicVolume();
             _duckRoutine = null;
         }
 

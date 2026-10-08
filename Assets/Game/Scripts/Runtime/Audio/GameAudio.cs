@@ -31,11 +31,13 @@ namespace BattleArena.Audio
         [SerializeField] private SoundEvent missionCompleted;
         [SerializeField] private SoundEvent missionFailed;
         [SerializeField] private SoundEvent bossAppears;
+        [Tooltip("Crossfaded in when the boss appears, replacing the match music until the scene reloads.")]
+        [SerializeField] private AudioClip bossMusic;
 
         [Header("Match end")]
         [SerializeField] private SoundEvent victory;
         [SerializeField] private SoundEvent defeat;
-        [Tooltip("How long the ambience stays pulled down under the victory or defeat sting.")]
+        [Tooltip("How long the music stays pulled down under the victory or defeat sting.")]
         [SerializeField, Min(0f)] private float endStingDuckSeconds = 4f;
 
         private void OnEnable()
@@ -86,7 +88,11 @@ namespace BattleArena.Audio
 
         private void OnMissionEnded(MissionEndedEvent evt) => AudioManager.PlayUI(evt.Succeeded ? missionCompleted : missionFailed);
 
-        private void OnBossSpawned(BossSpawnedEvent evt) => AudioManager.PlayUI(bossAppears);
+        private void OnBossSpawned(BossSpawnedEvent evt)
+        {
+            AudioManager.PlayUI(bossAppears);
+            AudioManager.PlayMusic(bossMusic);
+        }
 
         private void OnGameStateChanged(GameStateChangedEvent evt)
         {
@@ -99,7 +105,7 @@ namespace BattleArena.Audio
             if (sting == null)
                 return;
 
-            AudioManager.DuckAmbience(0.3f, endStingDuckSeconds);
+            AudioManager.DuckMusic(0.3f, endStingDuckSeconds);
             AudioManager.PlayUI(sting);
         }
     }

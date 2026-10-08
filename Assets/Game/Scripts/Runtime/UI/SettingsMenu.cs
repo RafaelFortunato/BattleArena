@@ -6,7 +6,7 @@ using UnityEngine.UIElements;
 namespace BattleArena.UI
 {
     /// <summary>
-    /// The settings dialog over the main and pause menus: sound effect and ambience volume sliders and a credit line.
+    /// The settings dialog over the main and pause menus: sound effect and music volume sliders and a credit line.
     ///
     /// The sliders drive AudioManager live, so the player hears what they are dragging. Saving is deliberately not
     /// done per tick (PlayerPrefs writes to disk, and a drag would write once per pixel); it happens once on close.
@@ -28,9 +28,9 @@ namespace BattleArena.UI
 
         private VisualElement _screen;
         private Slider _sfxSlider;
-        private Slider _ambienceSlider;
+        private Slider _musicSlider;
         private Label _sfxValue;
-        private Label _ambienceValue;
+        private Label _musicValue;
         private Label _credit;
         private Button _closeButton;
         private Button _doneButton;
@@ -44,9 +44,9 @@ namespace BattleArena.UI
             var root = GetComponent<UIDocument>().rootVisualElement;
             _screen = root.Q("settings-menu");
             _sfxSlider = root.Q<Slider>("sfx-slider");
-            _ambienceSlider = root.Q<Slider>("ambience-slider");
+            _musicSlider = root.Q<Slider>("music-slider");
             _sfxValue = root.Q<Label>("sfx-value");
-            _ambienceValue = root.Q<Label>("ambience-value");
+            _musicValue = root.Q<Label>("music-value");
             _credit = root.Q<Label>("settings-credit");
             _closeButton = root.Q<Button>("settings-close");
             _doneButton = root.Q<Button>("settings-done");
@@ -54,7 +54,7 @@ namespace BattleArena.UI
             _closeButton.clicked += Close;
             _doneButton.clicked += Close;
             _sfxSlider.RegisterValueChangedCallback(OnSfxChanged);
-            _ambienceSlider.RegisterValueChangedCallback(OnAmbienceChanged);
+            _musicSlider.RegisterValueChangedCallback(OnMusicChanged);
             _screen.RegisterCallback<PointerDownEvent>(OnBackdropPointerDown);
 
             // From the build's own version, so it cannot drift from Player Settings the way a typed string would.
@@ -66,7 +66,7 @@ namespace BattleArena.UI
             _closeButton.clicked -= Close;
             _doneButton.clicked -= Close;
             _sfxSlider.UnregisterValueChangedCallback(OnSfxChanged);
-            _ambienceSlider.UnregisterValueChangedCallback(OnAmbienceChanged);
+            _musicSlider.UnregisterValueChangedCallback(OnMusicChanged);
             _screen.UnregisterCallback<PointerDownEvent>(OnBackdropPointerDown);
             if (IsOpen)
                 Close();
@@ -79,7 +79,7 @@ namespace BattleArena.UI
 
             // Read fresh on every open: the manager is the authority on what is playing, not the slider's last position.
             _sfxSlider.SetValueWithoutNotify(AudioManager.SfxVolume);
-            _ambienceSlider.SetValueWithoutNotify(AudioManager.AmbienceVolume);
+            _musicSlider.SetValueWithoutNotify(AudioManager.MusicVolume);
             RefreshReadouts();
 
             _returnFocus = _screen.focusController?.focusedElement;
@@ -127,16 +127,16 @@ namespace BattleArena.UI
             AudioManager.PlayClick();
         }
 
-        private void OnAmbienceChanged(ChangeEvent<float> evt)
+        private void OnMusicChanged(ChangeEvent<float> evt)
         {
-            AudioManager.SetAmbienceVolume(evt.newValue);
+            AudioManager.SetMusicVolume(evt.newValue);
             RefreshReadouts();
         }
 
         private void RefreshReadouts()
         {
             _sfxValue.text = Mathf.RoundToInt(AudioManager.SfxVolume * 100f) + "%";
-            _ambienceValue.text = Mathf.RoundToInt(AudioManager.AmbienceVolume * 100f) + "%";
+            _musicValue.text = Mathf.RoundToInt(AudioManager.MusicVolume * 100f) + "%";
         }
     }
 }

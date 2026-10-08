@@ -19,7 +19,7 @@ namespace BattleArena.Spells
         [SerializeField, Min(0)] private int pierce;
         [Tooltip("Passes through every enemy (walls still stop it); the Pierce stat then has nothing to add.")]
         [SerializeField] private bool infinitePierce;
-        [Tooltip("When above zero, projectiles explode on impact.")]
+        [Tooltip("When above zero, projectiles explode on impact, and again on each enemy Pierce carries them through.")]
         [SerializeField, Min(0f)] private float explosionRadius;
         [SerializeField, Min(1f)] private float targetingRange = 18f;
         [Tooltip("When above zero, projectiles fly level at this height above the caster's feet instead of aiming down " +
@@ -48,12 +48,14 @@ namespace BattleArena.Spells
             var count = projectileCount + context.Modifiers.ExtraProjectiles;
             var totalPierce = infinitePierce ? int.MaxValue : pierce + context.Modifiers.ExtraPierce;
             var radius = context.Area(explosionRadius);
+            // A level flyer's blasts go off on the floor under it, not at flight height.
+            var groundHeight = flightHeight > 0f ? context.Caster.Transform.position.y : float.NegativeInfinity;
             var firstAngle = -spreadAngle * (count - 1) * 0.5f;
             for (var i = 0; i < count; i++)
             {
                 var direction = Quaternion.AngleAxis(firstAngle + spreadAngle * i, Vector3.up) * aim;
                 var projectile = PoolManager.Spawn(projectilePrefab, origin, Quaternion.LookRotation(direction));
-                projectile.Launch(direction, speed, damage, totalPierce, radius, context.TargetMask);
+                projectile.Launch(direction, speed, damage, totalPierce, radius, context.TargetMask, groundHeight);
             }
 
             return true;

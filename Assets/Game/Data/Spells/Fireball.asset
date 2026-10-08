@@ -28,4 +28,4 @@ MonoBehaviour:
   infinitePierce: 0
   explosionRadius: 3.5
   targetingRange: 18
-  flightHeight: 0
+  flightHeight: 1.1

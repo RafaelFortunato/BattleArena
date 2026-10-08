@@ -57,7 +57,7 @@
 .icon-heart { background-image: url("project://database/Assets/Game/UI/Icons/ui-heart.svg"); }
 .icon-settings { background-image: url("project://database/Assets/Game/UI/Icons/ui-settings.svg"); }
 .icon-volume { background-image: url("project://database/Assets/Game/UI/Icons/ui-volume.svg"); }
-.icon-ambience { background-image: url("project://database/Assets/Game/UI/Icons/ui-ambience.svg"); }
+.icon-music { background-image: url("project://database/Assets/Game/UI/Icons/ui-music.svg"); }
 .icon-close { background-image: url("project://database/Assets/Game/UI/Icons/ui-close.svg"); }
 .icon-stat-area { background-image: url("project://database/Assets/Game/UI/Icons/stat-area.svg"); }
 .icon-stat-duration { background-image: url("project://database/Assets/Game/UI/Icons/stat-duration.svg"); }
@@ -851,6 +851,8 @@
     padding-top: 3px;
     font-size: 30px;
     letter-spacing: 3px;
+    /* Synthetic bold on top of Baloo ExtraBold: the dark outline eats into the fill, so thicken the glyphs. */
+    -unity-font-style: bold;
     -unity-text-outline-width: 2px;
     -unity-text-outline-color: rgb(20, 22, 31);
     text-shadow: 0 3px 0 rgb(20, 22, 31);

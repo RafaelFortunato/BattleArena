@@ -24,14 +24,17 @@ namespace BattleArena.Editor.ContentBuilder
     {
         private const string SfxFolder = Root + "/Audio/Sfx";
         private const string SoundEventsFolder = DataFolder + "/Audio";
-        private const string AmbienceClip = "ambience_forest";
+        private const string MusicFolder = Root + "/Audio/Music";
+        // "Battle Theme 4" by Alexandr Zhelanov (CC-BY, credited in the README) and "Determined Pursuit" by Emma_MA (CC0).
+        private const string MatchMusic = MusicFolder + "/battle_theme_4.mp3";
+        private const string BossMusic = MusicFolder + "/determined_pursuit_loop.wav";
 
-        // Heard flat (menus, stings, the player's own state, the ambience bed): keep the stereo image. Everything
+        // Heard flat (menus, stings, the player's own state): keep the stereo image. Everything
         // placed in the world is folded to mono, which 3D panning wants anyway, and it halves the memory.
         private static readonly HashSet<string> StereoClips = new()
         {
             "ui_click", "ui_hover", "level_up", "upgrade_pick", "mission_start", "mission_complete", "mission_failed",
-            "victory", "defeat", "boss_roar", "player_hurt", "player_death", AmbienceClip
+            "victory", "defeat", "boss_roar", "player_hurt", "player_death"
         };
 
         private sealed class SoundSet
@@ -165,7 +168,7 @@ namespace BattleArena.Editor.ContentBuilder
             var audioObject = new GameObject("Audio");
             var manager = audioObject.AddComponent<AudioManager>();
             SerializedSetter.For(manager)
-                .Set("ambienceLoop", LoadSoundClips(AmbienceClip).FirstOrDefault())
+                .Set("music", LoadMusic(MatchMusic))
                 .Set("uiClick", s["ui_click"])
                 .Set("uiHover", s["ui_hover"])
                 .Apply();
@@ -184,6 +187,7 @@ namespace BattleArena.Editor.ContentBuilder
                 .Set("missionCompleted", s["mission_complete"])
                 .Set("missionFailed", s["mission_failed"])
                 .Set("bossAppears", s["boss_roar"])
+                .Set("bossMusic", LoadMusic(BossMusic))
                 .Set("victory", s["victory"])
                 .Set("defeat", s["defeat"])
                 .Apply();
@@ -206,7 +210,7 @@ namespace BattleArena.Editor.ContentBuilder
             set.Add(name, sound);
         }
 
-        /// <summary>The takes of one sound, imported for the web: Vorbis, mono unless heard flat, decompressed up front when short.</summary>
+        /// <summary>The takes of one sound, imported for the web: Vorbis, mono unless heard flat, decompressed up front (they are all short).</summary>
         private static AudioClip[] LoadSoundClips(string name)
         {
             var paths = Directory.GetFiles(SfxFolder, $"{name}_*.wav").Select(p => p.Replace('\\', '/')).OrderBy(p => p).ToArray();
@@ -220,12 +224,12 @@ namespace BattleArena.Editor.ContentBuilder
 
                 var mono = !StereoClips.Contains(name);
                 var settings = importer.defaultSampleSettings;
-                var loadType = name == AmbienceClip ? AudioClipLoadType.CompressedInMemory : AudioClipLoadType.DecompressOnLoad;
-                if (importer.forceToMono == mono && settings.loadType == loadType && settings.compressionFormat == AudioCompressionFormat.Vorbis)
+                if (importer.forceToMono == mono && settings.loadType == AudioClipLoadType.DecompressOnLoad &&
+                    settings.compressionFormat == AudioCompressionFormat.Vorbis)
                     continue;
 
                 importer.forceToMono = mono;
-                settings.loadType = loadType;
+                settings.loadType = AudioClipLoadType.DecompressOnLoad;
                 settings.compressionFormat = AudioCompressionFormat.Vorbis;
                 settings.quality = 0.6f;
                 importer.defaultSampleSettings = settings;
@@ -233,6 +237,34 @@ namespace BattleArena.Editor.ContentBuilder
             }
 
             return paths.Select(AssetDatabase.LoadAssetAtPath<AudioClip>).Where(c => c != null).ToArray();
+        }
+
+        /// <summary>
+        /// A music track imported for the web: stereo Vorbis kept compressed in memory (decompressed, a few minutes
+        /// of music would cost tens of megabytes), loaded in the background so it never stalls the first frame.
+        /// </summary>
+        private static AudioClip LoadMusic(string path)
+        {
+            if (AssetImporter.GetAtPath(path) is not AudioImporter importer)
+            {
+                Debug.LogWarning($"No music found at {path}");
+                return null;
+            }
+
+            var settings = importer.defaultSampleSettings;
+            if (importer.forceToMono || !importer.loadInBackground || settings.loadType != AudioClipLoadType.CompressedInMemory ||
+                settings.compressionFormat != AudioCompressionFormat.Vorbis || !Mathf.Approximately(settings.quality, 0.5f))
+            {
+                importer.forceToMono = false;
+                importer.loadInBackground = true;
+                settings.loadType = AudioClipLoadType.CompressedInMemory;
+                settings.compressionFormat = AudioCompressionFormat.Vorbis;
+                settings.quality = 0.5f;
+                importer.defaultSampleSettings = settings;
+                importer.SaveAndReimport();
+            }
+
+            return AssetDatabase.LoadAssetAtPath<AudioClip>(path);
         }
 
         private static void EditPrefab(string path, Action<GameObject> edit)
