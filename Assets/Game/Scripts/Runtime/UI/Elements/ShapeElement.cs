@@ -31,9 +31,9 @@ namespace BattleArena.UI.Elements
         private ShapeKind _kind;
         private Color _fill = new(0.08f, 0.09f, 0.12f, 0.92f);
         private Color _border = Color.white;
-        private float _borderWidth = 4f;
+        private float _borderWidth = 3.33f;
         private Color _inner = Color.clear;
-        private float _innerInset = 10f;
+        private float _innerInset = 8.33f;
         // Data-driven colours (e.g. a spell's colour) that USS cannot express; they win over the style sheet.
         private Color? _fillOverride;
         private Color? _borderOverride;

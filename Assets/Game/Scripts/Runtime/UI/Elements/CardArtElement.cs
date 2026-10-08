@@ -20,7 +20,7 @@ namespace BattleArena.UI.Elements
     public partial class CardArtElement : VisualElement
     {
         private const float RightEdgeRatio = 0.815f; // Right side height relative to the left side.
-        private const float EdgeWidth = 6f;
+        private const float EdgeWidth = 5f;
         private static readonly Color Base = new(0.078f, 0.086f, 0.122f);
         private static readonly Vector2[] Polygon = new Vector2[4];
 
@@ -102,8 +102,8 @@ namespace BattleArena.UI.Elements
 
         private void DrawDots(Painter2D painter, float w, float h)
         {
-            const float spacing = 22f;
-            const float radius = 2.5f;
+            const float spacing = 18.33f;
+            const float radius = 2.08f;
 
             painter.BeginPath();
             for (var y = spacing * 0.5f; y < h; y += spacing)
@@ -122,23 +122,23 @@ namespace BattleArena.UI.Elements
         private void DrawHexagons(Painter2D painter, float w, float h)
         {
             // 36 × 62 tile: a hexagon plus the stem that links it to the one below.
-            const float tileW = 36f;
-            const float tileH = 62f;
+            const float tileW = 30f;
+            const float tileH = 51.67f;
 
             painter.BeginPath();
             for (var ty = 0f; ty < h; ty += tileH)
             for (var tx = 0f; tx < w; tx += tileW)
             {
-                Segment(painter, tx + 18f, ty + 1f, tx + 35f, ty + 11f, w, h);
-                Segment(painter, tx + 35f, ty + 11f, tx + 35f, ty + 31f, w, h);
-                Segment(painter, tx + 35f, ty + 31f, tx + 18f, ty + 41f, w, h);
-                Segment(painter, tx + 18f, ty + 41f, tx + 1f, ty + 31f, w, h);
-                Segment(painter, tx + 1f, ty + 31f, tx + 1f, ty + 11f, w, h);
-                Segment(painter, tx + 1f, ty + 11f, tx + 18f, ty + 1f, w, h);
-                Segment(painter, tx + 18f, ty + 41f, tx + 18f, ty + 62f, w, h);
+                Segment(painter, tx + 15f, ty + 0.83f, tx + 29.17f, ty + 9.17f, w, h);
+                Segment(painter, tx + 29.17f, ty + 9.17f, tx + 29.17f, ty + 25.83f, w, h);
+                Segment(painter, tx + 29.17f, ty + 25.83f, tx + 15f, ty + 34.17f, w, h);
+                Segment(painter, tx + 15f, ty + 34.17f, tx + 0.83f, ty + 25.83f, w, h);
+                Segment(painter, tx + 0.83f, ty + 25.83f, tx + 0.83f, ty + 9.17f, w, h);
+                Segment(painter, tx + 0.83f, ty + 9.17f, tx + 15f, ty + 0.83f, w, h);
+                Segment(painter, tx + 15f, ty + 34.17f, tx + 15f, ty + 51.67f, w, h);
             }
             painter.strokeColor = WithAlpha(_accent, 0.24f);
-            painter.lineWidth = 2f;
+            painter.lineWidth = 1.67f;
             painter.lineCap = LineCap.Round;
             painter.Stroke();
         }
@@ -154,7 +154,7 @@ namespace BattleArena.UI.Elements
             for (var s = spacing * 0.5f; s < w + h; s += spacing)
                 Segment(painter, s, 0f, s - h, h, w, h); // x + y = s
             painter.strokeColor = WithAlpha(_accent, 0.24f);
-            painter.lineWidth = 2f;
+            painter.lineWidth = 1.67f;
             painter.lineCap = LineCap.Round;
             painter.Stroke();
 

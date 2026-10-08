@@ -383,7 +383,7 @@ namespace BattleArena.Editor.ContentBuilder
             var panelSettings = LoadOrCreateAsset<PanelSettings>($"{UIFolder}/GamePanelSettings.asset");
             panelSettings.themeStyleSheet = AssetDatabase.LoadAssetAtPath<ThemeStyleSheet>($"{UIFolder}/GameTheme.tss");
             panelSettings.scaleMode = PanelScaleMode.ScaleWithScreenSize;
-            panelSettings.referenceResolution = new Vector2Int(1920, 1080);
+            panelSettings.referenceResolution = new Vector2Int(1600, 900);
             panelSettings.screenMatchMode = PanelScreenMatchMode.MatchWidthOrHeight;
             panelSettings.match = 0.5f;
             EditorUtility.SetDirty(panelSettings);

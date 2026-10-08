@@ -71,10 +71,10 @@
 .icon-arrow-right { background-image: url("project://database/Assets/Game/UI/Icons/ui-arrow-right.svg"); }
 
 .chip {
-    padding: 4px 12px;
-    border-radius: 14px;
-    font-size: 13px;
-    letter-spacing: 2px;
+    padding: 3.33px 10px;
+    border-radius: 11.67px;
+    font-size: 10.83px;
+    letter-spacing: 1.67px;
     -unity-text-align: middle-center;
 }
 
@@ -89,32 +89,32 @@
 }
 
 .keycap {
-    min-width: 38px;
-    height: 36px;
-    padding: 0 8px;
-    margin-right: 5px;
-    border-width: 2px;
+    min-width: 31.67px;
+    height: 30px;
+    padding: 0 6.67px;
+    margin-right: 4.17px;
+    border-width: 1.67px;
     border-color: rgba(255, 255, 255, 0.85);
-    border-radius: 8px;
+    border-radius: 6.67px;
     background-color: rgba(12, 14, 22, 0.8);
-    font-size: 16px;
+    font-size: 13.33px;
     -unity-text-align: middle-center;
     align-items: center;
     justify-content: center;
 }
 
 .keycap-small {
-    min-width: 30px;
-    width: 30px;
-    height: 26px;
+    min-width: 25px;
+    width: 25px;
+    height: 21.67px;
     padding: 0;
     margin-right: 0;
-    border-radius: 6px;
-    font-size: 14px;
+    border-radius: 5px;
+    font-size: 11.67px;
 }
 
 .keycap-wide {
-    padding: 0 10px;
+    padding: 0 8.33px;
 }
 
 .keycap-accent {
@@ -123,8 +123,8 @@
 }
 
 .keycap-icon {
-    width: 16px;
-    height: 16px;
+    width: 13.33px;
+    height: 13.33px;
 }
 
 .ticks {
@@ -138,13 +138,13 @@
 }
 
 .tick {
-    width: 2px;
+    width: 1.67px;
     height: 100%;
     background-color: rgba(8, 10, 16, 0.35);
 }
 
 .tick-wide {
-    width: 3px;
+    width: 2.5px;
     background-color: rgba(8, 10, 16, 0.45);
 }
 
@@ -172,7 +172,7 @@
     right: 0;
     bottom: 0;
     -unity-text-align: middle-center;
-    text-shadow: 0 2px 0 rgba(0, 0, 0, 0.7);
+    text-shadow: 0 1.67px 0 rgba(0, 0, 0, 0.7);
 }
 
 /* ================================================================ Buttons */
@@ -181,9 +181,9 @@
     margin: 0;
     padding: 0;
     border-width: 0;
-    border-radius: 16px;
+    border-radius: 13.33px;
     color: rgb(255, 255, 255);
-    letter-spacing: 3px;
+    letter-spacing: 2.5px;
     -unity-text-align: middle-center;
     transition-property: translate, background-color;
     transition-duration: 0.08s;
@@ -191,7 +191,7 @@
 
 .btn-primary {
     background-color: rgb(124, 77, 255);
-    border-bottom-width: 6px;
+    border-bottom-width: 5px;
     border-bottom-color: rgb(77, 48, 158);
 }
 
@@ -201,12 +201,12 @@
 }
 
 .btn-primary:active {
-    translate: 0 3px;
-    border-bottom-width: 3px;
+    translate: 0 2.5px;
+    border-bottom-width: 2.5px;
 }
 
 .btn-secondary {
-    border-width: 3px;
+    border-width: 2.5px;
     border-color: rgba(255, 255, 255, 0.85);
     background-color: rgba(8, 10, 16, 0.6);
 }
@@ -217,33 +217,33 @@
 }
 
 .btn-secondary:active {
-    translate: 0 2px;
+    translate: 0 1.67px;
 }
 
 .btn-play {
-    width: 340px;
-    height: 84px;
-    margin-top: 52px;
-    font-size: 36px;
+    width: 283.33px;
+    height: 70px;
+    margin-top: 43.33px;
+    font-size: 30px;
 }
 
 .btn-menu-settings {
-    width: 340px;
-    height: 64px;
-    margin-top: 16px;
-    font-size: 26px;
+    width: 283.33px;
+    height: 53.33px;
+    margin-top: 13.33px;
+    font-size: 21.67px;
 }
 
 .btn-large {
-    width: 340px;
-    height: 84px;
-    font-size: 34px;
+    width: 283.33px;
+    height: 70px;
+    font-size: 28.33px;
 }
 
 .btn-medium {
-    width: 340px;
-    height: 72px;
-    font-size: 28px;
+    width: 283.33px;
+    height: 60px;
+    font-size: 23.33px;
 }
 
 /* ================================================================ HUD */
@@ -262,13 +262,13 @@
     position: absolute;
     left: 0;
     right: 0;
-    top: 18px;
+    top: 15px;
     align-items: center;
 }
 
 .timer-plate {
-    width: 260px;
-    height: 104px;
+    width: 216.67px;
+    height: 86.67px;
     align-items: center;
     justify-content: center;
 }
@@ -276,34 +276,34 @@
 .timer-plate-shape {
     --shape-fill: rgba(20, 22, 31, 0.94);
     --shape-border: rgb(255, 255, 255);
-    --shape-border-width: 4;
+    --shape-border-width: 3.33;
     --shape-inner: rgba(124, 77, 255, 0.55);
-    --shape-inner-inset: 9;
+    --shape-inner-inset: 7.5;
 }
 
 .timer-label {
-    font-size: 64px;
-    letter-spacing: 2px;
-    padding-top: 8px;
+    font-size: 53.33px;
+    letter-spacing: 1.67px;
+    padding-top: 6.67px;
     -unity-text-align: middle-center;
-    text-shadow: 0 5px 0 rgb(77, 48, 158);
+    text-shadow: 0 4.17px 0 rgb(77, 48, 158);
 }
 
 .timeline {
-    width: 940px;
-    height: 60px;
-    margin-top: 12px;
+    width: 783.33px;
+    height: 50px;
+    margin-top: 10px;
 }
 
 .timeline-track {
     position: absolute;
-    left: 28px;
-    right: 30px;
-    top: 21px;
-    height: 18px;
-    border-width: 3px;
+    left: 23.33px;
+    right: 25px;
+    top: 17.5px;
+    height: 15px;
+    border-width: 2.5px;
     border-color: rgb(20, 22, 31);
-    border-radius: 9px;
+    border-radius: 7.5px;
     background-color: rgba(8, 10, 16, 0.85);
     overflow: hidden;
 }
@@ -320,48 +320,48 @@
 .timeline-start {
     position: absolute;
     left: 0;
-    top: 8px;
-    width: 44px;
-    height: 44px;
-    border-width: 3px;
+    top: 6.67px;
+    width: 36.67px;
+    height: 36.67px;
+    border-width: 2.5px;
     border-color: rgb(255, 255, 255);
-    border-radius: 22px;
+    border-radius: 18.33px;
     background-color: rgb(20, 22, 31);
     align-items: center;
     justify-content: center;
 }
 
 .timeline-start .icon {
-    width: 18px;
-    height: 18px;
-    margin-left: 2px;
+    width: 15px;
+    height: 15px;
+    margin-left: 1.67px;
 }
 
 .timeline-markers {
     position: absolute;
-    left: 28px;
-    right: 30px;
+    left: 23.33px;
+    right: 25px;
     top: 0;
     bottom: 0;
 }
 
 .timeline-marker {
     position: absolute;
-    top: 10px;
-    width: 40px;
-    height: 40px;
+    top: 8.33px;
+    width: 33.33px;
+    height: 33.33px;
     translate: -50% 0;
-    border-width: 3px;
+    border-width: 2.5px;
     border-color: rgb(20, 22, 31);
-    border-radius: 20px;
+    border-radius: 16.67px;
     background-color: rgb(242, 193, 78);
     align-items: center;
     justify-content: center;
 }
 
 .timeline-marker .icon {
-    width: 18px;
-    height: 18px;
+    width: 15px;
+    height: 15px;
     -unity-background-image-tint-color: rgb(20, 22, 31);
 }
 
@@ -371,32 +371,32 @@
 
 .timeline-playhead {
     position: absolute;
-    top: 6px;
-    width: 20px;
-    height: 12px;
+    top: 5px;
+    width: 16.67px;
+    height: 10px;
     translate: -50% 0;
     --shape-fill: rgb(255, 255, 255);
     --shape-border: rgb(20, 22, 31);
-    --shape-border-width: 2;
+    --shape-border-width: 1.67;
 }
 
 .timeline-boss {
     position: absolute;
     right: 0;
     top: 0;
-    width: 60px;
-    height: 60px;
-    border-width: 4px;
+    width: 50px;
+    height: 50px;
+    border-width: 3.33px;
     border-color: rgb(255, 90, 78);
-    border-radius: 30px;
+    border-radius: 25px;
     background-color: rgb(20, 22, 31);
     align-items: center;
     justify-content: center;
 }
 
 .timeline-boss .icon {
-    width: 30px;
-    height: 30px;
+    width: 25px;
+    height: 25px;
     -unity-background-image-tint-color: rgb(255, 90, 78);
 }
 
@@ -406,7 +406,7 @@
     position: absolute;
     left: 0;
     right: 0;
-    top: 26px;
+    top: 21.67px;
     align-items: center;
 }
 
@@ -416,8 +416,8 @@
 }
 
 .boss-badge {
-    width: 58px;
-    height: 64px;
+    width: 48.33px;
+    height: 53.33px;
     align-items: center;
     justify-content: center;
 }
@@ -425,30 +425,30 @@
 .boss-badge-shape {
     --shape-fill: rgb(20, 22, 31);
     --shape-border: rgb(255, 90, 78);
-    --shape-border-width: 4;
+    --shape-border-width: 3.33;
 }
 
 .boss-badge-icon {
-    width: 30px;
-    height: 30px;
+    width: 25px;
+    height: 25px;
     -unity-background-image-tint-color: rgb(255, 90, 78);
 }
 
 .boss-name {
-    margin-left: 14px;
-    padding-top: 6px;
-    font-size: 46px;
-    letter-spacing: 2px;
-    text-shadow: 0 5px 0 rgb(90, 20, 16);
+    margin-left: 11.67px;
+    padding-top: 5px;
+    font-size: 38.33px;
+    letter-spacing: 1.67px;
+    text-shadow: 0 4.17px 0 rgb(90, 20, 16);
 }
 
 .boss-bar {
-    width: 1100px;
-    height: 40px;
-    margin-top: 10px;
-    border-width: 4px;
+    width: 916.67px;
+    height: 33.33px;
+    margin-top: 8.33px;
+    border-width: 3.33px;
     border-color: rgb(20, 22, 31);
-    border-radius: 20px;
+    border-radius: 16.67px;
     background-color: rgb(58, 18, 18);
     overflow: hidden;
 }
@@ -471,27 +471,27 @@
 }
 
 .boss-highlight {
-    height: 9px;
+    height: 7.5px;
     background-color: rgb(255, 138, 128);
 }
 
 .boss-health-label {
-    font-size: 17px;
-    letter-spacing: 1px;
+    font-size: 14.17px;
+    letter-spacing: 0.83px;
 }
 
 /* ---------- Mission */
 
 .mission-panel {
     position: absolute;
-    right: 32px;
-    top: 30px;
-    width: 400px;
-    padding: 16px 18px 18px 18px;
+    right: 26.67px;
+    top: 25px;
+    width: 333.33px;
+    padding: 13.33px 15px 15px 15px;
     background-color: rgba(8, 10, 16, 0.78);
-    border-width: 2px;
+    border-width: 1.67px;
     border-color: rgba(255, 255, 255, 0.14);
-    border-radius: 16px;
+    border-radius: 13.33px;
 }
 
 .mission-header {
@@ -501,19 +501,19 @@
 }
 
 .mission-timer {
-    font-size: 22px;
+    font-size: 18.33px;
     color: rgb(242, 193, 78);
 }
 
 .mission-title {
-    margin-top: 8px;
-    font-size: 30px;
+    margin-top: 6.67px;
+    font-size: 25px;
     white-space: normal;
 }
 
 .mission-description {
-    margin-top: 4px;
-    font-size: 16px;
+    margin-top: 3.33px;
+    font-size: 13.33px;
     color: rgb(201, 207, 220);
     white-space: normal;
 }
@@ -521,25 +521,25 @@
 .mission-progress {
     flex-direction: row;
     align-items: center;
-    margin-top: 12px;
+    margin-top: 10px;
 }
 
 .mission-bar {
     flex-grow: 1;
-    height: 12px;
-    border-radius: 6px;
+    height: 10px;
+    border-radius: 5px;
     background-color: rgba(255, 255, 255, 0.12);
     overflow: hidden;
 }
 
 .mission-fill {
-    border-radius: 6px;
+    border-radius: 5px;
     background-color: rgb(242, 193, 78);
 }
 
 .mission-status {
-    margin-left: 12px;
-    font-size: 16px;
+    margin-left: 10px;
+    font-size: 13.33px;
 }
 
 /* ---------- Announcements */
@@ -548,10 +548,10 @@
     position: absolute;
     left: 0;
     right: 0;
-    top: 250px;
+    top: 208.33px;
     align-items: center;
     opacity: 0;
-    translate: 0 14px;
+    translate: 0 11.67px;
     transition-property: opacity, translate;
     transition-duration: 0.3s;
 }
@@ -562,16 +562,16 @@
 }
 
 .announcement-chip {
-    margin-bottom: 6px;
-    padding: 5px 16px;
-    font-size: 15px;
-    letter-spacing: 3px;
+    margin-bottom: 5px;
+    padding: 4.17px 13.33px;
+    font-size: 12.5px;
+    letter-spacing: 2.5px;
 }
 
 .announcement-text {
-    font-size: 50px;
+    font-size: 41.67px;
     -unity-text-align: middle-center;
-    text-shadow: 0 4px 0 rgba(8, 10, 16, 0.75);
+    text-shadow: 0 3.33px 0 rgba(8, 10, 16, 0.75);
 }
 
 .announcement.plain .announcement-chip {
@@ -579,7 +579,7 @@
 }
 
 .announcement.plain .announcement-text {
-    font-size: 40px;
+    font-size: 33.33px;
 }
 
 /* ---------- Spells, health and interaction */
@@ -588,16 +588,16 @@
     position: absolute;
     left: 0;
     right: 0;
-    bottom: 116px;
+    bottom: 96.67px;
     align-items: center;
 }
 
 .interact-prompt {
     flex-direction: row;
     align-items: center;
-    margin-bottom: 18px;
-    padding: 7px 16px 7px 7px;
-    border-radius: 24px;
+    margin-bottom: 15px;
+    padding: 5.83px 13.33px 5.83px 5.83px;
+    border-radius: 20px;
     background-color: rgba(8, 10, 16, 0.82);
 }
 
@@ -607,24 +607,24 @@
 }
 
 .interact-label {
-    margin-left: 10px;
-    font-size: 19px;
+    margin-left: 8.33px;
+    font-size: 15.83px;
 }
 
 .spell-bar {
     flex-direction: row;
     align-items: flex-end;
-    margin-bottom: 18px;
+    margin-bottom: 15px;
 }
 
 .spell-slot {
     align-items: center;
-    margin: 0 9px;
+    margin: 0 7.5px;
 }
 
 .spell-frame {
-    width: 92px;
-    height: 100px;
+    width: 76.67px;
+    height: 83.33px;
     transition-property: scale;
     transition-duration: 0.12s;
 }
@@ -636,15 +636,15 @@
 .spell-hex {
     --shape-fill: rgba(20, 22, 31, 0.96);
     --shape-border: rgb(255, 255, 255);
-    --shape-border-width: 4;
+    --shape-border-width: 3.33;
 }
 
 .spell-icon {
     position: absolute;
-    left: 24px;
-    top: 28px;
-    width: 44px;
-    height: 44px;
+    left: 20px;
+    top: 23.33px;
+    width: 36.67px;
+    height: 36.67px;
     -unity-background-scale-mode: scale-to-fit;
 }
 
@@ -658,10 +658,10 @@
     top: 0;
     right: 0;
     bottom: 0;
-    padding-top: 6px;
-    font-size: 36px;
+    padding-top: 5px;
+    font-size: 30px;
     -unity-text-align: middle-center;
-    text-shadow: 0 2px 0 rgba(0, 0, 0, 0.6);
+    text-shadow: 0 1.67px 0 rgba(0, 0, 0, 0.6);
 }
 
 .spell-lock {
@@ -670,33 +670,33 @@
     left: 0;
     top: 0;
     right: 0;
-    bottom: 10px;
+    bottom: 8.33px;
     align-items: center;
     justify-content: center;
 }
 
 .spell-lock-caption {
-    font-size: 17px;
-    letter-spacing: 1.5px;
+    font-size: 14.17px;
+    letter-spacing: 1.25px;
     color: rgb(201, 207, 220);
 }
 
 /* Baloo sits low in its line box: pull the number up against "LVL" so the pair reads as one centred block. */
 .spell-lock-level {
-    margin-top: -13px;
-    font-size: 36px;
+    margin-top: -10.83px;
+    font-size: 30px;
     color: rgb(255, 255, 255);
 }
 
 .spell-charges {
     display: none;
     position: absolute;
-    right: -6px;
-    bottom: 2px;
-    width: 26px;
-    height: 26px;
-    border-radius: 13px;
-    font-size: 15px;
+    right: -5px;
+    bottom: 1.67px;
+    width: 21.67px;
+    height: 21.67px;
+    border-radius: 10.83px;
+    font-size: 12.5px;
     color: rgb(28, 14, 3);
     -unity-text-align: middle-center;
 }
@@ -706,7 +706,7 @@
 }
 
 .spell-key {
-    margin-top: -20px;
+    margin-top: -16.67px;
 }
 
 .spell-slot.locked .spell-hex {
@@ -733,46 +733,46 @@
 }
 
 
-/* The heart badge overlaps the bar's left end, so the bar starts 20px in. */
+/* The heart badge overlaps the bar's left end, so the bar starts 16.67px in. */
 /* Below the hexagon, offset down: lifts the slot off busy ground. */
 .spell-hex-shadow {
     position: absolute;
     left: 0;
-    top: 6px;
-    width: 92px;
-    height: 100px;
+    top: 5px;
+    width: 76.67px;
+    height: 83.33px;
     --shape-fill: rgba(8, 10, 16, 0.55);
     --shape-border-width: 0;
 }
 
 /* The slot's key as a solid tab clipped onto the hexagon's bottom edge. */
 .spell-keycap {
-    min-width: 40px;
-    width: 40px;
-    height: 32px;
-    padding: 0 0 2px 0;
+    min-width: 33.33px;
+    width: 33.33px;
+    height: 26.67px;
+    padding: 0 0 1.67px 0;
     margin-right: 0;
-    border-width: 3px;
+    border-width: 2.5px;
     border-color: rgb(255, 255, 255);
-    border-radius: 9px;
+    border-radius: 7.5px;
     background-color: rgb(20, 22, 31);
-    font-size: 19px;
+    font-size: 15.83px;
 }
 
 .spell-key .pad-glyph {
-    width: 46px;
-    height: 46px;
+    width: 38.33px;
+    height: 38.33px;
     margin-right: 0;
-    border-radius: 23px;
+    border-radius: 19.17px;
 }
 
 .spell-key .pad-letter {
-    font-size: 23px;
+    font-size: 19.17px;
 }
 
 .spell-key .pad-symbol {
-    width: 24px;
-    height: 24px;
+    width: 20px;
+    height: 20px;
 }
 
 .spell-slot.locked .spell-keycap {
@@ -805,16 +805,16 @@
 }
 
 .health {
-    width: 640px;
-    height: 42px;
-    padding-left: 20px;
+    width: 533.33px;
+    height: 35px;
+    padding-left: 16.67px;
 }
 
 .health-bar {
     flex-grow: 1;
-    border-width: 4px;
+    border-width: 3.33px;
     border-color: rgb(20, 22, 31);
-    border-radius: 21px;
+    border-radius: 17.5px;
     background-color: rgb(58, 18, 20);
     overflow: hidden;
 }
@@ -838,35 +838,35 @@
 }
 
 .health-highlight {
-    left: 10px;
-    right: 10px;
-    top: 4px;
-    height: 7px;
-    border-radius: 4px;
+    left: 8.33px;
+    right: 8.33px;
+    top: 3.33px;
+    height: 5.83px;
+    border-radius: 3.33px;
     background-color: rgb(255, 122, 114);
 }
 
 .health-label {
-    padding-left: 24px;
-    padding-top: 3px;
-    font-size: 30px;
-    letter-spacing: 3px;
+    padding-left: 20px;
+    padding-top: 2.5px;
+    font-size: 25px;
+    letter-spacing: 2.5px;
     /* Synthetic bold on top of Baloo ExtraBold: the dark outline eats into the fill, so thicken the glyphs. */
     -unity-font-style: bold;
-    -unity-text-outline-width: 2px;
+    -unity-text-outline-width: 1.67px;
     -unity-text-outline-color: rgb(20, 22, 31);
-    text-shadow: 0 3px 0 rgb(20, 22, 31);
+    text-shadow: 0 2.5px 0 rgb(20, 22, 31);
 }
 
 .health-badge {
     position: absolute;
     left: 0;
-    top: -8px;
-    width: 58px;
-    height: 58px;
-    border-width: 4px;
+    top: -6.67px;
+    width: 48.33px;
+    height: 48.33px;
+    border-width: 3.33px;
     border-color: rgb(20, 22, 31);
-    border-radius: 29px;
+    border-radius: 24.17px;
     background-color: rgb(232, 51, 58);
     align-items: center;
     justify-content: center;
@@ -874,40 +874,40 @@
 
 .health-badge-ring {
     position: absolute;
-    left: 3px;
-    top: 3px;
-    right: 3px;
-    bottom: 3px;
-    border-width: 3px;
+    left: 2.5px;
+    top: 2.5px;
+    right: 2.5px;
+    bottom: 2.5px;
+    border-width: 2.5px;
     border-color: rgb(255, 255, 255);
-    border-radius: 22px;
+    border-radius: 18.33px;
 }
 
 .health-badge-icon {
-    width: 25px;
-    height: 25px;
-    margin-top: 2px;
+    width: 20.83px;
+    height: 20.83px;
+    margin-top: 1.67px;
 }
 
 /* ---------- Level and experience */
 
 .xp-row {
     position: absolute;
-    left: 24px;
-    right: 24px;
-    bottom: 32px;
-    height: 88px;
+    left: 20px;
+    right: 20px;
+    bottom: 26.67px;
+    height: 73.33px;
 }
 
 .xp-bar {
     position: absolute;
-    left: 68px;
+    left: 56.67px;
     right: 0;
-    top: 29px;
-    height: 30px;
-    border-width: 4px;
+    top: 24.17px;
+    height: 25px;
+    border-width: 3.33px;
     border-color: rgb(20, 22, 31);
-    border-radius: 15px;
+    border-radius: 12.5px;
     background-color: rgba(8, 10, 16, 0.88);
     overflow: hidden;
 }
@@ -918,7 +918,7 @@
 }
 
 .xp-highlight {
-    height: 7px;
+    height: 5.83px;
     background-color: rgb(183, 157, 255);
 }
 
@@ -927,19 +927,19 @@
     right: 0;
     top: 0;
     bottom: 0;
-    width: 5px;
+    width: 4.17px;
     background-color: rgb(255, 255, 255);
 }
 
 /* The arcane seal: a star-backed seal drawn as one vector image (Icons/ui-level-seal.svg), with the level number set
-   in its recessed centre. The seal's centre (72/146 of the image) lines up with the bar's centre, 44px down the row;
+   in its recessed centre. The seal's centre (72/146 of the image) lines up with the bar's centre, 36.67px down the row;
    the row sits high enough off the screen edge for the star's lower point and shadow. */
 .level-badge {
     position: absolute;
     left: 0;
-    top: -26px;
-    width: 136px;
-    height: 142px;
+    top: -21.67px;
+    width: 113.33px;
+    height: 118.33px;
     background-image: url("project://database/Assets/Game/UI/Icons/ui-level-seal.svg");
     -unity-background-scale-mode: scale-to-fit;
     transition-property: scale;
@@ -950,39 +950,39 @@
     scale: 1.25 1.25;
 }
 
-/* Progress to the level cap, drawn over the seal's dark rim track (radius 43 of the 140-wide image, so 41.8px here,
-   centred at 68, 69.9). */
+/* Progress to the level cap, drawn over the seal's dark rim track (radius 43 of the 140-wide image, so 34.8px here,
+   centred at 56.7, 58.3). */
 .level-ring {
     position: absolute;
-    left: 24px;
-    top: 26px;
-    width: 88px;
-    height: 88px;
+    left: 20px;
+    top: 21.67px;
+    width: 73.33px;
+    height: 73.33px;
     --ring-color: rgb(255, 255, 255);
-    --ring-width: 4;
+    --ring-width: 3.33;
 }
 
-/* Centred on the seal's well, which sits 1.5px above the image's middle. */
+/* Centred on the seal's well, which sits 1.25px above the image's middle. */
 .level-text {
     position: absolute;
     left: 0;
     top: 0;
     right: 0;
-    bottom: 3px;
+    bottom: 2.5px;
     align-items: center;
     justify-content: center;
 }
 
 .level-caption {
-    font-size: 11px;
-    letter-spacing: 2px;
+    font-size: 9.17px;
+    letter-spacing: 1.67px;
     color: rgb(183, 157, 255);
 }
 
 .level-value {
-    font-size: 31px;
-    margin-top: -8px;
-    text-shadow: 0 3px 0 rgb(6, 7, 10);
+    font-size: 25.83px;
+    margin-top: -6.67px;
+    text-shadow: 0 2.5px 0 rgb(6, 7, 10);
 }
 
 /* ================================================================ Screens */
@@ -1004,15 +1004,15 @@
 }
 
 .section-label {
-    margin-bottom: 14px;
-    font-size: 15px;
-    letter-spacing: 3px;
+    margin-bottom: 11.67px;
+    font-size: 12.5px;
+    letter-spacing: 2.5px;
     color: rgb(139, 147, 167);
 }
 
 .control-label {
-    margin-left: 8px;
-    font-size: 18px;
+    margin-left: 6.67px;
+    font-size: 15px;
     color: rgb(174, 182, 200);
 }
 
@@ -1030,16 +1030,16 @@
     left: 0;
     right: 0;
     bottom: 0;
-    height: 260px;
+    height: 216.67px;
     --gradient-from: rgba(8, 10, 16, 0.8);
     --gradient-to: rgba(8, 10, 16, 0);
 }
 
 .menu-content {
     position: absolute;
-    left: 180px;
-    top: 230px;
-    width: 900px;
+    left: 150px;
+    top: 191.67px;
+    width: 750px;
     align-items: flex-start;
 }
 
@@ -1049,39 +1049,39 @@
 }
 
 .menu-tagline .chip {
-    padding: 6px 14px;
-    font-size: 16px;
+    padding: 5px 11.67px;
+    font-size: 13.33px;
 }
 
 .menu-tagline-text {
-    margin-left: 12px;
-    font-size: 18px;
+    margin-left: 10px;
+    font-size: 15px;
     color: rgb(174, 182, 200);
 }
 
 .menu-title {
-    margin-top: 10px;
-    font-size: 150px;
-    letter-spacing: 2px;
-    text-shadow: 0 8px 0 rgb(77, 48, 158);
+    margin-top: 8.33px;
+    font-size: 125px;
+    letter-spacing: 1.67px;
+    text-shadow: 0 6.67px 0 rgb(77, 48, 158);
 }
 
 .menu-title-second {
-    margin-top: -105px;
+    margin-top: -87.5px;
 }
 
 .menu-subtitle {
-    margin-top: -16px;
-    max-width: 780px;
-    font-size: 26px;
+    margin-top: -13.33px;
+    max-width: 650px;
+    font-size: 21.67px;
     color: rgb(213, 218, 230);
     white-space: normal;
 }
 
 .menu-controls {
     position: absolute;
-    left: 180px;
-    bottom: 90px;
+    left: 150px;
+    bottom: 75px;
     flex-direction: row;
     align-items: center;
 }
@@ -1089,7 +1089,7 @@
 .control-group {
     flex-direction: row;
     align-items: center;
-    margin-right: 36px;
+    margin-right: 30px;
 }
 
 /* ---------- Card choice (level-up, new spell, mission reward) */
@@ -1102,7 +1102,7 @@
     position: absolute;
     left: 0;
     right: 0;
-    top: 56px;
+    top: 46.67px;
     align-items: center;
     transition-property: translate, opacity;
     transition-duration: 0.3s;
@@ -1111,7 +1111,7 @@
 
 .choice-screen.entering .choice-header {
     opacity: 0;
-    translate: 0 -40px;
+    translate: 0 -33.33px;
 }
 
 .choice-screen.closing .choice-header {
@@ -1123,32 +1123,32 @@
 .choice-chip {
     flex-direction: row;
     align-items: center;
-    padding: 6px 16px;
+    padding: 5px 13.33px;
 }
 
 .choice-chip-icon {
     display: none;
-    width: 18px;
-    height: 18px;
-    margin-right: 8px;
+    width: 15px;
+    height: 15px;
+    margin-right: 6.67px;
     -unity-background-image-tint-color: rgb(35, 26, 5);
 }
 
 .choice-chip-label {
-    font-size: 16px;
-    letter-spacing: 3px;
+    font-size: 13.33px;
+    letter-spacing: 2.5px;
 }
 
 .choice-title {
-    margin-top: 6px;
-    font-size: 104px;
-    letter-spacing: 3px;
-    text-shadow: 0 7px 0 rgb(77, 48, 158);
+    margin-top: 5px;
+    font-size: 86.67px;
+    letter-spacing: 2.5px;
+    text-shadow: 0 5.83px 0 rgb(77, 48, 158);
 }
 
 .choice-subtitle {
-    margin-top: -6px;
-    font-size: 22px;
+    margin-top: -5px;
+    font-size: 18.33px;
     color: rgb(201, 207, 220);
 }
 
@@ -1169,25 +1169,25 @@
 .choice-screen.mission .choice-title,
 .choice-screen.treasure .choice-title {
     color: rgb(242, 193, 78);
-    text-shadow: 0 7px 0 rgb(122, 90, 18);
+    text-shadow: 0 5.83px 0 rgb(122, 90, 18);
 }
 
 .card-row {
     position: absolute;
     left: 0;
     right: 0;
-    top: 310px;
+    top: 258.33px;
     flex-direction: row;
     justify-content: center;
     align-items: flex-start;
 }
 
 .card-slot {
-    width: 370px;
-    margin: 0 22px;
+    width: 308.33px;
+    margin: 0 18.33px;
     align-items: center;
     opacity: 0.8;
-    translate: 0 24px;
+    translate: 0 20px;
     transition-property: translate, opacity;
     transition-duration: 0.14s;
 }
@@ -1207,13 +1207,13 @@
 
 .card-slot.entering {
     opacity: 0;
-    translate: 0 160px;
+    translate: 0 133.33px;
     scale: 0.8 0.8;
 }
 
 .card-slot.picked {
     opacity: 1;
-    translate: 0 -12px;
+    translate: 0 -10px;
     scale: 1.08 1.08;
     transition-property: translate, opacity, scale;
     transition-duration: 0.16s;
@@ -1222,7 +1222,7 @@
 
 .card-slot.picked-out {
     opacity: 0;
-    translate: 0 -90px;
+    translate: 0 -75px;
     scale: 1 1;
     transition-duration: 0.24s;
     transition-timing-function: ease-in;
@@ -1230,7 +1230,7 @@
 
 .card-slot.dismissed {
     opacity: 0;
-    translate: 0 110px;
+    translate: 0 91.67px;
     scale: 0.9 0.9;
     transition-property: translate, opacity, scale;
     transition-duration: 0.22s;
@@ -1241,10 +1241,10 @@
     display: none;
     position: absolute;
     left: 0;
-    top: 14px;
-    width: 370px;
-    height: 560px;
-    border-radius: 22px;
+    top: 11.67px;
+    width: 308.33px;
+    height: 466.67px;
+    border-radius: 18.33px;
 }
 
 .card-slot.selected .card-shadow {
@@ -1252,13 +1252,13 @@
 }
 
 .card {
-    width: 370px;
-    height: 560px;
+    width: 308.33px;
+    height: 466.67px;
     margin: 0;
     padding: 0;
-    border-width: 3px;
+    border-width: 2.5px;
     border-color: rgba(255, 255, 255, 0.3);
-    border-radius: 22px;
+    border-radius: 18.33px;
     background-color: rgb(20, 22, 31);
     overflow: hidden;
     -unity-text-align: upper-left;
@@ -1271,7 +1271,7 @@
 }
 
 .card-slot.selected .card {
-    border-width: 4px;
+    border-width: 3.33px;
 }
 
 .card-art {
@@ -1279,97 +1279,97 @@
     left: 0;
     top: 0;
     right: 0;
-    height: 270px;
+    height: 225px;
 }
 
 .card-emblem {
     position: absolute;
     left: 0;
     right: 0;
-    top: 30px;
+    top: 25px;
     align-items: center;
 }
 
 .card-emblem-frame {
-    width: 148px;
-    height: 162px;
+    width: 123.33px;
+    height: 135px;
 }
 
 .card-hex {
     --shape-fill: rgb(20, 22, 31);
     --shape-border: rgb(255, 255, 255);
-    --shape-border-width: 4;
+    --shape-border-width: 3.33;
 }
 
 .card-hex-inner {
     position: absolute;
-    left: 16px;
-    right: 16px;
-    top: 18px;
-    bottom: 18px;
+    left: 13.33px;
+    right: 13.33px;
+    top: 15px;
+    bottom: 15px;
     --shape-fill: rgba(0, 0, 0, 0);
     --shape-border: rgba(255, 255, 255, 0.14);
-    --shape-border-width: 2;
+    --shape-border-width: 1.67;
 }
 
 .card-icon {
     position: absolute;
-    left: 44px;
-    top: 51px;
-    width: 60px;
-    height: 60px;
+    left: 36.67px;
+    top: 42.5px;
+    width: 50px;
+    height: 50px;
     -unity-background-scale-mode: scale-to-fit;
 }
 
 /* Sits on the art's slanted edge: big enough to read the rarity at a glance. */
 .card-badge {
     position: absolute;
-    left: 18px;
-    top: 230px;
-    height: 46px;
+    left: 15px;
+    top: 191.67px;
+    height: 38.33px;
     flex-direction: row;
     align-items: center;
-    padding: 0 18px 0 14px;
-    border-width: 3px;
+    padding: 0 15px 0 11.67px;
+    border-width: 2.5px;
     border-color: rgb(20, 22, 31);
-    border-radius: 12px;
+    border-radius: 10px;
 }
 
 .card-badge-gem {
-    width: 12px;
-    height: 12px;
-    margin-right: 11px;
+    width: 10px;
+    height: 10px;
+    margin-right: 9.17px;
     rotate: 45deg;
 }
 
 .card-badge-label {
-    font-size: 21px;
-    letter-spacing: 2px;
-    padding-top: 3px;
+    font-size: 17.5px;
+    letter-spacing: 1.67px;
+    padding-top: 2.5px;
 }
 
 .card-body {
     position: absolute;
-    left: 24px;
-    right: 24px;
-    top: 290px;
+    left: 20px;
+    right: 20px;
+    top: 241.67px;
 }
 
 /* Spell cards hold the most text: anchor it to the bottom so it always keeps the same margin to the border. */
 .card-slot.spell-card .card-body {
     top: auto;
-    bottom: 24px;
+    bottom: 20px;
 }
 
 .card-title {
-    margin-bottom: -8px;
-    font-size: 42px;
+    margin-bottom: -6.67px;
+    font-size: 35px;
     white-space: normal;
 }
 
 .card-summary {
-    margin-top: 2px;
-    font-size: 16px;
+    margin-top: 1.67px;
+    font-size: 13.33px;
     color: rgb(201, 207, 220);
     white-space: normal;
 }
@@ -1378,22 +1378,22 @@
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
-    margin-top: 10px;
+    margin-top: 8.33px;
 }
 
 .card-stat-label {
-    font-size: 17px;
+    font-size: 14.17px;
     color: rgb(174, 182, 200);
 }
 
 .card-stat-value {
-    font-size: 30px;
+    font-size: 25px;
 }
 
 .card-bar {
-    height: 14px;
-    margin-top: 8px;
-    border-radius: 7px;
+    height: 11.67px;
+    margin-top: 6.67px;
+    border-radius: 5.83px;
     background-color: rgba(255, 255, 255, 0.08);
     overflow: hidden;
 }
@@ -1414,20 +1414,20 @@
 
 .card-segments {
     flex-direction: row;
-    height: 14px;
-    margin-top: 8px;
+    height: 11.67px;
+    margin-top: 6.67px;
 }
 
 .card-segment {
     flex-grow: 1;
-    height: 14px;
-    border-radius: 7px;
+    height: 11.67px;
+    border-radius: 5.83px;
     background-color: rgba(255, 255, 255, 0.08);
 }
 
 .card-footnote {
-    margin-top: 10px;
-    font-size: 15px;
+    margin-top: 8.33px;
+    font-size: 12.5px;
     color: rgb(139, 147, 167);
 }
 
@@ -1435,17 +1435,17 @@
 .card-scaling {
     flex-direction: row;
     justify-content: space-between;
-    margin-top: 12px;
-    padding-top: 12px;
-    border-top-width: 1px;
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top-width: 0.83px;
     border-color: rgba(255, 255, 255, 0.08);
 }
 
 .card-scaling-item {
-    width: 66px;
-    height: 34px;
-    border-width: 1.5px;
-    border-radius: 9px;
+    width: 55px;
+    height: 28.33px;
+    border-width: 1.25px;
+    border-radius: 7.5px;
     align-items: center;
     justify-content: center;
 }
@@ -1455,8 +1455,8 @@
 }
 
 .card-scaling-icon {
-    width: 20px;
-    height: 20px;
+    width: 16.67px;
+    height: 16.67px;
 }
 
 /* ---------- Spell upgrade cards: the spell's header on top, the art and a smaller emblem beneath it. */
@@ -1466,42 +1466,42 @@
     left: 0;
     right: 0;
     top: 0;
-    height: 74px;
+    height: 61.67px;
     flex-direction: row;
     align-items: center;
-    padding: 0 16px 0 16px;
-    border-bottom-width: 4px;
+    padding: 0 13.33px 0 13.33px;
+    border-bottom-width: 3.33px;
     border-color: rgb(20, 22, 31);
 }
 
 .card-header-badge {
-    width: 44px;
-    height: 44px;
-    margin-right: 12px;
-    border-radius: 12px;
+    width: 36.67px;
+    height: 36.67px;
+    margin-right: 10px;
+    border-radius: 10px;
     align-items: center;
     justify-content: center;
 }
 
 .card-header-icon {
-    width: 26px;
-    height: 26px;
+    width: 21.67px;
+    height: 21.67px;
     -unity-background-scale-mode: scale-to-fit;
 }
 
 .card-header-label {
     flex-grow: 1;
-    font-size: 30px;
+    font-size: 25px;
     white-space: nowrap;
 }
 
 .card-slot.spell-upgrade-card .card-art {
-    top: 70px;
-    height: 200px;
+    top: 58.33px;
+    height: 166.67px;
 }
 
 .card-slot.spell-upgrade-card .card-emblem {
-    top: 92px;
+    top: 76.67px;
 }
 
 .card-slot.spell-upgrade-card .card-emblem-frame {
@@ -1510,13 +1510,13 @@
 }
 
 .card-pointer {
-    width: 34px;
-    height: 20px;
-    margin-top: 30px;
+    width: 28.33px;
+    height: 16.67px;
+    margin-top: 25px;
     visibility: hidden;
     --shape-fill: rgb(255, 255, 255);
     --shape-border: rgb(20, 22, 31);
-    --shape-border-width: 3;
+    --shape-border-width: 2.5;
 }
 
 .card-slot.selected .card-pointer {
@@ -1525,102 +1525,103 @@
 
 .nav-hint {
     position: absolute;
-    bottom: 60px;
+    bottom: 50px;
     flex-direction: row;
     align-items: center;
-    padding: 12px 24px;
-    border-width: 2px;
+    padding: 10px 20px;
+    border-width: 1.67px;
     border-color: rgba(255, 255, 255, 0.12);
-    border-radius: 32px;
+    border-radius: 26.67px;
     background-color: rgba(8, 10, 16, 0.8);
 }
 
 .nav-hint-or {
-    margin: 0 10px 0 5px;
-    font-size: 15px;
+    margin: 0 8.33px 0 4.17px;
+    font-size: 12.5px;
     color: rgb(139, 147, 167);
 }
 
 .nav-hint-label {
-    margin-left: 5px;
-    font-size: 17px;
+    margin-left: 4.17px;
+    font-size: 14.17px;
     color: rgb(201, 207, 220);
 }
 
 .nav-hint-divider {
-    width: 2px;
-    height: 26px;
-    margin: 0 24px;
+    width: 1.67px;
+    height: 21.67px;
+    margin: 0 20px;
     background-color: rgba(255, 255, 255, 0.14);
 }
 
 /* ---------- Pause */
 
 /* Both pause blocks are drawn 25% larger than authored. The column grows from its top-left corner and the panel
-   from the middle of its right edge, so their outer margins stay put and the gap between them shrinks. */
+   from the middle of its right edge, so their outer margins stay put and the gap between them shrinks.
+   The column's top is set so the Restart button's bottom edge lines up with the panel's (777.5px on the 900 canvas). */
 .pause-column {
     position: absolute;
-    left: 140px;
-    top: 250px;
-    width: 700px;
+    left: 116.67px;
+    top: 171.67px;
+    width: 583.33px;
     align-items: flex-start;
     scale: 1.25 1.25;
     transform-origin: 0 0;
 }
 
 .pause-title {
-    font-size: 130px;
-    letter-spacing: 3px;
-    text-shadow: 0 8px 0 rgb(77, 48, 158);
+    font-size: 108.33px;
+    letter-spacing: 2.5px;
+    text-shadow: 0 6.67px 0 rgb(77, 48, 158);
 }
 
 .pause-chips {
     flex-direction: row;
-    margin-top: 16px;
+    margin-top: 13.33px;
 }
 
 .info-chip {
-    margin-right: 12px;
-    padding: 8px 16px;
-    border-width: 2px;
+    margin-right: 10px;
+    padding: 6.67px 13.33px;
+    border-width: 1.67px;
     border-color: rgba(255, 255, 255, 0.14);
-    border-radius: 22px;
+    border-radius: 18.33px;
     background-color: rgba(255, 255, 255, 0.08);
-    font-size: 18px;
+    font-size: 15px;
 }
 
 .pause-buttons {
-    margin-top: 52px;
+    margin-top: 43.33px;
 }
 
 .pause-buttons .btn {
-    margin-bottom: 16px;
+    margin-bottom: 13.33px;
 }
 
 .pause-hint {
     flex-direction: row;
     align-items: center;
-    margin-top: 14px;
+    margin-top: 11.67px;
 }
 
 .build-panel {
     position: absolute;
-    left: 1000px;
-    top: 150px;
-    width: 740px;
+    left: 833.33px;
+    top: 125px;
+    width: 616.67px;
     scale: 1.25 1.25;
     transform-origin: 100% 50%;
-    padding: 30px 34px 20px 34px;
-    border-width: 3px;
+    padding: 25px 28.33px 16.67px 28.33px;
+    border-width: 2.5px;
     border-color: rgba(255, 255, 255, 0.18);
-    border-radius: 24px;
+    border-radius: 20px;
     background-color: rgba(20, 22, 31, 0.92);
 }
 
 .build-spells-header {
     flex-direction: row;
     align-items: flex-end;
-    margin-bottom: 14px;
+    margin-bottom: 11.67px;
 }
 
 .build-spells-header .section-label {
@@ -1628,63 +1629,63 @@
     margin-bottom: 0;
 }
 
-/* Lines up with .build-spell-dots, leaving room for the keycap (30px) and the gap before it. */
+/* Lines up with .build-spell-dots, leaving room for the keycap (25px) and the gap before it. */
 .build-scaling-head {
     flex-direction: row;
-    margin-right: 42px;
+    margin-right: 35px;
 }
 
 .build-scaling-col {
-    width: 46px;
+    width: 38.33px;
     align-items: center;
 }
 
 .build-scaling-col-icon {
-    width: 16px;
-    height: 16px;
+    width: 13.33px;
+    height: 13.33px;
     -unity-background-image-tint-color: rgb(201, 207, 220);
 }
 
 .build-scaling-col-label {
-    margin-top: 3px;
-    font-size: 10px;
-    letter-spacing: 1px;
+    margin-top: 2.5px;
+    font-size: 8.33px;
+    letter-spacing: 0.83px;
     color: rgb(139, 147, 167);
 }
 
 .build-spell-dots {
     flex-direction: row;
     flex-shrink: 0;
-    margin-right: 12px;
+    margin-right: 10px;
 }
 
 .build-spell-dot-cell {
-    width: 46px;
+    width: 38.33px;
     align-items: center;
     justify-content: center;
 }
 
 .build-spell-dot {
-    width: 12px;
-    height: 12px;
-    border-width: 2px;
-    border-radius: 6px;
+    width: 10px;
+    height: 10px;
+    border-width: 1.67px;
+    border-radius: 5px;
 }
 
 .build-spells {
-    margin-bottom: 8px;
+    margin-bottom: 6.67px;
 }
 
 .build-spell {
     flex-direction: row;
     align-items: center;
-    margin-bottom: 14px;
+    margin-bottom: 11.67px;
 }
 
 .build-spell-frame {
-    width: 58px;
-    height: 64px;
-    margin-right: 16px;
+    width: 48.33px;
+    height: 53.33px;
+    margin-right: 13.33px;
     align-items: center;
     justify-content: center;
 }
@@ -1692,12 +1693,12 @@
 .build-spell-hex {
     --shape-fill: rgb(20, 22, 31);
     --shape-border: rgb(255, 255, 255);
-    --shape-border-width: 3.5;
+    --shape-border-width: 2.92;
 }
 
 .build-spell-icon {
-    width: 28px;
-    height: 28px;
+    width: 23.33px;
+    height: 23.33px;
 }
 
 .build-spell.locked .build-spell-hex {
@@ -1705,8 +1706,8 @@
 }
 
 .build-spell.locked .build-spell-icon {
-    width: 24px;
-    height: 24px;
+    width: 20px;
+    height: 20px;
     -unity-background-image-tint-color: rgb(139, 147, 167);
 }
 
@@ -1716,32 +1717,32 @@
 }
 
 .build-spell-name {
-    font-size: 26px;
+    font-size: 21.67px;
 }
 
 .build-spell-chips {
     flex-direction: row;
     flex-wrap: wrap;
-    margin-top: 2px;
+    margin-top: 1.67px;
 }
 
 .upgrade-chip {
-    margin: 4px 6px 0 0;
-    padding: 3px 10px;
-    border-radius: 12px;
+    margin: 3.33px 5px 0 0;
+    padding: 2.5px 8.33px;
+    border-radius: 10px;
     background-color: rgba(242, 193, 78, 0.16);
     color: rgb(242, 193, 78);
-    font-size: 14px;
+    font-size: 11.67px;
 }
 
 .build-spell-muted {
-    font-size: 18px;
+    font-size: 15px;
     color: rgb(139, 147, 167);
 }
 
 .build-divider {
-    height: 2px;
-    margin-bottom: 20px;
+    height: 1.67px;
+    margin-bottom: 16.67px;
     background-color: rgba(255, 255, 255, 0.1);
 }
 
@@ -1755,16 +1756,16 @@
     width: 47%;
     flex-direction: row;
     justify-content: space-between;
-    margin-bottom: 11px;
+    margin-bottom: 9.17px;
 }
 
 .build-stat-label {
-    font-size: 18px;
+    font-size: 15px;
     color: rgb(174, 182, 200);
 }
 
 .build-stat-value {
-    font-size: 18px;
+    font-size: 15px;
 }
 
 /* ---------- Victory / defeat */
@@ -1773,13 +1774,13 @@
     position: absolute;
     left: 0;
     right: 0;
-    top: 140px;
+    top: 116.67px;
     align-items: center;
 }
 
 .end-badge {
-    width: 120px;
-    height: 130px;
+    width: 100px;
+    height: 108.33px;
     align-items: center;
     justify-content: center;
 }
@@ -1787,58 +1788,58 @@
 .end-badge-shape {
     --shape-fill: rgb(20, 22, 31);
     --shape-border: rgb(242, 193, 78);
-    --shape-border-width: 5;
+    --shape-border-width: 4.17;
 }
 
 .end-icon {
-    width: 56px;
-    height: 56px;
+    width: 46.67px;
+    height: 46.67px;
     -unity-background-image-tint-color: rgb(242, 193, 78);
 }
 
 .end-title {
-    margin-top: 12px;
-    font-size: 160px;
-    letter-spacing: 6px;
+    margin-top: 10px;
+    font-size: 133.33px;
+    letter-spacing: 5px;
     color: rgb(242, 193, 78);
-    text-shadow: 0 9px 0 rgb(122, 90, 18);
+    text-shadow: 0 7.5px 0 rgb(122, 90, 18);
 }
 
 .end-subtitle {
-    margin-top: -12px;
-    font-size: 26px;
+    margin-top: -10px;
+    font-size: 21.67px;
     color: rgb(213, 218, 230);
 }
 
 .end-tiles {
     flex-direction: row;
-    margin-top: 44px;
+    margin-top: 36.67px;
 }
 
 .end-tile {
-    width: 230px;
-    margin: 0 12px;
-    padding: 20px 0 16px 0;
+    width: 191.67px;
+    margin: 0 10px;
+    padding: 16.67px 0 13.33px 0;
     align-items: center;
-    border-width: 3px;
+    border-width: 2.5px;
     border-color: rgba(255, 255, 255, 0.18);
-    border-radius: 20px;
+    border-radius: 16.67px;
     background-color: rgba(20, 22, 31, 0.92);
 }
 
 .end-tile-caption {
-    font-size: 14px;
-    letter-spacing: 3px;
+    font-size: 11.67px;
+    letter-spacing: 2.5px;
     color: rgb(139, 147, 167);
 }
 
 .end-tile-value {
-    font-size: 52px;
+    font-size: 43.33px;
 }
 
 .end-button {
-    margin-top: 52px;
-    width: 360px;
+    margin-top: 43.33px;
+    width: 300px;
 }
 
 .end-screen-defeat .end-badge-shape {
@@ -1851,7 +1852,7 @@
 
 .end-screen-defeat .end-title {
     color: rgb(255, 90, 78);
-    text-shadow: 0 9px 0 rgb(90, 20, 16);
+    text-shadow: 0 7.5px 0 rgb(90, 20, 16);
 }
 
 /* ================================================================ Settings */
@@ -1865,11 +1866,11 @@
 
 /* Same panel as the pause menu's build summary, drawn at the same 125% so the two read as one family. */
 .settings-panel {
-    width: 760px;
-    padding: 30px 34px 28px 34px;
-    border-width: 3px;
+    width: 633.33px;
+    padding: 25px 28.33px 23.33px 28.33px;
+    border-width: 2.5px;
     border-color: rgba(255, 255, 255, 0.18);
-    border-radius: 24px;
+    border-radius: 20px;
     background-color: rgba(20, 22, 31, 0.96);
     scale: 1.25 1.25;
 }
@@ -1877,15 +1878,15 @@
 .settings-header {
     flex-direction: row;
     align-items: center;
-    margin-bottom: 26px;
+    margin-bottom: 21.67px;
 }
 
 .settings-badge {
-    width: 56px;
-    height: 56px;
-    margin-right: 18px;
-    border-radius: 16px;
-    border-bottom-width: 5px;
+    width: 46.67px;
+    height: 46.67px;
+    margin-right: 15px;
+    border-radius: 13.33px;
+    border-bottom-width: 4.17px;
     border-bottom-color: rgb(77, 48, 158);
     background-color: rgb(124, 77, 255);
     align-items: center;
@@ -1893,23 +1894,23 @@
 }
 
 .settings-badge-icon {
-    width: 30px;
-    height: 30px;
+    width: 25px;
+    height: 25px;
 }
 
 .settings-title {
     flex-grow: 1;
-    font-size: 52px;
-    letter-spacing: 3px;
-    text-shadow: 0 5px 0 rgb(77, 48, 158);
+    font-size: 43.33px;
+    letter-spacing: 2.5px;
+    text-shadow: 0 4.17px 0 rgb(77, 48, 158);
 }
 
 .settings-close {
-    width: 48px;
-    height: 48px;
-    border-width: 2px;
+    width: 40px;
+    height: 40px;
+    border-width: 1.67px;
     border-color: rgba(255, 255, 255, 0.35);
-    border-radius: 14px;
+    border-radius: 11.67px;
     background-color: rgba(255, 255, 255, 0.06);
     align-items: center;
     justify-content: center;
@@ -1922,41 +1923,41 @@
 }
 
 .settings-close-icon {
-    width: 20px;
-    height: 20px;
+    width: 16.67px;
+    height: 16.67px;
 }
 
 .settings-row {
     flex-direction: row;
     align-items: center;
-    height: 84px;
-    margin-bottom: 12px;
-    padding: 0 22px 0 18px;
-    border-width: 2px;
+    height: 70px;
+    margin-bottom: 10px;
+    padding: 0 18.33px 0 15px;
+    border-width: 1.67px;
     border-color: rgba(255, 255, 255, 0.08);
-    border-radius: 18px;
+    border-radius: 15px;
     background-color: rgba(255, 255, 255, 0.05);
 }
 
 .settings-row-badge {
-    width: 46px;
-    height: 46px;
-    margin-right: 16px;
-    border-radius: 12px;
+    width: 38.33px;
+    height: 38.33px;
+    margin-right: 13.33px;
+    border-radius: 10px;
     background-color: rgba(124, 77, 255, 0.22);
     align-items: center;
     justify-content: center;
 }
 
 .settings-row-icon {
-    width: 26px;
-    height: 26px;
+    width: 21.67px;
+    height: 21.67px;
     -unity-background-image-tint-color: rgb(196, 176, 255);
 }
 
 .settings-row-label {
-    width: 170px;
-    font-size: 20px;
+    width: 141.67px;
+    font-size: 16.67px;
     color: rgb(230, 233, 240);
 }
 
@@ -1964,33 +1965,33 @@
 
 .settings-slider {
     flex-grow: 1;
-    margin: 0 20px 0 0;
+    margin: 0 16.67px 0 0;
 }
 
 .settings-slider .unity-base-slider__input {
-    height: 36px;
+    height: 30px;
 }
 
 .settings-slider .unity-base-slider__tracker {
-    height: 12px;
-    margin-top: -6px;
+    height: 10px;
+    margin-top: -5px;
     border-width: 0;
-    border-radius: 6px;
+    border-radius: 5px;
     background-color: rgba(255, 255, 255, 0.14);
 }
 
 .settings-slider .unity-base-slider__fill {
-    border-radius: 6px;
+    border-radius: 5px;
     background-color: rgb(124, 77, 255);
 }
 
 .settings-slider .unity-base-slider__dragger {
-    width: 28px;
-    height: 28px;
-    margin-top: -14px;
-    border-width: 4px;
+    width: 23.33px;
+    height: 23.33px;
+    margin-top: -11.67px;
+    border-width: 3.33px;
     border-color: rgb(124, 77, 255);
-    border-radius: 14px;
+    border-radius: 11.67px;
     background-color: rgb(255, 255, 255);
 }
 
@@ -2005,13 +2006,13 @@
 }
 
 .settings-value {
-    width: 76px;
-    font-size: 28px;
+    width: 63.33px;
+    font-size: 23.33px;
     -unity-text-align: middle-right;
 }
 
 .settings-divider {
-    margin-top: 10px;
+    margin-top: 8.33px;
 }
 
 .settings-footer {
@@ -2021,21 +2022,21 @@
 
 .settings-credit {
     flex-grow: 1;
-    font-size: 15px;
+    font-size: 12.5px;
     color: rgb(139, 147, 167);
 }
 
 .settings-done {
-    width: 220px;
-    height: 64px;
-    font-size: 26px;
+    width: 183.33px;
+    height: 53.33px;
+    font-size: 21.67px;
 }
 
 /* Just under the panel. Its 125% scale draws past its layout box, hence the large gap. */
 .settings-hint {
     flex-direction: row;
     align-items: center;
-    margin-top: 96px;
+    margin-top: 80px;
 }
 
 /* ================================================================ Button prompts (ControlGlyph) */
@@ -2046,19 +2047,19 @@
 }
 
 .pad-glyph {
-    width: 36px;
-    height: 36px;
-    margin-right: 5px;
-    border-width: 3px;
+    width: 30px;
+    height: 30px;
+    margin-right: 4.17px;
+    border-width: 2.5px;
     border-color: rgb(20, 22, 31);
-    border-radius: 18px;
+    border-radius: 15px;
     align-items: center;
     justify-content: center;
 }
 
 .pad-letter {
-    padding-top: 3px;
-    font-size: 19px;
+    padding-top: 2.5px;
+    font-size: 15.83px;
     color: rgb(255, 255, 255);
     -unity-text-align: middle-center;
 }
@@ -2072,20 +2073,20 @@
 /* PlayStation: the coloured symbol on a dark, white-ringed button. */
 .pad-ps,
 .pad-ring {
-    border-width: 2px;
+    border-width: 1.67px;
     border-color: rgba(255, 255, 255, 0.85);
     background-color: rgb(20, 22, 31);
 }
 
 .pad-symbol {
-    width: 20px;
-    height: 20px;
+    width: 16.67px;
+    height: 16.67px;
     -unity-background-scale-mode: scale-to-fit;
 }
 
 .pad-ring .pad-symbol {
-    width: 22px;
-    height: 22px;
+    width: 18.33px;
+    height: 18.33px;
 }
 
 .pad-ps-cross .pad-symbol { -unity-background-image-tint-color: rgb(127, 167, 255); }

@@ -335,7 +335,7 @@ namespace BattleArena.UI
                 {
                     var segment = _segments[i];
                     segment.EnableInClassList("hidden", i >= count);
-                    segment.style.marginLeft = i == 0 ? 0f : 6f;
+                    segment.style.marginLeft = i == 0 ? 0f : 5f;
                     segment.style.backgroundColor = i < filledNow ? MutedSegment : i < filledAfter ? accent : EmptySegment;
                 }
             }
