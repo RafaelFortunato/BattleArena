@@ -60,11 +60,11 @@ namespace BattleArena.Editor.ContentBuilder
             var curseEruption = BuildBurst("CurseEruption", m, new Color(0.45f, 1f, 0.3f), 30, 4f, 0.5f, 0.6f, radius: 0.6f, fromGround: true);
             var arrow = BuildEnemyArrow(m, arrowHit);
             var wispBolt = BuildWispBolt(wispHit);
-            var bomb = BuildStrike("GoblinBomb", m.StrikeEnemyRing, m.StrikeEnemyFill, bombBlast, t => BombVisual(t, m));
-            var curse = BuildStrike("ShamanCurse", m.StrikeEnemyRing, m.StrikeEnemyFill, curseEruption);
-            var beetleBlast = BuildStrike("BeetleBlast", m.StrikeEnemyRing, m.StrikeEnemyFill, bombBlast);
+            var bomb = BuildStrike("GoblinBomb", m.StrikeEnemyRing, m.StrikeEnemyFill, bombBlast, 0.3f, t => BombVisual(t, m));
+            var curse = BuildStrike("ShamanCurse", m.StrikeEnemyRing, m.StrikeEnemyFill, curseEruption, 0.15f);
+            var beetleBlast = BuildStrike("BeetleBlast", m.StrikeEnemyRing, m.StrikeEnemyFill, bombBlast, 0.25f);
             var dashLine = BuildLineTelegraph(m);
-            var warlordSlam = BuildStrike("WarlordSlam", m.StrikeEnemyRing, m.StrikeEnemyFill, bombBlast);
+            var warlordSlam = BuildStrike("WarlordSlam", m.StrikeEnemyRing, m.StrikeEnemyFill, bombBlast, 0.4f);
 
             // --- Melee chasers
             var grunt = Define("Grunt", "Goblin Grunt", SaveEnemy(Melee(kit, "Grunt", 1f, 2.3f, v => Monster(v, new MonsterSpec("Orc", 1.75f, 3.2f, attack: "Weapon", material: m.MonsterGrunt), m, "Grunt"))),
@@ -175,6 +175,8 @@ namespace BattleArena.Editor.ContentBuilder
 
             // --- Boss
             var bossRoot = NewEnemy(kit, "Boss", 2.6f, 0f, v => Monster(v, MonsterSpec.Flyer("Ghost_Skull", 1.6f, 0.25f, 2.7f, attack: "Punch"), m, "Boss"));
+            // The boss squashes under hits but is never shoved around.
+            SerializedSetter.For(bossRoot.GetComponent<EnemyHitReaction>()).Set("knockbackScale", 0f).Apply();
             bossRoot.AddComponent<ChaseMovement>();
             bossRoot.AddComponent<ContactAttack>();
             Behaviour<BossController>(bossRoot, ("slamPrefab", bossSlam), ("projectilePrefab", bossOrb),
@@ -252,7 +254,11 @@ namespace BattleArena.Editor.ContentBuilder
             var bodyRenderer = buildVisual(visual);
 
             var enemy = root.AddComponent<Enemy>();
-            SerializedSetter.For(enemy).Set("experienceGemPrefab", kit.Gem).Set("deathEffect", kit.DeathEffect).Apply();
+            SerializedSetter.For(enemy).Set("experienceGemPrefab", kit.Gem).Set("deathEffect", kit.DeathEffect).Set("visual", visual).Apply();
+
+            // Squash on every hit, a shove on big ones. The shove scales with the hit's share of max health, so
+            // tougher enemies already budge less without per-enemy tuning.
+            SerializedSetter.For(root.AddComponent<EnemyHitReaction>()).Set("visual", visual).Apply();
 
             var flash = root.AddComponent<DamageFlash>();
             var flashRenderers = visual.GetComponentsInChildren<Renderer>().Where(r => r is not ParticleSystemRenderer).ToArray();

@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using BattleArena.Combat;
 using BattleArena.Core;
 using BattleArena.Pickups;
@@ -37,6 +38,10 @@ namespace BattleArena.Enemies
     {
         [SerializeField] private ExperienceGem experienceGemPrefab;
         [SerializeField] private TimedRelease deathEffect;
+        [Tooltip("The model, squashed and shrunk away on death. Without it the enemy disappears at once.")]
+        [SerializeField] private Transform visual;
+        [Tooltip("Seconds the body takes to squash and shrink away after dying, before it returns to the pool.")]
+        [SerializeField, Min(0f)] private float deathDuration = 0.2f;
 
         private NavMeshAgent _agent;
         private Health _health;
@@ -46,6 +51,7 @@ namespace BattleArena.Enemies
         private float _slowMultiplier = 1f;
         private float _slowUntil;
         private float _speedOverride = -1f;
+        private Vector3 _visualScale = Vector3.one;
 
         internal int RegistryIndex = -1;
 
@@ -61,6 +67,9 @@ namespace BattleArena.Enemies
         /// <summary>Movement speed after slows and overrides. Flyers read this since they bypass the agent.</summary>
         public float CurrentSpeed { get; private set; }
 
+        /// <summary>Where the player was on the last director tick; null before the first one.</summary>
+        public Vector3? LastTargetPosition { get; private set; }
+
         /// <summary>
         /// Raised when an attack starts, with the seconds until it lands (0 for an instant hit), so visuals can
         /// time the swing.
@@ -74,6 +83,8 @@ namespace BattleArena.Enemies
             _collider = GetComponent<Collider>();
             _movement = GetComponent<EnemyMovement>();
             _attacks = GetComponents<EnemyAttack>();
+            if (visual != null)
+                _visualScale = visual.localScale;
             _health.Damaged += OnDamaged;
             _health.Died += OnDied;
             // Spread agents across priorities so crowds resolve avoidance more naturally.
@@ -111,6 +122,12 @@ namespace BattleArena.Enemies
 
         public void OnSpawned()
         {
+            // Undo the death squash: the pool hands back whatever the last life left behind.
+            _collider.enabled = true;
+            if (visual != null)
+                visual.localScale = _visualScale;
+            LastTargetPosition = null;
+
             // Flyers disable their agent in the prefab and move themselves.
             if (_agent.enabled && !_agent.isOnNavMesh)
                 _agent.Warp(transform.position);
@@ -131,6 +148,8 @@ namespace BattleArena.Enemies
         {
             if (!_health.IsAlive)
                 return;
+
+            LastTargetPosition = context.TargetPosition;
 
             // Slows expire on the director tick instead of a coroutine per enemy.
             if (_slowMultiplier < 1f && context.Now >= _slowUntil)
@@ -261,6 +280,37 @@ namespace BattleArena.Enemies
 
             if (deathEffect != null)
                 PoolManager.Spawn(deathEffect, position + Vector3.up, Quaternion.identity);
+
+            if (visual != null && deathDuration > 0f)
+                StartCoroutine(DeathRoutine());
+            else
+                this.Despawn();
+        }
+
+        /// <summary>
+        /// A quick squash, then a shrink to nothing, so a kill reads as the enemy being crushed rather than blinking
+        /// out. It no longer collides, so shots, targeting and areas pass straight through the falling body.
+        /// </summary>
+        private IEnumerator DeathRoutine()
+        {
+            _collider.enabled = false;
+            if (_agent.isOnNavMesh)
+            {
+                _agent.isStopped = true;
+                _agent.velocity = Vector3.zero;
+            }
+
+            var squashed = new Vector3(1.3f, 0.65f, 1.3f);
+            for (var elapsed = 0f; elapsed < deathDuration; elapsed += Time.deltaTime)
+            {
+                var t = elapsed / deathDuration;
+                // First third: flatten out. The rest: shrink away, accelerating.
+                var shape = t < 0.33f
+                    ? Vector3.Lerp(Vector3.one, squashed, t / 0.33f)
+                    : squashed * (1f - Mathf.Pow((t - 0.33f) / 0.67f, 2f));
+                visual.localScale = Vector3.Scale(_visualScale, shape);
+                yield return null;
+            }
 
             this.Despawn();
         }

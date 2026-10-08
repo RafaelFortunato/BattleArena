@@ -5046,6 +5046,10 @@ MonoBehaviour:
   authoredRunSpeed: 4.5
   runRateRange: {x: 0.8, y: 1.8}
   smoothing: 12
+  castDuration: 0.5
+  castBlendInOut: {x: 0.05, y: 0.15}
+  castFlare: {fileID: 1863994514472116746, guid: 82ca9feed95e265458f240e73ce9478e, type: 3}
+  muzzle: {fileID: 3305202365107629838}
 --- !u!114 &6387014685880135531
 MonoBehaviour:
   m_ObjectHideFlags: 0

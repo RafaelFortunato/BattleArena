@@ -55,6 +55,7 @@ namespace BattleArena.Editor.ContentBuilder
 
             var gameManager = BuildSystems(m, content, player, playerHealth, out var levelUp);
             BuildCamera(player.transform);
+            BuildGameFeel(playerHealth);
             BuildUserInterface(gameManager, levelUp, content.LevelUp, player, playerHealth, content.Input);
             BuildSceneAudio(sounds, playerHealth);
 
@@ -355,6 +356,16 @@ namespace BattleArena.Editor.ContentBuilder
             tracker.BindingMode = BindingMode.WorldSpace;
             tracker.PositionDamping = new Vector3(0.35f, 0.35f, 0.35f);
             follow.TrackerSettings = tracker;
+
+            followObject.AddComponent<ScreenShake>();
+        }
+
+        /// <summary>Hit-stop and the shake/freeze cues for the player being hit, heavy kills and the boss arriving.</summary>
+        private static void BuildGameFeel(Health playerHealth)
+        {
+            var feel = new GameObject("Game Feel");
+            feel.AddComponent<HitStop>();
+            SerializedSetter.For(feel.AddComponent<GameFeel>()).Set("playerHealth", playerHealth).Apply();
         }
 
         private static void BuildUserInterface(GameManager gameManager, LevelUpController levelUp, LevelUpConfig levelUpConfig,

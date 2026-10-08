@@ -48,7 +48,7 @@ namespace BattleArena.Editor.ContentBuilder
             // Projectiles and telegraphed strikes
             var spellVfx = BuildSpellVfx(m);
             var bossOrb = BuildBossOrb(BuildSparkHit("BossOrbHit", new Color(0.8f, 0.35f, 1f), 1.2f));
-            var bossSlam = BuildStrike("BossSlam", m.StrikeEnemyRing, m.StrikeEnemyFill, slamImpact);
+            var bossSlam = BuildStrike("BossSlam", m.StrikeEnemyRing, m.StrikeEnemyFill, slamImpact, shake: 0.55f);
 
             var gem = BuildGem(m);
 
@@ -66,7 +66,7 @@ namespace BattleArena.Editor.ContentBuilder
                 .Set("actions", AssetDatabase.LoadAssetAtPath<InputActionAsset>($"{SettingsFolder}/GameControls.inputactions"))
                 .Apply();
 
-            var player = BuildPlayer(m, input, spellVfx.PlayerBolt);
+            var player = BuildPlayer(m, input, spellVfx.PlayerBolt, spellVfx.CastFlare);
 
             return new ContentSet
             {
@@ -142,9 +142,10 @@ namespace BattleArena.Editor.ContentBuilder
 
         // ---------------------------------------------------------------- Projectiles & strikes
 
+        /// <param name="shake">Screen shake when it lands (0-1), weaker the further from the player.</param>
         /// <param name="buildFalling">Optional builder for the object that drops onto the target (e.g. a lit bomb).</param>
         private static DelayedAreaStrike BuildStrike(string name, Material outlineMaterial, Material fillMaterial, TimedRelease impact,
-            System.Func<Transform, Transform> buildFalling = null)
+            float shake, System.Func<Transform, Transform> buildFalling = null)
         {
             var root = CreateRoot(name, GameLayers.Default);
             var outline = FlatQuad(root.transform, "Outline", outlineMaterial, 0.04f);
@@ -161,6 +162,7 @@ namespace BattleArena.Editor.ContentBuilder
                 .Set("fill", fill)
                 .Set("fallingObject", falling)
                 .Set("impactEffect", impact)
+                .Set("impactShake", shake)
                 .Apply();
 
             return SavePrefab<DelayedAreaStrike>(root, $"{PrefabsFolder}/Projectiles/{name}.prefab");
@@ -203,7 +205,7 @@ namespace BattleArena.Editor.ContentBuilder
 
         // ---------------------------------------------------------------- Player
 
-        private static GameObject BuildPlayer(MaterialSet m, InputReader input, Projectile bolt)
+        private static GameObject BuildPlayer(MaterialSet m, InputReader input, Projectile bolt, FollowTarget castFlare)
         {
             var root = CreateRoot("Player", GameLayers.Player);
             root.tag = "Player";
@@ -228,7 +230,7 @@ namespace BattleArena.Editor.ContentBuilder
             SerializedSetter.For(progression).Set("stats", stats).Apply();
 
             // The wizard husky; shots and spells come out of the crystal on its staff.
-            var character = AddWizardHusky(root, m, movement);
+            var character = AddWizardHusky(root, m, movement, castFlare);
             var muzzle = character.Muzzle;
 
             var autoAttack = root.AddComponent<AutoAttack>();

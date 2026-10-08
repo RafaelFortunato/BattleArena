@@ -1,5 +1,7 @@
+using System.Collections.Generic;
 using System.Linq;
 using BattleArena.Player;
+using BattleArena.Vfx;
 using UnityEditor;
 using UnityEditor.Animations;
 using UnityEngine;
@@ -16,6 +18,16 @@ namespace BattleArena.Editor.ContentBuilder
         private const string HuskyModelPath = HuskyFolder + "/WizardHusky.fbx";
         private const string HuskyAlbedoPath = HuskyFolder + "/WizardHusky_Albedo.png";
         private const string HuskyControllerPath = HuskyFolder + "/WizardHusky.controller";
+        private const string HuskyUpperBodyMaskPath = HuskyFolder + "/WizardHuskyUpperBody.mask";
+
+        /// <summary>Clips that play once; every other take loops.</summary>
+        private static readonly HashSet<string> OneShotClips = new() { "Cast" };
+
+        /// <summary>
+        /// Bones the Cast clip drives: the torso twist and the staff arm. The legs, tail and free arm stay with
+        /// Idle/Run underneath.
+        /// </summary>
+        private static readonly HashSet<string> CastBones = new() { "spine", "chest", "head", "upperarm.R", "forearm.R", "hand.R", "crystal" };
 
         private sealed class CharacterVisual
         {
@@ -23,8 +35,8 @@ namespace BattleArena.Editor.ContentBuilder
             public Transform Muzzle;
         }
 
-        /// <summary>Adds the animated husky under <paramref name="root"/> and wires its animator to the movement.</summary>
-        private static CharacterVisual AddWizardHusky(GameObject root, MaterialSet m, PlayerController movement)
+        /// <summary>Adds the animated husky under <paramref name="root"/> and wires its animator to the movement and casts.</summary>
+        private static CharacterVisual AddWizardHusky(GameObject root, MaterialSet m, PlayerController movement, FollowTarget castFlare)
         {
             var model = LoadCharacterModel(HuskyModelPath);
             var instance = (GameObject)PrefabUtility.InstantiatePrefab(model, root.transform);
@@ -38,28 +50,40 @@ namespace BattleArena.Editor.ContentBuilder
             var animator = instance.GetComponent<Animator>();
             if (animator == null)
                 animator = instance.AddComponent<Animator>();
-            animator.runtimeAnimatorController = BuildHuskyController();
+            animator.runtimeAnimatorController = BuildHuskyController(model);
             animator.applyRootMotion = false;
             animator.cullingMode = AnimatorCullingMode.AlwaysAnimate;
-
-            var driver = root.AddComponent<PlayerAnimator>();
-            SerializedSetter.For(driver).Set("animator", animator).Set("controller", movement).Apply();
 
             var muzzle = instance.GetComponentsInChildren<Transform>().FirstOrDefault(t => t.name == "crystal");
             if (muzzle == null)
                 Debug.LogWarning("WizardHusky has no 'crystal' bone; spells will fire from the character root.");
-            return new CharacterVisual { Body = body, Muzzle = muzzle != null ? muzzle : root.transform };
+            muzzle = muzzle != null ? muzzle : root.transform;
+
+            var driver = root.AddComponent<PlayerAnimator>();
+            SerializedSetter.For(driver)
+                .Set("animator", animator)
+                .Set("controller", movement)
+                .Set("castFlare", castFlare)
+                .Set("muzzle", muzzle)
+                .Apply();
+
+            return new CharacterVisual { Body = body, Muzzle = muzzle };
         }
 
-        /// <summary>Generic rig, looping clips named after their Blender actions, geometry only (materials come from here).</summary>
+        /// <summary>
+        /// Generic rig, clips named after their Blender actions (looping unless listed in <see cref="OneShotClips"/>),
+        /// geometry only (materials come from here).
+        /// </summary>
         private static GameObject LoadCharacterModel(string path)
         {
             if (AssetImporter.GetAtPath(path) is ModelImporter importer)
             {
                 var clips = importer.clipAnimations;
+                // A new action exported from Blender shows up as an extra default take, so compare counts too.
                 var configured = importer.animationType == ModelImporterAnimationType.Generic &&
                                  importer.materialImportMode == ModelImporterMaterialImportMode.None &&
-                                 clips.Length > 0 && clips.All(c => c.loopTime && !c.name.Contains("|"));
+                                 clips.Length > 0 && clips.Length == importer.defaultClipAnimations.Length &&
+                                 clips.All(c => !c.name.Contains("|") && c.loopTime == !OneShotClips.Contains(c.name));
                 if (!configured)
                 {
                     importer.materialImportMode = ModelImporterMaterialImportMode.None;
@@ -72,8 +96,8 @@ namespace BattleArena.Editor.ContentBuilder
                     clips = importer.defaultClipAnimations;
                     foreach (var clip in clips)
                     {
-                        clip.loopTime = true;
                         clip.name = clip.name.Substring(clip.name.LastIndexOf('|') + 1);
+                        clip.loopTime = !OneShotClips.Contains(clip.name);
                     }
                     importer.clipAnimations = clips;
                     importer.SaveAndReimport();
@@ -82,8 +106,11 @@ namespace BattleArena.Editor.ContentBuilder
             return AssetDatabase.LoadAssetAtPath<GameObject>(path);
         }
 
-        /// <summary>Idle while standing, Run while moving (its playback rate follows the movement speed).</summary>
-        private static AnimatorController BuildHuskyController()
+        /// <summary>
+        /// Idle while standing, Run while moving (its playback rate follows the movement speed), and an upper-body
+        /// Cast layer that <see cref="PlayerAnimator"/> fades in for each spell.
+        /// </summary>
+        private static AnimatorController BuildHuskyController(GameObject model)
         {
             var controller = AssetDatabase.LoadAssetAtPath<AnimatorController>(HuskyControllerPath);
             if (controller == null)
@@ -118,8 +145,47 @@ namespace BattleArena.Editor.ContentBuilder
             toIdle.duration = 0.15f;
             toIdle.AddCondition(AnimatorConditionMode.Less, 0.4f, "Speed");
 
+            // Cast: an override layer limited to the torso and staff arm. Its weight stays at zero until a spell is
+            // cast, so the one state can simply sit at the end of its clip in between.
+            while (controller.layers.Length > 1)
+                controller.RemoveLayer(1);
+            controller.AddLayer("Cast");
+            var layers = controller.layers;
+            layers[1].defaultWeight = 0f;
+            layers[1].blendingMode = AnimatorLayerBlendingMode.Override;
+            layers[1].avatarMask = BuildUpperBodyMask(model);
+            controller.layers = layers;
+            var castMachine = layers[1].stateMachine;
+            var cast = castMachine.AddState("Cast");
+            cast.motion = Clip("Cast");
+            castMachine.defaultState = cast;
+            if (cast.motion == null)
+                Debug.LogWarning("WizardHusky has no 'Cast' take; spells will play without a cast animation.");
+
             EditorUtility.SetDirty(controller);
             return controller;
+        }
+
+        /// <summary>A transform mask over the husky's skeleton with only <see cref="CastBones"/> switched on.</summary>
+        private static AvatarMask BuildUpperBodyMask(GameObject model)
+        {
+            var mask = AssetDatabase.LoadAssetAtPath<AvatarMask>(HuskyUpperBodyMaskPath);
+            if (mask == null)
+            {
+                mask = new AvatarMask();
+                AssetDatabase.CreateAsset(mask, HuskyUpperBodyMaskPath);
+            }
+
+            var bones = model.GetComponentsInChildren<Transform>(true).Where(t => t != model.transform).ToArray();
+            mask.transformCount = bones.Length;
+            for (var i = 0; i < bones.Length; i++)
+            {
+                mask.SetTransformPath(i, AnimationUtility.CalculateTransformPath(bones[i], model.transform));
+                mask.SetTransformActive(i, CastBones.Contains(bones[i].name));
+            }
+
+            EditorUtility.SetDirty(mask);
+            return mask;
         }
     }
 }

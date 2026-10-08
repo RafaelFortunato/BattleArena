@@ -1,5 +1,6 @@
 using System.Collections;
 using BattleArena.Pooling;
+using BattleArena.Vfx;
 using UnityEngine;
 
 namespace BattleArena.Combat
@@ -20,6 +21,8 @@ namespace BattleArena.Combat
         [Tooltip("Peak height of the arc when the strike is lobbed from a launch point.")]
         [SerializeField, Min(0f)] private float arcHeight = 4f;
         [SerializeField] private TimedRelease impactEffect;
+        [Tooltip("Screen shake when it lands, weaker the further from the player. Zero for none.")]
+        [SerializeField, Range(0f, 1f)] private float impactShake;
 
         /// <summary>Strike at this position after <paramref name="delay"/>; the falling object drops from above.</summary>
         public void Arm(float radius, float delay, DamageProfile damage, int targetMask) =>
@@ -66,6 +69,9 @@ namespace BattleArena.Combat
                 var effect = PoolManager.Spawn(impactEffect, origin, Quaternion.identity);
                 effect.transform.localScale = Vector3.one * radius;
             }
+
+            if (impactShake > 0f)
+                ScreenShake.AddAt(origin, impactShake);
 
             this.Despawn();
         }

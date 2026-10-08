@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 6865985954852258351}
   - component: {fileID: 4881325341947755234}
   - component: {fileID: 1235947753586911672}
+  - component: {fileID: 7668062134652529262}
   - component: {fileID: 7323725899365741638}
   - component: {fileID: 4520181564773791721}
   - component: {fileID: 6164652993516754447}
@@ -159,6 +160,28 @@ MonoBehaviour:
   m_EditorClassIdentifier: BattleArena.Runtime::BattleArena.Enemies.Enemy
   experienceGemPrefab: {fileID: 8599982393659107838, guid: 7ad57bfd572f62c4fb9d9013a5dd47ea, type: 3}
   deathEffect: {fileID: 7058322291543923498, guid: e3b1bb50f97b0e0428a3d6ce742461dc, type: 3}
+  visual: {fileID: 5111705172569764938}
+  deathDuration: 0.2
+--- !u!114 &7668062134652529262
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2710512203615739359}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bca3d84383704cb4c8ddb69de435147e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: BattleArena.Runtime::BattleArena.Enemies.EnemyHitReaction
+  visual: {fileID: 5111705172569764938}
+  squash: {x: 1.16, y: 0.84, z: 1.16}
+  squashDuration: 0.14
+  knockbackPerHealth: 1.2
+  maxKnockback: 0.35
+  minKnockbackShare: 0.08
+  knockbackDuration: 0.12
+  knockbackScale: 1
 --- !u!114 &7323725899365741638
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -35,6 +35,7 @@ namespace BattleArena.Editor.ContentBuilder
             public ChainLightningEffect ChainLightning;
             public OrbitingOrbs ArcaneOrbit;
             public DamageZone ToxicMiasma;
+            public FollowTarget CastFlare;
         }
 
         private static SpellVfx BuildSpellVfx(MaterialSet m)
@@ -56,7 +57,27 @@ namespace BattleArena.Editor.ContentBuilder
                 ToxicMiasma = BuildToxicMiasma(),
                 PhaseDepart = BuildPhaseDepart(),
                 PhaseArrival = BuildPhaseArrival(),
+                CastFlare = BuildCastFlare(),
             };
+        }
+
+        /// <summary>The crystal flaring as a spell leaves it; follows the staff through the cast thrust.</summary>
+        private static FollowTarget BuildCastFlare()
+        {
+            var root = FxRoot("CastFlare");
+            var t = root.transform;
+            new Fx(t, "Flash", FxMaterial("CastFlareFlash", "vfx_glow", ArcanePink, 3f))
+                .Burst(1).Life(0.18f, 0.18f).Size(1.6f, 1.6f).SizeOverLife(Curve(0f, 0.4f, 0.3f, 1f, 1f, 0.6f)).ColorOverLife(Fade(0f, 1f, 1f, 0f));
+            new Fx(t, "Sparks", FxMaterial("CastFlareSpark", "vfx_glow", ArcaneViolet, 3f))
+                .Burst(10).Sphere(0.08f).Speed(3f, 6f).Life(0.15f, 0.3f).Size(0.06f, 0.11f).Drag(4f)
+                .Stretched(2f, 0.03f).ColorOverLife(Fade(0f, 1f, 1f, 0f));
+            new Fx(t, "Stars", FxMaterial("CastFlareStar", "vfx_star", ArcanePink, 2.5f))
+                .Burst(4).Sphere(0.15f).Speed(0.4f, 1.2f).Life(0.3f, 0.45f).Size(0.15f, 0.25f).Rotation().ColorOverLife(Fade(0f, 1f, 0.6f, 1f, 1f, 0f));
+            root.AddComponent<FollowTarget>();
+            var release = root.AddComponent<TimedRelease>();
+            SerializedSetter.For(release).Set("lifetime", 0.5f).Apply();
+            root.AddComponent<VfxRestart>();
+            return SaveFx<FollowTarget>(root);
         }
 
         // ---------------------------------------------------------------- Shared pieces
@@ -308,6 +329,8 @@ namespace BattleArena.Editor.ContentBuilder
                 .Set("fill", fill)
                 .Set("fallingObject", falling)
                 .Set("impactEffect", impact)
+                // Six land per cast, so each one is only a light knock.
+                .Set("impactShake", 0.15f)
                 .Apply();
             return SavePrefab<DelayedAreaStrike>(root, $"{PrefabsFolder}/Projectiles/MeteorStrike.prefab");
         }
