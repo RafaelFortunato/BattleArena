@@ -29,6 +29,9 @@ namespace BattleArena.Editor.ContentBuilder
         /// </summary>
         private static readonly HashSet<string> CastBones = new() { "spine", "chest", "head", "upperarm.R", "forearm.R", "hand.R", "crystal" };
 
+        /// <summary>Base to tip.</summary>
+        private static readonly string[] TailBones = { "tail.1", "tail.2", "tail.3" };
+
         private sealed class CharacterVisual
         {
             public Renderer Body;
@@ -66,6 +69,19 @@ namespace BattleArena.Editor.ContentBuilder
                 .Set("castFlare", castFlare)
                 .Set("muzzle", muzzle)
                 .Apply();
+
+            // The tail sways procedurally on its own rhythm, over whatever the clips key on it.
+            var bones = instance.GetComponentsInChildren<Transform>();
+            var tail = TailBones.Select(name => bones.FirstOrDefault(t => t.name == name)).ToArray();
+            if (tail.All(t => t != null))
+            {
+                var sway = instance.AddComponent<TailSway>();
+                SerializedSetter.For(sway).Set("segments", tail).Set("body", root.transform).Set("controller", movement).Apply();
+            }
+            else
+            {
+                Debug.LogWarning("WizardHusky is missing tail bones; the tail will only follow the clips.");
+            }
 
             return new CharacterVisual { Body = body, Muzzle = muzzle };
         }
