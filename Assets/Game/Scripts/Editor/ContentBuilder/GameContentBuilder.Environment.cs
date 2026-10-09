@@ -31,7 +31,7 @@ namespace BattleArena.Editor.ContentBuilder
         {
             AutumnTree = PropPrefab("AutumnTree", root =>
             {
-                AddModel(root, "Trees/AutumnTree.fbx", m.AutumnWood, m.LeafRustDark, m.LeafRust, m.LeafOchre);
+                AddModel(root, "Trees/AutumnOak.fbx", m.AutumnWood, m.LeafRustDark, m.LeafRust, m.LeafOchre);
                 AddCapsule(root, 0.55f, 2.4f);
             }),
             LanternPine = PropPrefab("LanternPine", root =>

@@ -15,7 +15,7 @@ MonoBehaviour:
   displayName: Ogre Brute
   prefab: {fileID: 3002306230454510110, guid: 71398cde7287a844589a217d84459328, type: 3}
   maxHealth: 96
-  moveSpeed: 3
+  moveSpeed: 4
   contactDamage: 12
   attackRange: 2
   attackCooldown: 1.4

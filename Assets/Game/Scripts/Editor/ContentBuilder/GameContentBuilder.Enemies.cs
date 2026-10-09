@@ -77,7 +77,7 @@ namespace BattleArena.Editor.ContentBuilder
 
             // Run, not Walk: the walk swings the legs through the low-held bat. A high reference speed makes it a slow lumbering jog.
             var brute = Define("Brute", "Ogre Brute", SaveEnemy(Melee(kit, "Brute", 1.5f, 2.3f, v => Monster(v, new MonsterSpec("Big/BlueDemon", 1.75f, 4f, move: "Run", attack: "Weapon"), m, "Brute"))),
-                health: 96f, speed: 3f, damage: 12f, range: 2f, cooldown: 1.4f, xp: 4);
+                health: 96f, speed: 4f, damage: 12f, range: 2f, cooldown: 1.4f, xp: 4);
 
             // --- Swarm Bat: fast, weaves side to side while closing in.
             var batRoot = NewEnemy(kit, "SwarmBat", 0.9f, 2.1f, v => Monster(v, MonsterSpec.Flyer("Flying/Demon", 1.0f, 0.6f, 6f), m, "SwarmBat"));

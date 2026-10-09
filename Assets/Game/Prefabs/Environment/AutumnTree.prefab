@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 5652083736837240037}
   - component: {fileID: 4394941428541429218}
   m_Layer: 0
-  m_Name: AutumnTree
+  m_Name: AutumnOak
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -40,7 +40,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 555441351911228206}
-  m_Mesh: {fileID: -6826861565325615931, guid: 1aac6d207a808da43808e568a947ed69, type: 3}
+  m_Mesh: {fileID: 8438949781040446682, guid: c2b3d5cb471af8848933bfe166ced87a, type: 3}
 --- !u!23 &4394941428541429218
 MeshRenderer:
   m_ObjectHideFlags: 0
