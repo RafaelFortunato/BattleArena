@@ -26,7 +26,7 @@ namespace BattleArena.Editor.ContentBuilder
         private const string SoundEventsFolder = DataFolder + "/Audio";
         private const string MusicFolder = Root + "/Audio/Music";
         // "Battle Theme 4" by Alexandr Zhelanov (CC-BY, credited in the README) and "Determined Pursuit" by Emma_MA (CC0).
-        private const string MatchMusic = MusicFolder + "/battle_theme_4.mp3";
+        private const string MatchMusic = MusicFolder + "/battle_theme_4_loop.wav";
         private const string BossMusic = MusicFolder + "/determined_pursuit_loop.wav";
 
         // Heard flat (menus, stings, the player's own state): keep the stereo image. Everything

@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: ClearTheCamp
   m_EditorClassIdentifier: BattleArena.Runtime::BattleArena.Missions.ClearAreaMission
   title: Blood Ritual
-  description: A blood ritual has begun nearby. Slay 20 enemies inside its circle
+  description: A blood ritual has begun nearby. Slay {0} enemies inside its circle
     to stop it.
   timeLimit: 60
   weight: 1
@@ -31,6 +31,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 270c8ececbdcc8a4cb32b224374438ff, type: 2}
   - {fileID: 11400000, guid: 270c8ececbdcc8a4cb32b224374438ff, type: 2}
   campRadius: 9
-  killsRequired: 20
+  killsRequired: 12
+  killsPerMinute: 1.5
   minDistance: 18
   maxDistance: 26

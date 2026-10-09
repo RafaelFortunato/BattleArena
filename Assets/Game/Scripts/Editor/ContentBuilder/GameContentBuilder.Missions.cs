@@ -28,15 +28,16 @@ namespace BattleArena.Editor.ContentBuilder
                     "Stand inside the marked circle for 12 seconds.", timeLimit: 40f,
                     s => s.Set("zonePrefab", goldZone).Set("radius", 4f).Set("requiredSeconds", 12f)),
                 Mission<ClearAreaMission>("ClearTheCamp", "Blood Ritual",
-                    "A blood ritual has begun nearby. Slay 20 enemies inside its circle to stop it.", timeLimit: 60f,
-                    s => s.Set("zonePrefab", campZone).Set("camp", roster.Camp).Set("campRadius", 9f).Set("killsRequired", 20)
+                    "A blood ritual has begun nearby. Slay {0} enemies inside its circle to stop it.", timeLimit: 60f,
+                    s => s.Set("zonePrefab", campZone).Set("camp", roster.Camp).Set("campRadius", 9f)
+                        .Set("killsRequired", 12).Set("killsPerMinute", 1.5f)
                         .Set("minDistance", 18f).Set("maxDistance", 26f)),
                 Mission<CollectShardsMission>("ArcaneShards", "Arcane Shards",
                     "Collect the 3 arcane shards scattered around the arena.", timeLimit: 45f,
                     s => s.Set("shardPrefab", shard).Set("shardCount", 3)),
                 Mission<KillCountMission>("Massacre", "Massacre",
-                    "Defeat 30 enemies before time runs out.", timeLimit: 35f,
-                    s => s.Set("killCount", 30)),
+                    "Defeat {0} enemies before time runs out.", timeLimit: 35f,
+                    s => s.Set("killCount", 15).Set("killsPerMinute", 2f)),
                 Mission<UntouchableMission>("Untouchable", "Untouchable",
                     "Take less than {0} damage.", timeLimit: 21f, weight: 0.7f,
                     configure: s => s.Set("surviveSeconds", 20f).Set("allowedDamageFraction", 0.1f)),

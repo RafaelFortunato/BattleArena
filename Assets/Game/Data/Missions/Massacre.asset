@@ -13,7 +13,8 @@ MonoBehaviour:
   m_Name: Massacre
   m_EditorClassIdentifier: BattleArena.Runtime::BattleArena.Missions.KillCountMission
   title: Massacre
-  description: Defeat 30 enemies before time runs out.
+  description: Defeat {0} enemies before time runs out.
   timeLimit: 35
   weight: 1
-  killCount: 30
+  killCount: 15
+  killsPerMinute: 2

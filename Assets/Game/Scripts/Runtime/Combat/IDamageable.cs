@@ -24,6 +24,7 @@ namespace BattleArena.Combat
     public interface ISlowable
     {
         /// <param name="speedMultiplier">0..1, where 0.5 halves the speed.</param>
-        void ApplySlow(float speedMultiplier, float duration);
+        /// <param name="chill">A frost slow: the target also shows it (icy tint, frost particles) while it lasts.</param>
+        void ApplySlow(float speedMultiplier, float duration, bool chill = false);
     }
 }

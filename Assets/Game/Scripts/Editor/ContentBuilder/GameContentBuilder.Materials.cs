@@ -21,7 +21,7 @@ namespace BattleArena.Editor.ContentBuilder
             public Material PlayerBolt, Fireball, BossOrb, Meteor, Gem, ArcaneOrb;
             public Material StrikeEnemyRing, StrikeEnemyFill;
             public Material Particles;
-            public Material HealthBar, DamageText;
+            public Material HealthBar, DamageText, FrostOverlay;
             public Material MissionZone, MissionZoneFill, ArcaneShard, MissionCrystal, PointerGlow;
         }
 
@@ -105,6 +105,7 @@ namespace BattleArena.Editor.ContentBuilder
                 MissionCrystal = Lit("MissionCrystal", Hex("#B070E8"), emission: Hex("#9A3BE0") * 1.2f),
                 PointerGlow = Lit("MissionPointer", Hex("#FFE9A8"), emission: Hex("#FFB020") * 3f),
                 HealthBar = HealthBarMaterial(),
+                FrostOverlay = FrostOverlayMaterial(),
                 DamageText = DamageTextMaterial(),
             };
         }
@@ -183,6 +184,18 @@ namespace BattleArena.Editor.ContentBuilder
             material.SetFloat("_Blend", 2f); // Additive: glows nicely with bloom.
             BaseShaderGUI.SetupMaterialBlendMode(material);
             BaseShaderGUI.SetMaterialKeywords(material);
+            EditorUtility.SetDirty(material);
+            return material;
+        }
+
+        /// <summary>Icy fresnel rim drawn over frost-slowed enemies (see EnemyChillVisual).</summary>
+        private static Material FrostOverlayMaterial()
+        {
+            var material = LoadOrCreateMaterial("FrostOverlay", "BattleArena/FrostFresnel");
+            material.SetColor("_RimColor", new Color(0.45f, 0.85f, 1.6f));
+            material.SetFloat("_RimPower", 2.2f);
+            material.SetFloat("_Fill", 0.12f);
+            material.enableInstancing = true;
             EditorUtility.SetDirty(material);
             return material;
         }

@@ -139,6 +139,7 @@ GameObject:
   - component: {fileID: 957518877667334477}
   - component: {fileID: 5404171645989307545}
   - component: {fileID: 5045026358563861680}
+  - component: {fileID: 7712149947658983625}
   - component: {fileID: 3845486086449453807}
   - component: {fileID: 3146831638650188099}
   - component: {fileID: 6792900257248951186}
@@ -321,6 +322,20 @@ MonoBehaviour:
   - {fileID: 5198704619297553730}
   flashMaterial: {fileID: 2100000, guid: 383ba1ad25246d643ad5848a937b5eb5, type: 2}
   duration: 0.08
+--- !u!114 &7712149947658983625
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8799570209704635329}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: baabe23b9063ef14dae41fdcb64edbc9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: BattleArena.Runtime::BattleArena.Enemies.EnemyChillVisual
+  flash: {fileID: 5045026358563861680}
+  frostOverlay: {fileID: 2100000, guid: a6ed6fce0bf7e264e848f47802f417f4, type: 2}
 --- !u!114 &3845486086449453807
 MonoBehaviour:
   m_ObjectHideFlags: 0

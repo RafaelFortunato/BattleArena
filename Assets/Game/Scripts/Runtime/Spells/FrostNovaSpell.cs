@@ -22,7 +22,7 @@ namespace BattleArena.Spells
             var center = context.CasterPosition;
             var area = context.Area(radius);
             CombatQueries.DamageAndSlowInRadius(center, area, GetDamage(context), context.TargetMask, slowMultiplier,
-                context.Duration(slowDuration));
+                context.Duration(slowDuration), chill: true);
 
             if (ringEffect != null)
                 PoolManager.Spawn(ringEffect, center, Quaternion.identity).Play(area);

@@ -271,8 +271,11 @@ namespace BattleArena.Editor.ContentBuilder
 
             var flash = root.AddComponent<DamageFlash>();
             var flashRenderers = visual.GetComponentsInChildren<Renderer>().Where(r => r is not ParticleSystemRenderer).ToArray();
-            SerializedSetter.For(flash).Set("renderers", flashRenderers.Length > 0 ? flashRenderers : new[] { bodyRenderer })
-                .Set("flashMaterial", kit.M.Flash).Apply();
+            if (flashRenderers.Length == 0)
+                flashRenderers = new[] { bodyRenderer };
+            SerializedSetter.For(flash).Set("renderers", flashRenderers).Set("flashMaterial", kit.M.Flash).Apply();
+            // A frost slow draws an icy rim over the body for as long as it lasts.
+            SerializedSetter.For(root.AddComponent<EnemyChillVisual>()).Set("flash", flash).Set("frostOverlay", kit.M.FrostOverlay).Apply();
 
             if (healthBarHeight > 0f)
                 AddHealthBar(root, kit.M, healthBarHeight);

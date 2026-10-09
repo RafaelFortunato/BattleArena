@@ -50,6 +50,7 @@ namespace BattleArena.Enemies
         private EnemyAttack[] _attacks;
         private float _slowMultiplier = 1f;
         private float _slowUntil;
+        private float _chillUntil;
         private float _speedOverride = -1f;
         private Vector3 _visualScale = Vector3.one;
 
@@ -66,6 +67,11 @@ namespace BattleArena.Enemies
 
         /// <summary>Movement speed after slows and overrides. Flyers read this since they bypass the agent.</summary>
         public float CurrentSpeed { get; private set; }
+
+        /// <summary>True while a frost slow is on the enemy; <see cref="ChillChanged"/> fires when it starts and ends.</summary>
+        public bool IsChilled { get; private set; }
+
+        public event Action<bool> ChillChanged;
 
         /// <summary>Where the player was on the last director tick; null before the first one.</summary>
         public Vector3? LastTargetPosition { get; private set; }
@@ -154,6 +160,9 @@ namespace BattleArena.Enemies
             // Slows expire on the director tick instead of a coroutine per enemy.
             if (_slowMultiplier < 1f && context.Now >= _slowUntil)
                 ClearSlow();
+            // A frost slow can end before a longer, plain slow (a poison cloud) does.
+            if (IsChilled && context.Now >= _chillUntil)
+                SetChilled(false);
 
             if (!IsHeld && _movement != null)
                 _movement.Tick(context);
@@ -235,7 +244,7 @@ namespace BattleArena.Enemies
             this.Despawn();
         }
 
-        public void ApplySlow(float speedMultiplier, float duration)
+        public void ApplySlow(float speedMultiplier, float duration, bool chill = false)
         {
             if (!isActiveAndEnabled || Definition == null)
                 return;
@@ -244,12 +253,28 @@ namespace BattleArena.Enemies
             _slowMultiplier = Mathf.Min(_slowMultiplier, speedMultiplier);
             _slowUntil = Mathf.Max(_slowUntil, Time.time + duration);
             RefreshSpeed();
+
+            if (chill)
+            {
+                _chillUntil = Mathf.Max(_chillUntil, Time.time + duration);
+                SetChilled(true);
+            }
+        }
+
+        private void SetChilled(bool chilled)
+        {
+            if (IsChilled == chilled)
+                return;
+            IsChilled = chilled;
+            ChillChanged?.Invoke(chilled);
         }
 
         private void ClearSlow()
         {
             _slowMultiplier = 1f;
             _slowUntil = 0f;
+            _chillUntil = 0f;
+            SetChilled(false);
             RefreshSpeed();
         }
 

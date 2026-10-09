@@ -17,8 +17,10 @@ namespace BattleArena.Missions
         [Tooltip("The garrison waiting in the camp: one enemy per entry (repeat an entry to spawn several).")]
         [SerializeField] private EnemyDefinition[] camp;
         [SerializeField, Min(1f)] private float campRadius = 9f;
-        [Tooltip("Enemies that must die inside the camp's circle.")]
+        [Tooltip("Enemies that must die inside the camp's circle, for a mission that starts at 0:00.")]
         [SerializeField, Min(1)] private int killsRequired = 20;
+        [Tooltip("Extra kills required per minute of match time when the mission starts (rounded down).")]
+        [SerializeField, Min(0f)] private float killsPerMinute;
         [SerializeField, Min(1f)] private float minDistance = 18f;
         [SerializeField, Min(1f)] private float maxDistance = 26f;
 
@@ -29,13 +31,20 @@ namespace BattleArena.Missions
             private readonly ClearAreaMission _mission;
             private MissionZone _zone;
             private Vector3 _center;
+            private readonly int _required;
             private int _kills;
 
-            public Instance(ClearAreaMission mission, MissionContext context) : base(mission, context) => _mission = mission;
+            public Instance(ClearAreaMission mission, MissionContext context) : base(mission, context)
+            {
+                _mission = mission;
+                _required = Mathf.FloorToInt(mission.killsRequired + mission.killsPerMinute * context.ElapsedMinutes);
+            }
 
-            public override float Progress => (float)_kills / _mission.killsRequired;
+            public override float Progress => (float)_kills / _required;
 
-            public override string ProgressText => CachedText("Slain in the circle  {0} / {1}", _kills, _mission.killsRequired);
+            public override string ProgressText => CachedText("Slain in the circle  {0} / {1}", _kills, _required);
+
+            public override string Description => string.Format(Definition.Description, _required);
 
             // Lead the player to the camp; once inside, the circle itself is the guide.
             public override bool TryGetTarget(out Vector3 position)
@@ -72,7 +81,7 @@ namespace BattleArena.Missions
 
                 _kills++;
                 _zone.SetProgress(Progress);
-                if (_kills >= _mission.killsRequired)
+                if (_kills >= _required)
                     Succeed();
             }
 
