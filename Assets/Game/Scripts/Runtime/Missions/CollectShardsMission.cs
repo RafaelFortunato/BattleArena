@@ -13,6 +13,8 @@ namespace BattleArena.Missions
         [SerializeField, Min(1f)] private float minDistance = 10f;
         [SerializeField, Min(1f)] private float maxDistance = 24f;
         [SerializeField, Min(0f)] private float heightOffset = 1f;
+        [Tooltip("Shards try to land at least this far from each other.")]
+        [SerializeField, Min(0f)] private float minShardSpacing = 12f;
 
         public override MissionInstance CreateInstance(MissionContext context) => new Instance(this, context);
 
@@ -47,10 +49,13 @@ namespace BattleArena.Missions
 
             protected override void OnBegin()
             {
+                var placed = new List<Vector3>();
                 for (var i = 0; i < _mission.shardCount; i++)
                 {
-                    if (!Context.Spawner.TryFindSpawnPoint(Context.Player.position, _mission.minDistance, _mission.maxDistance, out var position))
+                    if (!TryFindSpacedPoint(placed, out var position))
                         continue;
+
+                    placed.Add(position);
 
                     var shard = PoolManager.Spawn(_mission.shardPrefab, position + Vector3.up * _mission.heightOffset, Quaternion.identity);
                     shard.Collected += OnShardCollected;
@@ -60,6 +65,35 @@ namespace BattleArena.Missions
                 _total = _shards.Count;
                 if (_total == 0)
                     Fail();
+            }
+
+            // Samples the ring a few times and keeps the first point clear of the other shards; failing that, the most isolated one.
+            private bool TryFindSpacedPoint(List<Vector3> placed, out Vector3 position)
+            {
+                const int Candidates = 16;
+                var found = false;
+                var bestGap = -1f;
+                position = default;
+                for (var attempt = 0; attempt < Candidates; attempt++)
+                {
+                    if (!Context.Spawner.TryFindSpawnPoint(Context.Player.position, _mission.minDistance, _mission.maxDistance, out var candidate))
+                        continue;
+
+                    var gap = float.MaxValue;
+                    foreach (var other in placed)
+                        gap = Mathf.Min(gap, Vector3.Distance(candidate, other));
+
+                    if (gap > bestGap)
+                    {
+                        bestGap = gap;
+                        position = candidate;
+                        found = true;
+                    }
+
+                    if (gap >= _mission.minShardSpacing)
+                        break;
+                }
+                return found;
             }
 
             private void OnShardCollected(MissionShard shard)
