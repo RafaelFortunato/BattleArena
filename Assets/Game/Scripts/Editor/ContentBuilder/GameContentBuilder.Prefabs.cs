@@ -44,13 +44,15 @@ namespace BattleArena.Editor.ContentBuilder
             var critSpark = BuildBurst("CritSpark", m, new Color(1f, 0.7f, 0.15f), 18, 7f, 0.35f, 0.35f, radius: 0.2f);
             var chestSparkle = BuildBurst("ChestSparkle", m, new Color(1f, 0.85f, 0.35f), 30, 5f, 0.4f, 0.6f, radius: 0.6f);
             var wellSplash = BuildBurst("WellSplash", m, new Color(0.45f, 0.95f, 1f), 30, 4.5f, 0.35f, 0.6f, radius: 0.7f);
+            // Small and quick: a whole wave of gems can be picked up in a second.
+            var gemSparkle = BuildBurst("GemSparkle", m, new Color(0.55f, 1f, 0.82f), 6, 2.2f, 0.16f, 0.3f, radius: 0.15f);
 
             // Projectiles and telegraphed strikes
             var spellVfx = BuildSpellVfx(m);
             var bossOrb = BuildBossOrb(BuildSparkHit("BossOrbHit", new Color(0.8f, 0.35f, 1f), 1.2f));
             var bossSlam = BuildStrike("BossSlam", m.StrikeEnemyRing, m.StrikeEnemyFill, slamImpact, shake: 0.55f);
 
-            var gem = BuildGem(m);
+            var gem = BuildGem(m, gemSparkle);
 
             // Enemies
             var roster = BuildEnemyRoster(m, gem, deathPuff, bossSlam, bossOrb);

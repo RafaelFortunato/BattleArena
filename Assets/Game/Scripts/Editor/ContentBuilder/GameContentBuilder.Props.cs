@@ -24,7 +24,7 @@ namespace BattleArena.Editor.ContentBuilder
 
         // ---------------------------------------------------------------- Pickups and interactables
 
-        private static ExperienceGem BuildGem(MaterialSet m)
+        private static ExperienceGem BuildGem(MaterialSet m, TimedRelease collectEffect)
         {
             var root = CreateRoot("ExperienceGem", GameLayers.Pickup);
 
@@ -39,7 +39,7 @@ namespace BattleArena.Editor.ContentBuilder
             AddModel(root, "Props/Gem.fbx", 1.1f, m.Gem);
             DisableModelShadows(root);
 
-            root.AddComponent<ExperienceGem>();
+            SerializedSetter.For(root.AddComponent<ExperienceGem>()).Set("collectEffect", collectEffect).Apply();
             return SavePrefab<ExperienceGem>(root, $"{PrefabsFolder}/Pickups/ExperienceGem.prefab");
         }
 

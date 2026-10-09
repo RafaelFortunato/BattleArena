@@ -117,6 +117,16 @@ namespace BattleArena.Audio
         }
 
         /// <summary>
+        /// Like <see cref="PlayAt(SoundEvent, Vector3)"/>, with the take's pitch scaled by <paramref name="pitchMultiplier"/>
+        /// (e.g. a rising pickup chain).
+        /// </summary>
+        public static void PlayAt(SoundEvent sound, Vector3 position, float pitchMultiplier)
+        {
+            if (Instance != null)
+                Instance.Play(sound, position, true, pitchMultiplier);
+        }
+
+        /// <summary>
         /// Plays a sound flat, with no position: menu clicks, the level-up flourish, anything the player should hear
         /// identically wherever it happened. Silent if no manager exists.
         /// </summary>
@@ -392,7 +402,7 @@ namespace BattleArena.Audio
         }
 
         /// <summary>Central play routine: rate limit, pick a take, acquire a voice, set level, pitch and space.</summary>
-        private void Play(SoundEvent sound, Vector3 position, bool positional)
+        private void Play(SoundEvent sound, Vector3 position, bool positional, float pitchMultiplier = 1f)
         {
             if (sound == null || !sound.HasClips || !PassesRateLimit(sound))
                 return;
@@ -405,7 +415,7 @@ namespace BattleArena.Audio
             voice.transform.position = position;
             voice.clip = clip;
             voice.volume = sound.Volume * sfxVolume * masterVolume;
-            voice.pitch = sound.RandomPitch;
+            voice.pitch = sound.RandomPitch * pitchMultiplier;
             // Per play: voices are pooled, so this one still carries the distances of whatever used it last.
             ApplyRolloff(voice, sound);
 

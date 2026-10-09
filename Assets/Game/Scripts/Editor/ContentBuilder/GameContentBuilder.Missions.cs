@@ -38,8 +38,8 @@ namespace BattleArena.Editor.ContentBuilder
                     "Defeat 30 enemies before time runs out.", timeLimit: 35f,
                     s => s.Set("killCount", 30)),
                 Mission<UntouchableMission>("Untouchable", "Untouchable",
-                    "Survive 20 seconds without taking any damage.", timeLimit: 21f, weight: 0.7f,
-                    configure: s => s.Set("surviveSeconds", 20f)),
+                    "Survive 20 seconds while taking less than 10% of your max health in damage.", timeLimit: 21f, weight: 0.7f,
+                    configure: s => s.Set("surviveSeconds", 20f).Set("allowedDamageFraction", 0.1f)),
             };
         }
 

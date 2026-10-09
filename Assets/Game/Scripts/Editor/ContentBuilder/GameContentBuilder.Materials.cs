@@ -30,7 +30,7 @@ namespace BattleArena.Editor.ContentBuilder
             return new MaterialSet
             {
                 // Painted grass tiles every ~8 m across the 100 m ground plane.
-                Ground = Lit("Ground", Color.white, smoothness: 0.05f, baseMap: LoadTexture(GroundTexturePath), tiling: new Vector2(12f, 12f)),
+                Ground = Lit("Ground", Color.white, smoothness: 0.05f, baseMap: LoadTexture(GroundTexturePath), tiling: new Vector2(GroundScale * 1.2f, GroundScale * 1.2f)),
                 GroundPatch = Lit("GroundPatch", Hex("#3F5A33"), smoothness: 0.05f),
                 Stone = Lit("Stone", Hex("#8A8D93"), smoothness: 0.15f),
                 Wall = Lit("Wall", Hex("#5A5C66"), smoothness: 0.1f),

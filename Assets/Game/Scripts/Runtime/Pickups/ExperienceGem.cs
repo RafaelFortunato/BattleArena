@@ -8,6 +8,16 @@ namespace BattleArena.Pickups
     public sealed class ExperienceGem : MonoBehaviour, IPoolable
     {
         [SerializeField] private SoundEvent collectSound;
+        [Tooltip("Small sparkle where the gem is picked up. Optional.")]
+        [SerializeField] private TimedRelease collectEffect;
+        [Tooltip("Pickups closer together than this (seconds) build a chain; each link plays a semitone higher.")]
+        [SerializeField, Min(0f)] private float chainWindow = 0.6f;
+        [Tooltip("Highest the chain climbs, in semitones above the base pitch.")]
+        [SerializeField, Range(0, 24)] private int maxChainSemitones = 12;
+
+        // Shared by every gem: the chain belongs to the player's pickups, not to any one gem.
+        private static float _lastCollectAt = float.NegativeInfinity;
+        private static int _chain;
 
         public int Value { get; private set; }
         public bool IsAttracted { get; private set; }
@@ -18,7 +28,14 @@ namespace BattleArena.Pickups
 
         public void Collect()
         {
-            AudioManager.PlayAt(collectSound, transform.position);
+            var now = Time.time;
+            _chain = now - _lastCollectAt <= chainWindow ? Mathf.Min(_chain + 1, maxChainSemitones) : 0;
+            _lastCollectAt = now;
+
+            // Vacuuming up a wave climbs a scale, so a big haul sounds like one.
+            AudioManager.PlayAt(collectSound, transform.position, Mathf.Pow(2f, _chain / 12f));
+            if (collectEffect != null)
+                PoolManager.Spawn(collectEffect, transform.position + Vector3.up * 0.6f, Quaternion.identity);
             this.Despawn();
         }
 

@@ -13,7 +13,9 @@ MonoBehaviour:
   m_Name: Untouchable
   m_EditorClassIdentifier: BattleArena.Runtime::BattleArena.Missions.UntouchableMission
   title: Untouchable
-  description: Survive 20 seconds without taking any damage.
+  description: Survive 20 seconds while taking less than 10% of your max health in
+    damage.
   timeLimit: 21
   weight: 0.7
   surviveSeconds: 20
+  allowedDamageFraction: 0.1

@@ -26,6 +26,8 @@ namespace BattleArena.Editor.ContentBuilder
     internal static partial class GameContentBuilder
     {
         private const float ArenaHalfSize = 40f;
+        /// <summary>Unity's plane is 10 m across, so this makes the visible ground 200 m wide.</summary>
+        private const float GroundScale = 20f;
         private const int LayoutSeed = 1337;
 
         // Autumn churchyard layout. The healing wells sit on the dirt path loop (see GameContentBuilder.Paths).
@@ -143,9 +145,10 @@ namespace BattleArena.Editor.ContentBuilder
             var environment = new GameObject("Environment");
             var root = environment.transform;
 
-            // The visible ground reaches past the walls, but only the floor inside them is walkable: its collider
-            // is what the NavMesh is baked from, so enemies can never be placed outside the arena.
-            var ground = AddVisual(root, PrimitiveType.Plane, m.Ground, Vector3.zero, new Vector3(10f, 1f, 10f), name: "Ground");
+            // The visible ground reaches well past the walls (200 m across against an 80 m arena), so standing at a
+            // wall never shows the void beyond it. Only the floor inside the walls is walkable: its collider is what
+            // the NavMesh is baked from, so enemies can never be placed outside the arena.
+            var ground = AddVisual(root, PrimitiveType.Plane, m.Ground, Vector3.zero, new Vector3(GroundScale, 1f, GroundScale), name: "Ground");
             ground.layer = GameLayers.Ground;
             var floor = new GameObject("Floor") { layer = GameLayers.Ground };
             floor.transform.SetParent(root, false);
@@ -369,12 +372,19 @@ namespace BattleArena.Editor.ContentBuilder
             followObject.AddComponent<ScreenShake>();
         }
 
-        /// <summary>Hit-stop and the shake/freeze cues for the player being hit, heavy kills and the boss arriving.</summary>
+        /// <summary>
+        /// Hit-stop, the shake/freeze cues for the player being hit, heavy kills and the boss arriving, and the red
+        /// vignette for hits and low health.
+        /// </summary>
         private static void BuildGameFeel(Health playerHealth)
         {
             var feel = new GameObject("Game Feel");
             feel.AddComponent<HitStop>();
             SerializedSetter.For(feel.AddComponent<GameFeel>()).Set("playerHealth", playerHealth).Apply();
+            SerializedSetter.For(feel.AddComponent<HurtVignette>())
+                .Set("playerHealth", playerHealth)
+                .Set("volume", Object.FindFirstObjectByType<Volume>())
+                .Apply();
         }
 
         private static void BuildUserInterface(GameManager gameManager, LevelUpController levelUp, LevelUpConfig levelUpConfig,

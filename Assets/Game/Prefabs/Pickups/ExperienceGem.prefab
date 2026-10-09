@@ -96,6 +96,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: BattleArena.Runtime::BattleArena.Pickups.ExperienceGem
   collectSound: {fileID: 11400000, guid: c94eb8dd35f288d4ab735afb3f206351, type: 2}
+  collectEffect: {fileID: 710163150921733006, guid: a20f54d1321a38c45a9bf1cbb8ef3520, type: 3}
+  chainWindow: 0.6
+  maxChainSemitones: 12
 --- !u!1 &4741183355372050021
 GameObject:
   m_ObjectHideFlags: 0
