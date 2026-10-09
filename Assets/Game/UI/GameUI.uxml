@@ -51,7 +51,7 @@
                         <ui:VisualElement class="tick tick-wide" /><ui:VisualElement class="tick tick-wide" /><ui:VisualElement class="tick tick-wide" />
                         <ui:VisualElement class="tick tick-wide" /><ui:VisualElement class="tick tick-wide" /><ui:VisualElement class="tick tick-wide" />
                     </ui:VisualElement>
-                    <ui:Label name="boss-health-label" text="" class="bar-label boss-health-label" picking-mode="Ignore" />
+                    <ui:Label name="boss-health-label" text="" class="display bar-label boss-health-label" picking-mode="Ignore" />
                 </ui:VisualElement>
             </ui:VisualElement>
 

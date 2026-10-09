@@ -4,7 +4,7 @@ using UnityEngine.AI;
 namespace BattleArena.Enemies
 {
     /// <summary>
-    /// Runs away while the player is close and wanders otherwise (e.g. the Golden Goblin). When a wall
+    /// Runs away while the player is close and wanders otherwise (e.g. the Treasure Bunny). When a wall
     /// blocks the straight escape, it tries sideways directions so it slides along instead of getting stuck.
     /// </summary>
     public sealed class FleeMovement : EnemyMovement

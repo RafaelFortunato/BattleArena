@@ -149,9 +149,25 @@ namespace BattleArena.Editor.ContentBuilder
             return SaveProjectile(root, 2.5f, hit);
         }
 
+        /// <summary>
+        /// Gold glitter around the Treasure Bunny: stars and small glints drifting up off its body. Emitted in world
+        /// space, so it leaves a sparkling trail as it runs. Enough to spot it across the arena, cheap on WebGL.
+        /// </summary>
+        private static void AddTreasureSparkles(Transform enemy)
+        {
+            new Fx(enemy, "TreasureSparkles", FxMaterial("TreasureStar", "vfx_star", MissionGold, 2.6f), Vector3.up * 1.1f)
+                .World().Loop().Rate(16f).Sphere(0.75f).Life(0.55f, 0.95f).Size(0.26f, 0.46f).Rotation().Spin(-90f, 90f)
+                .Velocity(Vector3.up * 0.4f, Vector3.up * 1.1f).Max(32)
+                .SizeOverLife(Curve(0f, 0.3f, 0.3f, 1f, 1f, 0.2f)).ColorOverLife(Fade(0f, 0f, 0.2f, 1f, 0.7f, 1f, 1f, 0f));
+            new Fx(enemy, "TreasureGlints", FxMaterial("TreasureGlint", "vfx_glow", new Color(1f, 0.92f, 0.6f), 3f), Vector3.up * 1.1f)
+                .World().Loop().Rate(18f).Sphere(0.85f).Life(0.25f, 0.45f).Size(0.07f, 0.13f).Max(20)
+                .ColorOverLife(Fade(0f, 0f, 0.3f, 1f, 1f, 0f));
+        }
+
         private static Projectile BuildWispBolt(TimedRelease hit)
         {
-            var color = new Color(0.45f, 0.82f, 1f);
+            // Magenta-purple like the boss's orbs (enemy magic), kept apart from the player's cyan bolts and violet arcane.
+            var color = new Color(0.82f, 0.3f, 1f);
             var root = ProjectileRoot("WispBolt", 0.2f, GameLayers.EnemyProjectile);
             var t = root.transform;
             GlowCore(t, "WispGlow", color, 0.95f, 1.3f);

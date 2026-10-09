@@ -168,6 +168,9 @@ namespace BattleArena.Editor.ContentBuilder
             var audioObject = new GameObject("Audio");
             var manager = audioObject.AddComponent<AudioManager>();
             SerializedSetter.For(manager)
+                // Starting levels for a new player; saved settings override them from then on.
+                .Set("sfxVolume", 0.5f)
+                .Set("musicVolume", 0.25f)
                 .Set("music", LoadMusic(MatchMusic))
                 .Set("uiClick", s["ui_click"])
                 .Set("uiHover", s["ui_hover"])

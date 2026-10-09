@@ -17,9 +17,9 @@ namespace BattleArena.Editor.ContentBuilder
 
             return new MissionDefinition[]
             {
-                Mission<HuntMission>("GoldenGoblin", "Golden Goblin",
-                    "A greedy goblin is fleeing with treasure. Chase it down before it escapes!", timeLimit: 60f,
-                    s => s.Set("target", roster.GoldenGoblin).Set("healthScale", 1f).Set("healthGrowthPerMinute", 1f)
+                Mission<HuntMission>("TreasureBunny", "Treasure Bunny",
+                    "The Treasure Bunny is fleeing with its loot. Chase it down before it escapes!", timeLimit: 60f,
+                    s => s.Set("target", roster.TreasureBunny).Set("healthScale", 1f).Set("healthGrowthPerMinute", 1f)
                         .Set("minSpawnDistance", 14f).Set("maxSpawnDistance", 20f)),
                 Mission<HuntMission>("WarlordHunt", "Warlord Hunt",
                     "An Ogre Warlord has entered the arena. Defeat it.", timeLimit: 50f, weight: 0.8f,
@@ -38,7 +38,7 @@ namespace BattleArena.Editor.ContentBuilder
                     "Defeat 30 enemies before time runs out.", timeLimit: 35f,
                     s => s.Set("killCount", 30)),
                 Mission<UntouchableMission>("Untouchable", "Untouchable",
-                    "Survive 20 seconds while taking less than 10% of your max health in damage.", timeLimit: 21f, weight: 0.7f,
+                    "Take less than {0} damage.", timeLimit: 21f, weight: 0.7f,
                     configure: s => s.Set("surviveSeconds", 20f).Set("allowedDamageFraction", 0.1f)),
             };
         }

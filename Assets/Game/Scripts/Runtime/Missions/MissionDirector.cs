@@ -126,7 +126,7 @@ namespace BattleArena.Missions
             _active.Begin();
 
             // The HUD announces the mission itself from this event.
-            EventBus<MissionStartedEvent>.Raise(new MissionStartedEvent(definition.Title, definition.Description));
+            EventBus<MissionStartedEvent>.Raise(new MissionStartedEvent(definition.Title, _active.Description));
             Report();
         }
 

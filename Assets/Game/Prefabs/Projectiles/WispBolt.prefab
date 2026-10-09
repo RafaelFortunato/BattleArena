@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 3399018045289469684}
   - component: {fileID: 1688191868098289378}
   - component: {fileID: 4371235121992584592}
-  - component: {fileID: 8649157125295382501}
+  - component: {fileID: 6321584558844755310}
   m_Layer: 10
   m_Name: WispBolt
   m_TagString: Untagged
@@ -233,7 +233,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 637539eb732c000418abbebb953fea7c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: BattleArena.Runtime::BattleArena.Vfx.VfxRestart
---- !u!114 &8649157125295382501
+--- !u!114 &6321584558844755310
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

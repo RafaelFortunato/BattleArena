@@ -14,7 +14,7 @@ namespace BattleArena.Editor.ContentBuilder
             public Material PropStone, PropStoneDark, PropStoneLight, GraveStone, Moss, Slate, HealingWater, WellDepth, Dirt;
             public Material AutumnWood, LeafRust, LeafRustDark, LeafOchre, RockStone, RockMoss;
             public Material HuskyBody, HuskyCrystal;
-            public Material MonsterAtlas, MonsterGold, MonsterGrunt;
+            public Material MonsterAtlas, MonsterGrunt, MonsterBlackDragon;
             public Material ChestWood, ChestIron, Fletching, TelegraphLane, TelegraphLaneFill;
             public Material WindupGlow, CurseGlow, BombBody, WispBolt;
             public Material Flash;
@@ -71,14 +71,15 @@ namespace BattleArena.Editor.ContentBuilder
                 HuskyCrystal = Lit("WizardHuskyCrystal", Hex("#E4CCFF"), smoothness: 0.8f, emission: Hex("#9B4DFF") * 3.5f),
 
                 // Quaternius monsters share one flat-colour atlas (saturated for the game); the grunt gets its own
-                // copy with a warm skin that reads against the grass, and the golden goblin tints it gold.
+                // copy with a warm skin that reads against the grass, and the boss a black one.
                 MonsterAtlas = MonsterMaterial("MonsterAtlas", MonsterAtlasPath, Color.white, 0.2f, 0f),
                 MonsterGrunt = MonsterMaterial("MonsterGrunt", MonsterGruntAtlasPath, Color.white, 0.2f, 0f),
-                MonsterGold = MonsterMaterial("MonsterGold", MonsterAtlasPath, Hex("#FFD166"), 0.6f, 0.65f),
+                // A touch glossier than the rest, so the black hide still shows its shape under the lights.
+                MonsterBlackDragon = MonsterMaterial("MonsterBlackDragon", MonsterBlackDragonAtlasPath, Color.white, 0.35f, 0f),
                 WindupGlow = Lit("EnemyWindupGlow", Hex("#FFB070"), emission: Hex("#FF4A10") * 6f),
                 CurseGlow = Lit("EnemyCurseGlow", Hex("#C8FFB0"), emission: Hex("#4DFF3A") * 4f),
                 BombBody = Lit("BombBody", Hex("#1C1C22"), smoothness: 0.6f),
-                WispBolt = Lit("WispBolt", Hex("#D8FAFF"), emission: Hex("#30B8FF") * 5f),
+                WispBolt = Lit("WispBolt", Hex("#F2D6FF"), emission: Hex("#B030FF") * 5f),
 
                 Flash = Lit("HitFlash", Color.white, emission: Color.white * 1.5f),
 

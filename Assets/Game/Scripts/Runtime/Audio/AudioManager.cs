@@ -26,8 +26,9 @@ namespace BattleArena.Audio
 
         [Header("Mix")]
         [SerializeField, Range(0f, 1f)] private float masterVolume = 1f;
-        [SerializeField, Range(0f, 1f)] private float sfxVolume = 1f;
-        [SerializeField, Range(0f, 1f)] private float musicVolume = 0.5f;
+        // First-launch levels; after that the player's saved settings win.
+        [SerializeField, Range(0f, 1f)] private float sfxVolume = 0.5f;
+        [SerializeField, Range(0f, 1f)] private float musicVolume = 0.25f;
 
         [Header("World space")]
         // Measured from the AudioListener, which rides the camera about 22 units above and behind the player.

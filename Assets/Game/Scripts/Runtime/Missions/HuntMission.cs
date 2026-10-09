@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace BattleArena.Missions
 {
-    /// <summary>Spawn a special enemy (Golden Goblin, Warlord) and kill it before time runs out, or it escapes.</summary>
+    /// <summary>Spawn a special enemy (Treasure Bunny, Warlord) and kill it before time runs out, or it escapes.</summary>
     [CreateAssetMenu(fileName = "HuntMission", menuName = "BattleArena/Missions/Hunt")]
     public sealed class HuntMission : MissionDefinition
     {

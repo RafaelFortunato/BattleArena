@@ -6,14 +6,14 @@ AnimatorOverrideController:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: GoldenGoblin
+  m_Name: TreasureBunny
   m_Controller: {fileID: 9100000, guid: 1e3b002aaa4516448be33a89d8749b14, type: 2}
   m_Clips:
   - m_OriginalClip: {fileID: 9061338213343248790, guid: bdbee161ebd96954cb8fabcb3fdc485b, type: 3}
-    m_OverrideClip: {fileID: 9061338213343248790, guid: bdbee161ebd96954cb8fabcb3fdc485b, type: 3}
+    m_OverrideClip: {fileID: 9061338213343248790, guid: 13c8af8fd8c1fe34ebe968f77aea8e2c, type: 3}
   - m_OriginalClip: {fileID: -5599002979973759676, guid: bdbee161ebd96954cb8fabcb3fdc485b, type: 3}
-    m_OverrideClip: {fileID: 1395189703230314720, guid: bdbee161ebd96954cb8fabcb3fdc485b, type: 3}
+    m_OverrideClip: {fileID: 1395189703230314720, guid: 13c8af8fd8c1fe34ebe968f77aea8e2c, type: 3}
   - m_OriginalClip: {fileID: -4592842328519117816, guid: bdbee161ebd96954cb8fabcb3fdc485b, type: 3}
-    m_OverrideClip: {fileID: 4023202712368722038, guid: bdbee161ebd96954cb8fabcb3fdc485b, type: 3}
+    m_OverrideClip: {fileID: 4023202712368722038, guid: 13c8af8fd8c1fe34ebe968f77aea8e2c, type: 3}
   - m_OriginalClip: {fileID: -3663672522963054737, guid: bdbee161ebd96954cb8fabcb3fdc485b, type: 3}
     m_OverrideClip: {fileID: -3663672522963054737, guid: bdbee161ebd96954cb8fabcb3fdc485b, type: 3}

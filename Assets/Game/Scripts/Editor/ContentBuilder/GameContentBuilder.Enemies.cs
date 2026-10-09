@@ -39,7 +39,7 @@ namespace BattleArena.Editor.ContentBuilder
         {
             public SpawnSchedule Schedule;
             public EnemyDefinition Boss;
-            public EnemyDefinition GoldenGoblin;
+            public EnemyDefinition TreasureBunny;
             public EnemyDefinition Warlord;
             public EnemyDefinition[] Camp;
         }
@@ -55,35 +55,37 @@ namespace BattleArena.Editor.ContentBuilder
 
             // Enemy weapons
             var arrowHit = BuildSparkHit("ArrowHit", new Color(1f, 0.65f, 0.3f), 0.8f);
-            var wispHit = BuildSparkHit("WispBoltHit", new Color(0.45f, 0.82f, 1f), 0.9f);
+            var wispHit = BuildSparkHit("WispBoltHit", new Color(0.82f, 0.3f, 1f), 0.9f);
             var bombBlast = BuildBurst("BombExplosion", m, new Color(1f, 0.45f, 0.1f), 36, 5f, 0.55f, 0.55f, radius: 0.5f, fromGround: true);
             var curseEruption = BuildBurst("CurseEruption", m, new Color(0.45f, 1f, 0.3f), 30, 4f, 0.5f, 0.6f, radius: 0.6f, fromGround: true);
             var arrow = BuildEnemyArrow(m, arrowHit);
             var wispBolt = BuildWispBolt(wispHit);
-            var bomb = BuildStrike("GoblinBomb", m.StrikeEnemyRing, m.StrikeEnemyFill, bombBlast, 0.3f, t => BombVisual(t, m));
+            var bomb = BuildStrike("GoblinBomb", m.StrikeEnemyRing, m.StrikeEnemyFill, bombBlast, 0.3f, t => BombVisual(t, m),
+                // Lands, then a one-second fuse: time to see it and step out of the circle.
+                fuseAfterLanding: 1f);
             var curse = BuildStrike("ShamanCurse", m.StrikeEnemyRing, m.StrikeEnemyFill, curseEruption, 0.15f);
             var beetleBlast = BuildStrike("BeetleBlast", m.StrikeEnemyRing, m.StrikeEnemyFill, bombBlast, 0.25f);
             var dashLine = BuildLineTelegraph(m);
             var warlordSlam = BuildStrike("WarlordSlam", m.StrikeEnemyRing, m.StrikeEnemyFill, bombBlast, 0.4f);
 
             // --- Melee chasers
-            var grunt = Define("Grunt", "Goblin Grunt", SaveEnemy(Melee(kit, "Grunt", 1f, 2.3f, v => Monster(v, new MonsterSpec("Orc", 1.75f, 3.2f, attack: "Weapon", material: m.MonsterGrunt), m, "Grunt"))),
+            var grunt = Define("Grunt", "Goblin Grunt", SaveEnemy(Melee(kit, "Grunt", 1f, 2.3f, v => Monster(v, new MonsterSpec("Big/Orc", 1.75f, 3.2f, attack: "Weapon", material: m.MonsterGrunt), m, "Grunt"))),
                 health: 22f, speed: 3f, damage: 5f, range: 1.3f, cooldown: 1f, xp: 1);
 
-            var runner = Define("Runner", "Swift Imp", SaveEnemy(Melee(kit, "Runner", 0.75f, 2.3f, v => Monster(v, new MonsterSpec("Demon", 1.8f, 5.2f, move: "Run"), m, "Runner"))),
+            var runner = Define("Runner", "Swift Imp", SaveEnemy(Melee(kit, "Runner", 0.75f, 2.3f, v => Monster(v, new MonsterSpec("Big/Demon", 1.8f, 5.2f, move: "Run"), m, "Runner"))),
                 health: 72f, speed: 5.2f, damage: 13f, range: 1.1f, cooldown: 0.8f, xp: 3);
 
-            var brute = Define("Brute", "Ogre Brute", SaveEnemy(Melee(kit, "Brute", 1.5f, 2.3f, v => Monster(v, new MonsterSpec("Yeti", 1.75f, 2.3f), m, "Brute"))),
+            var brute = Define("Brute", "Ogre Brute", SaveEnemy(Melee(kit, "Brute", 1.5f, 2.3f, v => Monster(v, new MonsterSpec("Big/BlueDemon", 1.75f, 2.3f, attack: "Weapon"), m, "Brute"))),
                 health: 96f, speed: 2.3f, damage: 12f, range: 2f, cooldown: 1.4f, xp: 4);
 
             // --- Swarm Bat: fast, weaves side to side while closing in.
-            var batRoot = NewEnemy(kit, "SwarmBat", 0.9f, 2.1f, v => Monster(v, MonsterSpec.Flyer("Armabee", 1.0f, 0.6f, 6f), m, "SwarmBat"));
+            var batRoot = NewEnemy(kit, "SwarmBat", 0.9f, 2.1f, v => Monster(v, MonsterSpec.Flyer("Flying/Demon", 1.0f, 0.6f, 6f), m, "SwarmBat"));
             Behaviour<ZigZagMovement>(batRoot, ("amplitude", 2.5f), ("frequency", 1.1f));
             batRoot.AddComponent<ContactAttack>();
             var bat = Define("SwarmBat", "Swarm Bat", SaveEnemy(batRoot), health: 54f, speed: 6f, damage: 10f, range: 1.1f, cooldown: 0.8f, xp: 3);
 
             // --- Goblin Archer: keeps its distance and fires aimed arrows.
-            var archerRoot = NewEnemy(kit, "GoblinArcher", 0.9f, 2.3f, v => Monster(v, new MonsterSpec("Tribal", 1.8f, 3.4f, attack: "Weapon"), m, "GoblinArcher"));
+            var archerRoot = NewEnemy(kit, "GoblinArcher", 0.9f, 2.3f, v => Monster(v, new MonsterSpec("Big/Tribal", 1.8f, 3.4f, attack: "Weapon"), m, "GoblinArcher"));
             Behaviour<KeepDistanceMovement>(archerRoot, ("preferredDistance", 9f), ("tolerance", 2f));
             Behaviour<ProjectileAttack>(archerRoot,
                 ("range", 13f), ("cooldown", 2.6f), ("windup", 0.55f), ("baseDamage", 10f),
@@ -94,7 +96,7 @@ namespace BattleArena.Editor.ContentBuilder
             var archer = Define("GoblinArcher", "Goblin Archer", SaveEnemy(archerRoot), health: 48f, speed: 3f, damage: 4f, range: 1.2f, cooldown: 1f, xp: 2);
 
             // --- Arcane Wisp: circles the player and fires a three-bolt spread.
-            var wispRoot = NewEnemy(kit, "ArcaneWisp", 1f, 2.4f, v => Monster(v, MonsterSpec.Flyer("Ghost", 1.35f, 0.35f, 4.2f, attack: "Punch"), m, "ArcaneWisp"));
+            var wispRoot = NewEnemy(kit, "ArcaneWisp", 1f, 2.4f, v => Monster(v, MonsterSpec.Flyer("Flying/Ghost", 1.35f, 0.35f, 4.2f, attack: "Punch"), m, "ArcaneWisp"));
             Behaviour<OrbitMovement>(wispRoot, ("radius", 7.5f), ("leadAngle", 35f));
             Behaviour<ProjectileAttack>(wispRoot,
                 ("range", 11f), ("cooldown", 3f), ("windup", 0.45f), ("baseDamage", 23f),
@@ -105,7 +107,7 @@ namespace BattleArena.Editor.ContentBuilder
             var wisp = Define("ArcaneWisp", "Arcane Wisp", SaveEnemy(wispRoot), health: 168f, speed: 4.2f, damage: 10f, range: 1.1f, cooldown: 1f, xp: 5);
 
             // --- Goblin Bomber: lobs bombs that land where the player stood.
-            var bomberRoot = NewEnemy(kit, "GoblinBomber", 1f, 2.3f, v => Monster(v, new MonsterSpec("Monkroose", 1.75f, 3.1f, attack: "Weapon"), m, "GoblinBomber"));
+            var bomberRoot = NewEnemy(kit, "GoblinBomber", 1f, 2.3f, v => Monster(v, new MonsterSpec("Big/Frog", 1.75f, 3.1f, attack: "Weapon"), m, "GoblinBomber"));
             Behaviour<KeepDistanceMovement>(bomberRoot, ("preferredDistance", 10f), ("tolerance", 2f));
             Behaviour<LobbedBombAttack>(bomberRoot,
                 ("range", 14f), ("cooldown", 3.6f), ("windup", 0.6f), ("baseDamage", 16f),
@@ -116,7 +118,7 @@ namespace BattleArena.Editor.ContentBuilder
             var bomber = Define("GoblinBomber", "Goblin Bomber", SaveEnemy(bomberRoot), health: 66f, speed: 2.9f, damage: 5f, range: 1.2f, cooldown: 1f, xp: 3);
 
             // --- Dark Shaman: stays far back and curses the ground around the player.
-            var shamanRoot = NewEnemy(kit, "DarkShaman", 1.1f, 2.4f, v => Monster(v, new MonsterSpec("BlueDemon", 1.85f, 2.5f, attack: "Weapon"), m, "DarkShaman"));
+            var shamanRoot = NewEnemy(kit, "DarkShaman", 1.1f, 2.4f, v => Monster(v, new MonsterSpec("Big/Alien", 1.85f, 2.5f, attack: "Weapon"), m, "DarkShaman"));
             Behaviour<KeepDistanceMovement>(shamanRoot, ("preferredDistance", 12f), ("tolerance", 2.5f));
             Behaviour<GroundStrikeAttack>(shamanRoot,
                 ("range", 15f), ("cooldown", 4.5f), ("windup", 0.8f), ("baseDamage", 18f),
@@ -126,7 +128,7 @@ namespace BattleArena.Editor.ContentBuilder
             var shaman = Define("DarkShaman", "Dark Shaman", SaveEnemy(shamanRoot), health: 84f, speed: 2.5f, damage: 5f, range: 1.2f, cooldown: 1f, xp: 4);
 
             // --- Boar Charger: telegraphs a line, then dashes along it.
-            var boarRoot = NewEnemy(kit, "BoarCharger", 1f, 1.9f, v => Monster(v, new MonsterSpec("Dino", 1.5f, 3.3f, move: "Run"), m, "BoarCharger"));
+            var boarRoot = NewEnemy(kit, "BoarCharger", 1f, 1.9f, v => Monster(v, new MonsterSpec("Big/Dino", 1.5f, 3.3f, move: "Run"), m, "BoarCharger"));
             boarRoot.AddComponent<ChaseMovement>();
             boarRoot.AddComponent<ContactAttack>();
             Behaviour<DashAttack>(boarRoot,
@@ -136,7 +138,7 @@ namespace BattleArena.Editor.ContentBuilder
             var boar = Define("BoarCharger", "Boar Charger", SaveEnemy(boarRoot), health: 264f, speed: 3.3f, damage: 20f, range: 1.6f, cooldown: 1.2f, xp: 6);
 
             // --- Bomb Beetle: rushes in and explodes after a short fuse.
-            var beetleRoot = NewEnemy(kit, "BombBeetle", 0.85f, 1.4f, v => Monster(v, MonsterSpec.Blob("GreenSpikyBlob", 0.95f, 4.4f), m, "BombBeetle"));
+            var beetleRoot = NewEnemy(kit, "BombBeetle", 0.85f, 1.4f, v => Monster(v, MonsterSpec.Blob("Blob/GreenSpikyBlob", 0.95f, 4.4f), m, "BombBeetle"));
             beetleRoot.AddComponent<ChaseMovement>();
             Behaviour<SelfDestructAttack>(beetleRoot,
                 ("range", 2.4f), ("cooldown", 5f), ("windup", 0.9f), ("baseDamage", 38f),
@@ -145,26 +147,29 @@ namespace BattleArena.Editor.ContentBuilder
             var beetle = Define("BombBeetle", "Bomb Beetle", SaveEnemy(beetleRoot), health: 60f, speed: 4.4f, damage: 0f, range: 1f, cooldown: 1f, xp: 3);
 
             // --- Slimes: the big one splits into two small ones.
-            var smallSlime = Define("SmallSlime", "Slimeling", SaveEnemy(Melee(kit, "SmallSlime", 0.7f, 1.5f, v => Monster(v, MonsterSpec.Blob("PinkBlob", 1.05f, 3.4f), m, "SmallSlime"))),
+            var smallSlime = Define("SmallSlime", "Slimeling", SaveEnemy(Melee(kit, "SmallSlime", 0.7f, 1.5f, v => Monster(v, MonsterSpec.Blob("Blob/PinkBlob", 1.05f, 3.4f), m, "SmallSlime"))),
                 health: 12f, speed: 3f, damage: 3f, range: 1.1f, cooldown: 1f, xp: 1);
-            var bigSlimeRoot = Melee(kit, "BigSlime", 1.35f, 1.5f, v => Monster(v, MonsterSpec.Blob("GreenBlob", 1.1f, 2.1f), m, "BigSlime"));
+            var bigSlimeRoot = Melee(kit, "BigSlime", 1.35f, 1.5f, v => Monster(v, MonsterSpec.Blob("Blob/GreenBlob", 1.1f, 2.1f), m, "BigSlime"));
             Behaviour<SplitOnDeath>(bigSlimeRoot, ("splitInto", smallSlime), ("count", 2), ("spread", 1.2f));
             var bigSlime = Define("BigSlime", "Giant Slime", SaveEnemy(bigSlimeRoot), health: 54f, speed: 2.1f, damage: 7f, range: 1.8f, cooldown: 1.2f, xp: 3);
 
             // --- Storm Wyvern: flies over obstacles faster than the player, but turns very slowly (35°/s at 9.5 m/s is a
             // ~31 m turning circle, about 5 s for a U-turn), so it overshoots and makes long loops back.
-            var wyvernRoot = NewEnemy(kit, "StormWyvern", 1f, 3f, v => Monster(v, MonsterSpec.Flyer("Dragon", 1.3f, 1.0f, 9.5f), m, "StormWyvern"), flying: true);
+            var wyvernRoot = NewEnemy(kit, "StormWyvern", 1f, 3f, v => Monster(v, MonsterSpec.Flyer("Flying/Dragon", 1.3f, 1.0f, 9.5f), m, "StormWyvern"), flying: true);
             Behaviour<FlyingMovement>(wyvernRoot, ("turnRateDegrees", 35f), ("arenaHalfExtent", ArenaHalfSize - 1.5f));
             wyvernRoot.AddComponent<ContactAttack>();
             var wyvern = Define("StormWyvern", "Storm Wyvern", SaveEnemy(wyvernRoot), health: 192f, speed: 9.5f, damage: 23f, range: 1.3f, cooldown: 1f, xp: 6);
 
             // --- Mission targets (never spawned by the schedule)
-            var goblinRoot = NewEnemy(kit, "GoldenGoblin", 0.85f, 2.3f, v =>
-                Monster(v, new MonsterSpec("Orc", 1.75f, 4.6f, move: "Run", attack: "Weapon", material: m.MonsterGold), m, "GoldenGoblin"));
-            Behaviour<FleeMovement>(goblinRoot, ("fleeDistance", 14f), ("fleeStep", 6f), ("wanderRadius", 6f));
-            var goldenGoblin = Define("GoldenGoblin", "Golden Goblin", SaveEnemy(goblinRoot), health: 108f, speed: 4.6f, damage: 0f, range: 1f, cooldown: 1f, xp: 25);
+            // A little bigger than the old goblin; the height includes the ears, so the body reads about the same.
+            // White fur like the pack's bunny; a trail of gold glitter is what marks it as the treasure target.
+            var bunnyRoot = NewEnemy(kit, "TreasureBunny", 0.95f, 2.6f, v =>
+                Monster(v, new MonsterSpec("Big/Bunny", 2f, 4.6f, move: "Run", attack: "Weapon"), m, "TreasureBunny"));
+            AddTreasureSparkles(bunnyRoot.transform);
+            Behaviour<FleeMovement>(bunnyRoot, ("fleeDistance", 14f), ("fleeStep", 6f), ("wanderRadius", 6f));
+            var treasureBunny = Define("TreasureBunny", "Treasure Bunny", SaveEnemy(bunnyRoot), health: 108f, speed: 4.6f, damage: 0f, range: 1f, cooldown: 1f, xp: 25);
 
-            var warlordRoot = NewEnemy(kit, "OgreWarlord", 2.1f, 2.4f, v => Monster(v, new MonsterSpec("Orc_Skull", 1.8f, 2.6f, attack: "Weapon"), m, "OgreWarlord"));
+            var warlordRoot = NewEnemy(kit, "OgreWarlord", 2.1f, 2.4f, v => Monster(v, new MonsterSpec("Flying/Goleling_Evolved", 1.8f, 2.6f, move: "Fast_Flying", attack: "Punch", idle: "Flying_Idle", hover: 0.3f), m, "OgreWarlord"));
             warlordRoot.AddComponent<ChaseMovement>();
             warlordRoot.AddComponent<ContactAttack>();
             Behaviour<GroundStrikeAttack>(warlordRoot,
@@ -174,7 +179,10 @@ namespace BattleArena.Editor.ContentBuilder
             var warlord = Define("OgreWarlord", "Ogre Warlord", SaveEnemy(warlordRoot), health: 480f, speed: 2.6f, damage: 18f, range: 2.6f, cooldown: 1.3f, xp: 30);
 
             // --- Boss
-            var bossRoot = NewEnemy(kit, "Boss", 2.6f, 0f, v => Monster(v, MonsterSpec.Flyer("Ghost_Skull", 1.6f, 0.25f, 2.7f, attack: "Punch"), m, "Boss"));
+            // A black dragon: the evolved, full-bodied dragon with arms, its hide painted black.
+            var bossRoot = NewEnemy(kit, "Boss", 2.6f, 0f, v => Monster(v,
+                new MonsterSpec("Flying/Dragon_Evolved", 1.6f, 5.4f, move: "Fast_Flying", attack: "Punch", idle: "Flying_Idle", hover: 0.25f, material: m.MonsterBlackDragon),
+                m, "Boss"));
             // The boss squashes under hits but is never shoved around.
             SerializedSetter.For(bossRoot.GetComponent<EnemyHitReaction>()).Set("knockbackScale", 0f).Apply();
             bossRoot.AddComponent<ChaseMovement>();
@@ -182,7 +190,7 @@ namespace BattleArena.Editor.ContentBuilder
             Behaviour<BossController>(bossRoot, ("slamPrefab", bossSlam), ("projectilePrefab", bossOrb),
                 ("attackInterval", 2.8f), ("slamCount", 4), ("slamDamage", 50f), ("projectilesPerRing", 20), ("projectileDamage", 30f),
                 ("projectileOrigin", AddChild(bossRoot.transform, "ProjectileOrigin", new Vector3(0f, 0.42f, 0.2f))));
-            var boss = Define("Boss", "Archlich Morvath", SaveEnemy(bossRoot), health: 24000f, speed: 3f, damage: 36f, range: 3.4f, cooldown: 1.2f, xp: 0);
+            var boss = Define("Boss", "Obsidrax, Dread of the Graveyard", SaveEnemy(bossRoot), health: 24000f, speed: 6f, damage: 36f, range: 3.4f, cooldown: 1.2f, xp: 0);
 
             // --- Spawn schedule. Enemies never scale; danger rises by enemy type, one tier at a time:
             //   Tier 1 (0:00) slow melee: grunt, giant slime, ogre brute.
@@ -211,7 +219,7 @@ namespace BattleArena.Editor.ContentBuilder
             {
                 Schedule = schedule,
                 Boss = boss,
-                GoldenGoblin = goldenGoblin,
+                TreasureBunny = treasureBunny,
                 Warlord = warlord,
                 Camp = new[] { grunt, grunt, grunt, grunt, grunt, grunt, archer, archer, archer, brute, brute },
             };

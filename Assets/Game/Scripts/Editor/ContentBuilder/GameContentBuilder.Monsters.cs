@@ -18,6 +18,8 @@ namespace BattleArena.Editor.ContentBuilder
         private const string MonsterAnimFolder = MonstersFolder + "/Animation";
         private const string MonsterAtlasPath = MonstersFolder + "/Atlas_Monsters_Vivid.png";
         private const string MonsterGruntAtlasPath = MonstersFolder + "/Atlas_Monsters_Grunt.png";
+        /// <summary>The atlas with the Dragon's body swatch painted near-black, for the boss.</summary>
+        private const string MonsterBlackDragonAtlasPath = MonstersFolder + "/Atlas_Monsters_BlackDragon.png";
         /// <summary>Self-illumination from the atlas, so colours keep their punch in shade and under ACES tonemapping.</summary>
         private const float MonsterEmission = 0.28f;
 
@@ -26,6 +28,7 @@ namespace BattleArena.Editor.ContentBuilder
         /// <summary>Which model an enemy uses and how it is animated.</summary>
         private readonly struct MonsterSpec
         {
+            /// <summary>Model path under the monsters folder, e.g. "Big/Orc" (the pack groups them Big / Blob / Flying).</summary>
             public readonly string Model;
             public readonly float Height;
             /// <summary>Height of the model's lowest point; above zero for hovering monsters.</summary>
@@ -72,7 +75,7 @@ namespace BattleArena.Editor.ContentBuilder
             }
 
             var instance = (GameObject)PrefabUtility.InstantiatePrefab(model, visual);
-            instance.name = spec.Model;
+            instance.name = System.IO.Path.GetFileName(spec.Model);
             SetLayerRecursively(instance, visual.gameObject.layer);
 
             var renderers = instance.GetComponentsInChildren<Renderer>();
@@ -172,7 +175,9 @@ namespace BattleArena.Editor.ContentBuilder
             var controller = AssetDatabase.LoadAssetAtPath<AnimatorController>(path) ?? AnimatorController.CreateAnimatorControllerAtPath(path);
 
             // Placeholder clips that every override replaces; taken from the orc.
-            var baseClips = LoadClips($"{MonstersFolder}/Orc.fbx");
+            var baseClips = LoadClips($"{MonstersFolder}/Big/Orc.fbx");
+            if (baseClips.Length == 0)
+                Debug.LogError("Monster controller: no placeholder clips found in Big/Orc.fbx; every monster would be unanimated.");
             controller.parameters = new AnimatorControllerParameter[0];
             controller.AddParameter("Speed", AnimatorControllerParameterType.Float);
             controller.AddParameter(new AnimatorControllerParameter { name = "MoveRate", type = AnimatorControllerParameterType.Float, defaultFloat = 1f });

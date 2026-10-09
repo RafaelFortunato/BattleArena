@@ -23,6 +23,9 @@ namespace BattleArena.Combat
         [SerializeField] private TimedRelease impactEffect;
         [Tooltip("Screen shake when it lands, weaker the further from the player. Zero for none.")]
         [SerializeField, Range(0f, 1f)] private float impactShake;
+        [Tooltip("Seconds the falling object rests on the ground, pulsing, before it goes off (a bomb's fuse). " +
+                 "The marker keeps filling until then. Zero goes off on landing.")]
+        [SerializeField, Min(0f)] private float fuseAfterLanding;
 
         /// <summary>Strike at this position after <paramref name="delay"/>; the falling object drops from above.</summary>
         public void Arm(float radius, float delay, DamageProfile damage, int targetMask) =>
@@ -41,26 +44,49 @@ namespace BattleArena.Combat
             var diameter = radius * 2f;
             var origin = transform.position;
             outline.localScale = new Vector3(diameter, outline.localScale.y, diameter);
+            var restingScale = Vector3.one;
             if (fallingObject != null)
-                fallingObject.gameObject.SetActive(true);
-
-            // Visual-only animation for the lifetime of the telegraph.
-            for (var elapsed = 0f; elapsed < delay; elapsed += Time.deltaTime)
             {
-                var t = elapsed / delay;
-                var size = diameter * t;
+                fallingObject.gameObject.SetActive(true);
+                restingScale = fallingObject.localScale;
+            }
+
+            // Visual-only animation for the lifetime of the telegraph: the flight, then any fuse on the ground.
+            var total = delay + fuseAfterLanding;
+            var pulsePhase = 0f;
+            for (var elapsed = 0f; elapsed < total; elapsed += Time.deltaTime)
+            {
+                var size = diameter * (elapsed / total);
                 fill.localScale = new Vector3(size, fill.localScale.y, size);
-                if (fallingObject != null)
+                if (fallingObject == null)
                 {
+                    yield return null;
+                    continue;
+                }
+
+                if (elapsed < delay)
+                {
+                    var t = elapsed / delay;
                     fallingObject.position = lobbed
                         ? Vector3.Lerp(launchPosition, origin, t) + Vector3.up * (arcHeight * 4f * t * (1f - t))
                         : origin + Vector3.up * (fallHeight * (1f - t * t));
+                }
+                else
+                {
+                    // Landed: sits on the spot and throbs faster and faster as the fuse burns down.
+                    fallingObject.position = origin;
+                    var burnt = (elapsed - delay) / fuseAfterLanding;
+                    pulsePhase += Time.deltaTime * Mathf.Lerp(4f, 14f, burnt) * Mathf.PI * 2f;
+                    fallingObject.localScale = restingScale * (1f + 0.15f * Mathf.Abs(Mathf.Sin(pulsePhase)));
                 }
                 yield return null;
             }
 
             if (fallingObject != null)
+            {
+                fallingObject.localScale = restingScale;
                 fallingObject.gameObject.SetActive(false);
+            }
 
             CombatQueries.DamageInRadius(origin, radius, damage, targetMask);
 

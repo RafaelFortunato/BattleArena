@@ -60,6 +60,7 @@ namespace BattleArena.Missions
         private string _text;
         private int _textA = int.MinValue;
         private int _textB = int.MinValue;
+        private int _textC = int.MinValue;
 
         protected MissionInstance(MissionDefinition definition, MissionContext context)
         {
@@ -68,6 +69,12 @@ namespace BattleArena.Missions
         }
 
         public MissionDefinition Definition { get; }
+
+        /// <summary>
+        /// The description shown when the mission starts. The definition's text by default; a mission can fill in
+        /// numbers that are only known once it begins (e.g. a damage allowance from the player's max health).
+        /// </summary>
+        public virtual string Description => Definition.Description;
         public MissionStatus Status { get; private set; } = MissionStatus.Running;
         public float TimeRemaining => Mathf.Max(0f, _endsAt - Time.time);
 
@@ -108,13 +115,17 @@ namespace BattleArena.Missions
         protected virtual void OnTick(float now, float deltaTime) { }
 
         /// <summary>Formats a two-number status line, rebuilding the string only when the numbers change.</summary>
-        protected string CachedText(string format, int a, int b)
+        protected string CachedText(string format, int a, int b) => CachedText(format, a, b, 0);
+
+        /// <summary>Formats a status line of up to three numbers, rebuilding the string only when they change.</summary>
+        protected string CachedText(string format, int a, int b, int c)
         {
-            if (_text == null || a != _textA || b != _textB)
+            if (_text == null || a != _textA || b != _textB || c != _textC)
             {
                 _textA = a;
                 _textB = b;
-                _text = string.Format(format, a, b);
+                _textC = c;
+                _text = string.Format(format, a, b, c);
             }
             return _text;
         }

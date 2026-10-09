@@ -475,9 +475,15 @@
     background-color: rgb(255, 138, 128);
 }
 
+/* Same treatment as the player's HP number (display font, synthetic bold, dark outline), sized to the boss bar. */
 .boss-health-label {
-    font-size: 14.17px;
-    letter-spacing: 0.83px;
+    padding-top: 2px;
+    font-size: 22px;
+    letter-spacing: 1.67px;
+    -unity-font-style: bold;
+    -unity-text-outline-width: 1.67px;
+    -unity-text-outline-color: rgb(20, 22, 31);
+    text-shadow: 0 2.5px 0 rgb(20, 22, 31);
 }
 
 /* ---------- Mission */

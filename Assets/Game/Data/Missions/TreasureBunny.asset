@@ -10,11 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5fe809a74a0330c4d9f00aa3d71dfa22, type: 3}
-  m_Name: GoldenGoblin
+  m_Name: TreasureBunny
   m_EditorClassIdentifier: BattleArena.Runtime::BattleArena.Missions.HuntMission
-  title: Golden Goblin
-  description: A greedy goblin is fleeing with treasure. Chase it down before it
-    escapes!
+  title: Treasure Bunny
+  description: The Treasure Bunny is fleeing with its loot. Chase it down before
+    it escapes!
   timeLimit: 60
   weight: 1
   target: {fileID: 11400000, guid: 4dd6d9828a590e848b98edcf44ac1108, type: 2}

@@ -146,8 +146,9 @@ namespace BattleArena.Editor.ContentBuilder
 
         /// <param name="shake">Screen shake when it lands (0-1), weaker the further from the player.</param>
         /// <param name="buildFalling">Optional builder for the object that drops onto the target (e.g. a lit bomb).</param>
+        /// <param name="fuseAfterLanding">Seconds the falling object sits on the ground before it goes off.</param>
         private static DelayedAreaStrike BuildStrike(string name, Material outlineMaterial, Material fillMaterial, TimedRelease impact,
-            float shake, System.Func<Transform, Transform> buildFalling = null)
+            float shake, System.Func<Transform, Transform> buildFalling = null, float fuseAfterLanding = 0f)
         {
             var root = CreateRoot(name, GameLayers.Default);
             var outline = FlatQuad(root.transform, "Outline", outlineMaterial, 0.04f);
@@ -165,6 +166,7 @@ namespace BattleArena.Editor.ContentBuilder
                 .Set("fallingObject", falling)
                 .Set("impactEffect", impact)
                 .Set("impactShake", shake)
+                .Set("fuseAfterLanding", fuseAfterLanding)
                 .Apply();
 
             return SavePrefab<DelayedAreaStrike>(root, $"{PrefabsFolder}/Projectiles/{name}.prefab");

@@ -6,6 +6,8 @@ namespace BattleArena.Missions
     /// <summary>
     /// Survive a number of seconds while barely getting hurt: it fails once the damage taken during the mission adds up
     /// to a share of the player's max health, so a stray graze is forgiven but a real beating is not.
+    /// The HUD shows the allowance rather than the time (the mission timer already shows that): the bar drains with
+    /// every hit, and the description is a format string whose {0} becomes the allowance in HP.
     /// </summary>
     [CreateAssetMenu(fileName = "UntouchableMission", menuName = "BattleArena/Missions/Untouchable")]
     public sealed class UntouchableMission : MissionDefinition
@@ -24,10 +26,16 @@ namespace BattleArena.Missions
 
             public Instance(UntouchableMission mission, MissionContext context) : base(mission, context) => _mission = mission;
 
-            public override float Progress => _elapsed / _mission.surviveSeconds;
+            // The bar is the allowance left: full at the start, draining with every hit.
+            public override float Progress => Mathf.Clamp01(1f - _damageTaken / Allowance);
 
             public override string ProgressText =>
-                CachedText("Survive  {0} / {1}s", Mathf.FloorToInt(_elapsed), Mathf.RoundToInt(_mission.surviveSeconds));
+                CachedText("{0} / {1} HP left", Mathf.Max(0, Mathf.CeilToInt(Allowance - _damageTaken)), Mathf.CeilToInt(Allowance));
+
+            public override string Description => string.Format(Definition.Description, Mathf.CeilToInt(Allowance));
+
+            /// <summary>Total damage allowed, against max health as it is now (a Max Health upgrade widens it).</summary>
+            private float Allowance => Context.PlayerHealth.Max * _mission.allowedDamageFraction;
 
             protected override void OnBegin() => Context.PlayerHealth.Damaged += OnPlayerDamaged;
 
@@ -38,11 +46,10 @@ namespace BattleArena.Missions
                     Succeed();
             }
 
-            // Against max health as it is now, so a Max Health upgrade mid-mission widens the allowance.
             private void OnPlayerDamaged(Health health, DamageResult damage)
             {
                 _damageTaken += damage.Amount;
-                if (_damageTaken >= health.Max * _mission.allowedDamageFraction)
+                if (_damageTaken >= Allowance)
                     Fail();
             }
 
