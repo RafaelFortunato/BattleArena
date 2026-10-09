@@ -15232,11 +15232,11 @@ MonoBehaviour:
   controller: {fileID: 3180704741708065369}
   runSpeed: 4.5
   centering:
+  - -52
   - -40
-  - -30
   - -15
   frequency: {x: 0.45, y: 0.9}
-  amplitude: {x: 6, y: 12}
+  amplitude: {x: 6, y: 20}
   segmentWeights:
   - 0.8
   - 1

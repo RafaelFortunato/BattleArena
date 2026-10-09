@@ -20,13 +20,13 @@ namespace BattleArena.Player
         [SerializeField, Min(0.1f)] private float runSpeed = 4.5f;
 
         [Tooltip("Constant turn (degrees) per segment, base to tip, that brings the modelled tail round to sit behind the body.")]
-        [SerializeField] private float[] centering = { -40f, -30f, -15f };
+        [SerializeField] private float[] centering = { -52f, -40f, -15f };
 
         [Header("Sway")]
         [Tooltip("Full left-right swings per second, standing and running.")]
         [SerializeField] private Vector2 frequency = new(0.45f, 0.9f);
         [Tooltip("Swing to each side (degrees) per unit of segment weight, standing and running.")]
-        [SerializeField] private Vector2 amplitude = new(6f, 12f);
+        [SerializeField] private Vector2 amplitude = new(6f, 20f);
         [Tooltip("Each segment's share of the swing, base to tip. Segments stack, so the tip sweeps the furthest.")]
         [SerializeField] private float[] segmentWeights = { 0.8f, 1f, 1.2f };
         [Tooltip("How far (radians) each segment trails the one before it.")]
