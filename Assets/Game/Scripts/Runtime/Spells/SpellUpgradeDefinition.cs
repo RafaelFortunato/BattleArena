@@ -18,14 +18,19 @@ namespace BattleArena.Spells
         [Tooltip("Shown in the card's emblem: what the upgrade does. The spell itself is named in the card's header.")]
         [SerializeField] private VectorImage icon;
 
+        /// <summary>The card's name.</summary>
         public string DisplayName => displayName;
+        /// <summary>What the upgrade improves.</summary>
         public SpellUpgradeKind Kind => kind;
-        public float Amount => amount;
 
         /// <summary>What one pick gives <paramref name="spell"/>: the base amount times the spell's own scale for this kind.</summary>
         public float AmountFor(SpellDefinition spell) => amount * spell.UpgradeScale(kind);
+
+        /// <summary>How many times the upgrade can be taken for one spell.</summary>
         public int MaxRank => maxRank;
+        /// <summary>Relative chance of being offered.</summary>
         public float Weight => weight;
+        /// <summary>The card's icon; the spell's own icon is used when empty.</summary>
         public VectorImage Icon => icon;
 
         /// <summary>One-line pitch shown under the card title.</summary>
@@ -80,6 +85,7 @@ namespace BattleArena.Spells
             return value == 0 ? "0%" : (value > 0 ? "+" : "-") + Mathf.Abs(value).ToString(CultureInfo.InvariantCulture) + "%";
         }
 
+        /// <summary>Formats a count, optionally with a plus sign.</summary>
         private static string Count(float value, bool signed) =>
             (signed ? "+" : string.Empty) + value.ToString("0", CultureInfo.InvariantCulture);
     }

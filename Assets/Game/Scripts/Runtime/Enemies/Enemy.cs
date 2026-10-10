@@ -2,6 +2,8 @@ using System;
 using System.Collections;
 using BattleArena.Combat;
 using BattleArena.Core;
+using BattleArena.Enemies.Attacks;
+using BattleArena.Enemies.Movement;
 using BattleArena.Pickups;
 using BattleArena.Pooling;
 using UnityEngine;
@@ -9,24 +11,6 @@ using UnityEngine.AI;
 
 namespace BattleArena.Enemies
 {
-    /// <summary>What an enemy needs to know on each director tick.</summary>
-    public readonly struct EnemyTickContext
-    {
-        public readonly Vector3 TargetPosition;
-        public readonly Health Target;
-        public readonly float Now;
-        /// <summary>Seconds since the previous tick.</summary>
-        public readonly float DeltaTime;
-
-        public EnemyTickContext(Vector3 targetPosition, Health target, float now, float deltaTime)
-        {
-            TargetPosition = targetPosition;
-            Target = target;
-            Now = now;
-            DeltaTime = deltaTime;
-        }
-    }
-
     /// <summary>
     /// Pooled NavMesh enemy core: health, rewards, status effects and speed. Behaviour is composed
     /// from an <see cref="EnemyMovement"/> and one or more <see cref="EnemyAttack"/> components
@@ -56,10 +40,15 @@ namespace BattleArena.Enemies
 
         internal int RegistryIndex = -1;
 
+        /// <summary>The archetype this enemy was spawned from.</summary>
         public EnemyDefinition Definition { get; private set; }
+        /// <summary>The enemy's health.</summary>
         public Health Health => _health;
+        /// <summary>The enemy's navigation agent (disabled on flyers).</summary>
         public NavMeshAgent Agent => _agent;
+        /// <summary>Difficulty multiplier applied to the definition's health at spawn.</summary>
         public float HealthMultiplier { get; private set; } = 1f;
+        /// <summary>Difficulty multiplier applied to every attack's damage.</summary>
         public float DamageMultiplier { get; private set; } = 1f;
 
         /// <summary>True while an attack controls the enemy (wind-up, dash, fuse); movement is suspended.</summary>
@@ -71,6 +60,7 @@ namespace BattleArena.Enemies
         /// <summary>True while a frost slow is on the enemy; <see cref="ChillChanged"/> fires when it starts and ends.</summary>
         public bool IsChilled { get; private set; }
 
+        /// <summary>Raised with true when a frost slow starts and false when it ends.</summary>
         public event Action<bool> ChillChanged;
 
         /// <summary>Where the player was on the last director tick; null before the first one.</summary>
@@ -82,6 +72,7 @@ namespace BattleArena.Enemies
         /// </summary>
         public event Action<float> AttackStarted;
 
+        /// <summary>Caches components, hooks health events and randomises the avoidance priority.</summary>
         private void Awake()
         {
             _agent = GetComponent<NavMeshAgent>();
@@ -97,13 +88,16 @@ namespace BattleArena.Enemies
             _agent.avoidancePriority = UnityEngine.Random.Range(30, 70);
         }
 
+        /// <summary>Unhooks the health events.</summary>
         private void OnDestroy()
         {
             _health.Damaged -= OnDamaged;
             _health.Died -= OnDied;
         }
 
-        // Also covers destruction on scene unload, where OnDespawned is never called.
+        /// <summary>
+        /// Leaves the registry. Also covers destruction on scene unload, where OnDespawned is never called.
+        /// </summary>
         private void OnDisable() => EnemyRegistry.Unregister(this);
 
         /// <summary>Spawns a pooled enemy and applies its definition and difficulty scaling.</summary>
@@ -115,6 +109,9 @@ namespace BattleArena.Enemies
             return enemy;
         }
 
+        /// <summary>
+        /// Applies a definition and difficulty: full health, attack range as stopping distance, no slows or overrides.
+        /// </summary>
         public void Initialize(EnemyDefinition definition, float healthMultiplier, float damageMultiplier)
         {
             Definition = definition;
@@ -126,6 +123,9 @@ namespace BattleArena.Enemies
             ClearSlow();
         }
 
+        /// <summary>
+        /// Undoes the previous life's death squash, places the agent on the NavMesh and joins the registry.
+        /// </summary>
         public void OnSpawned()
         {
             // Undo the death squash: the pool hands back whatever the last life left behind.
@@ -140,6 +140,7 @@ namespace BattleArena.Enemies
             EnemyRegistry.Register(this);
         }
 
+        /// <summary>Releases any hold, clears slows and speed overrides and drops the path.</summary>
         public void OnDespawned()
         {
             Release();
@@ -192,6 +193,7 @@ namespace BattleArena.Enemies
             }
         }
 
+        /// <summary>Ends a <see cref="Hold"/>: the movement component drives the enemy again.</summary>
         public void Release()
         {
             IsHeld = false;
@@ -209,12 +211,14 @@ namespace BattleArena.Enemies
             _agent.SetDestination(destination);
         }
 
+        /// <summary>Drops the current path so the enemy stands still.</summary>
         public void Stop()
         {
             if (_agent.isOnNavMesh && _agent.hasPath)
                 _agent.ResetPath();
         }
 
+        /// <summary>Turns the enemy to look at <paramref name="position"/> on the ground plane.</summary>
         public void Face(Vector3 position)
         {
             var direction = position - transform.position;
@@ -230,6 +234,7 @@ namespace BattleArena.Enemies
             RefreshSpeed();
         }
 
+        /// <summary>Ends a <see cref="OverrideSpeed"/>; the definition's speed and any slow apply again.</summary>
         public void ClearSpeedOverride()
         {
             _speedOverride = -1f;
@@ -244,6 +249,10 @@ namespace BattleArena.Enemies
             this.Despawn();
         }
 
+        /// <summary>
+        /// Slows the enemy; the strongest active slow wins and re-applying refreshes it. A chill also shows the frost
+        /// look.
+        /// </summary>
         public void ApplySlow(float speedMultiplier, float duration, bool chill = false)
         {
             if (!isActiveAndEnabled || Definition == null)
@@ -261,6 +270,7 @@ namespace BattleArena.Enemies
             }
         }
 
+        /// <summary>Updates the chill state and raises <see cref="ChillChanged"/> when it changes.</summary>
         private void SetChilled(bool chilled)
         {
             if (IsChilled == chilled)
@@ -269,6 +279,7 @@ namespace BattleArena.Enemies
             ChillChanged?.Invoke(chilled);
         }
 
+        /// <summary>Removes every slow and the chill.</summary>
         private void ClearSlow()
         {
             _slowMultiplier = 1f;
@@ -278,6 +289,9 @@ namespace BattleArena.Enemies
             RefreshSpeed();
         }
 
+        /// <summary>
+        /// Recomputes the movement speed from the override, the definition and the slow, and hands it to the agent.
+        /// </summary>
         private void RefreshSpeed()
         {
             if (Definition == null)
@@ -286,14 +300,17 @@ namespace BattleArena.Enemies
             _agent.speed = CurrentSpeed;
         }
 
+        /// <summary>Announces the hit for damage numbers, anchored just above the enemy's head.</summary>
         private void OnDamaged(Health _, DamageResult damage)
         {
-            // Anchor floating damage numbers just above the enemy's head.
             var position = transform.position;
             position.y = _collider.bounds.max.y;
             EventBus<EnemyDamagedEvent>.Raise(new EnemyDamagedEvent(position, damage.Amount, damage.IsCritical));
         }
 
+        /// <summary>
+        /// Announces the kill, drops the experience gem and the death effect, then plays the death squash or despawns.
+        /// </summary>
         private void OnDied(Health _)
         {
             var position = transform.position;

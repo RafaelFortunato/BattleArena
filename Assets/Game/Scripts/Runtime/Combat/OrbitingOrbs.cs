@@ -14,7 +14,14 @@ namespace BattleArena.Combat
         [SerializeField] private ContactDamage[] orbs;
         [SerializeField, Min(0f)] private float heightOffset = 1f;
 
+        /// <summary>Starts the ring around <paramref name="follow"/>; it despawns itself after <paramref name="duration"/> seconds.</summary>
+        /// <param name="follow">What the ring circles; it ends early if this is destroyed.</param>
+        /// <param name="damage">Damage each orb deals on contact.</param>
+        /// <param name="count">Orbs to enable, clamped to the number the prefab holds.</param>
+        /// <param name="radius">Distance of the orbs from the centre.</param>
         /// <param name="orbScale">Size of each orb (its hit area and visuals), 1 = as authored.</param>
+        /// <param name="duration">Seconds before the ring despawns.</param>
+        /// <param name="degreesPerSecond">Rotation speed of the ring.</param>
         public void Activate(Transform follow, DamageProfile damage, int count, float radius, float orbScale, float duration,
             float degreesPerSecond)
         {
@@ -40,10 +47,13 @@ namespace BattleArena.Combat
             StartCoroutine(Orbit(follow, duration, degreesPerSecond));
         }
 
+        /// <summary>Nothing to do: <see cref="Activate"/> starts the ring.</summary>
         public void OnSpawned() { }
 
+        /// <summary>Stops the orbit.</summary>
         public void OnDespawned() => StopAllCoroutines();
 
+        /// <summary>Keeps the ring centred on <paramref name="follow"/> and spinning, then despawns it.</summary>
         private IEnumerator Orbit(Transform follow, float duration, float degreesPerSecond)
         {
             var angle = 0f;

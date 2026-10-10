@@ -17,8 +17,10 @@ namespace BattleArena.Missions
         private bool _hasTarget;
         private Vector3 _target;
 
+        /// <summary>Starts hidden.</summary>
         private void Awake() => arrow.SetActive(false);
 
+        /// <summary>Sets the point to aim at, or hides the arrow when there is none.</summary>
         public void SetTarget(bool hasTarget, Vector3 target)
         {
             _hasTarget = hasTarget;
@@ -27,7 +29,10 @@ namespace BattleArena.Missions
                 arrow.SetActive(false);
         }
 
-        // One object with trivial work; it has to follow the player every frame to read well.
+        /// <summary>
+        /// Keeps the arrow beside the player, aimed at the target, and hides it once the target is close. Runs every
+        /// frame so it follows the player smoothly.
+        /// </summary>
         private void LateUpdate()
         {
             if (!_hasTarget)

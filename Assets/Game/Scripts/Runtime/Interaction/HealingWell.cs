@@ -27,21 +27,29 @@ namespace BattleArena.Interaction
         private bool _isReady = true;
         private Vector3 _waterFullPosition;
 
+        /// <summary>Verb shown in the interaction prompt.</summary>
         public string Prompt => "Heal";
+        /// <summary>True while the well is full.</summary>
         public bool CanInteract => _isReady;
+        /// <summary>Where the well stands, for picking the closest interactable.</summary>
         public Vector3 Position => transform.position;
 
+        /// <summary>Raised when the well is drained or refilled.</summary>
         public event Action<IInteractable> StateChanged;
 
-        // Wells are permanent scene objects.
+        /// <summary>Never raised: wells are permanent scene objects.</summary>
         event Action<IInteractable> IInteractable.Removed { add { } remove { } }
 
+        /// <summary>Remembers the full water level.</summary>
         private void Awake()
         {
             if (water != null)
                 _waterFullPosition = water.localPosition;
         }
 
+        /// <summary>
+        /// Heals the player by a share of their maximum health and starts draining and recharging the well.
+        /// </summary>
         public void Interact(PlayerInteractor interactor)
         {
             if (!_isReady)
@@ -55,6 +63,9 @@ namespace BattleArena.Interaction
             StartCoroutine(Recharge());
         }
 
+        /// <summary>
+        /// Drains the water, waits out the recharge, then refills it just before the well is ready again.
+        /// </summary>
         private IEnumerator Recharge()
         {
             SetReady(false);
@@ -82,14 +93,17 @@ namespace BattleArena.Interaction
             SetDrain(to);
         }
 
+        /// <summary>Places the water surface for a drain level (0 full, 1 empty).</summary>
         private void SetDrain(float drain) => water.localPosition = _waterFullPosition + Vector3.down * (drainDepth * drain);
 
+        /// <summary>Shows or hides the water, which is hidden while the well is empty.</summary>
         private void SetWaterVisible(bool visible)
         {
             if (water != null)
                 water.gameObject.SetActive(visible);
         }
 
+        /// <summary>Changes availability and tells the interactor.</summary>
         private void SetReady(bool ready)
         {
             _isReady = ready;

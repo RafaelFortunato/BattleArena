@@ -30,10 +30,13 @@ namespace BattleArena.Enemies
         private float _matchStartTime;
         private float _rateScale = 1f;
 
+        /// <summary>The boss spawned at the end of the match.</summary>
         public EnemyDefinition BossDefinition => boss;
 
+        /// <summary>Prewarms the pools before the match.</summary>
         private void Start() => Prewarm();
 
+        /// <summary>Starts the spawn loop for a match that began at <paramref name="matchStartTime"/>.</summary>
         public void Begin(float matchStartTime)
         {
             _matchStartTime = matchStartTime;
@@ -42,6 +45,7 @@ namespace BattleArena.Enemies
             _spawnLoop = StartCoroutine(SpawnLoop());
         }
 
+        /// <summary>Stops the spawn loop; enemies already alive stay.</summary>
         public void StopSpawning()
         {
             if (_spawnLoop == null)
@@ -58,6 +62,9 @@ namespace BattleArena.Enemies
                 StopSpawning();
         }
 
+        /// <summary>
+        /// Spawns the boss near the player (or at the arena centre when no spot is free) at full strength.
+        /// </summary>
         public Enemy SpawnBoss()
         {
             // Fall back to the open centre of the arena when the player is cornered.
@@ -68,6 +75,9 @@ namespace BattleArena.Enemies
             return Spawn(boss, position, 1f, 1f);
         }
 
+        /// <summary>
+        /// Creates pooled copies of every enemy in the schedule up front, so the match doesn't instantiate mid-fight.
+        /// </summary>
         private void Prewarm()
         {
             var definitions = new HashSet<EnemyDefinition>();
@@ -76,6 +86,7 @@ namespace BattleArena.Enemies
                 PoolManager.Prewarm(definition.Prefab, prewarmPerEnemyType, transform.position);
         }
 
+        /// <summary>Spawns enemies for the current phase on its interval, up to its cap of live enemies.</summary>
         private IEnumerator SpawnLoop()
         {
             while (true)
@@ -96,6 +107,7 @@ namespace BattleArena.Enemies
             }
         }
 
+        /// <summary>Spawns an enemy facing the player.</summary>
         private Enemy Spawn(EnemyDefinition definition, Vector3 position, float healthMultiplier, float damageMultiplier)
         {
             var toPlayer = Vector3.ProjectOnPlane(player.position - position, Vector3.up);
@@ -127,6 +139,7 @@ namespace BattleArena.Enemies
             return false;
         }
 
+        /// <summary>True when <paramref name="point"/> lies within the arena bounds.</summary>
         private bool IsInsideArena(Vector3 point) =>
             Mathf.Abs(point.x) <= arenaHalfExtent && Mathf.Abs(point.z) <= arenaHalfExtent;
     }

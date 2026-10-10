@@ -61,6 +61,7 @@ namespace BattleArena.Audio
         /// <summary>Silence radius authored here, or negative to take the manager's default.</summary>
         public float SilenceDistanceOverride => silenceDistance;
 
+        /// <summary>True when at least one take is assigned; an empty event plays nothing.</summary>
         public bool HasClips => clips != null && clips.Length > 0;
 
         /// <summary>A fresh pitch for one play, inside the authored window.</summary>
@@ -84,14 +85,11 @@ namespace BattleArena.Audio
             return clips[index];
         }
 
-        /// <summary>Pushes edited distances onto anything already looping this sound, so tuning is audible live.</summary>
+        /// <summary>Keeps the authored distances valid: a silence radius inside the full-volume one would stop the fade.</summary>
         private void OnValidate()
         {
-            // A silence radius inside the full-volume radius makes Unity clamp, and the sound simply stops fading.
             if (fullVolumeDistance >= 0f && silenceDistance >= 0f && silenceDistance <= fullVolumeDistance)
                 silenceDistance = fullVolumeDistance + 1f;
-
-            AudioManager.RefreshRolloff(this);
         }
     }
 }

@@ -15,6 +15,7 @@ namespace BattleArena.Enemies
         private Enemy _enemy;
         private Health _health;
 
+        /// <summary>Caches components and listens for death.</summary>
         private void Awake()
         {
             _enemy = GetComponent<Enemy>();
@@ -22,8 +23,12 @@ namespace BattleArena.Enemies
             _health.Died += OnDied;
         }
 
+        /// <summary>Stops listening for death.</summary>
         private void OnDestroy() => _health.Died -= OnDied;
 
+        /// <summary>
+        /// Spawns the smaller enemies in a ring where this one died; they inherit its difficulty scaling.
+        /// </summary>
         private void OnDied(Health _)
         {
             var center = transform.position;
@@ -37,7 +42,6 @@ namespace BattleArena.Enemies
                 if (!NavMesh.SamplePosition(position, out var hit, spread + 1f, NavMesh.AllAreas))
                     continue;
 
-                // Children inherit the parent's difficulty scaling.
                 Enemy.Spawn(splitInto, hit.position, Quaternion.LookRotation(direction), _enemy.HealthMultiplier, _enemy.DamageMultiplier);
             }
         }

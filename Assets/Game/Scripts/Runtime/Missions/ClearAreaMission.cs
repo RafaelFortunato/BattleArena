@@ -24,8 +24,10 @@ namespace BattleArena.Missions
         [SerializeField, Min(1f)] private float minDistance = 18f;
         [SerializeField, Min(1f)] private float maxDistance = 26f;
 
+        /// <summary>Creates the state for one attempt.</summary>
         public override MissionInstance CreateInstance(MissionContext context) => new Instance(this, context);
 
+        /// <summary>Run-time state: the camp circle and the kills counted inside it.</summary>
         private sealed class Instance : MissionInstance
         {
             private readonly ClearAreaMission _mission;
@@ -34,25 +36,34 @@ namespace BattleArena.Missions
             private readonly int _required;
             private int _kills;
 
+            /// <summary>Fixes the kill target from the match time when the attempt is created.</summary>
             public Instance(ClearAreaMission mission, MissionContext context) : base(mission, context)
             {
                 _mission = mission;
                 _required = Mathf.FloorToInt(mission.killsRequired + mission.killsPerMinute * context.ElapsedMinutes);
             }
 
+            /// <summary>Share of the required kills made so far.</summary>
             public override float Progress => (float)_kills / _required;
 
+            /// <summary>Kills inside the circle against the target.</summary>
             public override string ProgressText => CachedText("Slain in the circle  {0} / {1}", _kills, _required);
 
+            /// <summary>The description with the kill target filled in.</summary>
             public override string Description => string.Format(Definition.Description, _required);
 
-            // Lead the player to the camp; once inside, the circle itself is the guide.
+            /// <summary>
+            /// Points at the camp until the player is inside it; once inside, the circle itself is the guide.
+            /// </summary>
             public override bool TryGetTarget(out Vector3 position)
             {
                 position = _center;
                 return _zone != null && !IsInsideCamp(Context.Player.position);
             }
 
+            /// <summary>
+            /// Places the camp circle away from the player and spawns its garrison; fails when no spot is free.
+            /// </summary>
             protected override void OnBegin()
             {
                 if (!Context.Spawner.TryFindSpawnPoint(Context.Player.position, _mission.minDistance, _mission.maxDistance, out _center))
@@ -74,6 +85,7 @@ namespace BattleArena.Missions
                 EventBus<EnemyKilledEvent>.Subscribe(OnEnemyKilled);
             }
 
+            /// <summary>Counts a kill inside the circle and succeeds once enough have fallen.</summary>
             private void OnEnemyKilled(EnemyKilledEvent evt)
             {
                 if (!IsInsideCamp(evt.Position))
@@ -85,6 +97,7 @@ namespace BattleArena.Missions
                     Succeed();
             }
 
+            /// <summary>True when <paramref name="position"/> lies within the camp circle.</summary>
             private bool IsInsideCamp(Vector3 position)
             {
                 var offset = position - _center;
@@ -92,9 +105,11 @@ namespace BattleArena.Missions
                 return offset.sqrMagnitude <= _mission.campRadius * _mission.campRadius;
             }
 
+            /// <summary>
+            /// Removes the circle and the kill listener; the garrison simply stays in the fight as regular enemies.
+            /// </summary>
             public override void Cleanup()
             {
-                // The garrison simply stays in the fight as regular enemies.
                 EventBus<EnemyKilledEvent>.Unsubscribe(OnEnemyKilled);
                 if (_zone != null)
                     _zone.Despawn();

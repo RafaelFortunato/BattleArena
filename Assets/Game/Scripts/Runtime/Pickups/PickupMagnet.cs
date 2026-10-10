@@ -21,22 +21,27 @@ namespace BattleArena.Pickups
         private SphereCollider _trigger;
         private float _baseRadius;
 
+        /// <summary>Remembers the trigger's base radius.</summary>
         private void Awake()
         {
             _trigger = GetComponent<SphereCollider>();
             _baseRadius = _trigger.radius;
         }
 
+        /// <summary>Follows the player's stats for pickup radius upgrades.</summary>
         private void OnEnable() => stats.Changed += OnStatChanged;
 
+        /// <summary>Stops following the player's stats.</summary>
         private void OnDisable() => stats.Changed -= OnStatChanged;
 
+        /// <summary>Rescales the trigger when the pickup radius changes.</summary>
         private void OnStatChanged(StatType stat)
         {
             if (stat == StatType.PickupRadius)
                 _trigger.radius = _baseRadius * stats.PickupRadiusMultiplier;
         }
 
+        /// <summary>Starts pulling in a gem that entered the radius.</summary>
         private void OnTriggerEnter(Collider other)
         {
             if (!other.TryGetComponent(out ExperienceGem gem) || gem.IsAttracted)
@@ -46,6 +51,7 @@ namespace BattleArena.Pickups
             _attracted.Add(gem);
         }
 
+        /// <summary>Moves every attracted gem towards the player and collects those that arrive.</summary>
         private void Update()
         {
             if (_attracted.Count == 0)
@@ -79,9 +85,9 @@ namespace BattleArena.Pickups
             }
         }
 
+        /// <summary>Removes an entry by swapping in the last one; order doesn't matter.</summary>
         private void RemoveAt(int index)
         {
-            // Order doesn't matter: swap-remove keeps it O(1).
             var last = _attracted.Count - 1;
             _attracted[index] = _attracted[last];
             _attracted.RemoveAt(last);

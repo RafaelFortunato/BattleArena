@@ -15,15 +15,20 @@ namespace BattleArena.Missions
 
         private bool _collected;
 
+        /// <summary>Raised once when the player picks the shard up.</summary>
         public event Action<MissionShard> Collected;
 
+        /// <summary>Makes the shard collectible again.</summary>
         public void OnSpawned() => _collected = false;
 
+        /// <summary>Drops the collection listener.</summary>
         public void OnDespawned() => Collected = null;
 
+        /// <summary>
+        /// Collects the shard when one of the player's sensor volumes (children of the player root) touches it.
+        /// </summary>
         private void OnTriggerEnter(Collider other)
         {
-            // The player's sensor volumes are children of the player root.
             if (_collected || other.GetComponentInParent<PlayerController>() == null)
                 return;
 

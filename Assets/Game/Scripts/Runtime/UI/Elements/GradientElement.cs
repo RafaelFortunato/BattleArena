@@ -3,14 +3,6 @@ using UnityEngine.UIElements;
 
 namespace BattleArena.UI.Elements
 {
-    public enum GradientDirection
-    {
-        /// <summary>From the left edge to the right edge.</summary>
-        Horizontal,
-        /// <summary>From the bottom edge to the top edge.</summary>
-        Vertical
-    }
-
     /// <summary>
     /// Linear gradient drawn as vertex colours, for screen scrims. Colours come from USS:
     /// <c>--gradient-from</c>, <c>--gradient-to</c> and an optional <c>--gradient-mid</c> at
@@ -34,6 +26,7 @@ namespace BattleArena.UI.Elements
         private Color? _mid;
         private float _midAt = 0.5f;
 
+        /// <summary>Which way the gradient runs.</summary>
         [UxmlAttribute]
         public GradientDirection Direction
         {
@@ -45,6 +38,7 @@ namespace BattleArena.UI.Elements
             }
         }
 
+        /// <summary>Creates the element; it ignores the pointer, draws itself and reads its colours from USS.</summary>
         public GradientElement()
         {
             pickingMode = PickingMode.Ignore;
@@ -52,6 +46,7 @@ namespace BattleArena.UI.Elements
             RegisterCallback<CustomStyleResolvedEvent>(OnStyleResolved);
         }
 
+        /// <summary>Reads the gradient colours and midpoint from the custom USS properties.</summary>
         private void OnStyleResolved(CustomStyleResolvedEvent evt)
         {
             var style = evt.customStyle;
@@ -62,6 +57,7 @@ namespace BattleArena.UI.Elements
             MarkDirtyRepaint();
         }
 
+        /// <summary>Draws the gradient as three bands of vertex-coloured quads.</summary>
         private void Draw(MeshGenerationContext context)
         {
             var r = contentRect;
@@ -97,6 +93,7 @@ namespace BattleArena.UI.Elements
             mesh.SetAllIndices(indices);
         }
 
+        /// <summary>Writes one vertex of the gradient mesh.</summary>
         private void Set(int index, float x, float y, Color color) =>
             _vertices[index] = new Vertex { position = new Vector3(x, y, Vertex.nearZ), tint = color };
     }

@@ -239,7 +239,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 849c35db4b29ef84fbbe14c61ce898e6, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: BattleArena.Runtime::BattleArena.Enemies.ChaseMovement
+  m_EditorClassIdentifier: BattleArena.Runtime::BattleArena.Enemies.Movement.ChaseMovement
 --- !u!114 &5078981858656979844
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -251,7 +251,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d1631cdada98b814faa287362e8f736f, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: BattleArena.Runtime::BattleArena.Enemies.ContactAttack
+  m_EditorClassIdentifier: BattleArena.Runtime::BattleArena.Enemies.Attacks.ContactAttack
 --- !u!1 &3172807045035360737
 GameObject:
   m_ObjectHideFlags: 0

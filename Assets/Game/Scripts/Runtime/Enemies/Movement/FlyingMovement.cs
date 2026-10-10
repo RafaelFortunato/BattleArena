@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace BattleArena.Enemies
+namespace BattleArena.Enemies.Movement
 {
     /// <summary>
     /// Flies straight at the player, ignoring the NavMesh, faster than the player can run but with a
@@ -20,11 +20,14 @@ namespace BattleArena.Enemies
         private Vector3 _heading;
         private int _index = -1;
 
+        /// <summary>Every live flyer, moved each frame by the director.</summary>
         internal static IReadOnlyList<FlyingMovement> Active => ActiveFlyers;
 
+        /// <summary>Empties the flyer list before play starts.</summary>
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
         private static void ResetRegistry() => ActiveFlyers.Clear();
 
+        /// <summary>Starts flying the way it faces and joins the flyer list.</summary>
         public override void OnSpawned()
         {
             _heading = transform.forward;
@@ -35,12 +38,13 @@ namespace BattleArena.Enemies
             }
         }
 
+        /// <summary>Leaves the flyer list.</summary>
         public override void OnDespawned() => Unregister();
 
-        // Also covers scene unload, where OnDespawned is not called.
+        /// <summary>Leaves the flyer list. Also covers scene unload, where OnDespawned is not called.</summary>
         private void OnDisable() => Unregister();
 
-        // AI decisions happen in Integrate; the tick has nothing extra to do.
+        /// <summary>Nothing to do: flight is integrated every frame by <see cref="Integrate"/>.</summary>
         public override void Tick(in EnemyTickContext context) { }
 
         /// <summary>Steers toward <paramref name="target"/> with a capped turn rate and moves forward.</summary>
@@ -60,6 +64,7 @@ namespace BattleArena.Enemies
             transform.SetPositionAndRotation(position, Quaternion.LookRotation(_heading));
         }
 
+        /// <summary>Swap-removes this flyer from the list, fixing up the index of the one moved.</summary>
         private void Unregister()
         {
             if (_index < 0)

@@ -40,14 +40,21 @@ namespace BattleArena.Enemies
 
         private bool IsEnraged => _enemy.Health.Normalized <= enrageHealthFraction;
 
+        /// <summary>Caches the boss's enemy core.</summary>
         private void Awake() => _enemy = GetComponent<Enemy>();
 
+        /// <summary>Sets who the slams aim at (the player).</summary>
         public void SetTarget(Transform target) => _target = target;
 
+        /// <summary>Starts the attack pattern.</summary>
         public void OnSpawned() => StartCoroutine(AttackLoop());
 
+        /// <summary>Stops the attack pattern.</summary>
         public void OnDespawned() => StopAllCoroutines();
 
+        /// <summary>
+        /// After an opening pause, alternates slams and radial bursts until the boss dies, faster once enraged.
+        /// </summary>
         private IEnumerator AttackLoop()
         {
             yield return WaitCache.Get(openingDelay);
@@ -63,6 +70,10 @@ namespace BattleArena.Enemies
             }
         }
 
+        /// <summary>
+        /// Holds the boss in place and drops a series of telegraphed strikes, each aimed at where the player is at that
+        /// moment.
+        /// </summary>
         private IEnumerator Slam()
         {
             _enemy.Hold();
@@ -81,6 +92,9 @@ namespace BattleArena.Enemies
             _enemy.Release();
         }
 
+        /// <summary>
+        /// Fires rings of projectiles in every direction, alternate rings offset to leave different gaps.
+        /// </summary>
         private IEnumerator RadialBurst()
         {
             var rings = IsEnraged ? ringsPerBurst + 1 : ringsPerBurst;

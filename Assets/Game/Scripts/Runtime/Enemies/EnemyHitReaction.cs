@@ -35,6 +35,7 @@ namespace BattleArena.Enemies
         private Vector3 _knockbackVelocity;
         private float _knockbackRemaining;
 
+        /// <summary>Caches components and the model's rest scale, and listens for hits.</summary>
         private void Awake()
         {
             // Health directly: Enemy.Awake may not have run yet to expose it.
@@ -45,16 +46,23 @@ namespace BattleArena.Enemies
             _health.Damaged += OnDamaged;
         }
 
+        /// <summary>Stops listening for hits.</summary>
         private void OnDestroy() => _health.Damaged -= OnDamaged;
 
+        /// <summary>Clears any squash or shove left from the previous life.</summary>
         public void OnSpawned()
         {
             _squashElapsed = float.PositiveInfinity;
             _knockbackRemaining = 0f;
         }
 
+        /// <summary>Nothing to do.</summary>
         public void OnDespawned() { }
 
+        /// <summary>
+        /// Starts the squash and, for a big enough hit, a shove away from the player. The killing blow is left to the
+        /// death animation.
+        /// </summary>
         private void OnDamaged(Health health, DamageResult damage)
         {
             // The killing blow belongs to the death animation, which owns the model's scale from here.
@@ -65,6 +73,10 @@ namespace BattleArena.Enemies
             TryKnockback(damage.Amount / health.Max);
         }
 
+        /// <summary>
+        /// Starts a shove away from the player sized by the hit's share of max health, unless the enemy can't be pushed
+        /// right now.
+        /// </summary>
         private void TryKnockback(float share)
         {
             var agent = _enemy.Agent;
@@ -83,6 +95,9 @@ namespace BattleArena.Enemies
             _knockbackRemaining = knockbackDuration;
         }
 
+        /// <summary>
+        /// Plays out the squash and the shove; the shove moves the agent so it never leaves the NavMesh.
+        /// </summary>
         private void Update()
         {
             var deltaTime = Time.deltaTime;

@@ -10053,7 +10053,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: BattleArena.Runtime::BattleArena.Interaction.PlayerInteractor
   input: {fileID: 11400000, guid: 484cc701bfc576a41a5b9cb92aa571c6, type: 2}
   health: {fileID: 8474256082905014879}
-  progression: {fileID: 7569190660119117929}
 --- !u!1 &4223284615403456778
 GameObject:
   m_ObjectHideFlags: 0

@@ -18,12 +18,17 @@ namespace BattleArena.Spells
         [SerializeField, Min(0.1f)] private float firstImpactDelay = 0.8f;
         [SerializeField, Min(0f)] private float delayBetweenImpacts = 0.15f;
 
-        // Area is each impact's size; Projectiles adds meteors.
+        /// <summary>Area is each impact's size; Projectiles adds meteors.</summary>
         public override SpellStats ScalesWith => SpellStats.Area | SpellStats.Projectiles;
 
+        /// <summary>A Split Cast pick adds several meteors, since one meteor is a small step.</summary>
         public override float UpgradeScale(SpellUpgradeKind kind) =>
             kind == SpellUpgradeKind.ExtraProjectiles ? meteorsPerProjectileUpgrade : 1f;
 
+        /// <summary>
+        /// Drops staggered meteors on the enemies around the caster, filling any remaining meteors with random points
+        /// in the area.
+        /// </summary>
         public override bool Cast(in SpellContext context)
         {
             var center = context.CasterPosition;
@@ -31,7 +36,6 @@ namespace BattleArena.Spells
             var count = meteorCount + context.Modifiers.ExtraProjectiles;
             var impact = context.Area(impactRadius);
 
-            // Prefer enemy positions; fill the remaining meteors with random points in the area.
             var targets = CombatQueries.Overlap(center, areaRadius, context.TargetMask);
             for (var i = 0; i < count; i++)
             {
@@ -47,6 +51,7 @@ namespace BattleArena.Spells
             return true;
         }
 
+        /// <summary>A random walkable point within the shower's area.</summary>
         private Vector3 RandomGroundPoint(Vector3 center)
         {
             var offset = Random.insideUnitCircle * areaRadius;

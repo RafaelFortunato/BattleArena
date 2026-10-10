@@ -1,30 +1,14 @@
 namespace BattleArena.Combat
 {
+    /// <summary>Anything attacks can hurt: the player, enemies and the boss (through <see cref="Health"/>).</summary>
     public interface IDamageable
     {
+        /// <summary>False once the target has died; attacks skip dead targets.</summary>
         bool IsAlive { get; }
 
+        /// <summary>Applies one hit of <paramref name="amount"/> damage, already rolled for critical.</summary>
+        /// <param name="amount">Damage before the target's own reductions (armor, invulnerability).</param>
+        /// <param name="isCritical">True for a critical hit, so feedback can stand out.</param>
         void TakeDamage(float amount, bool isCritical = false);
-    }
-
-    /// <summary>A hit received by a <see cref="Health"/>: full damage after armor, not clamped to the remaining health.</summary>
-    public readonly struct DamageResult
-    {
-        public readonly float Amount;
-        public readonly bool IsCritical;
-
-        public DamageResult(float amount, bool isCritical)
-        {
-            Amount = amount;
-            IsCritical = isCritical;
-        }
-    }
-
-    /// <summary>Anything whose movement speed can be temporarily reduced (e.g. by Frost Nova).</summary>
-    public interface ISlowable
-    {
-        /// <param name="speedMultiplier">0..1, where 0.5 halves the speed.</param>
-        /// <param name="chill">A frost slow: the target also shows it (icy tint, frost particles) while it lasts.</param>
-        void ApplySlow(float speedMultiplier, float duration, bool chill = false);
     }
 }

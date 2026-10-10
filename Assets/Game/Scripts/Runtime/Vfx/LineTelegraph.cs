@@ -13,6 +13,9 @@ namespace BattleArena.Vfx
         [SerializeField] private Transform fill;
         [SerializeField, Min(0f)] private float heightOffset = 0.05f;
 
+        /// <summary>
+        /// Lays the warning along the path and fills it over <paramref name="duration"/> seconds, then despawns.
+        /// </summary>
         public void Show(Vector3 start, Vector3 direction, float length, float width, float duration)
         {
             transform.SetPositionAndRotation(start + direction * (length * 0.5f) + Vector3.up * heightOffset,
@@ -21,10 +24,15 @@ namespace BattleArena.Vfx
             StartCoroutine(Fill(length, width, duration));
         }
 
+        /// <summary>Nothing to do: <see cref="Show"/> starts the telegraph.</summary>
         public void OnSpawned() { }
 
+        /// <summary>Stops the fill.</summary>
         public void OnDespawned() => StopAllCoroutines();
 
+        /// <summary>
+        /// Grows the fill from the start of the line to its end, then returns the telegraph to its pool.
+        /// </summary>
         private IEnumerator Fill(float length, float width, float duration)
         {
             var thickness = fill.localScale.y;

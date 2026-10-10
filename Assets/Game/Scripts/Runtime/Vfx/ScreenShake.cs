@@ -52,6 +52,7 @@ namespace BattleArena.Vfx
             Add(trauma);
         }
 
+        /// <summary>Registers this as the shake instance and seeds its noise.</summary>
         protected override void Awake()
         {
             base.Awake();
@@ -60,6 +61,7 @@ namespace BattleArena.Vfx
             _lastTime = Time.unscaledTime;
         }
 
+        /// <summary>Unregisters the shake instance.</summary>
         protected override void OnDestroy()
         {
             if (_instance == this)
@@ -67,6 +69,10 @@ namespace BattleArena.Vfx
             base.OnDestroy();
         }
 
+        /// <summary>
+        /// Drains the trauma on unscaled time and offsets and rolls the final camera state by its square. Paused, the
+        /// trauma is held for when play resumes.
+        /// </summary>
         protected override void PostPipelineStageCallback(CinemachineVirtualCameraBase vcam, CinemachineCore.Stage stage,
             ref CameraState state, float deltaTime)
         {

@@ -19,6 +19,7 @@ namespace BattleArena.UI.Elements
         private Color _color = Color.white;
         private float _width = 4f;
 
+        /// <summary>Filled share of the ring, 0..1.</summary>
         public float Value
         {
             get => _value;
@@ -32,6 +33,9 @@ namespace BattleArena.UI.Elements
             }
         }
 
+        /// <summary>
+        /// Creates the element; it ignores the pointer, draws itself and reads its colour and width from USS.
+        /// </summary>
         public RadialProgressElement()
         {
             pickingMode = PickingMode.Ignore;
@@ -46,6 +50,9 @@ namespace BattleArena.UI.Elements
             });
         }
 
+        /// <summary>
+        /// Strokes the filled arc. Round ends read as a bead of light travelling round; a full ring needs none.
+        /// </summary>
         private void Draw(MeshGenerationContext context)
         {
             if (_value <= 0f)
@@ -59,7 +66,6 @@ namespace BattleArena.UI.Elements
             var painter = context.painter2D;
             painter.strokeColor = _color;
             painter.lineWidth = _width;
-            // Round ends read as a bead of light travelling round; a full ring needs none.
             painter.lineCap = _value >= 0.999f ? LineCap.Butt : LineCap.Round;
             painter.BeginPath();
             painter.Arc(rect.center, radius, Angle.Degrees(StartAngle), Angle.Degrees(StartAngle + 360f * _value));

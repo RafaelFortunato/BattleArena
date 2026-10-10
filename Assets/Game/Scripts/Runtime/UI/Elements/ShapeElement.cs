@@ -3,16 +3,6 @@ using UnityEngine.UIElements;
 
 namespace BattleArena.UI.Elements
 {
-    public enum ShapeKind
-    {
-        /// <summary>Pointy-top hexagon, the game's signature frame (spell slots, badges).</summary>
-        Hexagon,
-        /// <summary>Wide plate with pointed ends, used behind the match timer.</summary>
-        Plate,
-        TriangleUp,
-        TriangleDown
-    }
-
     /// <summary>
     /// Vector frame drawn with <see cref="Painter2D"/>. Colours come from USS custom properties so states
     /// (ready, cooling, locked, rarity…) are pure style-sheet changes:
@@ -38,6 +28,7 @@ namespace BattleArena.UI.Elements
         private Color? _fillOverride;
         private Color? _borderOverride;
 
+        /// <summary>The outline to draw.</summary>
         [UxmlAttribute]
         public ShapeKind Kind
         {
@@ -49,6 +40,7 @@ namespace BattleArena.UI.Elements
             }
         }
 
+        /// <summary>Creates the element; it ignores the pointer, draws itself and reads its colours from USS.</summary>
         public ShapeElement()
         {
             pickingMode = PickingMode.Ignore;
@@ -64,6 +56,7 @@ namespace BattleArena.UI.Elements
             MarkDirtyRepaint();
         }
 
+        /// <summary>Reads the fill, border and inner outline from the custom USS properties.</summary>
         private void OnStyleResolved(CustomStyleResolvedEvent evt)
         {
             var style = evt.customStyle;
@@ -75,6 +68,7 @@ namespace BattleArena.UI.Elements
             MarkDirtyRepaint();
         }
 
+        /// <summary>Fills the shape, then strokes its border and optional inset outline.</summary>
         private void Draw(MeshGenerationContext context)
         {
             var rect = contentRect;
@@ -111,6 +105,7 @@ namespace BattleArena.UI.Elements
             }
         }
 
+        /// <summary><paramref name="rect"/> shrunk by <paramref name="amount"/> on every side.</summary>
         private static Rect Inset(Rect rect, float amount) =>
             new(rect.x + amount, rect.y + amount, Mathf.Max(0f, rect.width - amount * 2f), Mathf.Max(0f, rect.height - amount * 2f));
 
@@ -143,34 +138,6 @@ namespace BattleArena.UI.Elements
                     painter.LineTo(new Vector2(r.center.x, r.yMax));
                     break;
             }
-            painter.ClosePath();
-        }
-    }
-
-    /// <summary>Pointy-top hexagon math shared by frames and the cooldown sweep.</summary>
-    public static class HexGeometry
-    {
-        private static readonly Vector2[] Corners = new Vector2[6];
-
-        /// <summary>Corners clockwise from the top, fitted to <paramref name="r"/>. Returns a shared buffer.</summary>
-        public static Vector2[] GetCorners(Rect r)
-        {
-            var quarter = r.height * 0.25f;
-            Corners[0] = new Vector2(r.center.x, r.yMin);
-            Corners[1] = new Vector2(r.xMax, r.yMin + quarter);
-            Corners[2] = new Vector2(r.xMax, r.yMax - quarter);
-            Corners[3] = new Vector2(r.center.x, r.yMax);
-            Corners[4] = new Vector2(r.xMin, r.yMax - quarter);
-            Corners[5] = new Vector2(r.xMin, r.yMin + quarter);
-            return Corners;
-        }
-
-        public static void Trace(Painter2D painter, Rect r)
-        {
-            var corners = GetCorners(r);
-            painter.MoveTo(corners[0]);
-            for (var i = 1; i < corners.Length; i++)
-                painter.LineTo(corners[i]);
             painter.ClosePath();
         }
     }

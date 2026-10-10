@@ -1,5 +1,6 @@
 using System.Collections;
 using BattleArena.Combat;
+using BattleArena.Enemies.Movement;
 using UnityEngine;
 
 namespace BattleArena.Enemies
@@ -14,8 +15,10 @@ namespace BattleArena.Enemies
         [SerializeField] private Health player;
         [SerializeField, Range(0.05f, 1f)] private float tickInterval = 0.15f;
 
+        /// <summary>Starts the tick loop.</summary>
         private void OnEnable() => StartCoroutine(TickLoop());
 
+        /// <summary>Moves every flyer this frame in one pass.</summary>
         private void Update()
         {
             var flyers = FlyingMovement.Active;
@@ -28,6 +31,7 @@ namespace BattleArena.Enemies
                 flyers[i].Integrate(target, deltaTime);
         }
 
+        /// <summary>Ticks every live enemy a few times per second while the player is alive.</summary>
         private IEnumerator TickLoop()
         {
             var wait = new WaitForSeconds(tickInterval);

@@ -26,12 +26,17 @@ namespace BattleArena.Spells
                  "from the cast origin, so long-range shots never dip under the floor.")]
         [SerializeField, Min(0f)] private float flightHeight;
 
-        // Always more projectiles; Area only when it explodes; Pierce only when it does not already pierce everything.
+        /// <summary>
+        /// Always more projectiles; Area only when it explodes; Pierce only when it does not already pierce everything.
+        /// </summary>
         public override SpellStats ScalesWith =>
             SpellStats.Projectiles
             | (explosionRadius > 0f ? SpellStats.Area : SpellStats.None)
             | (infinitePierce ? SpellStats.None : SpellStats.Pierce);
 
+        /// <summary>
+        /// Fires a fan of projectiles at the nearest enemy (or forward), flying level when a flight height is set.
+        /// </summary>
         public override bool Cast(in SpellContext context)
         {
             var origin = context.Origin;
@@ -61,6 +66,10 @@ namespace BattleArena.Spells
             return true;
         }
 
+        /// <summary>
+        /// <paramref name="direction"/> on the ground plane, or <paramref name="fallback"/> when it points straight up
+        /// or down.
+        /// </summary>
         private static Vector3 Flatten(Vector3 direction, Vector3 fallback)
         {
             direction.y = 0f;

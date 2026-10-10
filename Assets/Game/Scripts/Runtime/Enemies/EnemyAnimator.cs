@@ -34,14 +34,17 @@ namespace BattleArena.Enemies
         private Vector3 _lastPosition;
         private float _speed;
 
+        /// <summary>Caches the enemy and listens for attacks.</summary>
         private void Awake()
         {
             _enemy = GetComponent<Enemy>();
             _enemy.AttackStarted += OnAttackStarted;
         }
 
+        /// <summary>Stops listening for attacks.</summary>
         private void OnDestroy() => _enemy.AttackStarted -= OnAttackStarted;
 
+        /// <summary>Resets the speed tracking and starts the idle at a random point.</summary>
         public void OnSpawned()
         {
             _lastPosition = transform.position;
@@ -50,8 +53,13 @@ namespace BattleArena.Enemies
             animator.Play(IdleState, 0, Random.value);
         }
 
+        /// <summary>Nothing to do.</summary>
         public void OnDespawned() { }
 
+        /// <summary>
+        /// Feeds the measured ground speed to the Animator and blends a finished swing into the walk once the enemy
+        /// moves.
+        /// </summary>
         private void Update()
         {
             var deltaTime = Time.deltaTime;
@@ -76,9 +84,11 @@ namespace BattleArena.Enemies
             }
         }
 
+        /// <summary>
+        /// Plays the swing at a rate that lines its impact frame up with the moment the attack lands.
+        /// </summary>
         private void OnAttackStarted(float secondsToImpact)
         {
-            // Play the swing so its impact frame lines up with the moment the attack lands.
             var rate = secondsToImpact > 0.05f ? attackClipLength * attackImpactPoint / secondsToImpact : 1.4f;
             animator.SetFloat(AttackRateId, Mathf.Clamp(rate, 0.5f, 2.5f));
             animator.SetTrigger(AttackId);

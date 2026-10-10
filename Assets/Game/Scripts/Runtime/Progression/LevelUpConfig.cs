@@ -15,9 +15,13 @@ namespace BattleArena.Progression
         [Tooltip("Mission reward cards that improve an equipped spell.")]
         [SerializeField] private SpellUpgradeDefinition[] spellUpgrades = Array.Empty<SpellUpgradeDefinition>();
 
+        /// <summary>Cards shown per choice.</summary>
         public int ChoiceCount => choiceCount;
+        /// <summary>Stat cards offered on level-ups and from chests.</summary>
         public IReadOnlyList<StatUpgradeDefinition> StatUpgrades => statUpgrades;
+        /// <summary>Spells offered when a spell slot opens.</summary>
         public IReadOnlyList<SpellDefinition> SpellPool => spellPool;
+        /// <summary>Spell upgrade cards offered as mission rewards.</summary>
         public IReadOnlyList<SpellUpgradeDefinition> SpellUpgrades => spellUpgrades;
     }
 }

@@ -8,6 +8,9 @@ namespace BattleArena.Core
     {
         private static readonly Dictionary<float, WaitForSeconds> Seconds = new();
 
+        /// <summary>
+        /// A shared <see cref="WaitForSeconds"/> for <paramref name="seconds"/>, created on first use.
+        /// </summary>
         public static WaitForSeconds Get(float seconds)
         {
             if (!Seconds.TryGetValue(seconds, out var wait))

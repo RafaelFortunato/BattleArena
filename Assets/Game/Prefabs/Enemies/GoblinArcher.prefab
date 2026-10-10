@@ -10003,7 +10003,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0f0ff5ccea6122a48a56177b5f46553a, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: BattleArena.Runtime::BattleArena.Enemies.KeepDistanceMovement
+  m_EditorClassIdentifier: BattleArena.Runtime::BattleArena.Enemies.Movement.KeepDistanceMovement
   preferredDistance: 9
   tolerance: 2
   retreatStep: 4
@@ -10018,7 +10018,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4f2e1b7e338aa2846bb9e98f4ca5143c, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: BattleArena.Runtime::BattleArena.Enemies.ProjectileAttack
+  m_EditorClassIdentifier: BattleArena.Runtime::BattleArena.Enemies.Attacks.ProjectileAttack
   range: 13
   cooldown: 2.6
   windup: 0.55
@@ -10041,7 +10041,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d1631cdada98b814faa287362e8f736f, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: BattleArena.Runtime::BattleArena.Enemies.ContactAttack
+  m_EditorClassIdentifier: BattleArena.Runtime::BattleArena.Enemies.Attacks.ContactAttack
 --- !u!1 &3242777703827684097
 GameObject:
   m_ObjectHideFlags: 0

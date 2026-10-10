@@ -38,14 +38,20 @@ namespace BattleArena.Interaction
         private int _activeChests;
         private Camera _camera;
 
+        /// <summary>Listens for match state changes.</summary>
         private void OnEnable() => EventBus<GameStateChangedEvent>.Subscribe(OnGameStateChanged);
 
+        /// <summary>Stops listening; the spawn loop dies with the component.</summary>
         private void OnDisable()
         {
             EventBus<GameStateChangedEvent>.Unsubscribe(OnGameStateChanged);
             _spawnLoop = null;
         }
 
+        /// <summary>
+        /// Starts spawning when play begins and stops when the match ends. Pauses leave the loop running (time is
+        /// frozen anyway).
+        /// </summary>
         private void OnGameStateChanged(GameStateChangedEvent evt)
         {
             if (evt.Current == GameState.Playing)
@@ -59,6 +65,10 @@ namespace BattleArena.Interaction
             }
         }
 
+        /// <summary>
+        /// After a first delay, places a chest on every interval while fewer than the maximum are out, retrying sooner
+        /// when no spot was free.
+        /// </summary>
         private IEnumerator SpawnLoop()
         {
             yield return WaitCache.Get(firstSpawnDelay);
@@ -83,6 +93,7 @@ namespace BattleArena.Interaction
         }
 
 
+        /// <summary>Places a chest with its spawn effect and sound, and tells the player one appeared.</summary>
         private void Spawn(Vector3 position)
         {
             var chest = PoolManager.Spawn(chestPrefab, position, FacingCamera());
@@ -95,7 +106,10 @@ namespace BattleArena.Interaction
             EventBus<NotificationEvent>.Raise(new NotificationEvent("A treasure chest appeared somewhere!"));
         }
 
-        // The chest model's lock is on its -Z side, so pointing +Z away from the camera shows the front on screen.
+        /// <summary>
+        /// Rotation that shows the chest's front to the camera: the model's lock is on its -Z side, so +Z points away
+        /// from the camera.
+        /// </summary>
         private Quaternion FacingCamera()
         {
             if (_camera == null)
@@ -107,12 +121,17 @@ namespace BattleArena.Interaction
             return away.sqrMagnitude > 0.0001f ? Quaternion.LookRotation(away) : Quaternion.identity;
         }
 
+        /// <summary>Frees a chest slot once a chest is opened and gone.</summary>
         private void OnChestRemoved(IInteractable chest)
         {
             chest.Removed -= OnChestRemoved;
             _activeChests--;
         }
 
+        /// <summary>
+        /// Samples random arena points until one is on the NavMesh, far enough from the player, clear of obstacles, off
+        /// screen and reachable.
+        /// </summary>
         private bool TryFindSpot(out Vector3 position)
         {
             var origin = player.position;
@@ -141,7 +160,10 @@ namespace BattleArena.Interaction
             return false;
         }
 
-        // Anywhere in the arena can include walled-off pockets of navmesh; only keep spots the player can walk to.
+        /// <summary>
+        /// True when the player can walk from <paramref name="from"/> to <paramref name="to"/>; the arena has
+        /// walled-off pockets of NavMesh.
+        /// </summary>
         private bool IsReachable(Vector3 from, Vector3 to)
         {
             if (!NavMesh.SamplePosition(from, out var start, 2f, NavMesh.AllAreas))
@@ -162,6 +184,9 @@ namespace BattleArena.Interaction
             return IsInView(position) || IsInView(position + Vector3.up * 1.2f);
         }
 
+        /// <summary>
+        /// True when <paramref name="point"/> projects inside the screen, widened by the off-screen margin.
+        /// </summary>
         private bool IsInView(Vector3 point)
         {
             var viewport = _camera.WorldToViewportPoint(point);

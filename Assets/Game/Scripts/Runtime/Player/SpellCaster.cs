@@ -29,6 +29,7 @@ namespace BattleArena.Player
         private float[] _rechargeReadyAt;
         private float[] _rechargeDuration;
 
+        /// <summary>Number of spell slots.</summary>
         public int SlotCount => slotUnlockLevels.Length;
 
         /// <summary>The player's Attack, which every spell deals a share of.</summary>
@@ -37,8 +38,10 @@ namespace BattleArena.Player
         Transform ISpellCaster.Transform => transform;
         Health ISpellCaster.Health => health;
         Vector3 ISpellCaster.Facing => controller.Facing;
+        /// <summary>Moves the player instantly (Phase Step).</summary>
         void ISpellCaster.Teleport(Vector3 position) => controller.Teleport(position);
 
+        /// <summary>Allocates the per-slot state.</summary>
         private void Awake()
         {
             var count = SlotCount;
@@ -52,28 +55,37 @@ namespace BattleArena.Player
                 _upgrades[i] = new SpellUpgradeState();
         }
 
+        /// <summary>Listens for spell keys.</summary>
         private void OnEnable() => input.SpellRequested += TryCast;
 
+        /// <summary>Stops listening for spell keys.</summary>
         private void OnDisable() => input.SpellRequested -= TryCast;
 
         // ---------------------------------------------------------------- Queries
 
+        /// <summary>The spell in <paramref name="slot"/>, or null when empty.</summary>
         public SpellDefinition GetSpell(int slot) => _spells[slot];
 
+        /// <summary>The upgrades applied to the spell in <paramref name="slot"/>.</summary>
         public SpellUpgradeState GetUpgrades(int slot) => _upgrades[slot];
 
+        /// <summary>True when <paramref name="slot"/> holds a spell.</summary>
         public bool IsUnlocked(int slot) => _spells[slot] != null;
 
+        /// <summary>Player level at which <paramref name="slot"/> opens.</summary>
         public int GetUnlockLevel(int slot) => slotUnlockLevels[slot];
 
+        /// <summary>Charges <paramref name="slot"/> can hold, including Extra Charge upgrades.</summary>
         public int GetMaxCharges(int slot) => 1 + _upgrades[slot].TotalInt(SpellUpgradeKind.ExtraCharge);
 
+        /// <summary>Charges ready in <paramref name="slot"/> right now.</summary>
         public int GetCharges(int slot)
         {
             RefreshCharges(slot, Time.time);
             return _charges[slot];
         }
 
+        /// <summary>True while <paramref name="slot"/> is regaining a charge.</summary>
         public bool IsRecharging(int slot)
         {
             RefreshCharges(slot, Time.time);
@@ -90,6 +102,7 @@ namespace BattleArena.Player
         /// <summary>Length of the current recharge, after cooldown reduction and upgrades.</summary>
         public float GetCooldownDuration(int slot) => _rechargeDuration[slot];
 
+        /// <summary>True when <paramref name="spell"/> is equipped in any slot.</summary>
         public bool Owns(SpellDefinition spell)
         {
             foreach (var owned in _spells)
@@ -110,6 +123,9 @@ namespace BattleArena.Player
 
         // ---------------------------------------------------------------- Changes
 
+        /// <summary>
+        /// Puts <paramref name="spell"/> in <paramref name="slot"/> with full charges and no upgrades.
+        /// </summary>
         public void Equip(int slot, SpellDefinition spell)
         {
             _spells[slot] = spell;
@@ -119,6 +135,9 @@ namespace BattleArena.Player
             EventBus<SpellEquippedEvent>.Raise(new SpellEquippedEvent(slot, spell));
         }
 
+        /// <summary>
+        /// Adds an upgrade to the spell in <paramref name="slot"/>; an extra charge is granted at once.
+        /// </summary>
         public void ApplyUpgrade(int slot, SpellUpgradeKind kind, float amount)
         {
             RefreshCharges(slot, Time.time);
@@ -135,6 +154,7 @@ namespace BattleArena.Player
             EventBus<SpellUpgradedEvent>.Raise(new SpellUpgradedEvent(slot, kind));
         }
 
+        /// <summary>Casts the spell in <paramref name="slot"/> if it has a charge, and starts recharging.</summary>
         public void TryCast(int slot)
         {
             if (slot < 0 || slot >= _spells.Length || _spells[slot] == null)
@@ -162,6 +182,10 @@ namespace BattleArena.Player
             EventBus<SpellCastEvent>.Raise(new SpellCastEvent(slot, _rechargeDuration[slot]));
         }
 
+        /// <summary>
+        /// Recharge time of <paramref name="slot"/> after its own upgrades and the Cooldown reduction stat, which stack
+        /// multiplicatively.
+        /// </summary>
         private float GetCooldown(int slot)
         {
             var reduction = Mathf.Min(maxCooldownReduction, _upgrades[slot].Total(SpellUpgradeKind.CooldownReduction));

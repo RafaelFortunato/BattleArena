@@ -15,30 +15,40 @@ namespace BattleArena.Missions
         [SerializeField, Min(1f)] private float minSpawnDistance = 14f;
         [SerializeField, Min(1f)] private float maxSpawnDistance = 20f;
 
+        /// <summary>Creates the state for one attempt.</summary>
         public override MissionInstance CreateInstance(MissionContext context) => new Instance(this, context);
 
+        /// <summary>Run-time state: the hunted enemy.</summary>
         private sealed class Instance : MissionInstance
         {
             private readonly HuntMission _mission;
             private readonly string _statusFormat;
             private Enemy _enemy;
 
+            /// <summary>Prepares the status line with the target's name.</summary>
             public Instance(HuntMission mission, MissionContext context) : base(mission, context)
             {
                 _mission = mission;
-                _statusFormat = mission.target.DisplayName + " health {1}%";
+                _statusFormat = mission.target.DisplayName + " health {0}%";
             }
 
+            /// <summary>Share of the target's health taken off.</summary>
             public override float Progress => _enemy != null ? 1f - _enemy.Health.Normalized : 1f;
 
-            public override string ProgressText => CachedText(_statusFormat, 0, Mathf.CeilToInt((1f - Progress) * 100f));
+            /// <summary>The target's remaining health in percent.</summary>
+            public override string ProgressText => CachedText(_statusFormat, Mathf.CeilToInt((1f - Progress) * 100f));
 
+            /// <summary>Points at the target while it lives.</summary>
             public override bool TryGetTarget(out Vector3 position)
             {
                 position = _enemy != null ? _enemy.transform.position : default;
                 return _enemy != null;
             }
 
+            /// <summary>
+            /// Spawns the target away from the player, with health that grows with match time; fails when no spot is
+            /// free.
+            /// </summary>
             protected override void OnBegin()
             {
                 var spawner = Context.Spawner;
@@ -53,24 +63,26 @@ namespace BattleArena.Missions
                 _enemy.Health.Died += OnTargetDied;
             }
 
+            /// <summary>Succeeds when the target dies.</summary>
             private void OnTargetDied(Health _)
             {
                 Release();
                 Succeed();
             }
 
+            /// <summary>If time ran out, the target escapes: it vanishes without rewards.</summary>
             public override void Cleanup()
             {
                 if (_enemy == null)
                     return;
 
-                // Out of time: the target escapes.
                 var enemy = _enemy;
                 Release();
                 if (enemy.Health.IsAlive)
                     enemy.Vanish();
             }
 
+            /// <summary>Stops tracking the target.</summary>
             private void Release()
             {
                 if (_enemy == null)

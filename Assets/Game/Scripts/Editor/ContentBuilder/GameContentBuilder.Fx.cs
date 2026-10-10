@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using UnityEditor;
-using UnityEditor.Rendering.Universal.ShaderGUI;
 using UnityEngine;
 using UnityEngine.Rendering;
 
@@ -60,6 +59,7 @@ namespace BattleArena.Editor.ContentBuilder
             return material;
         }
 
+        /// <summary>Loads a VFX texture, fixing its import settings (alpha, clamp, size) when needed.</summary>
         private static Texture2D LoadVfxTexture(string name)
         {
             var path = $"{VfxTexturesFolder}/{name}.png";
@@ -81,8 +81,10 @@ namespace BattleArena.Editor.ContentBuilder
             return AssetDatabase.LoadAssetAtPath<Texture2D>(path);
         }
 
+        /// <summary>Loads a VFX mesh (e.g. an ice shard).</summary>
         private static Mesh LoadVfxMesh(string name) => LoadModelMesh($"{VfxMeshesFolder}/{name}.fbx");
 
+        /// <summary>A smooth curve through (time, value) pairs.</summary>
         private static AnimationCurve Curve(params float[] timeValuePairs)
         {
             var keys = new Keyframe[timeValuePairs.Length / 2];
@@ -96,6 +98,9 @@ namespace BattleArena.Editor.ContentBuilder
             return curve;
         }
 
+        /// <summary>
+        /// A gradient from <paramref name="start"/> to <paramref name="end"/> with alpha keys from (time, alpha) pairs.
+        /// </summary>
         private static Gradient Fade(Color start, Color end, params float[] timeAlphaPairs)
         {
             var alphas = new GradientAlphaKey[timeAlphaPairs.Length / 2];
@@ -106,8 +111,10 @@ namespace BattleArena.Editor.ContentBuilder
             return gradient;
         }
 
+        /// <summary>A white gradient with alpha keys from (time, alpha) pairs.</summary>
         private static Gradient Fade(params float[] timeAlphaPairs) => Fade(Color.white, Color.white, timeAlphaPairs);
 
+        /// <summary>Adds a tapering, fading trail.</summary>
         private static TrailRenderer AddTrail(Transform parent, Material material, float time, float width, float minVertexDistance = 0.1f)
         {
             var trail = parent.gameObject.AddComponent<TrailRenderer>();
@@ -128,9 +135,13 @@ namespace BattleArena.Editor.ContentBuilder
         /// <summary>Fluent builder for one particle system. Defaults: one-shot, local space, hierarchy scaling, no shape.</summary>
         private sealed class Fx
         {
+            /// <summary>The particle system being configured.</summary>
             public readonly ParticleSystem System;
             private readonly ParticleSystemRenderer _renderer;
 
+            /// <summary>
+            /// Creates a particle system child with <paramref name="material"/> and the builder's defaults.
+            /// </summary>
             public Fx(Transform parent, string name, Material material, Vector3 localPosition = default)
             {
                 var go = new GameObject(name) { layer = parent.gameObject.layer };
@@ -157,16 +168,22 @@ namespace BattleArena.Editor.ContentBuilder
                 shape.enabled = false;
             }
 
+            /// <summary>Particle lifetime range in seconds.</summary>
             public Fx Life(float min, float max) { var m = System.main; m.startLifetime = new ParticleSystem.MinMaxCurve(min, max); return this; }
+            /// <summary>Start size range.</summary>
             public Fx Size(float min, float max) { var m = System.main; m.startSize = new ParticleSystem.MinMaxCurve(min, max); return this; }
+            /// <summary>Start speed range.</summary>
             public Fx Speed(float min, float max) { var m = System.main; m.startSpeed = new ParticleSystem.MinMaxCurve(min, max); return this; }
-            public Fx Color(Color color) { var m = System.main; m.startColor = color; return this; }
-            public Fx Color(Color a, Color b) { var m = System.main; m.startColor = new ParticleSystem.MinMaxGradient(a, b); return this; }
+            /// <summary>Maximum live particles.</summary>
             public Fx Max(int count) { var m = System.main; m.maxParticles = count; return this; }
+            /// <summary>Gravity multiplier.</summary>
             public Fx Gravity(float g) { var m = System.main; m.gravityModifier = g; return this; }
+            /// <summary>Simulates in world space, so particles stay behind when the object moves.</summary>
             public Fx World() { var m = System.main; m.simulationSpace = ParticleSystemSimulationSpace.World; return this; }
+            /// <summary>Delay before emission starts.</summary>
             public Fx Delay(float seconds) { var m = System.main; m.startDelay = seconds; return this; }
 
+            /// <summary>Loops the system with the given cycle length.</summary>
             public Fx Loop(float duration = 1f)
             {
                 var m = System.main;
@@ -178,6 +195,7 @@ namespace BattleArena.Editor.ContentBuilder
             /// <summary>Play only when told to (e.g. zones started by their component).</summary>
             public Fx Manual() { var m = System.main; m.playOnAwake = false; return this; }
 
+            /// <summary>Random start rotation range.</summary>
             public Fx Rotation(float minDeg = 0f, float maxDeg = 360f)
             {
                 var m = System.main;
@@ -185,6 +203,7 @@ namespace BattleArena.Editor.ContentBuilder
                 return this;
             }
 
+            /// <summary>Separate start size ranges per axis (for meshes).</summary>
             public Fx Size3D(Vector2 x, Vector2 y, Vector2 z)
             {
                 var m = System.main;
@@ -195,6 +214,7 @@ namespace BattleArena.Editor.ContentBuilder
                 return this;
             }
 
+            /// <summary>Random 3D start rotation, tilted up to <paramref name="tiltDeg"/> (for meshes).</summary>
             public Fx Rotation3D(float tiltDeg)
             {
                 var m = System.main;
@@ -206,6 +226,7 @@ namespace BattleArena.Editor.ContentBuilder
                 return this;
             }
 
+            /// <summary>Emits <paramref name="count"/> particles at once at <paramref name="time"/>.</summary>
             public Fx Burst(int count, float time = 0f)
             {
                 var e = System.emission;
@@ -216,9 +237,12 @@ namespace BattleArena.Editor.ContentBuilder
                 return this;
             }
 
+            /// <summary>Continuous emission per second.</summary>
             public Fx Rate(float perSecond) { var e = System.emission; e.rateOverTime = perSecond; return this; }
+            /// <summary>Emission per metre travelled (trails behind moving objects).</summary>
             public Fx RatePerMeter(float perMeter) { var e = System.emission; e.rateOverDistance = perMeter; return this; }
 
+            /// <summary>Emits from a sphere.</summary>
             public Fx Sphere(float radius, float thickness = 1f)
             {
                 var s = System.shape;
@@ -229,6 +253,7 @@ namespace BattleArena.Editor.ContentBuilder
                 return this;
             }
 
+            /// <summary>Emits from an upward hemisphere.</summary>
             public Fx Hemisphere(float radius)
             {
                 var s = System.shape;
@@ -263,6 +288,7 @@ namespace BattleArena.Editor.ContentBuilder
                 return this;
             }
 
+            /// <summary>Size multiplier over each particle's life.</summary>
             public Fx SizeOverLife(AnimationCurve curve)
             {
                 var s = System.sizeOverLifetime;
@@ -271,6 +297,7 @@ namespace BattleArena.Editor.ContentBuilder
                 return this;
             }
 
+            /// <summary>Colour and alpha over each particle's life.</summary>
             public Fx ColorOverLife(Gradient gradient)
             {
                 var c = System.colorOverLifetime;
@@ -279,6 +306,7 @@ namespace BattleArena.Editor.ContentBuilder
                 return this;
             }
 
+            /// <summary>Rotation speed range in degrees per second.</summary>
             public Fx Spin(float minDeg, float maxDeg)
             {
                 var r = System.rotationOverLifetime;
@@ -287,6 +315,7 @@ namespace BattleArena.Editor.ContentBuilder
                 return this;
             }
 
+            /// <summary>Extra velocity range over life, in world or local space.</summary>
             public Fx Velocity(Vector3 min, Vector3 max, bool world = true)
             {
                 var v = System.velocityOverLifetime;
@@ -298,6 +327,7 @@ namespace BattleArena.Editor.ContentBuilder
                 return this;
             }
 
+            /// <summary>Slows particles down over their life.</summary>
             public Fx Drag(float drag)
             {
                 var l = System.limitVelocityOverLifetime;
@@ -308,6 +338,7 @@ namespace BattleArena.Editor.ContentBuilder
                 return this;
             }
 
+            /// <summary>Turbulence that wobbles the particles.</summary>
             public Fx Noise(float strength, float frequency = 1f)
             {
                 var n = System.noise;
@@ -318,6 +349,7 @@ namespace BattleArena.Editor.ContentBuilder
                 return this;
             }
 
+            /// <summary>Plays the texture as a tiles × tiles flipbook over each particle's life.</summary>
             public Fx Flipbook(int tiles = 4)
             {
                 var t = System.textureSheetAnimation;
@@ -328,6 +360,7 @@ namespace BattleArena.Editor.ContentBuilder
                 return this;
             }
 
+            /// <summary>Stretches particles along their velocity.</summary>
             public Fx Stretched(float lengthScale, float speedScale = 0.02f)
             {
                 _renderer.renderMode = ParticleSystemRenderMode.Stretch;
@@ -344,8 +377,10 @@ namespace BattleArena.Editor.ContentBuilder
                 return this;
             }
 
+            /// <summary>Billboards that stay upright.</summary>
             public Fx Vertical() { _renderer.renderMode = ParticleSystemRenderMode.VerticalBillboard; return this; }
 
+            /// <summary>Renders each particle as <paramref name="mesh"/>.</summary>
             public Fx Mesh(Mesh mesh)
             {
                 _renderer.renderMode = ParticleSystemRenderMode.Mesh;
@@ -354,6 +389,7 @@ namespace BattleArena.Editor.ContentBuilder
                 return this;
             }
 
+            /// <summary>Escape hatch for settings the builder doesn't cover.</summary>
             public Fx Configure(Action<ParticleSystem> configure)
             {
                 configure(System);

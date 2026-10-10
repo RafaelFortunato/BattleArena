@@ -25,15 +25,22 @@ namespace BattleArena.Interaction
         private Quaternion _closedLidRotation;
         private bool _isOpen;
 
+        /// <summary>Verb shown in the interaction prompt.</summary>
         public string Prompt => "Open chest";
+        /// <summary>True until the chest has been opened.</summary>
         public bool CanInteract => !_isOpen;
+        /// <summary>Where the chest stands, for picking the closest interactable.</summary>
         public Vector3 Position => transform.position;
 
+        /// <summary>Raised when the chest is opened.</summary>
         public event Action<IInteractable> StateChanged;
+        /// <summary>Raised just before the chest returns to its pool.</summary>
         public event Action<IInteractable> Removed;
 
+        /// <summary>Remembers the closed lid rotation.</summary>
         private void Awake() => _closedLidRotation = lid.localRotation;
 
+        /// <summary>Closes the lid and pops the chest into view.</summary>
         public void OnSpawned()
         {
             _isOpen = false;
@@ -41,12 +48,14 @@ namespace BattleArena.Interaction
             StartCoroutine(ScaleTo(Vector3.zero, Vector3.one, appearDuration, overshoot: true));
         }
 
+        /// <summary>Stops any animation and restores the scale for the next use.</summary>
         public void OnDespawned()
         {
             StopAllCoroutines();
             transform.localScale = Vector3.one;
         }
 
+        /// <summary>Opens the chest with its effect and sound; the reward follows once the lid is up.</summary>
         public void Interact(PlayerInteractor interactor)
         {
             if (_isOpen)
@@ -62,6 +71,9 @@ namespace BattleArena.Interaction
             StartCoroutine(OpenAndVanish());
         }
 
+        /// <summary>
+        /// Swings the lid open, raises the reward, then shrinks the chest away and returns it to its pool.
+        /// </summary>
         private IEnumerator OpenAndVanish()
         {
             var open = _closedLidRotation * Quaternion.Euler(openAngle, 0f, 0f);
@@ -82,6 +94,7 @@ namespace BattleArena.Interaction
             this.Despawn();
         }
 
+        /// <summary>Scales the chest between two sizes, with a small overshoot "pop" when appearing.</summary>
         private IEnumerator ScaleTo(Vector3 from, Vector3 to, float duration, bool overshoot)
         {
             for (var elapsed = 0f; elapsed < duration; elapsed += Time.deltaTime)

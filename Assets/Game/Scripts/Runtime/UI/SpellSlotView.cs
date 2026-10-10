@@ -22,6 +22,7 @@ namespace BattleArena.UI
         private int _shownSeconds = -1;
         private int _shownCharges = -1;
 
+        /// <summary>Finds the slot's elements and shows the level that unlocks it.</summary>
         public SpellSlotView(VisualElement root, int unlockLevel)
         {
             _root = root;
@@ -34,6 +35,7 @@ namespace BattleArena.UI
             _endPulse.Pause();
         }
 
+        /// <summary>Shows <paramref name="spell"/> in the slot, or the locked state when null.</summary>
         public void Bind(SpellDefinition spell)
         {
             _root.EnableInClassList("locked", spell == null);
@@ -45,6 +47,7 @@ namespace BattleArena.UI
             _chargesText.style.backgroundColor = spell.Color;
         }
 
+        /// <summary>Plays the short cast pulse.</summary>
         public void PulseCast()
         {
             _root.AddToClassList("cast");

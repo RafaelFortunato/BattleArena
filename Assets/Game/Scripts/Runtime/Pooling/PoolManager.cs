@@ -21,6 +21,7 @@ namespace BattleArena.Pooling
         private static Vector3 _pendingPosition;
         private static Quaternion _pendingRotation;
 
+        /// <summary>Clears the pools before play starts and drops them whenever a scene unloads.</summary>
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
         private static void Initialize()
         {
@@ -30,12 +31,17 @@ namespace BattleArena.Pooling
             SceneManager.sceneUnloaded += OnSceneUnloaded;
         }
 
+        /// <summary>Forgets the pools: their instances were destroyed with the scene.</summary>
         private static void OnSceneUnloaded(Scene _)
         {
             Pools.Clear();
             _root = null;
         }
 
+        /// <summary>
+        /// Takes an instance of <paramref name="prefab"/> from its pool (creating one if needed), places it and
+        /// notifies its <see cref="IPoolable"/> components.
+        /// </summary>
         public static T Spawn<T>(T prefab, Vector3 position, Quaternion rotation) where T : Component
         {
             _pendingPosition = position;
@@ -71,6 +77,7 @@ namespace BattleArena.Pooling
             ListPool<PooledObject>.Release(buffer);
         }
 
+        /// <summary>The pool for <paramref name="prefab"/>, created on first use.</summary>
         private static ObjectPool<PooledObject> GetPool(GameObject prefab)
         {
             if (Pools.TryGetValue(prefab, out var pool))
@@ -93,6 +100,7 @@ namespace BattleArena.Pooling
             return created;
         }
 
+        /// <summary>Instantiates a new pooled instance at the pending pose, under the pools root.</summary>
         private static PooledObject CreateInstance(GameObject prefab, IObjectPool<PooledObject> pool)
         {
             var instance = Object.Instantiate(prefab, _pendingPosition, _pendingRotation, GetRoot());
@@ -102,6 +110,7 @@ namespace BattleArena.Pooling
             return pooled;
         }
 
+        /// <summary>The scene object that parents every pooled instance, created on first use.</summary>
         private static Transform GetRoot()
         {
             if (_root == null)

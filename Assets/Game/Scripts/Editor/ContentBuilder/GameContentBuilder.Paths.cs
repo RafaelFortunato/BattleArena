@@ -4,6 +4,7 @@ using UnityEngine;
 
 namespace BattleArena.Editor.ContentBuilder
 {
+    /// <summary>Builder part: the dirt paths painted on the ground.</summary>
     internal static partial class GameContentBuilder
     {
         private const string PathMeshPath = ModelsFolder + "/Props/GroundPaths.asset";
@@ -38,12 +39,18 @@ namespace BattleArena.Editor.ContentBuilder
             (new Vector2(-4f, 23.4f), 2.4f), (new Vector2(13f, 11f), 2.4f),
         };
 
+        /// <summary>Accumulates the path mesh's vertices, vertex alphas and triangles.</summary>
         private sealed class PathMeshWriter
         {
+            /// <summary>Vertex positions.</summary>
             public readonly List<Vector3> Vertices = new();
+            /// <summary>Vertex colours; alpha is the dirt opacity.</summary>
             public readonly List<Color> Colors = new();
+            /// <summary>Triangle indices.</summary>
             public readonly List<int> Triangles = new();
 
+            /// <summary>Adds a vertex on the ground and returns its index.</summary>
+            /// <param name="point">Position on the ground plane (x, z).</param>
             /// <param name="alpha">Dirt opacity: 1 on the path, fading to 0 at the outer edge of the fringe.</param>
             public int Add(Vector2 point, float alpha = 1f)
             {
@@ -52,6 +59,7 @@ namespace BattleArena.Editor.ContentBuilder
                 return Vertices.Count - 1;
             }
 
+            /// <summary>Adds a quad as two triangles.</summary>
             public void Quad(int a, int b, int c, int d)
             {
                 Triangle(a, b, c);
@@ -229,12 +237,15 @@ namespace BattleArena.Editor.ContentBuilder
             }
         }
 
+        /// <summary>Width of the ragged fringe at <paramref name="distance"/> along a path.</summary>
         private static float FringeWidth(float seed, float distance) =>
             PathFringe * (0.5f + Mathf.PerlinNoise(seed, distance * 0.45f));
 
+        /// <summary>Dirt opacity at the fringe's inner edge at <paramref name="distance"/> along a path.</summary>
         private static float FringeAlpha(float seed, float distance) =>
             0.35f + 0.4f * Mathf.PerlinNoise(seed, distance * 0.6f);
 
+        /// <summary>Width multiplier that makes a path's edge wander at <paramref name="distance"/> along it.</summary>
         private static float EdgeWobble(float seed, float distance) =>
             1f + 0.2f * (Mathf.PerlinNoise(seed, distance * 0.3f) * 2f - 1f) + 0.06f * (Mathf.PerlinNoise(seed + 3.1f, distance * 1.4f) * 2f - 1f);
     }

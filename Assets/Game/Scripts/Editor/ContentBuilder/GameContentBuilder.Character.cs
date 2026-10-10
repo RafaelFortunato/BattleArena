@@ -32,9 +32,12 @@ namespace BattleArena.Editor.ContentBuilder
         /// <summary>Base to tip.</summary>
         private static readonly string[] TailBones = { "tail.1", "tail.2", "tail.3" };
 
+        /// <summary>What the player prefab needs from the character model.</summary>
         private sealed class CharacterVisual
         {
+            /// <summary>The character's skinned body.</summary>
             public Renderer Body;
+            /// <summary>Where spells and shots come from (the staff's crystal).</summary>
             public Transform Muzzle;
         }
 

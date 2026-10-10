@@ -16,20 +16,26 @@ namespace BattleArena.Missions
         [Tooltip("Shards try to land at least this far from each other.")]
         [SerializeField, Min(0f)] private float minShardSpacing = 12f;
 
+        /// <summary>Creates the state for one attempt.</summary>
         public override MissionInstance CreateInstance(MissionContext context) => new Instance(this, context);
 
+        /// <summary>Run-time state: the shards still lying in the arena.</summary>
         private sealed class Instance : MissionInstance
         {
             private readonly CollectShardsMission _mission;
             private readonly List<MissionShard> _shards = new();
             private int _total;
 
+            /// <summary>Creates the state for one attempt.</summary>
             public Instance(CollectShardsMission mission, MissionContext context) : base(mission, context) => _mission = mission;
 
+            /// <summary>Share of the shards collected.</summary>
             public override float Progress => _total > 0 ? 1f - (float)_shards.Count / _total : 0f;
 
+            /// <summary>Shards collected against the total.</summary>
             public override string ProgressText => CachedText("Shards collected  {0} / {1}", _total - _shards.Count, _total);
 
+            /// <summary>Points at the shard closest to the player.</summary>
             public override bool TryGetTarget(out Vector3 position)
             {
                 position = default;
@@ -47,6 +53,7 @@ namespace BattleArena.Missions
                 return _shards.Count > 0;
             }
 
+            /// <summary>Scatters the shards around the player, spaced apart; fails when none could be placed.</summary>
             protected override void OnBegin()
             {
                 var placed = new List<Vector3>();
@@ -67,7 +74,10 @@ namespace BattleArena.Missions
                     Fail();
             }
 
-            // Samples the ring a few times and keeps the first point clear of the other shards; failing that, the most isolated one.
+            /// <summary>
+            /// Samples the ring around the player a few times and keeps the first point clear of the other shards;
+            /// failing that, the most isolated one.
+            /// </summary>
             private bool TryFindSpacedPoint(List<Vector3> placed, out Vector3 position)
             {
                 const int Candidates = 16;
@@ -96,6 +106,7 @@ namespace BattleArena.Missions
                 return found;
             }
 
+            /// <summary>Counts a collected shard and succeeds once all are gone.</summary>
             private void OnShardCollected(MissionShard shard)
             {
                 shard.Collected -= OnShardCollected;
@@ -104,6 +115,7 @@ namespace BattleArena.Missions
                     Succeed();
             }
 
+            /// <summary>Despawns any shards left uncollected.</summary>
             public override void Cleanup()
             {
                 foreach (var shard in _shards)

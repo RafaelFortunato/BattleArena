@@ -7,35 +7,48 @@ using BattleArena.Player;
 using BattleArena.Pooling;
 using BattleArena.Progression;
 using BattleArena.Missions;
-using BattleArena.Spells;
 using BattleArena.Vfx;
 using UnityEditor;
 using UnityEngine;
-using UnityEngine.AI;
 using UnityEngine.InputSystem;
 using UnityEngine.Rendering;
 using TMPro;
 
 namespace BattleArena.Editor.ContentBuilder
 {
+    /// <summary>
+    /// Builder part: gameplay prefabs (player, projectiles, effects, interactables) and the data that references them.
+    /// </summary>
     internal static partial class GameContentBuilder
     {
         /// <summary>Assets the scene builder needs to reference.</summary>
         private sealed class ContentSet
         {
+            /// <summary>The shared input reader.</summary>
             public InputReader Input;
+            /// <summary>The player prefab.</summary>
             public GameObject Player;
+            /// <summary>The spawn schedule.</summary>
             public SpawnSchedule Schedule;
+            /// <summary>The final boss.</summary>
             public EnemyDefinition Boss;
+            /// <summary>The healing well prefab.</summary>
             public HealingWell Well;
+            /// <summary>The treasure chest prefab.</summary>
             public TreasureChest Chest;
+            /// <summary>The effect played where a chest appears.</summary>
             public TimedRelease ChestSpawnEffect;
+            /// <summary>The level-up card pools.</summary>
             public LevelUpConfig LevelUp;
+            /// <summary>The damage number prefab.</summary>
             public TextMeshPro DamageLabel;
+            /// <summary>Every mission.</summary>
             public MissionDefinition[] Missions;
+            /// <summary>The spark on critical hits.</summary>
             public TimedRelease CritEffect;
         }
 
+        /// <summary>Builds every prefab and data asset, in dependency order.</summary>
         private static ContentSet BuildContent(MaterialSet m)
         {
             // Effects
@@ -88,6 +101,7 @@ namespace BattleArena.Editor.ContentBuilder
 
         // ---------------------------------------------------------------- Effects
 
+        /// <summary>Builds a one-shot particle burst prefab.</summary>
         private static TimedRelease BuildBurst(string name, MaterialSet m, Color color, int count, float speed, float size,
             float lifetime, float radius = 0.15f, bool fromGround = false)
         {
@@ -144,6 +158,11 @@ namespace BattleArena.Editor.ContentBuilder
 
         // ---------------------------------------------------------------- Projectiles & strikes
 
+        /// <summary>Builds a telegraphed area strike prefab: a ground outline, a fill that grows, and an impact effect.</summary>
+        /// <param name="name">Prefab name.</param>
+        /// <param name="outlineMaterial">Material of the ring marking the strike area.</param>
+        /// <param name="fillMaterial">Material of the disc that fills up until the strike lands.</param>
+        /// <param name="impact">Effect spawned where it lands.</param>
         /// <param name="shake">Screen shake when it lands (0-1), weaker the further from the player.</param>
         /// <param name="buildFalling">Optional builder for the object that drops onto the target (e.g. a lit bomb).</param>
         /// <param name="fuseAfterLanding">Seconds the falling object sits on the ground before it goes off.</param>
@@ -174,9 +193,12 @@ namespace BattleArena.Editor.ContentBuilder
 
         // ---------------------------------------------------------------- Enemy helpers shared with the roster
 
+        /// <summary>
+        /// Adds a world-space health bar above <paramref name="root"/>. The shader billboards the quad and sizes it in
+        /// world units, so the object's scale doesn't matter.
+        /// </summary>
         private static void AddHealthBar(GameObject root, MaterialSet m, float height)
         {
-            // The shader billboards the quad and sizes it in world units, so the object's scale doesn't matter.
             var bar = AddVisual(root.transform, PrimitiveType.Quad, m.HealthBar, new Vector3(0f, height, 0f), Vector3.one, name: "HealthBar");
             DisableShadows(bar);
             var barRenderer = bar.GetComponent<Renderer>();
@@ -186,6 +208,7 @@ namespace BattleArena.Editor.ContentBuilder
             SerializedSetter.For(healthBar).Set("health", root.GetComponent<Health>()).Set("bar", barRenderer).Apply();
         }
 
+        /// <summary>Builds the damage number prefab.</summary>
         private static TextMeshPro BuildDamageLabel(MaterialSet m)
         {
             var root = CreateRoot("DamageNumber", GameLayers.Default);
@@ -209,6 +232,10 @@ namespace BattleArena.Editor.ContentBuilder
 
         // ---------------------------------------------------------------- Player
 
+        /// <summary>
+        /// Builds the player prefab: movement, stats, health, spells, attack, pickups, interaction and the character
+        /// model.
+        /// </summary>
         private static GameObject BuildPlayer(MaterialSet m, InputReader input, Projectile bolt, FollowTarget castFlare)
         {
             var root = CreateRoot("Player", GameLayers.Player);
@@ -271,7 +298,7 @@ namespace BattleArena.Editor.ContentBuilder
 
             var interactorSensor = CreateSensor(root.transform, "Interactor", 2.5f);
             var interactor = interactorSensor.AddComponent<PlayerInteractor>();
-            SerializedSetter.For(interactor).Set("input", input).Set("health", health).Set("progression", progression).Apply();
+            SerializedSetter.For(interactor).Set("input", input).Set("health", health).Apply();
 
             var path = $"{PrefabsFolder}/Player/Player.prefab";
             EnsureFolder($"{PrefabsFolder}/Player");
@@ -280,6 +307,7 @@ namespace BattleArena.Editor.ContentBuilder
             return prefab;
         }
 
+        /// <summary>Adds a trigger sphere on the player sensor layer.</summary>
         private static GameObject CreateSensor(Transform parent, string name, float radius)
         {
             var sensor = AddChild(parent, name, new Vector3(0f, 1f, 0f), GameLayers.PlayerSensor).gameObject;
@@ -294,6 +322,7 @@ namespace BattleArena.Editor.ContentBuilder
 
         // ---------------------------------------------------------------- Interactables
 
+        /// <summary>Builds the healing well prefab.</summary>
         private static HealingWell BuildHealingWell(MaterialSet m, TimedRelease splash)
         {
             var root = CreateRoot("HealingWell", GameLayers.Interactable);
@@ -321,6 +350,7 @@ namespace BattleArena.Editor.ContentBuilder
             return SavePrefab<HealingWell>(root, $"{PrefabsFolder}/Interactables/HealingWell.prefab");
         }
 
+        /// <summary>Adds the trigger the player's interactor detects.</summary>
         private static void AddInteractionTrigger(GameObject root, float radius)
         {
             var trigger = root.AddComponent<SphereCollider>();
@@ -328,6 +358,7 @@ namespace BattleArena.Editor.ContentBuilder
             trigger.radius = radius;
             trigger.center = new Vector3(0f, 1f, 0f);
         }
+        /// <summary>Stops <paramref name="go"/>'s renderer from casting or receiving shadows.</summary>
         private static void DisableShadows(GameObject go)
         {
             var meshRenderer = go.GetComponent<Renderer>();

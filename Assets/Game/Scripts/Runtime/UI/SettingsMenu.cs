@@ -37,8 +37,12 @@ namespace BattleArena.UI
         private Focusable _returnFocus;
         private bool _enabledSystemInput;
 
+        /// <summary>True while the dialog is shown.</summary>
         public bool IsOpen { get; private set; }
 
+        /// <summary>
+        /// Finds the dialog's elements, wires the controls and writes the credit line from the build's version.
+        /// </summary>
         private void OnEnable()
         {
             var root = GetComponent<UIDocument>().rootVisualElement;
@@ -61,6 +65,7 @@ namespace BattleArena.UI
             _credit.text = $"v{Application.version}  ·  {author}";
         }
 
+        /// <summary>Unwires the controls and closes the dialog if open.</summary>
         private void OnDisable()
         {
             _closeButton.clicked -= Close;
@@ -72,6 +77,10 @@ namespace BattleArena.UI
                 Close();
         }
 
+        /// <summary>
+        /// Opens the dialog with the current levels and focuses Done; over the main menu it enables the pause key so
+        /// Esc can close it.
+        /// </summary>
         public void Open()
         {
             if (IsOpen)
@@ -93,6 +102,9 @@ namespace BattleArena.UI
                 input.EnableSystem();
         }
 
+        /// <summary>
+        /// Closes the dialog, saves the levels and returns focus to the button that opened it after a short delay.
+        /// </summary>
         public void Close()
         {
             if (!IsOpen)
@@ -112,13 +124,16 @@ namespace BattleArena.UI
                 _screen.schedule.Execute(() => target.Focus()).StartingIn(RefocusDelayMs);
         }
 
-        // Only a press on the dim backdrop itself; presses on the panel or its controls land on those instead.
+        /// <summary>
+        /// Closes on a press on the dim backdrop itself; presses on the panel or its controls land on those instead.
+        /// </summary>
         private void OnBackdropPointerDown(PointerDownEvent evt)
         {
             if (evt.target == _screen)
                 Close();
         }
 
+        /// <summary>Applies the effects level live and plays a click to judge it by.</summary>
         private void OnSfxChanged(ChangeEvent<float> evt)
         {
             AudioManager.SetSfxVolume(evt.newValue);
@@ -127,12 +142,14 @@ namespace BattleArena.UI
             AudioManager.PlayClick();
         }
 
+        /// <summary>Applies the music level live.</summary>
         private void OnMusicChanged(ChangeEvent<float> evt)
         {
             AudioManager.SetMusicVolume(evt.newValue);
             RefreshReadouts();
         }
 
+        /// <summary>Shows both levels as percentages.</summary>
         private void RefreshReadouts()
         {
             _sfxValue.text = Mathf.RoundToInt(AudioManager.SfxVolume * 100f) + "%";

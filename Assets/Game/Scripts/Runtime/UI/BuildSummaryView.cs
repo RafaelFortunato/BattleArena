@@ -35,6 +35,7 @@ namespace BattleArena.UI
         private readonly SpellRow[] _spellRows;
         private readonly Label[] _statValues;
 
+        /// <summary>Builds the spell rows, the scaling column headers and the stat grid once.</summary>
         public BuildSummaryView(VisualElement root, SpellCaster caster, PlayerStats stats, LevelUpConfig config)
         {
             _caster = caster;
@@ -78,6 +79,7 @@ namespace BattleArena.UI
             }
         }
 
+        /// <summary>Shows the current spells, their upgrades and every stat's value.</summary>
         public void Refresh()
         {
             for (var slot = 0; slot < _spellRows.Length; slot++)
@@ -93,6 +95,7 @@ namespace BattleArena.UI
                 _statValues[i].text = _stats.FormatCurrent(StatOrder[i]);
         }
 
+        /// <summary>Creates a label with a USS class that ignores the pointer.</summary>
         private static Label CreateLabel(string text, string className)
         {
             var label = new Label(text) { pickingMode = PickingMode.Ignore };
@@ -100,6 +103,7 @@ namespace BattleArena.UI
             return label;
         }
 
+        /// <summary>One spell slot's row: frame, icon, name, upgrade chips, scaling dots and its key.</summary>
         private sealed class SpellRow
         {
             private readonly VisualElement _icon;
@@ -108,6 +112,7 @@ namespace BattleArena.UI
             private readonly VisualElement _chips;
             private readonly VisualElement _dots;
 
+            /// <summary>Builds the row's elements for <paramref name="slot"/>.</summary>
             public SpellRow(int slot)
             {
                 Root = new VisualElement { pickingMode = PickingMode.Ignore };
@@ -155,8 +160,12 @@ namespace BattleArena.UI
                 Root.Add(new ControlGlyph { Action = ControlAction.Spell1 + slot, KeycapClass = "keycap-small", pickingMode = PickingMode.Ignore });
             }
 
+            /// <summary>The row's root element.</summary>
             public VisualElement Root { get; }
 
+            /// <summary>
+            /// Lights the dot of each shared stat that changes <paramref name="spell"/>, in its colour.
+            /// </summary>
             private void ShowScaling(SpellDefinition spell)
             {
                 _dots.style.visibility = Visibility.Visible;
@@ -173,6 +182,10 @@ namespace BattleArena.UI
                 }
             }
 
+            /// <summary>
+            /// Shows the slot as locked with the level that opens it; the dots stay laid out to keep the columns
+            /// aligned.
+            /// </summary>
             public void ShowLocked(int unlockLevel)
             {
                 Root.AddToClassList("locked");
@@ -186,6 +199,9 @@ namespace BattleArena.UI
                 _locked.text = $"Unlocks at level {unlockLevel}";
             }
 
+            /// <summary>
+            /// Shows the spell with a chip per upgrade taken (e.g. "Quick Recharge II"), or a note when there are none.
+            /// </summary>
             public void ShowSpell(SpellDefinition spell, SpellUpgradeState upgrades, LevelUpConfig config)
             {
                 Root.RemoveFromClassList("locked");

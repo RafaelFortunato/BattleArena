@@ -4,7 +4,7 @@ using System.IO;
 using System.Linq;
 using BattleArena.Audio;
 using BattleArena.Combat;
-using BattleArena.Enemies;
+using BattleArena.Enemies.Attacks;
 using BattleArena.Interaction;
 using BattleArena.Missions;
 using BattleArena.Pickups;
@@ -37,12 +37,15 @@ namespace BattleArena.Editor.ContentBuilder
             "victory", "defeat", "boss_roar", "player_hurt", "player_death"
         };
 
+        /// <summary>The sound events created this build, by sound name.</summary>
         private sealed class SoundSet
         {
             private readonly Dictionary<string, SoundEvent> _sounds = new();
 
+            /// <summary>The event for <paramref name="name"/>.</summary>
             public SoundEvent this[string name] => _sounds[name];
 
+            /// <summary>Registers the event for <paramref name="name"/>.</summary>
             public void Add(string name, SoundEvent sound) => _sounds[name] = sound;
         }
 
@@ -114,6 +117,10 @@ namespace BattleArena.Editor.ContentBuilder
             return s;
         }
 
+        /// <summary>
+        /// Hangs object-specific sounds on their prefabs: spawn sounds on projectiles and effects, and the sounds of
+        /// pickups, chests and attacks.
+        /// </summary>
         private static void AttachPrefabSounds(SoundSet s)
         {
             // Objects whose appearance is the sound: projectiles launching, effects bursting.
@@ -179,7 +186,7 @@ namespace BattleArena.Editor.ContentBuilder
             var gameAudio = audioObject.AddComponent<GameAudio>();
             SerializedSetter.For(gameAudio)
                 .Set("playerHealth", playerHealth)
-                .Set("levelUpChoices", Object.FindFirstObjectByType<LevelUpController>())
+                .Set("levelUpChoices", Object.FindAnyObjectByType<LevelUpController>())
                 .Set("enemyHit", s["enemy_hit"])
                 .Set("enemyDeath", s["enemy_death"])
                 .Set("playerHurt", s["player_hurt"])
@@ -195,10 +202,11 @@ namespace BattleArena.Editor.ContentBuilder
                 .Set("defeat", s["defeat"])
                 .Apply();
 
-            Object.FindFirstObjectByType<UnityEngine.UIElements.UIDocument>().gameObject.AddComponent<UIClickSound>();
-            SerializedSetter.For(Object.FindFirstObjectByType<ChestSpawner>()).Set("spawnSound", s["chest_appear"]).Apply();
+            Object.FindAnyObjectByType<UnityEngine.UIElements.UIDocument>().gameObject.AddComponent<UIClickSound>();
+            SerializedSetter.For(Object.FindAnyObjectByType<ChestSpawner>()).Set("spawnSound", s["chest_appear"]).Apply();
         }
 
+        /// <summary>Creates or updates one sound event from the clips named after it, and registers it.</summary>
         private static void Sound(SoundSet set, string name, float volume, float retrigger,
             float minPitch = 0.95f, float maxPitch = 1.05f, string clip = null)
         {
@@ -270,6 +278,7 @@ namespace BattleArena.Editor.ContentBuilder
             return AssetDatabase.LoadAssetAtPath<AudioClip>(path);
         }
 
+        /// <summary>Opens a prefab for editing, applies <paramref name="edit"/> and saves it.</summary>
         private static void EditPrefab(string path, Action<GameObject> edit)
         {
             var root = PrefabUtility.LoadPrefabContents(path);
@@ -284,6 +293,7 @@ namespace BattleArena.Editor.ContentBuilder
             }
         }
 
+        /// <summary>"boss_orb_hit" → "BossOrbHit", for asset names.</summary>
         private static string ToPascal(string snake) =>
             string.Concat(snake.Split('_').Select(part => char.ToUpperInvariant(part[0]) + part.Substring(1)));
     }

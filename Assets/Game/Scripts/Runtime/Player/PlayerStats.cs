@@ -8,29 +8,6 @@ using UnityEngine;
 
 namespace BattleArena.Player
 {
-    public enum StatType
-    {
-        MoveSpeed,
-        MaxHealth,
-        /// <summary>Flat attack: basic attacks deal 100% of it, spells a percentage.</summary>
-        Attack,
-        CritChance,
-        CritDamage,
-        /// <summary>How often basic attacks fire. Spells are unaffected (see <see cref="CooldownReduction"/>).</summary>
-        AttackSpeed,
-        Area,
-        Duration,
-        Multishot,
-        Pierce,
-        PickupRadius,
-        Armor,
-        Regeneration,
-        ExperienceGain,
-        Luck,
-        /// <summary>Share taken off every spell cooldown. Basic attacks are unaffected (see <see cref="AttackSpeed"/>).</summary>
-        CooldownReduction
-    }
-
     /// <summary>
     /// Character stats improved by level-up cards. Damage sources ask this component for a
     /// <see cref="DamageProfile"/> or <see cref="SpellModifiers"/>, so upgrades apply to auto attacks
@@ -53,10 +30,14 @@ namespace BattleArena.Player
             Absolute
         }
 
+        /// <summary>How one stat is named, shown and capped.</summary>
         private readonly struct StatInfo
         {
+            /// <summary>Name shown on cards and in the build summary.</summary>
             public readonly string Name;
+            /// <summary>How the value reads on screen.</summary>
             public readonly DisplayKind Kind;
+            /// <summary>Unit after the number, e.g. "/s".</summary>
             public readonly string Suffix;
             /// <summary>
             /// Highest value the stat can reach, in display units ("+150%" is 150, "500 HP" is 500). Upgrades stop
@@ -66,6 +47,7 @@ namespace BattleArena.Player
             /// <summary>Whole-number stats are drawn as this many segments instead of a bar.</summary>
             public readonly int Segments;
 
+            /// <summary>Describes a stat.</summary>
             public StatInfo(string name, DisplayKind kind, float cap, string suffix = "", int segments = 0)
             {
                 Name = name;
@@ -99,6 +81,7 @@ namespace BattleArena.Player
             new("Cooldown reduction", DisplayKind.Percent, 75f),
         };
 
+        /// <summary>Number of stats.</summary>
         public static int StatCount => Info.Length;
 
         [SerializeField] private Health health;
@@ -111,33 +94,46 @@ namespace BattleArena.Player
         private readonly float[] _bonuses = new float[Info.Length];
         private Coroutine _regeneration;
 
+        /// <summary>Movement speed multiplier.</summary>
         public float MoveSpeedMultiplier => 1f + Bonus(StatType.MoveSpeed);
         /// <summary>Flat damage number everything scales from: basic attacks deal 100%, spells a % of it.</summary>
         public float Attack => baseAttack + Bonus(StatType.Attack);
+        /// <summary>Chance for a hit to be critical, 0..1.</summary>
         public float CritChance => Mathf.Clamp01(baseCritChance + Bonus(StatType.CritChance));
+        /// <summary>Damage multiplier of critical hits.</summary>
         public float CritMultiplier => baseCritMultiplier + Bonus(StatType.CritDamage);
         /// <summary>Divides the basic attack interval.</summary>
         public float AttackSpeedMultiplier => 1f + Bonus(StatType.AttackSpeed);
         /// <summary>Fraction (0 to 0.75) taken off every spell cooldown.</summary>
         public float CooldownReduction => Bonus(StatType.CooldownReduction);
+        /// <summary>Spell area multiplier.</summary>
         public float AreaMultiplier => 1f + Bonus(StatType.Area);
+        /// <summary>Spell duration multiplier.</summary>
         public float DurationMultiplier => 1f + Bonus(StatType.Duration);
+        /// <summary>Extra projectiles per shot.</summary>
         public int ExtraProjectiles => Mathf.RoundToInt(Bonus(StatType.Multishot));
+        /// <summary>Extra targets each projectile passes through.</summary>
         public int ExtraPierce => Mathf.RoundToInt(Bonus(StatType.Pierce));
+        /// <summary>Pickup radius multiplier.</summary>
         public float PickupRadiusMultiplier => 1f + Bonus(StatType.PickupRadius);
+        /// <summary>Experience gain multiplier.</summary>
         public float ExperienceMultiplier => 1f + Bonus(StatType.ExperienceGain);
+        /// <summary>Armor from upgrades.</summary>
         public float Armor => Bonus(StatType.Armor);
         /// <summary>0..1+, raises the odds of rare and epic cards.</summary>
         public float Luck => Bonus(StatType.Luck);
 
+        /// <summary>Raised with the stat after every upgrade.</summary>
         public event Action<StatType> Changed;
 
+        /// <summary>Forgets the regeneration routine, which stops with the component.</summary>
         private void OnDisable() => _regeneration = null;
 
         /// <summary>Damage worth <paramref name="attackRatio"/> of Attack (1 = 100%), with the player's crit.</summary>
         public DamageProfile CreateDamage(float attackRatio) =>
             new(Attack * attackRatio, CritChance, CritMultiplier);
 
+        /// <summary>Snapshot of the stats that shape spells, for one cast.</summary>
         public SpellModifiers CreateSpellModifiers() =>
             new(Attack, CritChance, CritMultiplier, AreaMultiplier, DurationMultiplier, ExtraProjectiles, ExtraPierce);
 
@@ -208,6 +204,7 @@ namespace BattleArena.Player
         /// <summary>Display units per upgrade unit: percentage stats store fractions (0.1) but read as 10%.</summary>
         private static float DisplayScale(in StatInfo info) => info.Kind is DisplayKind.Bonus or DisplayKind.Percent ? 100f : 1f;
 
+        /// <summary>Name of <paramref name="stat"/> as shown to the player.</summary>
         public static string GetStatName(StatType stat) => Info[(int)stat].Name;
 
         /// <summary>Highest value <paramref name="stat"/> can reach, in display units.</summary>
@@ -216,8 +213,10 @@ namespace BattleArena.Player
         /// <summary>Current value as shown on screen, e.g. "+8%", "15%", "240".</summary>
         public string FormatCurrent(StatType stat) => Format(Info[(int)stat], GetDisplayValue(stat));
 
+        /// <summary>Upgrade total of <paramref name="stat"/>.</summary>
         private float Bonus(StatType stat) => _bonuses[(int)stat];
 
+        /// <summary>Current value of <paramref name="stat"/> in display units.</summary>
         private float GetDisplayValue(StatType stat) => stat switch
         {
             StatType.MaxHealth => health.Max,
@@ -227,7 +226,10 @@ namespace BattleArena.Player
             _ => Info[(int)stat].Kind is DisplayKind.Bonus or DisplayKind.Percent ? Bonus(stat) * 100f : Bonus(stat)
         };
 
-        // Invariant culture so numbers read the same in every locale (e.g. "0.5", not "0,5").
+        /// <summary>
+        /// Formats a value as the stat reads on screen, in the invariant culture so numbers read the same in every
+        /// locale ("0.5", not "0,5").
+        /// </summary>
         private static string Format(in StatInfo info, float value) => info.Kind switch
         {
             DisplayKind.Bonus => FormatSigned(value, "%"),
@@ -236,9 +238,11 @@ namespace BattleArena.Player
             _ => value.ToString("0", CultureInfo.InvariantCulture) + info.Suffix
         };
 
+        /// <summary>Formats a signed change, e.g. "+0.5/s".</summary>
         private static string FormatSigned(float value, string suffix) =>
             (value < 0f ? "-" : "+") + Mathf.Abs(value).ToString("0.#", CultureInfo.InvariantCulture) + suffix;
 
+        /// <summary>Heals the player on a fixed tick by the regeneration rate.</summary>
         private IEnumerator Regenerate()
         {
             var wait = new WaitForSeconds(RegenerationTick);

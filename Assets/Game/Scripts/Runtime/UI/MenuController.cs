@@ -42,6 +42,7 @@ namespace BattleArena.UI
         private SettingsMenu _settings;
         private VisualElement _root;
 
+        /// <summary>Finds the screens, wires the buttons, claims the pause key and follows the game state.</summary>
         private void OnEnable()
         {
             var root = GetComponent<UIDocument>().rootVisualElement;
@@ -77,6 +78,7 @@ namespace BattleArena.UI
             EventBus<GameStateChangedEvent>.Subscribe(OnGameStateChanged);
         }
 
+        /// <summary>Unwires the buttons and releases the pause key.</summary>
         private void OnDisable()
         {
             _startButton.clicked -= gameManager.StartMatch;
@@ -90,6 +92,10 @@ namespace BattleArena.UI
             EventBus<GameStateChangedEvent>.Unsubscribe(OnGameStateChanged);
         }
 
+        /// <summary>
+        /// Closes the settings dialog on Esc; on the pause menu, lets Enter press a button other than Resume. Returns
+        /// true when the key was handled.
+        /// </summary>
         public bool HandlePauseKey(bool viaEnter)
         {
             // Esc closes the dialog and the game stays paused; Enter is left to the dialog's focused button.
@@ -106,6 +112,7 @@ namespace BattleArena.UI
                             && _root.focusController?.focusedElement is Button focused && focused != _resumeButton;
         }
 
+        /// <summary>Shows the screen for the new state and focuses its main button.</summary>
         private void OnGameStateChanged(GameStateChangedEvent evt)
         {
             var state = evt.Current;
@@ -130,6 +137,7 @@ namespace BattleArena.UI
             }
         }
 
+        /// <summary>Fills in the pause screen's time, level, kills and build, and focuses Resume.</summary>
         private void ShowPause()
         {
             var remaining = Mathf.CeilToInt(gameManager.MatchDuration - gameManager.ElapsedTime);
@@ -142,6 +150,7 @@ namespace BattleArena.UI
             _resumeButton.Focus();
         }
 
+        /// <summary>Fills in the end screen with the result and the match's time, level and kills.</summary>
         private void ShowEndScreen(bool victory, string title, string subtitle)
         {
             var seconds = Mathf.FloorToInt(gameManager.ElapsedTime);
@@ -156,8 +165,10 @@ namespace BattleArena.UI
             _endRestartButton.Focus();
         }
 
+        /// <summary>Wraps <paramref name="text"/> in the muted rich-text colour.</summary>
         private static string Muted(string text) => $"<color=#AEB6C8>{text}</color>";
 
+        /// <summary>Shows or hides <paramref name="element"/>.</summary>
         private static void SetVisible(VisualElement element, bool visible) => element.EnableInClassList("hidden", !visible);
     }
 }

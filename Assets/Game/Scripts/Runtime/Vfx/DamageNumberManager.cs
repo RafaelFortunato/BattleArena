@@ -40,12 +40,18 @@ namespace BattleArena.Vfx
         [Tooltip("Height of player damage numbers above the player's feet.")]
         [SerializeField, Min(0f)] private float playerHitHeight = 2.2f;
 
+        /// <summary>Animation state of one shown number.</summary>
         private struct Entry
         {
+            /// <summary>The label's transform.</summary>
             public Transform Transform;
+            /// <summary>Where the number started.</summary>
             public Vector3 Origin;
+            /// <summary>Seconds since it appeared.</summary>
             public float Age;
+            /// <summary>Base scale of the number.</summary>
             public float Scale;
+            /// <summary>True when it plays the punch-in effect.</summary>
             public bool Punch;
         }
 
@@ -55,6 +61,7 @@ namespace BattleArena.Vfx
         private int _activeCount;
         private Quaternion _facing = Quaternion.identity;
 
+        /// <summary>Creates the whole label pool up front, hidden.</summary>
         private void Awake()
         {
             _entries = new Entry[capacity];
@@ -68,14 +75,17 @@ namespace BattleArena.Vfx
             }
         }
 
+        /// <summary>
+        /// Faces the labels to the camera once: the gameplay camera never rotates, so once is enough.
+        /// </summary>
         private void Start()
         {
-            // The gameplay camera never rotates, so facing it once is enough.
             var mainCamera = Camera.main;
             if (mainCamera != null)
                 _facing = mainCamera.transform.rotation;
         }
 
+        /// <summary>Listens for enemy and player hits.</summary>
         private void OnEnable()
         {
             EventBus<EnemyDamagedEvent>.Subscribe(ShowEnemyHit);
@@ -83,6 +93,7 @@ namespace BattleArena.Vfx
                 playerHealth.Damaged += ShowPlayerHit;
         }
 
+        /// <summary>Stops listening for hits.</summary>
         private void OnDisable()
         {
             EventBus<EnemyDamagedEvent>.Unsubscribe(ShowEnemyHit);
@@ -90,6 +101,7 @@ namespace BattleArena.Vfx
                 playerHealth.Damaged -= ShowPlayerHit;
         }
 
+        /// <summary>Shows an enemy hit; a critical gets the larger orange number and a spark.</summary>
         private void ShowEnemyHit(EnemyDamagedEvent evt)
         {
             if (evt.IsCritical && criticalEffect != null && evt.Amount >= 0.5f)
@@ -101,11 +113,17 @@ namespace BattleArena.Vfx
                 Show(evt.Position, evt.Amount, "{0:0}", false, normalColor, normalScale);
         }
 
+        /// <summary>Shows a hit on the player in red above their head.</summary>
         private void ShowPlayerHit(Health health, DamageResult damage) =>
             Show(health.transform.position + Vector3.up * playerHitHeight, damage.Amount, "-{0:0}", true, playerHitColor, playerHitScale);
 
+        /// <summary>Shows a number at <paramref name="position"/>; dropped when too small or every label is in use.</summary>
+        /// <param name="position">Where the number appears.</param>
+        /// <param name="amount">The damage to show.</param>
         /// <param name="format">TextMeshPro numeric format; formats without allocating a string.</param>
         /// <param name="punch">Plays the punch-in scale effect (critical hits and player hits).</param>
+        /// <param name="color">Text colour.</param>
+        /// <param name="scale">Base text scale.</param>
         private void Show(Vector3 position, float amount, string format, bool punch, Color color, float scale)
         {
             // When saturated, drop the number rather than evicting one mid-animation.
@@ -130,6 +148,7 @@ namespace BattleArena.Vfx
             label.gameObject.SetActive(true);
         }
 
+        /// <summary>Rises, punches and shrinks every shown number, recycling those that have finished.</summary>
         private void Update()
         {
             if (_activeCount == 0)
@@ -160,6 +179,7 @@ namespace BattleArena.Vfx
             }
         }
 
+        /// <summary>Hides a finished number and swaps the last active one into its slot.</summary>
         private void Recycle(int index)
         {
             _labels[index].gameObject.SetActive(false);

@@ -12,9 +12,13 @@ namespace BattleArena.Vfx
         private ParticleSystem[] _particles;
         private TrailRenderer[] _trails;
 
+        /// <summary>Collects the particle systems and trails.</summary>
         private void Awake() => Collect();
 
-        // The pool can notify a component on an inactive child (e.g. a bomb shown only in flight) before its Awake runs.
+        /// <summary>
+        /// Collects the particle systems and trails once; the pool can notify a component on an inactive child (e.g. a
+        /// bomb shown only in flight) before its Awake runs.
+        /// </summary>
         private void Collect()
         {
             if (_particles != null)
@@ -23,6 +27,7 @@ namespace BattleArena.Vfx
             _trails = GetComponentsInChildren<TrailRenderer>(true);
         }
 
+        /// <summary>Clears trails and particles and restarts the particles that play on awake.</summary>
         public void OnSpawned()
         {
             Collect();
@@ -36,6 +41,7 @@ namespace BattleArena.Vfx
             }
         }
 
+        /// <summary>Stops and clears the particles.</summary>
         public void OnDespawned()
         {
             Collect();

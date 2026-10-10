@@ -18,6 +18,7 @@ namespace BattleArena.UI
         private float _progress;
         private int _shownSeconds = -1;
 
+        /// <summary>Finds the timeline's elements.</summary>
         public MatchTimelineView(VisualElement root)
         {
             _root = root.Q("match-timer");
@@ -27,8 +28,10 @@ namespace BattleArena.UI
             _playhead = root.Q("timeline-playhead");
         }
 
+        /// <summary>Shows or hides the timer and track.</summary>
         public void SetVisible(bool visible) => _root.EnableInClassList("hidden", !visible);
 
+        /// <summary>Updates the countdown and moves the playhead along the track.</summary>
         public void SetTime(float elapsed, float remaining)
         {
             var seconds = Mathf.CeilToInt(remaining);
@@ -45,6 +48,7 @@ namespace BattleArena.UI
             _playhead.style.left = percent;
         }
 
+        /// <summary>Drops a mission marker at the playhead, under the playhead itself.</summary>
         public void AddMissionMarker()
         {
             var marker = new VisualElement { pickingMode = PickingMode.Ignore };
@@ -61,6 +65,7 @@ namespace BattleArena.UI
             _activeMarker = marker;
         }
 
+        /// <summary>Marks the current mission's marker with a tick, or as failed.</summary>
         public void CompleteMissionMarker(bool succeeded)
         {
             if (_activeMarker == null)

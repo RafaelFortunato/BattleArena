@@ -35,9 +35,12 @@ namespace BattleArena.Vfx
         private float _flash;
         private float _beatPhase;
 
+        /// <summary>
+        /// Finds the vignette in the volume's profile and remembers its look; volume.profile is a per-play copy, so
+        /// none of this writes back into the profile asset.
+        /// </summary>
         private void Start()
         {
-            // volume.profile is a per-play copy, so none of this writes back into the profile asset.
             if (volume == null || !volume.profile.TryGet(out _vignette))
             {
                 enabled = false;
@@ -49,12 +52,16 @@ namespace BattleArena.Vfx
             _vignette.color.overrideState = true;
         }
 
+        /// <summary>Listens for hits on the player.</summary>
         private void OnEnable() => playerHealth.Damaged += OnDamaged;
 
+        /// <summary>Stops listening for hits.</summary>
         private void OnDisable() => playerHealth.Damaged -= OnDamaged;
 
+        /// <summary>Starts a hit flash.</summary>
         private void OnDamaged(Health health, DamageResult damage) => _flash = 1f;
 
+        /// <summary>Blends the vignette between its normal look, the hit flash and the low-health heartbeat.</summary>
         private void Update()
         {
             if (_vignette == null)
@@ -81,6 +88,7 @@ namespace BattleArena.Vfx
         /// <summary>A "lub-dub": two quick thumps at the start of each beat, then rest.</summary>
         private static float Heartbeat(float phase) => Mathf.Max(Thump(phase, 0f), 0.7f * Thump(phase, 0.2f));
 
+        /// <summary>One heartbeat thump: a half sine starting at <paramref name="start"/> into the beat.</summary>
         private static float Thump(float phase, float start)
         {
             var t = (phase - start) / 0.13f;

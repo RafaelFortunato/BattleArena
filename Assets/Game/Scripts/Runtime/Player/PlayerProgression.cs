@@ -20,8 +20,11 @@ namespace BattleArena.Player
         [SerializeField, Min(0)] private float experienceGrowthCubed = 0.03f;
         [SerializeField, Min(1)] private int maxLevel = 40;
 
+        /// <summary>Current level, starting at 1.</summary>
         public int Level { get; private set; } = 1;
+        /// <summary>Experience gathered towards the next level.</summary>
         public int Experience { get; private set; }
+        /// <summary>Experience needed for the next level, from the experience curve.</summary>
         public int RequiredExperience
         {
             get
@@ -30,13 +33,19 @@ namespace BattleArena.Player
                 return Mathf.RoundToInt(baseExperience + experienceGrowth * n + experienceGrowthSquared * n * n + experienceGrowthCubed * n * n * n);
             }
         }
+        /// <summary>True at the level cap.</summary>
         public bool IsMaxLevel => Level >= maxLevel;
 
         // Fractional experience left over after applying the Experience Gain multiplier.
         private float _experienceRemainder;
 
+        /// <summary>Publishes the starting experience for the HUD.</summary>
         private void Start() => RaiseExperienceChanged();
 
+        /// <summary>
+        /// Adds experience (scaled by Experience Gain, keeping fractions) and raises a level-up for every level
+        /// reached.
+        /// </summary>
         public void AddExperience(int amount)
         {
             if (amount <= 0 || IsMaxLevel)
@@ -60,6 +69,7 @@ namespace BattleArena.Player
             RaiseExperienceChanged();
         }
 
+        /// <summary>Publishes the current level and experience.</summary>
         private void RaiseExperienceChanged() =>
             EventBus<ExperienceChangedEvent>.Raise(new ExperienceChangedEvent(Level, Experience, RequiredExperience, maxLevel));
     }

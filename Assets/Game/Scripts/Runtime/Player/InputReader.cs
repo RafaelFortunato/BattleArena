@@ -12,6 +12,7 @@ namespace BattleArena.Player
     [CreateAssetMenu(fileName = "InputReader", menuName = "BattleArena/Input Reader")]
     public sealed class InputReader : ScriptableObject
     {
+        /// <summary>Number of spell keys (Q, E, R).</summary>
         public const int SpellSlotCount = 3;
 
         [SerializeField] private InputActionAsset actions;
@@ -31,10 +32,14 @@ namespace BattleArena.Player
         [NonSerialized] private readonly InputAction[] _spells = new InputAction[SpellSlotCount];
         [NonSerialized] private bool _initialized;
 
+        /// <summary>Current movement input, -1..1 on each axis.</summary>
         public Vector2 Move { get; private set; }
 
+        /// <summary>Raised when the movement input changes.</summary>
         public event Action<Vector2> MoveChanged;
+        /// <summary>Raised with the slot index when a spell key is pressed.</summary>
         public event Action<int> SpellRequested;
+        /// <summary>Raised when the interact key is pressed.</summary>
         public event Action InteractRequested;
         /// <summary>Esc, Enter or Start. True when it was Enter, which also presses the focused menu button.</summary>
         public event Action<bool> PauseRequested;
@@ -45,6 +50,7 @@ namespace BattleArena.Player
         /// <summary>Confirms the highlighted card (F, Space, south button).</summary>
         public event Action ConfirmRequested;
 
+        /// <summary>Enables gameplay and system input.</summary>
         public void EnableGameplay()
         {
             Initialize();
@@ -52,6 +58,7 @@ namespace BattleArena.Player
             _systemMap.Enable();
         }
 
+        /// <summary>Disables gameplay input and zeroes the movement.</summary>
         public void DisableGameplay()
         {
             Initialize();
@@ -69,12 +76,14 @@ namespace BattleArena.Player
             _systemMap.Enable();
         }
 
+        /// <summary>Disables the system map (pause, menu navigation).</summary>
         public void DisableSystem()
         {
             Initialize();
             _systemMap.Disable();
         }
 
+        /// <summary>True while the system map is enabled.</summary>
         public bool IsSystemEnabled
         {
             get
@@ -91,6 +100,7 @@ namespace BattleArena.Player
             _systemMap.Disable();
         }
 
+        /// <summary>Looks up the action maps and actions and hooks their callbacks, once.</summary>
         private void Initialize()
         {
             if (_initialized)
@@ -124,6 +134,7 @@ namespace BattleArena.Player
             _initialized = true;
         }
 
+        /// <summary>Unhooks every callback and disables the maps.</summary>
         private void OnDisable()
         {
             if (!_initialized)
@@ -145,6 +156,7 @@ namespace BattleArena.Player
             _initialized = false;
         }
 
+        /// <summary>Stores the movement input and raises <see cref="MoveChanged"/> when it changes.</summary>
         private void SetMove(Vector2 value)
         {
             if (value == Move)
@@ -153,18 +165,29 @@ namespace BattleArena.Player
             MoveChanged?.Invoke(value);
         }
 
+        /// <summary>Forwards the movement input.</summary>
         private void OnMove(InputAction.CallbackContext context) => SetMove(context.ReadValue<Vector2>());
+        /// <summary>Forwards the interact key.</summary>
         private void OnInteract(InputAction.CallbackContext _) => InteractRequested?.Invoke();
+        /// <summary>Forwards the pause key, noting whether it was Enter.</summary>
         private void OnPause(InputAction.CallbackContext context) => PauseRequested?.Invoke(IsEnterKey(context.control));
 
+        /// <summary>Forwards the back button.</summary>
         private void OnBack(InputAction.CallbackContext _) => BackRequested?.Invoke();
 
+        /// <summary>True for either Enter key.</summary>
         private static bool IsEnterKey(InputControl control) => control is KeyControl { keyCode: Key.Enter or Key.NumpadEnter };
+        /// <summary>Moves the card highlight left.</summary>
         private void OnChoicePrevious(InputAction.CallbackContext _) => ChoiceNavigated?.Invoke(-1);
+        /// <summary>Moves the card highlight right.</summary>
         private void OnChoiceNext(InputAction.CallbackContext _) => ChoiceNavigated?.Invoke(1);
+        /// <summary>Forwards the confirm key.</summary>
         private void OnConfirm(InputAction.CallbackContext _) => ConfirmRequested?.Invoke();
+        /// <summary>Requests the first spell slot.</summary>
         private void OnSpell1(InputAction.CallbackContext _) => SpellRequested?.Invoke(0);
+        /// <summary>Requests the second spell slot.</summary>
         private void OnSpell2(InputAction.CallbackContext _) => SpellRequested?.Invoke(1);
+        /// <summary>Requests the third spell slot.</summary>
         private void OnSpell3(InputAction.CallbackContext _) => SpellRequested?.Invoke(2);
     }
 }

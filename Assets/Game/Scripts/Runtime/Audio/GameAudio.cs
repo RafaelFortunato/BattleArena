@@ -40,6 +40,9 @@ namespace BattleArena.Audio
         [Tooltip("How long the music stays pulled down under the victory or defeat sting.")]
         [SerializeField, Min(0f)] private float endStingDuckSeconds = 4f;
 
+        /// <summary>
+        /// Subscribes to the player's health, the level-up choices and every game event that has a sound.
+        /// </summary>
         private void OnEnable()
         {
             playerHealth.Damaged += OnPlayerDamaged;
@@ -54,6 +57,7 @@ namespace BattleArena.Audio
             EventBus<GameStateChangedEvent>.Subscribe(OnGameStateChanged);
         }
 
+        /// <summary>Removes every subscription made in <see cref="OnEnable"/>.</summary>
         private void OnDisable()
         {
             playerHealth.Damaged -= OnPlayerDamaged;
@@ -68,32 +72,42 @@ namespace BattleArena.Audio
             EventBus<GameStateChangedEvent>.Unsubscribe(OnGameStateChanged);
         }
 
+        /// <summary>Plays the hurt sound for a hit the player survives; the killing blow has its own sound.</summary>
         private void OnPlayerDamaged(Health health, DamageResult damage)
         {
             if (health.IsAlive)
                 AudioManager.PlayUI(playerHurt);
         }
 
+        /// <summary>Plays the player's death sound.</summary>
         private void OnPlayerDied(Health health) => AudioManager.PlayUI(playerDeath);
 
+        /// <summary>Plays the hit sound where the enemy was struck.</summary>
         private void OnEnemyDamaged(EnemyDamagedEvent evt) => AudioManager.PlayAt(enemyHit, evt.Position);
 
+        /// <summary>Plays the death sound where the enemy fell.</summary>
         private void OnEnemyKilled(EnemyKilledEvent evt) => AudioManager.PlayAt(enemyDeath, evt.Position);
 
+        /// <summary>Plays the level-up flourish.</summary>
         private void OnLevelUp(PlayerLevelUpEvent evt) => AudioManager.PlayUI(levelUp);
 
+        /// <summary>Confirms a level-up card pick.</summary>
         private void OnCardChosen(int index) => AudioManager.PlayUI(upgradePicked);
 
+        /// <summary>Announces a new mission.</summary>
         private void OnMissionStarted(MissionStartedEvent evt) => AudioManager.PlayUI(missionStarted);
 
+        /// <summary>Plays the success or failure sting for the mission that just ended.</summary>
         private void OnMissionEnded(MissionEndedEvent evt) => AudioManager.PlayUI(evt.Succeeded ? missionCompleted : missionFailed);
 
+        /// <summary>Plays the boss's entrance roar and crossfades to the boss music.</summary>
         private void OnBossSpawned(BossSpawnedEvent evt)
         {
             AudioManager.PlayUI(bossAppears);
             AudioManager.PlayMusic(bossMusic);
         }
 
+        /// <summary>On victory or defeat, ducks the music and plays the matching sting.</summary>
         private void OnGameStateChanged(GameStateChangedEvent evt)
         {
             var sting = evt.Current switch

@@ -32,14 +32,17 @@ namespace BattleArena.Missions
         private MissionDefinition _previous;
         private Coroutine _loop;
 
+        /// <summary>Builds the context shared by every mission.</summary>
         private void Awake() => _context = new MissionContext(player, playerHealth, spawner, gameManager);
 
+        /// <summary>Listens for the first spell and for match state changes.</summary>
         private void OnEnable()
         {
             EventBus<SpellEquippedEvent>.Subscribe(OnSpellEquipped);
             EventBus<GameStateChangedEvent>.Subscribe(OnGameStateChanged);
         }
 
+        /// <summary>Stops listening and ends any running mission quietly.</summary>
         private void OnDisable()
         {
             EventBus<SpellEquippedEvent>.Unsubscribe(OnSpellEquipped);
@@ -48,9 +51,12 @@ namespace BattleArena.Missions
             _loop = null;
         }
 
-        // Missions unlock with the first spell.
+        /// <summary>Starts offering missions once the player has their first spell.</summary>
         private void OnSpellEquipped(SpellEquippedEvent _) => _loop ??= StartCoroutine(MissionLoop());
 
+        /// <summary>
+        /// Stops offering missions when the boss arrives or the match ends, abandoning the one in progress.
+        /// </summary>
         private void OnGameStateChanged(GameStateChangedEvent evt)
         {
             if (evt.Current is not (GameState.BossFight or GameState.Victory or GameState.Defeat))
@@ -69,6 +75,10 @@ namespace BattleArena.Missions
             }
         }
 
+        /// <summary>
+        /// Runs missions one after another: ticks the active one, reports its progress, then waits a random interval
+        /// before the next.
+        /// </summary>
         private IEnumerator MissionLoop()
         {
             yield return WaitCache.Get(firstMissionDelay);
@@ -97,6 +107,7 @@ namespace BattleArena.Missions
             }
         }
 
+        /// <summary>Picks a mission at random by weight, never the same one twice in a row.</summary>
         private MissionDefinition PickMission()
         {
             var total = 0f;
@@ -116,6 +127,7 @@ namespace BattleArena.Missions
             return missions[0];
         }
 
+        /// <summary>Starts a mission and announces it; the HUD shows it from the announcement.</summary>
         private void StartMission(MissionDefinition definition)
         {
             // Never leave a previous mission's objects behind.
@@ -130,12 +142,14 @@ namespace BattleArena.Missions
             Report();
         }
 
+        /// <summary>Publishes the active mission's progress and aims the objective pointer.</summary>
         private void Report()
         {
             EventBus<MissionProgressEvent>.Raise(new MissionProgressEvent(_active.Progress, _active.ProgressText, _active.TimeRemaining));
             pointer.SetTarget(_active.TryGetTarget(out var target), target);
         }
 
+        /// <summary>Ends the active mission and queues the reward on success or announces the failure.</summary>
         private void Finish()
         {
             var succeeded = _active.Status == MissionStatus.Succeeded;
@@ -148,6 +162,7 @@ namespace BattleArena.Missions
                 EventBus<NotificationEvent>.Raise(new NotificationEvent($"Mission failed: {title}"));
         }
 
+        /// <summary>Cleans up the active mission, hides the pointer and announces the end.</summary>
         private void EndActive(bool announce)
         {
             if (_active == null)

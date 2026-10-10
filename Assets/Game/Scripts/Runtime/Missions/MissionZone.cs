@@ -13,6 +13,7 @@ namespace BattleArena.Missions
 
         private float _diameter;
 
+        /// <summary>Sizes the circle to <paramref name="radius"/> with an empty fill.</summary>
         public void Show(float radius)
         {
             _diameter = radius * 2f;
@@ -20,14 +21,17 @@ namespace BattleArena.Missions
             SetProgress(0f);
         }
 
+        /// <summary>Grows the fill to show progress (0..1).</summary>
         public void SetProgress(float normalized)
         {
             var size = _diameter * Mathf.Clamp01(normalized);
             fill.localScale = new Vector3(size, fill.localScale.y, size);
         }
 
+        /// <summary>Nothing to do: <see cref="Show"/> sets the zone up.</summary>
         public void OnSpawned() { }
 
+        /// <summary>Empties the fill for the next use.</summary>
         public void OnDespawned() => SetProgress(0f);
     }
 }

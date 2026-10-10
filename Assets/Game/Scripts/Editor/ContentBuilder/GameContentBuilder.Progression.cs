@@ -1,18 +1,14 @@
-using BattleArena.Combat;
-using BattleArena.Core;
 using BattleArena.Player;
-using BattleArena.Pooling;
 using BattleArena.Progression;
 using BattleArena.Spells;
-using BattleArena.Vfx;
 using UnityEditor;
 using UnityEngine;
-using UnityEngine.Rendering;
 using UnityEngine.UIElements;
 using K = BattleArena.Spells.SpellUpgradeKind;
 
 namespace BattleArena.Editor.ContentBuilder
 {
+    /// <summary>Builder part: spells, spell upgrades and stat upgrade cards.</summary>
     internal static partial class GameContentBuilder
     {
         private const string SpellsFolder = DataFolder + "/Spells";
@@ -20,6 +16,7 @@ namespace BattleArena.Editor.ContentBuilder
 
         // ---------------------------------------------------------------- Spells
 
+        /// <summary>Creates or updates every spell.</summary>
         private static SpellDefinition[] BuildSpells(MaterialSet m, SpellVfx fx)
         {
             return new SpellDefinition[]
@@ -63,8 +60,15 @@ namespace BattleArena.Editor.ContentBuilder
             };
         }
 
+        /// <summary>Creates or updates one spell asset of type <typeparamref name="T"/>.</summary>
+        /// <param name="file">Asset file name.</param>
+        /// <param name="displayName">Name shown to the player.</param>
+        /// <param name="description">Card description.</param>
+        /// <param name="color">The spell's colour.</param>
+        /// <param name="cooldown">Base seconds between casts.</param>
         /// <param name="attackRatio">Damage as a share of the player's Attack: 3.75 deals 375%.</param>
         /// <param name="damageUnit">What one share of that damage is, for the card ("per meteor"); empty for a single hit.</param>
+        /// <param name="configure">Sets the spell type's own fields.</param>
         private static T Spell<T>(string file, string displayName, string description, Color color, float cooldown, float attackRatio,
             string damageUnit, System.Func<SerializedSetter, SerializedSetter> configure) where T : SpellDefinition
         {
@@ -85,6 +89,7 @@ namespace BattleArena.Editor.ContentBuilder
 
         // ---------------------------------------------------------------- Level-up cards
 
+        /// <summary>Creates or updates the stat and spell upgrade cards and the config that pools them.</summary>
         private static LevelUpConfig BuildLevelUpConfig(SpellDefinition[] spells)
         {
             StatUpgradeDefinition[] upgrades =
@@ -154,6 +159,7 @@ namespace BattleArena.Editor.ContentBuilder
             return config;
         }
 
+        /// <summary>Creates or updates a spell upgrade card.</summary>
         private static SpellUpgradeDefinition SpellUpgrade(string file, string displayName, SpellUpgradeKind kind, float amount,
             int maxRank, float weight = 1f)
         {
@@ -178,10 +184,12 @@ namespace BattleArena.Editor.ContentBuilder
             return upgrade;
         }
 
+        /// <summary>
+        /// Creates or updates a stat upgrade card. Rarer cards show up less often unless a weight is given explicitly.
+        /// </summary>
         private static StatUpgradeDefinition Upgrade(string file, string displayName, StatType stat, float amount, UpgradeRarity rarity,
             float weight = -1f)
         {
-            // Rarer cards show up less often unless a weight is given explicitly.
             if (weight < 0f)
                 weight = rarity switch { UpgradeRarity.Rare => 0.45f, UpgradeRarity.Epic => 0.098f, _ => 1f };
 

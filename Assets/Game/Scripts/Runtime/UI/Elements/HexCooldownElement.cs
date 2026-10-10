@@ -16,6 +16,7 @@ namespace BattleArena.UI.Elements
         private float _value;
         private Color _color = new(0.02f, 0.02f, 0.04f, 0.65f);
 
+        /// <summary>Share of the hexagon covered by the shade, 0..1.</summary>
         public float Value
         {
             get => _value;
@@ -29,6 +30,7 @@ namespace BattleArena.UI.Elements
             }
         }
 
+        /// <summary>Creates the element; it ignores the pointer, draws itself and reads its colour from USS.</summary>
         public HexCooldownElement()
         {
             pickingMode = PickingMode.Ignore;
@@ -43,6 +45,9 @@ namespace BattleArena.UI.Elements
             });
         }
 
+        /// <summary>
+        /// Draws the shade as a pie slice of the hexagon, from (1 - value) of a turn round to 12 o'clock.
+        /// </summary>
         private void Draw(MeshGenerationContext context)
         {
             if (_value <= 0f)
@@ -114,6 +119,7 @@ namespace BattleArena.UI.Elements
             return best < float.MaxValue ? center + direction * best : center;
         }
 
+        /// <summary>2D cross product of <paramref name="a"/> and <paramref name="b"/>.</summary>
         private static float Cross(Vector2 a, Vector2 b) => a.x * b.y - a.y * b.x;
     }
 }

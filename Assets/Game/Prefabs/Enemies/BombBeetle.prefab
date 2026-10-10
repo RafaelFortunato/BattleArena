@@ -5108,7 +5108,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 849c35db4b29ef84fbbe14c61ce898e6, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: BattleArena.Runtime::BattleArena.Enemies.ChaseMovement
+  m_EditorClassIdentifier: BattleArena.Runtime::BattleArena.Enemies.Movement.ChaseMovement
 --- !u!114 &911132925631111470
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5120,7 +5120,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e5acde9c9ba796645aab1b0eb0006f9f, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: BattleArena.Runtime::BattleArena.Enemies.SelfDestructAttack
+  m_EditorClassIdentifier: BattleArena.Runtime::BattleArena.Enemies.Attacks.SelfDestructAttack
   range: 2.4
   cooldown: 5
   windup: 0.9

@@ -15,16 +15,17 @@ namespace BattleArena.Interaction
     {
         [SerializeField] private InputReader input;
         [SerializeField] private Health health;
-        [SerializeField] private PlayerProgression progression;
 
         private readonly List<IInteractable> _inRange = new(4);
         private IInteractable _current;
 
+        /// <summary>The player's health, for interactables that heal.</summary>
         public Health Health => health;
-        public PlayerProgression Progression => progression;
 
+        /// <summary>Listens for the interact key.</summary>
         private void OnEnable() => input.InteractRequested += OnInteractRequested;
 
+        /// <summary>Stops listening and forgets everything in range.</summary>
         private void OnDisable()
         {
             input.InteractRequested -= OnInteractRequested;
@@ -34,6 +35,7 @@ namespace BattleArena.Interaction
             SetCurrent(null);
         }
 
+        /// <summary>Starts tracking an interactable that came into range.</summary>
         private void OnTriggerEnter(Collider other)
         {
             if (!other.TryGetComponent(out IInteractable interactable) || _inRange.Contains(interactable))
@@ -45,16 +47,20 @@ namespace BattleArena.Interaction
             RefreshCurrent();
         }
 
+        /// <summary>Stops tracking an interactable that left range.</summary>
         private void OnTriggerExit(Collider other)
         {
             if (other.TryGetComponent(out IInteractable interactable))
                 Forget(interactable);
         }
 
+        /// <summary>Re-picks the target when a tracked interactable becomes available or unavailable.</summary>
         private void OnInteractableStateChanged(IInteractable _) => RefreshCurrent();
 
+        /// <summary>Forgets an interactable that left the world without a trigger exit.</summary>
         private void OnInteractableRemoved(IInteractable interactable) => Forget(interactable);
 
+        /// <summary>Stops tracking an interactable and re-picks the target.</summary>
         private void Forget(IInteractable interactable)
         {
             if (!_inRange.Remove(interactable))
@@ -64,12 +70,14 @@ namespace BattleArena.Interaction
             RefreshCurrent();
         }
 
+        /// <summary>Removes this interactor's listeners from an interactable.</summary>
         private void Unsubscribe(IInteractable interactable)
         {
             interactable.StateChanged -= OnInteractableStateChanged;
             interactable.Removed -= OnInteractableRemoved;
         }
 
+        /// <summary>Uses the current target if it is available.</summary>
         private void OnInteractRequested()
         {
             if (_current is not { CanInteract: true })
@@ -79,6 +87,7 @@ namespace BattleArena.Interaction
             RefreshCurrent();
         }
 
+        /// <summary>Targets the closest available interactable in range.</summary>
         private void RefreshCurrent()
         {
             IInteractable best = null;
@@ -101,6 +110,7 @@ namespace BattleArena.Interaction
             SetCurrent(best);
         }
 
+        /// <summary>Changes the target and announces it for the prompt.</summary>
         private void SetCurrent(IInteractable interactable)
         {
             if (_current == interactable)

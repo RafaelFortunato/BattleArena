@@ -3,15 +3,17 @@ using System.Linq;
 using BattleArena.Combat;
 using BattleArena.Core;
 using BattleArena.Enemies;
+using BattleArena.Enemies.Attacks;
+using BattleArena.Enemies.Movement;
 using BattleArena.Pickups;
 using BattleArena.Pooling;
-using BattleArena.Vfx;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.AI;
 
 namespace BattleArena.Editor.ContentBuilder
 {
+    /// <summary>Builder part: enemy prefabs and definitions, and the spawn schedule.</summary>
     internal static partial class GameContentBuilder
     {
         private const string EnemyPrefabsFolder = PrefabsFolder + "/Enemies";
@@ -22,10 +24,14 @@ namespace BattleArena.Editor.ContentBuilder
         /// <summary>Shared assets every enemy prefab needs.</summary>
         private readonly struct EnemyKit
         {
+            /// <summary>The build's materials.</summary>
             public readonly MaterialSet M;
+            /// <summary>The gem every enemy drops.</summary>
             public readonly ExperienceGem Gem;
+            /// <summary>The puff every enemy leaves on death.</summary>
             public readonly TimedRelease DeathEffect;
 
+            /// <summary>Bundles the shared enemy parts.</summary>
             public EnemyKit(MaterialSet m, ExperienceGem gem, TimedRelease deathEffect)
             {
                 M = m;
@@ -37,10 +43,15 @@ namespace BattleArena.Editor.ContentBuilder
         /// <summary>Enemy assets other builders need (the scene, missions).</summary>
         private sealed class EnemyRoster
         {
+            /// <summary>The match's spawn schedule.</summary>
             public SpawnSchedule Schedule;
+            /// <summary>The final boss.</summary>
             public EnemyDefinition Boss;
+            /// <summary>The Treasure Bunny hunt target.</summary>
             public EnemyDefinition TreasureBunny;
+            /// <summary>The Ogre Warlord hunt target.</summary>
             public EnemyDefinition Warlord;
+            /// <summary>The garrison of the Blood Ritual camp.</summary>
             public EnemyDefinition[] Camp;
         }
 
@@ -302,8 +313,10 @@ namespace BattleArena.Editor.ContentBuilder
             setter.Apply();
             return component;
         }
+        /// <summary>Saves an enemy hierarchy as its prefab.</summary>
         private static Enemy SaveEnemy(GameObject root) => SavePrefab<Enemy>(root, $"{EnemyPrefabsFolder}/{root.name}.prefab");
 
+        /// <summary>Creates or updates an enemy definition with its stats.</summary>
         private static EnemyDefinition Define(string file, string displayName, Enemy prefab, float health, float speed,
             float damage, float range, float cooldown, int xp)
         {
@@ -321,6 +334,7 @@ namespace BattleArena.Editor.ContentBuilder
             return definition;
         }
 
+        /// <summary>Creates a spawn phase with its enemy mix.</summary>
         private static SpawnSchedule.Phase Phase(float start, float interval, int perTick, int maxAlive,
             params (EnemyDefinition enemy, float weight)[] enemies)
         {

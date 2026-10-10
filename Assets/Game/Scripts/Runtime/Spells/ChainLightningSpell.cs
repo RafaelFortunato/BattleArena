@@ -25,15 +25,18 @@ namespace BattleArena.Spells
         private static readonly List<Collider> Targets = new(MaxTargetsLimit);
         private static readonly HashSet<Collider> Visited = new();
 
-        // Area is the jump range; each point of Pierce adds a target to the chain.
+        /// <summary>Area is the jump range; each point of Pierce adds a target to the chain.</summary>
         public override SpellStats ScalesWith => SpellStats.Area | SpellStats.Pierce;
 
+        /// <summary>
+        /// Builds the chain from the nearest enemy (Pierce and bounce upgrades add jumps, Area widens them) and plays
+        /// it; fails with no enemy in range.
+        /// </summary>
         public override bool Cast(in SpellContext context)
         {
             if (!CombatQueries.TryFindNearest(context.Origin, range, context.TargetMask, out var first))
                 return false;
 
-            // Pierce and bounce upgrades add extra jumps; Area widens the jump range.
             var targets = Mathf.Min(MaxTargetsLimit, maxTargets + context.Modifiers.ExtraPierce + context.Modifiers.ExtraBounces);
             CollectChain(first, context.TargetMask, targets, context.Area(jumpRadius));
             if (Targets.Count == 0)
@@ -44,6 +47,9 @@ namespace BattleArena.Spells
             return true;
         }
 
+        /// <summary>
+        /// Fills the target list by jumping from <paramref name="first"/> to the nearest unvisited enemy each time.
+        /// </summary>
         private static void CollectChain(Transform first, int targetMask, int maxTargets, float jumpRadius)
         {
             Targets.Clear();
@@ -60,6 +66,9 @@ namespace BattleArena.Spells
             }
         }
 
+        /// <summary>
+        /// The closest living, unvisited enemy within <paramref name="jumpRadius"/> of <paramref name="from"/>.
+        /// </summary>
         private static Collider FindNextTarget(Vector3 from, int targetMask, float jumpRadius)
         {
             Collider best = null;

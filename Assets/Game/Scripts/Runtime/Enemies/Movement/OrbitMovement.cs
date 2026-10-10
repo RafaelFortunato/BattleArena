@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace BattleArena.Enemies
+namespace BattleArena.Enemies.Movement
 {
     /// <summary>
     /// Circles the player at a fixed radius, in a random direction per spawn. Each tick it aims a
@@ -14,8 +14,10 @@ namespace BattleArena.Enemies
 
         private float _direction = 1f;
 
+        /// <summary>Picks a random orbit direction.</summary>
         public override void OnSpawned() => _direction = Random.value < 0.5f ? -1f : 1f;
 
+        /// <summary>Aims a little further along the circle around the player.</summary>
         public override void Tick(in EnemyTickContext context)
         {
             var fromTarget = Planar(transform.position - context.TargetPosition);

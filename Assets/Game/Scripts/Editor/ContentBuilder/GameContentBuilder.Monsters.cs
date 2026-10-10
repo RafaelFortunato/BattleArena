@@ -30,14 +30,18 @@ namespace BattleArena.Editor.ContentBuilder
         {
             /// <summary>Model path under the monsters folder, e.g. "Big/Orc" (the pack groups them Big / Blob / Flying).</summary>
             public readonly string Model;
+            /// <summary>Height the model is scaled to.</summary>
             public readonly float Height;
             /// <summary>Height of the model's lowest point; above zero for hovering monsters.</summary>
             public readonly float Hover;
+            /// <summary>Names of the idle, move and attack clips in the model.</summary>
             public readonly string Idle, Move, Attack;
             /// <summary>Movement speed at which the move clip plays at its authored rate.</summary>
             public readonly float ReferenceSpeed;
+            /// <summary>Material override; null uses the shared monster atlas.</summary>
             public readonly Material Material;
 
+            /// <summary>Describes a monster model.</summary>
             public MonsterSpec(string model, float height, float referenceSpeed, string move = "Walk", string attack = "Punch",
                 string idle = "Idle", float hover = 0f, Material material = null)
             {
@@ -51,9 +55,11 @@ namespace BattleArena.Editor.ContentBuilder
                 Material = material;
             }
 
+            /// <summary>A flying monster: flying idle and move clips, hovering above the ground.</summary>
             public static MonsterSpec Flyer(string model, float height, float hover, float referenceSpeed, string attack = "Headbutt") =>
                 new(model, height, referenceSpeed, move: "Fast_Flying", attack: attack, idle: "Flying_Idle", hover: hover);
 
+            /// <summary>A blob monster that attacks with a bite.</summary>
             public static MonsterSpec Blob(string model, float height, float referenceSpeed) =>
                 new(model, height, referenceSpeed, attack: "Bite_Front");
         }
@@ -150,9 +156,13 @@ namespace BattleArena.Editor.ContentBuilder
             return AssetDatabase.LoadAssetAtPath<GameObject>(path);
         }
 
+        /// <summary>Every animation clip in the model at <paramref name="path"/>.</summary>
         private static AnimationClip[] LoadClips(string path) =>
             AssetDatabase.LoadAllAssetsAtPath(path).OfType<AnimationClip>().Where(c => !c.name.StartsWith("__preview")).ToArray();
 
+        /// <summary>
+        /// The clip <paramref name="name"/>, or <paramref name="fallback"/> (with a warning) when the model lacks it.
+        /// </summary>
         private static AnimationClip Clip(AnimationClip[] clips, string name, string fallback)
         {
             var clip = clips.FirstOrDefault(c => c.name == name) ?? clips.FirstOrDefault(c => c.name == fallback);
@@ -227,6 +237,7 @@ namespace BattleArena.Editor.ContentBuilder
             return controller;
         }
 
+        /// <summary>Creates or updates the enemy's override controller with its model's clips.</summary>
         private static AnimatorOverrideController BuildMonsterOverride(string enemyName, AnimationClip[] clips, in MonsterSpec spec)
         {
             var controller = MonsterController();
@@ -272,6 +283,9 @@ namespace BattleArena.Editor.ContentBuilder
             return AssetDatabase.LoadAssetAtPath<Texture2D>(path);
         }
 
+        /// <summary>
+        /// A monster material on an atlas, tinted, with the atlas as a faint emission so dark scenes keep its colours.
+        /// </summary>
         private static Material MonsterMaterial(string name, string atlasPath, Color tint, float smoothness, float metallic)
         {
             var atlas = LoadMonsterAtlas(atlasPath);

@@ -10,12 +10,16 @@ namespace BattleArena.Pooling
         private IPoolable[] _receivers;
         private IObjectPool<PooledObject> _pool;
 
+        /// <summary>True while the instance is out of its pool.</summary>
         public bool IsSpawned { get; private set; }
 
+        /// <summary>Collects every <see cref="IPoolable"/> on the instance, including inactive children.</summary>
         private void Awake() => _receivers = GetComponentsInChildren<IPoolable>(true);
 
+        /// <summary>Ties the instance to the pool that created it.</summary>
         internal void Bind(IObjectPool<PooledObject> pool) => _pool = pool;
 
+        /// <summary>Marks the instance as out of its pool and notifies its receivers.</summary>
         internal void NotifySpawned()
         {
             IsSpawned = true;
@@ -37,18 +41,6 @@ namespace BattleArena.Pooling
                 _pool.Release(this);
             else
                 Destroy(gameObject);
-        }
-    }
-
-    public static class PooledObjectExtensions
-    {
-        /// <summary>Releases the component's GameObject to its pool, or destroys it when it isn't pooled.</summary>
-        public static void Despawn(this Component component)
-        {
-            if (component.TryGetComponent(out PooledObject pooled))
-                pooled.Release();
-            else
-                Object.Destroy(component.gameObject);
         }
     }
 }

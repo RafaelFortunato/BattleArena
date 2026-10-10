@@ -14870,7 +14870,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0f0ff5ccea6122a48a56177b5f46553a, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: BattleArena.Runtime::BattleArena.Enemies.KeepDistanceMovement
+  m_EditorClassIdentifier: BattleArena.Runtime::BattleArena.Enemies.Movement.KeepDistanceMovement
   preferredDistance: 12
   tolerance: 2.5
   retreatStep: 4
@@ -14885,7 +14885,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d72c0ea3093161748a35f5c277e6487f, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: BattleArena.Runtime::BattleArena.Enemies.GroundStrikeAttack
+  m_EditorClassIdentifier: BattleArena.Runtime::BattleArena.Enemies.Attacks.GroundStrikeAttack
   range: 15
   cooldown: 4.5
   windup: 0.8
@@ -14908,7 +14908,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d1631cdada98b814faa287362e8f736f, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: BattleArena.Runtime::BattleArena.Enemies.ContactAttack
+  m_EditorClassIdentifier: BattleArena.Runtime::BattleArena.Enemies.Attacks.ContactAttack
 --- !u!1 &7637604230505058713
 GameObject:
   m_ObjectHideFlags: 0

@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.AI;
 
-namespace BattleArena.Enemies
+namespace BattleArena.Enemies.Movement
 {
     /// <summary>
     /// Runs away while the player is close and wanders otherwise (e.g. the Treasure Bunny). When a wall
@@ -15,6 +15,9 @@ namespace BattleArena.Enemies
         [SerializeField, Min(1f)] private float fleeStep = 6f;
         [SerializeField, Min(1f)] private float wanderRadius = 6f;
 
+        /// <summary>
+        /// Flees from a nearby player along the first open escape direction; wanders when nobody is close.
+        /// </summary>
         public override void Tick(in EnemyTickContext context)
         {
             var position = transform.position;

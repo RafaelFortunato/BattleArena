@@ -35,10 +35,16 @@ namespace BattleArena.Combat
         public void ArmLobbed(Vector3 launchPosition, float radius, float flightTime, DamageProfile damage, int targetMask) =>
             StartCoroutine(Run(radius, flightTime, damage, targetMask, lobbed: true, launchPosition));
 
+        /// <summary>Nothing to do: <see cref="Arm"/> or <see cref="ArmLobbed"/> starts the strike.</summary>
         public void OnSpawned() { }
 
+        /// <summary>Cancels a strike still in progress.</summary>
         public void OnDespawned() => StopAllCoroutines();
 
+        /// <summary>
+        /// Animates the telegraph (filling marker, falling or lobbed object, fuse pulse), then deals the damage, spawns
+        /// the impact effect and despawns.
+        /// </summary>
         private IEnumerator Run(float radius, float delay, DamageProfile damage, int targetMask, bool lobbed, Vector3 launchPosition)
         {
             var diameter = radius * 2f;

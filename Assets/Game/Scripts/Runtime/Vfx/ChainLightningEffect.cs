@@ -13,7 +13,10 @@ namespace BattleArena.Vfx
     /// </summary>
     public sealed class ChainLightningEffect : MonoBehaviour, IPoolable
     {
-        // 6 targets + 10 pierce (its cap) + 6 from three Arc Jump upgrades, with a spare.
+        /// <summary>
+        /// Most links one chain can have: 6 targets + 10 pierce (its cap) + 6 from three Arc Jump upgrades, with a
+        /// spare.
+        /// </summary>
         public const int MaxLinks = 24;
         private const int MaxSegments = 24;
 
@@ -44,6 +47,11 @@ namespace BattleArena.Vfx
         private float _nextFlicker;
 
         /// <summary>Starts the chain from the caster through <paramref name="count"/> targets.</summary>
+        /// <param name="caster">The caster; the first link stays attached to it while it moves.</param>
+        /// <param name="origin">Where the bolt leaves the caster (the staff's crystal).</param>
+        /// <param name="targets">The chain's targets, in jump order.</param>
+        /// <param name="count">How many of <paramref name="targets"/> to use.</param>
+        /// <param name="damage">Damage of the first strike.</param>
         /// <param name="damageFalloff">Damage multiplier applied per jump.</param>
         public void Play(Transform caster, Vector3 origin, IReadOnlyList<Collider> targets, int count, DamageProfile damage, float damageFalloff)
         {
@@ -60,6 +68,7 @@ namespace BattleArena.Vfx
             StartCoroutine(Run(damage, damageFalloff));
         }
 
+        /// <summary>Starts with no links shown.</summary>
         public void OnSpawned()
         {
             _shown = 0;
@@ -67,6 +76,7 @@ namespace BattleArena.Vfx
             SetLinksVisible(0);
         }
 
+        /// <summary>Stops the chain and forgets its targets.</summary>
         public void OnDespawned()
         {
             StopAllCoroutines();
@@ -78,6 +88,10 @@ namespace BattleArena.Vfx
             SetLinksVisible(0);
         }
 
+        /// <summary>
+        /// Reveals one link per jump, striking its target with damage reduced by the falloff each jump, then despawns
+        /// once the last link fades.
+        /// </summary>
         private IEnumerator Run(DamageProfile damage, float falloff)
         {
             for (var i = 0; i < _count; i++)
@@ -99,6 +113,7 @@ namespace BattleArena.Vfx
             this.Despawn();
         }
 
+        /// <summary>Damages the link's target if still alive, and spawns the hit and shock effects there.</summary>
         private void Strike(int index, DamageProfile damage)
         {
             var target = _targets[index];
@@ -115,6 +130,9 @@ namespace BattleArena.Vfx
             }
         }
 
+        /// <summary>
+        /// Keeps the links on their moving endpoints, re-jitters them on the flicker interval and fades each one out.
+        /// </summary>
         private void LateUpdate()
         {
             if (_shown == 0)
@@ -149,6 +167,10 @@ namespace BattleArena.Vfx
             }
         }
 
+        /// <summary>
+        /// Moves the chain's points with the caster and with targets that are still alive; a dead target's point stays
+        /// where it fell.
+        /// </summary>
         private void RefreshPoints()
         {
             if (_caster != null)
@@ -181,6 +203,7 @@ namespace BattleArena.Vfx
                 _offsets[link * 2 + strand, s] = Random.insideUnitSphere * (strand == 0 ? 1f : 0.7f);
         }
 
+        /// <summary>Writes one strand of a link into its line renderer.</summary>
         private void Draw(LineRenderer line, int link, int strand)
         {
             var from = _points[link];
@@ -197,6 +220,7 @@ namespace BattleArena.Vfx
             line.SetPositions(_buffer);
         }
 
+        /// <summary>Shows the first <paramref name="count"/> links and hides the rest.</summary>
         private void SetLinksVisible(int count)
         {
             for (var i = 0; i < glows.Length; i++)

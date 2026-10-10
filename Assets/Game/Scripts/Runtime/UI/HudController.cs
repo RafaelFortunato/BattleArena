@@ -19,7 +19,6 @@ namespace BattleArena.UI
         private const long AnnouncementDurationMs = 2600;
         private const long LevelUpPulseMs = 250;
 
-        [SerializeField] private GameManager gameManager;
         [SerializeField] private Health playerHealth;
         [SerializeField] private SpellCaster spellCaster;
 
@@ -60,6 +59,9 @@ namespace BattleArena.UI
         private IVisualElementScheduledItem _levelPulseEnd;
         private Health _bossHealth;
 
+        /// <summary>
+        /// Finds the HUD elements, sets up the scheduled refreshes and subscribes to every event the HUD shows.
+        /// </summary>
         private void OnEnable()
         {
             var root = GetComponent<UIDocument>().rootVisualElement;
@@ -88,9 +90,13 @@ namespace BattleArena.UI
             EventBus<MissionEndedEvent>.Subscribe(OnMissionEnded);
         }
 
-        // Start runs after every Awake, so the player's Health is initialised by now.
+        /// <summary>
+        /// Shows the player's starting health. Start runs after every Awake, so the player's Health is initialised by
+        /// now.
+        /// </summary>
         private void Start() => OnPlayerHealthChanged(playerHealth);
 
+        /// <summary>Removes every subscription.</summary>
         private void OnDisable()
         {
             playerHealth.Changed -= OnPlayerHealthChanged;
@@ -110,6 +116,9 @@ namespace BattleArena.UI
             UnbindBoss();
         }
 
+        /// <summary>
+        /// Looks up the HUD's elements and creates the spell slots, which start locked until a spell is picked.
+        /// </summary>
         private void QueryElements(VisualElement root)
         {
             _hud = root.Q("hud");
@@ -144,30 +153,35 @@ namespace BattleArena.UI
 
             _spellSlots = new SpellSlotView[spellCaster.SlotCount];
             for (var i = 0; i < _spellSlots.Length; i++)
-            {
-                // Slots start locked; they are bound when a spell is picked on the card screen.
                 _spellSlots[i] = new SpellSlotView(root.Q($"spell-{i}"), spellCaster.GetUnlockLevel(i));
-            }
         }
 
+        /// <summary>
+        /// Shows the HUD only during combat (card, pause and end screens get the screen to themselves) and hides the
+        /// timeline in the boss fight.
+        /// </summary>
         private void OnGameStateChanged(GameStateChangedEvent evt)
         {
-            // Only shown during combat; card, pause and end screens get the screen to themselves.
             _hud.EnableInClassList("hidden", !evt.Current.IsCombat());
             if (evt.Current == GameState.BossFight)
                 _timeline.SetVisible(false);
         }
 
+        /// <summary>Advances the match timeline.</summary>
         private void OnMatchTimeChanged(MatchTimeChangedEvent evt) => _timeline.SetTime(evt.Elapsed, evt.Remaining);
 
+        /// <summary>
+        /// Updates the health bar and label. The pale trail catches up after a short delay (USS transition), showing
+        /// the chunk just lost.
+        /// </summary>
         private void OnPlayerHealthChanged(Health health)
         {
-            // The pale trail catches up after a short delay (USS transition), showing the chunk just lost.
             SetFill(_healthFill, health.Normalized);
             SetFill(_healthTrail, health.Normalized);
             _healthLabel.text = $"{Mathf.CeilToInt(health.Current)} / {Mathf.CeilToInt(health.Max)}";
         }
 
+        /// <summary>Updates the level badge, the XP bar and the badge ring, which moves on level-ups only.</summary>
         private void OnExperienceChanged(ExperienceChangedEvent evt)
         {
             _levelLabel.text = evt.Level.ToString();
@@ -176,23 +190,29 @@ namespace BattleArena.UI
             _levelRing.Value = evt.ProgressToMaxLevel;
         }
 
+        /// <summary>Pulses the level badge.</summary>
         private void OnLevelUp(PlayerLevelUpEvent evt)
         {
             _levelBadge.AddToClassList("level-up");
             _levelPulseEnd.ExecuteLater(LevelUpPulseMs);
         }
 
+        /// <summary>Shows the new spell in its slot.</summary>
         private void OnSpellEquipped(SpellEquippedEvent evt) => _spellSlots[evt.SlotIndex].Bind(evt.Spell);
 
+        /// <summary>Pulses the slot and starts refreshing cooldowns.</summary>
         private void OnSpellCast(SpellCastEvent evt)
         {
             _spellSlots[evt.SlotIndex].PulseCast();
             _cooldownTicker.Resume();
         }
 
-        // Charge upgrades change the counter immediately, even without a cast.
+        /// <summary>Refreshes the slots: charge upgrades change the counter immediately, even without a cast.</summary>
         private void OnSpellUpgraded(SpellUpgradedEvent evt) => _cooldownTicker.Resume();
 
+        /// <summary>
+        /// Updates every unlocked slot's charges and cooldown sweep; stops refreshing once nothing is recharging.
+        /// </summary>
         private void RefreshCooldowns()
         {
             var anyRecharging = false;
@@ -212,6 +232,7 @@ namespace BattleArena.UI
 
         // ---------------------------------------------------------------- Boss
 
+        /// <summary>Shows the boss panel bound to the boss's health and hides the timeline.</summary>
         private void OnBossSpawned(BossSpawnedEvent evt)
         {
             UnbindBoss();
@@ -223,15 +244,19 @@ namespace BattleArena.UI
             OnBossHealthChanged(_bossHealth);
         }
 
+        /// <summary>
+        /// Updates the boss health bar and label. The pale trail catches up after a short delay (USS transition),
+        /// showing the chunk just lost.
+        /// </summary>
         private void OnBossHealthChanged(Health health)
         {
-            // The pale trail catches up after a short delay (USS transition), showing the chunk just lost.
             SetFill(_bossFill, health.Normalized);
             SetFill(_bossTrail, health.Normalized);
             _bossHealthLabel.text = string.Format(CultureInfo.InvariantCulture, "{0:N0} / {1:N0}",
                 Mathf.CeilToInt(health.Current), Mathf.CeilToInt(health.Max));
         }
 
+        /// <summary>Stops following the boss's health.</summary>
         private void UnbindBoss()
         {
             if (_bossHealth == null)
@@ -242,6 +267,7 @@ namespace BattleArena.UI
 
         // ---------------------------------------------------------------- Interaction and announcements
 
+        /// <summary>Shows the interaction prompt with the target's verb, or hides it.</summary>
         private void OnInteractionTargetChanged(InteractionTargetChangedEvent evt)
         {
             var target = evt.Target;
@@ -250,8 +276,12 @@ namespace BattleArena.UI
                 _interactLabel.text = target.Prompt;
         }
 
+        /// <summary>Shows a plain announcement.</summary>
         private void OnNotification(NotificationEvent evt) => Announce(null, evt.Message);
 
+        /// <summary>
+        /// Shows an announcement, with a chip label when <paramref name="chip"/> is set, and schedules it to fade.
+        /// </summary>
         private void Announce(string chip, string text)
         {
             _announcement.EnableInClassList("plain", chip == null);
@@ -264,6 +294,7 @@ namespace BattleArena.UI
 
         // ---------------------------------------------------------------- Missions
 
+        /// <summary>Shows the mission panel, adds a timeline marker and announces the mission.</summary>
         private void OnMissionStarted(MissionStartedEvent evt)
         {
             _missionTitle.text = evt.Title;
@@ -274,6 +305,7 @@ namespace BattleArena.UI
             Announce("NEW MISSION", evt.Title);
         }
 
+        /// <summary>Updates the mission bar, status and countdown, rewriting text only when it changed.</summary>
         private void OnMissionProgress(MissionProgressEvent evt)
         {
             SetFill(_missionFill, evt.Progress);
@@ -288,12 +320,14 @@ namespace BattleArena.UI
             _missionTimer.text = $"{seconds / 60}:{seconds % 60:00}";
         }
 
+        /// <summary>Hides the mission panel and marks the timeline with the result.</summary>
         private void OnMissionEnded(MissionEndedEvent evt)
         {
             _missionPanel.AddToClassList("hidden");
             _timeline.CompleteMissionMarker(evt.Succeeded);
         }
 
+        /// <summary>Sets a bar's fill width as a percentage of its track.</summary>
         private static void SetFill(VisualElement fill, float normalized) =>
             fill.style.width = Length.Percent(Mathf.Clamp01(normalized) * 100f);
     }

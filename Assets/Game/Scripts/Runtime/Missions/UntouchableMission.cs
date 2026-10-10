@@ -16,29 +16,36 @@ namespace BattleArena.Missions
         [Tooltip("Total damage the player may take during the mission, as a share of max health; reaching it fails.")]
         [SerializeField, Range(0.01f, 1f)] private float allowedDamageFraction = 0.1f;
 
+        /// <summary>Creates the state for one attempt.</summary>
         public override MissionInstance CreateInstance(MissionContext context) => new Instance(this, context);
 
+        /// <summary>Run-time state: time survived and damage taken.</summary>
         private sealed class Instance : MissionInstance
         {
             private readonly UntouchableMission _mission;
             private float _elapsed;
             private float _damageTaken;
 
+            /// <summary>Creates the state for one attempt.</summary>
             public Instance(UntouchableMission mission, MissionContext context) : base(mission, context) => _mission = mission;
 
-            // The bar is the allowance left: full at the start, draining with every hit.
+            /// <summary>The damage allowance left: full at the start, draining with every hit.</summary>
             public override float Progress => Mathf.Clamp01(1f - _damageTaken / Allowance);
 
+            /// <summary>Health the player can still lose against the allowance.</summary>
             public override string ProgressText =>
                 CachedText("{0} / {1} HP left", Mathf.Max(0, Mathf.CeilToInt(Allowance - _damageTaken)), Mathf.CeilToInt(Allowance));
 
+            /// <summary>The description with the allowance filled in.</summary>
             public override string Description => string.Format(Definition.Description, Mathf.CeilToInt(Allowance));
 
             /// <summary>Total damage allowed, against max health as it is now (a Max Health upgrade widens it).</summary>
             private float Allowance => Context.PlayerHealth.Max * _mission.allowedDamageFraction;
 
+            /// <summary>Starts tracking damage to the player.</summary>
             protected override void OnBegin() => Context.PlayerHealth.Damaged += OnPlayerDamaged;
 
+            /// <summary>Succeeds once the player has survived long enough.</summary>
             protected override void OnTick(float now, float deltaTime)
             {
                 _elapsed += deltaTime;
@@ -46,6 +53,7 @@ namespace BattleArena.Missions
                     Succeed();
             }
 
+            /// <summary>Adds a hit to the damage taken and fails once the allowance is used up.</summary>
             private void OnPlayerDamaged(Health health, DamageResult damage)
             {
                 _damageTaken += damage.Amount;
@@ -53,6 +61,7 @@ namespace BattleArena.Missions
                     Fail();
             }
 
+            /// <summary>Stops tracking damage.</summary>
             public override void Cleanup() => Context.PlayerHealth.Damaged -= OnPlayerDamaged;
         }
     }

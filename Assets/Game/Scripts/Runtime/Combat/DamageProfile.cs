@@ -8,10 +8,14 @@ namespace BattleArena.Combat
     /// </summary>
     public readonly struct DamageProfile
     {
+        /// <summary>Base damage of one hit.</summary>
         public readonly float Amount;
+        /// <summary>Chance (0..1) that a hit is critical.</summary>
         public readonly float CritChance;
+        /// <summary>Damage multiplier applied to a critical hit.</summary>
         public readonly float CritMultiplier;
 
+        /// <summary>Creates a profile; with no crit chance it always deals <paramref name="amount"/>.</summary>
         public DamageProfile(float amount, float critChance = 0f, float critMultiplier = 1f)
         {
             Amount = amount;
@@ -22,8 +26,10 @@ namespace BattleArena.Combat
         /// <summary>Damage that never crits, e.g. enemy attacks.</summary>
         public static DamageProfile Flat(float amount) => new(amount);
 
+        /// <summary>The same profile with its base damage multiplied by <paramref name="factor"/>.</summary>
         public DamageProfile Scaled(float factor) => new(Amount * factor, CritChance, CritMultiplier);
 
+        /// <summary>Rolls one hit: the base damage, or the critical damage when the crit roll succeeds.</summary>
         public float Roll(out bool isCritical)
         {
             isCritical = CritChance > 0f && Random.value < CritChance;

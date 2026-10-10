@@ -15,8 +15,13 @@ namespace BattleArena.Combat
 
         private ParticleSystem[] _particles;
 
+        /// <summary>Caches the zone's particle systems.</summary>
         private void Awake() => _particles = area.GetComponentsInChildren<ParticleSystem>(true);
 
+        /// <summary>
+        /// Starts the zone: scales the visuals to <paramref name="radius"/> and damages and slows everything inside
+        /// every <paramref name="tickInterval"/> seconds for <paramref name="duration"/> seconds.
+        /// </summary>
         public void Activate(float radius, float duration, float tickInterval, DamageProfile damagePerTick, int targetMask,
             float slowMultiplier)
         {
@@ -27,8 +32,10 @@ namespace BattleArena.Combat
             StartCoroutine(Tick(radius, duration, tickInterval, damagePerTick, targetMask, slowMultiplier));
         }
 
+        /// <summary>Nothing to do: <see cref="Activate"/> starts the zone.</summary>
         public void OnSpawned() { }
 
+        /// <summary>Stops ticking and clears the particles for the next use.</summary>
         public void OnDespawned()
         {
             StopAllCoroutines();
@@ -36,6 +43,9 @@ namespace BattleArena.Combat
                 particles.Stop(false, ParticleSystemStopBehavior.StopEmittingAndClear);
         }
 
+        /// <summary>
+        /// Applies damage and slow on every tick, then lets the visuals fade and returns the zone to its pool.
+        /// </summary>
         private IEnumerator Tick(float radius, float duration, float tickInterval, DamageProfile damage, int targetMask,
             float slowMultiplier)
         {

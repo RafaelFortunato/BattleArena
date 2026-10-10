@@ -18,6 +18,7 @@ namespace BattleArena.Editor.Debugging
         private const string SkipMenuKey = "BattleArena.DebugLoadout.SkipMenu";
         private static readonly string[] SlotNames = { "Q", "E", "R" };
 
+        /// <summary>Opens the window.</summary>
         [MenuItem("BattleArena/Debug Loadout")]
         private static void Open() => GetWindow<DebugLoadoutWindow>("Debug Loadout");
 
@@ -33,18 +34,21 @@ namespace BattleArena.Editor.Debugging
             set => EditorPrefs.SetBool(SkipMenuKey, value);
         }
 
+        /// <summary>The spell saved for <paramref name="slot"/>, or null.</summary>
         private static SpellDefinition GetSlot(int slot)
         {
             var path = AssetDatabase.GUIDToAssetPath(EditorPrefs.GetString(SlotKey + slot, string.Empty));
             return string.IsNullOrEmpty(path) ? null : AssetDatabase.LoadAssetAtPath<SpellDefinition>(path);
         }
 
+        /// <summary>Saves the spell for <paramref name="slot"/>.</summary>
         private static void SetSlot(int slot, SpellDefinition spell)
         {
             var guid = spell != null ? AssetDatabase.AssetPathToGUID(AssetDatabase.GetAssetPath(spell)) : string.Empty;
             EditorPrefs.SetString(SlotKey + slot, guid);
         }
 
+        /// <summary>Draws the slot pickers, the options and the play and equip buttons.</summary>
         private void OnGUI()
         {
             EditorGUILayout.LabelField("Spells to start the match with", EditorStyles.boldLabel);
@@ -81,17 +85,21 @@ namespace BattleArena.Editor.Debugging
 
         // ---------------------------------------------------------------- Play mode hook
 
+        /// <summary>Hooks play mode changes when the editor loads.</summary>
         [InitializeOnLoadMethod]
         private static void Register() => EditorApplication.playModeStateChanged += OnPlayModeChanged;
 
         private static bool _subscribed;
 
+        /// <summary>
+        /// Arms the loadout for this run when entering play mode (the window's button arms a single run, the toggle
+        /// every run) and skips the menu if asked.
+        /// </summary>
         private static void OnPlayModeChanged(PlayModeStateChange change)
         {
             switch (change)
             {
                 case PlayModeStateChange.EnteredPlayMode:
-                    // The window's Play button arms a single run; the toggle arms every run.
                     var armed = Enabled || SessionState.GetBool(EnabledKey, false);
                     SessionState.SetBool(EnabledKey, false);
                     if (!armed)
@@ -111,6 +119,7 @@ namespace BattleArena.Editor.Debugging
             }
         }
 
+        /// <summary>Starts the match from the main menu.</summary>
         private static void StartMatch()
         {
             var gameManager = Object.FindAnyObjectByType<GameManager>();
@@ -118,6 +127,7 @@ namespace BattleArena.Editor.Debugging
                 gameManager.StartMatch();
         }
 
+        /// <summary>Equips the loadout as the match starts.</summary>
         private static void OnGameStateChanged(GameStateChangedEvent evt)
         {
             if (evt.Previous != GameState.MainMenu || evt.Current != GameState.Playing)
@@ -125,6 +135,7 @@ namespace BattleArena.Editor.Debugging
             EquipLoadout();
         }
 
+        /// <summary>Puts the saved spells in their slots; empty slots are left alone.</summary>
         private static void EquipLoadout()
         {
             var caster = Object.FindAnyObjectByType<SpellCaster>();

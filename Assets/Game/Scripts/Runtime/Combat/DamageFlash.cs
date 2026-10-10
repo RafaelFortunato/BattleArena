@@ -22,6 +22,7 @@ namespace BattleArena.Combat
         private Material _overlay;
         private bool _isFlashing;
 
+        /// <summary>Caches the material lists used for the plain, overlaid and flashing looks.</summary>
         private void Awake()
         {
             _health = GetComponent<Health>();
@@ -35,14 +36,19 @@ namespace BattleArena.Combat
             _flash = new[] { flashMaterial };
         }
 
+        /// <summary>Starts listening for hits.</summary>
         private void OnEnable() => _health.Damaged += OnDamaged;
 
+        /// <summary>Stops listening and puts the resting materials back if a flash was running.</summary>
         private void OnDisable()
         {
             _health.Damaged -= OnDamaged;
             Restore();
         }
 
+        /// <summary>
+        /// Swaps every renderer to the flash material and schedules the restore; a hit during a flash extends it.
+        /// </summary>
         private void OnDamaged(Health health, DamageResult damage)
         {
             if (!isActiveAndEnabled || flashMaterial == null)
@@ -72,6 +78,7 @@ namespace BattleArena.Combat
                 ApplyResting();
         }
 
+        /// <summary>Ends a running flash.</summary>
         private void Restore()
         {
             CancelInvoke(nameof(Restore));
@@ -82,6 +89,7 @@ namespace BattleArena.Combat
             ApplyResting();
         }
 
+        /// <summary>Shows each renderer's own material, plus the overlay when one is set.</summary>
         private void ApplyResting()
         {
             for (var i = 0; i < renderers.Length; i++)

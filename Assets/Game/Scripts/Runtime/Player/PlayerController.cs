@@ -27,10 +27,13 @@ namespace BattleArena.Player
         /// <summary>Movement speed at full stick, including upgrades.</summary>
         public float MaxSpeed => moveSpeed * stats.MoveSpeedMultiplier;
 
+        /// <summary>Caches the character controller.</summary>
         private void Awake() => _controller = GetComponent<CharacterController>();
 
+        /// <summary>Listens for movement input.</summary>
         private void OnEnable() => input.MoveChanged += OnMoveChanged;
 
+        /// <summary>Stops listening and stops moving.</summary>
         private void OnDisable()
         {
             input.MoveChanged -= OnMoveChanged;
@@ -46,8 +49,10 @@ namespace BattleArena.Player
             _controller.enabled = true;
         }
 
+        /// <summary>Turns the stick or keys into a ground-plane direction.</summary>
         private void OnMoveChanged(Vector2 value) => _moveDirection = Vector3.ClampMagnitude(new Vector3(value.x, 0f, value.y), 1f);
 
+        /// <summary>Moves the character with gravity and turns it towards the movement direction.</summary>
         private void Update()
         {
             var isIdle = _moveDirection == Vector3.zero;

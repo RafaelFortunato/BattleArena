@@ -87,17 +87,6 @@ namespace BattleArena.Audio
         /// </summary>
         private readonly Dictionary<SoundEvent, float> _lastPlayedAt = new();
 
-        /// <summary>One running loop and the event that started it, so a live edit can be pushed onto the voice.</summary>
-        private sealed class LoopVoice
-        {
-            public AudioSource Source;
-            public SoundEvent Sound;
-        }
-
-        // Loops get their own voices rather than borrowing from the pool: the pool steals its oldest voice when
-        // everything is busy, which suits one-shots but would cut a running loop dead.
-        private readonly Dictionary<Transform, LoopVoice> _loops = new();
-
         /// <summary>Current SFX level, 0-1. Safe to read with no manager in the scene.</summary>
         public static float SfxVolume => Instance != null ? Instance.sfxVolume : 0f;
 
@@ -135,36 +124,6 @@ namespace BattleArena.Audio
         {
             if (Instance != null)
                 Instance.Play(sound, Vector3.zero, false);
-        }
-
-        /// <summary>
-        /// Starts a sound looping at <paramref name="owner"/>, or does nothing if that owner already loops it.
-        /// The owner is the key as well as the position, so a caller never holds a handle and cannot leak one.
-        /// </summary>
-        public static void StartLoop(SoundEvent sound, Transform owner)
-        {
-            if (Instance == null || sound == null || owner == null || !sound.HasClips)
-                return;
-            Instance.BeginLoop(sound, owner);
-        }
-
-        /// <summary>Stops whatever <paramref name="owner"/> had looping. Safe to call twice.</summary>
-        public static void StopLoop(Transform owner)
-        {
-            if (Instance == null || owner == null)
-                return;
-            Instance.EndLoop(owner);
-        }
-
-        /// <summary>Re-reads a sound's distances onto any loop playing it. Called by SoundEvent when edited.</summary>
-        public static void RefreshRolloff(SoundEvent sound)
-        {
-            if (Instance == null || sound == null)
-                return;
-
-            foreach (var entry in Instance._loops.Values)
-                if (entry.Source != null && entry.Sound == sound)
-                    Instance.ApplyRolloff(entry.Source, sound);
         }
 
         /// <summary>
@@ -238,6 +197,9 @@ namespace BattleArena.Audio
                 StartMusic(music);
         }
 
+        /// <summary>
+        /// Creates the pooled one-shot voices as children of the manager, replacing any left over from a domain reload.
+        /// </summary>
         private void BuildVoices()
         {
             // A domain reload wipes the array but leaves the voice objects parented here; clear them rather than
@@ -280,6 +242,10 @@ namespace BattleArena.Audio
             _musicCurrent.Play();
         }
 
+        /// <summary>
+        /// Hands the music over to <paramref name="clip"/>: the idle voice starts the new track at zero and the current
+        /// one fades out.
+        /// </summary>
         private void CrossfadeTo(AudioClip clip)
         {
             if (_musicCurrent != null && _musicCurrent.clip == clip && _musicCurrent.isPlaying)
@@ -305,6 +271,10 @@ namespace BattleArena.Audio
             _crossfadeRoutine = StartCoroutine(CrossfadeRoutine());
         }
 
+        /// <summary>
+        /// Ramps the incoming track up and the outgoing one down over <see cref="musicCrossfadeSeconds"/>, then stops
+        /// the outgoing voice.
+        /// </summary>
         private IEnumerator CrossfadeRoutine()
         {
             // Unscaled: the boss can appear just before a level-up card freezes the clock.
@@ -339,6 +309,10 @@ namespace BattleArena.Audio
                 _musicPrevious.volume = level * _musicPreviousFade;
         }
 
+        /// <summary>
+        /// Pulls the music to <paramref name="to"/> quickly, holds it for <paramref name="hold"/> seconds, then eases
+        /// it back over <paramref name="fade"/> seconds.
+        /// </summary>
         private IEnumerator DuckRoutine(float to, float hold, float fade)
         {
             // Down fast, so the cue is clear from its first note; back up slowly, so the return is not itself an event.
@@ -367,8 +341,7 @@ namespace BattleArena.Audio
         }
 
         /// <summary>
-        /// How every world voice fades with distance, in one place so the pool and the loop voices cannot drift
-        /// apart. Linear rather than Unity's logarithmic default: logarithmic collapses within a few units, which is
+        /// How every world voice fades with distance. Linear rather than Unity's logarithmic default: logarithmic collapses within a few units, which is
         /// wrong for an arena seen from above, while linear spends the whole window on distances that are on screen.
         /// </summary>
         private void ApplyRolloff(AudioSource source, SoundEvent sound)
@@ -396,10 +369,6 @@ namespace BattleArena.Audio
                 foreach (var voice in _voices)
                     if (voice != null)
                         ApplyRolloff(voice, null);
-
-            foreach (var entry in _loops.Values)
-                if (entry.Source != null)
-                    ApplyRolloff(entry.Source, entry.Sound);
         }
 
         /// <summary>Central play routine: rate limit, pick a take, acquire a voice, set level, pitch and space.</summary>
@@ -473,56 +442,6 @@ namespace BattleArena.Audio
 
             _voiceStartedAt[oldestIndex] = Time.unscaledTime;
             return _voices[oldestIndex];
-        }
-
-        private void BeginLoop(SoundEvent sound, Transform owner)
-        {
-            var clip = sound.PickClip();
-            if (clip == null)
-                return;
-
-            if (_loops.TryGetValue(owner, out var entry) && entry.Source != null)
-            {
-                if (entry.Source.clip == clip && entry.Source.isPlaying)
-                    return;
-                entry.Source.Stop();
-            }
-            else
-            {
-                var created = new GameObject("Loop").AddComponent<AudioSource>();
-                created.transform.SetParent(transform, false);
-                created.playOnAwake = false;
-                entry = new LoopVoice { Source = created };
-                _loops[owner] = entry;
-            }
-
-            entry.Sound = sound;
-            var voice = entry.Source;
-            voice.name = $"Loop {sound.name}";
-            voice.transform.position = owner.position;
-            voice.clip = clip;
-            voice.loop = true;
-            voice.volume = sound.Volume * sfxVolume * masterVolume;
-            voice.pitch = sound.RandomPitch;
-            ApplyRolloff(voice, sound);
-            voice.spatialBlend = sound.SpatialBlendOverride >= 0f ? sound.SpatialBlendOverride : worldSpatialBlend;
-            voice.Play();
-
-            if (logPlays)
-                Debug.Log($"[SFX] {sound.name} looping at {owner.name}");
-        }
-
-        private void EndLoop(Transform owner)
-        {
-            if (!_loops.TryGetValue(owner, out var entry))
-                return;
-
-            if (entry.Source != null)
-            {
-                entry.Source.Stop();
-                entry.Source.clip = null;
-            }
-            _loops.Remove(owner);
         }
     }
 }

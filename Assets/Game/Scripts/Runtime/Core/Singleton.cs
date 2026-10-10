@@ -13,18 +13,25 @@ namespace BattleArena.Core
     /// </summary>
     public abstract class Singleton<T> : MonoBehaviour where T : Singleton<T>
     {
+        /// <summary>The bound instance, or null when there is none in the scene.</summary>
         public static T Instance { get; private set; }
 
+        /// <summary>Binds this instance.</summary>
         protected virtual void Awake() => Bind();
 
+        /// <summary>Binds again, for the domain reload case where Awake does not run.</summary>
         protected virtual void OnEnable() => Bind();
 
+        /// <summary>Clears <see cref="Instance"/> when the bound instance goes away.</summary>
         protected virtual void OnDestroy()
         {
             if (Instance == this)
                 Instance = null;
         }
 
+        /// <summary>
+        /// Becomes <see cref="Instance"/>, or logs an error and stays inactive if another instance is already bound.
+        /// </summary>
         private void Bind()
         {
             if (Instance != null && Instance != this)

@@ -5077,7 +5077,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0f0ff5ccea6122a48a56177b5f46553a, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: BattleArena.Runtime::BattleArena.Enemies.KeepDistanceMovement
+  m_EditorClassIdentifier: BattleArena.Runtime::BattleArena.Enemies.Movement.KeepDistanceMovement
   preferredDistance: 10
   tolerance: 2
   retreatStep: 4
@@ -5092,7 +5092,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 01acadc6062241948ac0fd7e4ace8afd, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: BattleArena.Runtime::BattleArena.Enemies.LobbedBombAttack
+  m_EditorClassIdentifier: BattleArena.Runtime::BattleArena.Enemies.Attacks.LobbedBombAttack
   range: 14
   cooldown: 3.6
   windup: 0.6
@@ -5114,7 +5114,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d1631cdada98b814faa287362e8f736f, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: BattleArena.Runtime::BattleArena.Enemies.ContactAttack
+  m_EditorClassIdentifier: BattleArena.Runtime::BattleArena.Enemies.Attacks.ContactAttack
 --- !u!1 &1755817308134241646
 GameObject:
   m_ObjectHideFlags: 0

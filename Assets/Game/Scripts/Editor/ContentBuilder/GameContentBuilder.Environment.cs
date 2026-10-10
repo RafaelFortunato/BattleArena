@@ -9,6 +9,7 @@ using UnityEngine.Rendering;
 
 namespace BattleArena.Editor.ContentBuilder
 {
+    /// <summary>Builder part: environment prop prefabs and the helpers that assemble models and colliders.</summary>
     internal static partial class GameContentBuilder
     {
         private const string EnvironmentPrefabsFolder = PrefabsFolder + "/Environment";
@@ -24,9 +25,11 @@ namespace BattleArena.Editor.ContentBuilder
         /// </summary>
         private sealed class EnvironmentProps
         {
+            /// <summary>The environment prop prefabs.</summary>
             public GameObject AutumnTree, LanternPine, Boulder, Slab, CelticCross, Headstone, WallSegment, GroundPaths, LeafLitter;
         }
 
+        /// <summary>Builds every environment prop prefab (existing ones are kept).</summary>
         private static EnvironmentProps BuildEnvironmentProps(MaterialSet m) => new()
         {
             AutumnTree = PropPrefab("AutumnTree", root =>
@@ -74,6 +77,10 @@ namespace BattleArena.Editor.ContentBuilder
             return PropPrefab("GroundPaths", root => AddDecal(root, mesh, 0.02f, m.Dirt));
         }
 
+        /// <summary>
+        /// Returns the prop prefab <paramref name="name"/>, building and saving it with <paramref name="build"/> only
+        /// when it doesn't exist yet.
+        /// </summary>
         private static GameObject PropPrefab(string name, System.Action<GameObject> build)
         {
             var path = $"{EnvironmentPrefabsFolder}/{name}.prefab";
@@ -92,6 +99,7 @@ namespace BattleArena.Editor.ContentBuilder
             return prefab;
         }
 
+        /// <summary>Adds a model at its authored scale; see the overload with a scale.</summary>
         private static Mesh AddModel(GameObject root, string modelPath, params Material[] materials) =>
             AddModel(root, modelPath, 1f, materials);
 
@@ -111,6 +119,7 @@ namespace BattleArena.Editor.ContentBuilder
             return mesh;
         }
 
+        /// <summary>Adds the "Model" child that holds a prop's visuals.</summary>
         private static Transform AddModelRoot(GameObject root, float scale = 1f)
         {
             var model = new GameObject("Model") { layer = root.layer }.transform;
@@ -119,6 +128,7 @@ namespace BattleArena.Editor.ContentBuilder
             return model;
         }
 
+        /// <summary>Adds a child that renders <paramref name="mesh"/> with <paramref name="materials"/>.</summary>
         private static GameObject AddMeshPart(Transform parent, string name, Mesh mesh, params Material[] materials)
         {
             var part = new GameObject(name) { layer = parent.gameObject.layer };
@@ -128,18 +138,21 @@ namespace BattleArena.Editor.ContentBuilder
             return part;
         }
 
+        /// <summary>Adds a flat model lying on the ground as a decal.</summary>
         private static void AddDecal(GameObject root, string modelPath, float lift, params Material[] materials)
         {
             AddModel(root, modelPath, materials);
             FinishDecal(root, lift);
         }
 
+        /// <summary>Adds a flat mesh lying on the ground as a decal.</summary>
         private static void AddDecal(GameObject root, Mesh mesh, float lift, params Material[] materials)
         {
             AddMeshPart(AddModelRoot(root), mesh.name, mesh, materials);
             FinishDecal(root, lift);
         }
 
+        /// <summary>Lifts a decal just off the ground and keeps it from casting shadows.</summary>
         private static void FinishDecal(GameObject root, float lift)
         {
             var model = root.transform.Find("Model");
@@ -148,6 +161,7 @@ namespace BattleArena.Editor.ContentBuilder
                 renderer.shadowCastingMode = ShadowCastingMode.Off;
         }
 
+        /// <summary>Adds an upright capsule collider standing on the ground.</summary>
         private static void AddCapsule(GameObject root, float radius, float height)
         {
             var collider = root.AddComponent<CapsuleCollider>();
@@ -156,6 +170,7 @@ namespace BattleArena.Editor.ContentBuilder
             collider.height = height;
         }
 
+        /// <summary>Adds a box collider standing on the ground.</summary>
         private static void AddBox(GameObject root, Vector3 size)
         {
             var collider = root.AddComponent<BoxCollider>();
@@ -163,6 +178,7 @@ namespace BattleArena.Editor.ContentBuilder
             collider.size = size;
         }
 
+        /// <summary>Adds a mesh collider for <paramref name="mesh"/>, if there is one.</summary>
         private static void AddMeshCollider(GameObject root, Mesh mesh)
         {
             if (mesh != null)
@@ -190,6 +206,7 @@ namespace BattleArena.Editor.ContentBuilder
             return AssetDatabase.LoadAllAssetsAtPath(path).OfType<Mesh>().FirstOrDefault();
         }
 
+        /// <summary>Places a prop instance with a yaw and scale.</summary>
         private static GameObject PlaceProp(GameObject prefab, Transform parent, Vector3 position, float yaw, Vector3 scale)
         {
             var instance = (GameObject)PrefabUtility.InstantiatePrefab(prefab, parent);

@@ -10,7 +10,6 @@ using BattleArena.Interaction;
 using BattleArena.Missions;
 using Unity.AI.Navigation;
 using Unity.Cinemachine;
-using Unity.Cinemachine.TargetTracking;
 using BindingMode = Unity.Cinemachine.TargetTracking.BindingMode;
 using UnityEditor;
 using UnityEditor.SceneManagement;
@@ -23,6 +22,7 @@ using UnityEngine.UIElements;
 
 namespace BattleArena.Editor.ContentBuilder
 {
+    /// <summary>Builder part: the Arena scene.</summary>
     internal static partial class GameContentBuilder
     {
         private const float ArenaHalfSize = 40f;
@@ -46,6 +46,10 @@ namespace BattleArena.Editor.ContentBuilder
             (new Vector3(-4f, 0f, 26f), -6f),
         };
 
+        /// <summary>
+        /// Fills the scene (lighting, environment, NavMesh, player, systems, camera, UI, audio), saves it and makes it
+        /// the build's only scene.
+        /// </summary>
         private static void BuildScene(Scene scene, MaterialSet m, ContentSet content, SoundSet sounds)
         {
             BuildLighting();
@@ -65,6 +69,7 @@ namespace BattleArena.Editor.ContentBuilder
             EditorBuildSettings.scenes = new[] { new EditorBuildSettingsScene(ScenePath, true) };
         }
 
+        /// <summary>Places a prefab instance in the scene.</summary>
         private static GameObject PlacePrefab(GameObject prefab, Vector3 position, Quaternion rotation)
         {
             var instance = (GameObject)PrefabUtility.InstantiatePrefab(prefab);
@@ -74,6 +79,7 @@ namespace BattleArena.Editor.ContentBuilder
 
         // ---------------------------------------------------------------- Lighting & post
 
+        /// <summary>Adds the sun, ambient light, fog and the post-processing volume.</summary>
         private static void BuildLighting()
         {
             var sun = new GameObject("Sun").AddComponent<Light>();
@@ -104,6 +110,7 @@ namespace BattleArena.Editor.ContentBuilder
             volume.sharedProfile = BuildVolumeProfile();
         }
 
+        /// <summary>Creates or updates the post-processing profile.</summary>
         private static VolumeProfile BuildVolumeProfile()
         {
             var profile = LoadOrCreateAsset<VolumeProfile>($"{SettingsFolder}/ArenaVolumeProfile.asset");
@@ -127,6 +134,7 @@ namespace BattleArena.Editor.ContentBuilder
             return profile;
         }
 
+        /// <summary>The profile's override of type <typeparamref name="T"/>, added if missing.</summary>
         private static T GetOrAddOverride<T>(VolumeProfile profile) where T : VolumeComponent
         {
             if (profile.TryGet(out T component))
@@ -140,6 +148,9 @@ namespace BattleArena.Editor.ContentBuilder
 
         // ---------------------------------------------------------------- Environment
 
+        /// <summary>
+        /// Builds the arena: ground, paths, walls, wells, graves, trees and rocks on a reproducible random layout.
+        /// </summary>
         private static GameObject BuildEnvironment(MaterialSet m, HealingWell well)
         {
             var environment = new GameObject("Environment");
@@ -248,6 +259,7 @@ namespace BattleArena.Editor.ContentBuilder
             }
         }
 
+        /// <summary>True when <paramref name="position"/> falls inside a reserved circle.</summary>
         private static bool IsReserved(Vector3 position, List<(Vector3 position, float radius)> reserved)
         {
             foreach (var (point, radius) in reserved)
@@ -256,8 +268,10 @@ namespace BattleArena.Editor.ContentBuilder
             return false;
         }
 
+        /// <summary>A random value between <paramref name="min"/> and <paramref name="max"/>.</summary>
         private static float Range(System.Random random, float min, float max) => min + (float)random.NextDouble() * (max - min);
 
+        /// <summary>Bakes the NavMesh from the environment's colliders.</summary>
         private static void BakeNavMesh(GameObject environment)
         {
             var surface = environment.AddComponent<NavMeshSurface>();
@@ -274,6 +288,10 @@ namespace BattleArena.Editor.ContentBuilder
 
         // ---------------------------------------------------------------- Systems, camera, UI
 
+        /// <summary>
+        /// Adds the match systems (game manager, spawner, enemy director, chests, missions, level-ups) and wires them
+        /// together.
+        /// </summary>
         private static GameManager BuildSystems(MaterialSet m, ContentSet content, GameObject player, Health playerHealth, out LevelUpController levelUp)
         {
             var systems = new GameObject("Systems");
@@ -335,6 +353,7 @@ namespace BattleArena.Editor.ContentBuilder
             return gameManager;
         }
 
+        /// <summary>Adds the follow camera with its screen shake.</summary>
         private static void BuildCamera(Transform target)
         {
             var offset = new Vector3(0f, 18f, -12f);
@@ -383,10 +402,11 @@ namespace BattleArena.Editor.ContentBuilder
             SerializedSetter.For(feel.AddComponent<GameFeel>()).Set("playerHealth", playerHealth).Apply();
             SerializedSetter.For(feel.AddComponent<HurtVignette>())
                 .Set("playerHealth", playerHealth)
-                .Set("volume", Object.FindFirstObjectByType<Volume>())
+                .Set("volume", Object.FindAnyObjectByType<Volume>())
                 .Apply();
         }
 
+        /// <summary>Adds the UI document and its controllers.</summary>
         private static void BuildUserInterface(GameManager gameManager, LevelUpController levelUp, LevelUpConfig levelUpConfig,
             GameObject player, Health playerHealth, InputReader input)
         {
@@ -405,7 +425,6 @@ namespace BattleArena.Editor.ContentBuilder
 
             var hud = uiObject.AddComponent<HudController>();
             SerializedSetter.For(hud)
-                .Set("gameManager", gameManager)
                 .Set("playerHealth", playerHealth)
                 .Set("spellCaster", player.GetComponent<SpellCaster>())
                 .Apply();

@@ -9,8 +9,10 @@ namespace BattleArena.Combat
     {
         [SerializeField] private TimedRelease hitEffect;
 
+        /// <summary>Damage dealt to each target that touches the trigger; set by whoever activates it.</summary>
         public DamageProfile Damage { get; set; }
 
+        /// <summary>Damages a living target on contact and spawns the hit effect at the contact point.</summary>
         private void OnTriggerEnter(Collider other)
         {
             if (!other.TryGetComponent(out IDamageable target) || !target.IsAlive)

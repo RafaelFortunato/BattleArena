@@ -3,7 +3,7 @@ using BattleArena.Core;
 using BattleArena.Pooling;
 using UnityEngine;
 
-namespace BattleArena.Enemies
+namespace BattleArena.Enemies.Attacks
 {
     /// <summary>Curses the ground under (and around) the player: telegraphed circles that erupt after a delay.</summary>
     public sealed class GroundStrikeAttack : TelegraphedAttack
@@ -15,9 +15,10 @@ namespace BattleArena.Enemies
         [Tooltip("Extra strikes land at random points within this distance of the player.")]
         [SerializeField, Min(0f)] private float scatter = 3.5f;
 
+        /// <summary>Arms a strike under the player and scatters any extra strikes around them.</summary>
         protected override void Execute(in EnemyTickContext context)
         {
-            var damage = ScaledDamage(baseDamage);
+            var damage = ScaledDamage(BaseDamage);
             for (var i = 0; i < strikeCount; i++)
             {
                 var position = context.TargetPosition;

@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace BattleArena.Enemies
+namespace BattleArena.Enemies.Movement
 {
     /// <summary>Weaves side to side while closing in, making the enemy harder to hit.</summary>
     public sealed class ZigZagMovement : EnemyMovement
@@ -13,8 +13,10 @@ namespace BattleArena.Enemies
 
         private float _phase;
 
+        /// <summary>Randomises the weave phase so a group doesn't sway in step.</summary>
         public override void OnSpawned() => _phase = Random.value * Mathf.PI * 2f;
 
+        /// <summary>Weaves side to side on the way in; goes straight for the player once close.</summary>
         public override void Tick(in EnemyTickContext context)
         {
             var position = transform.position;

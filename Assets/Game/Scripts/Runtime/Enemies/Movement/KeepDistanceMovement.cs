@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.AI;
 
-namespace BattleArena.Enemies
+namespace BattleArena.Enemies.Movement
 {
     /// <summary>Ranged kiting: approaches to a preferred distance, backs off when the player closes in.</summary>
     public sealed class KeepDistanceMovement : EnemyMovement
@@ -11,6 +11,10 @@ namespace BattleArena.Enemies
         [SerializeField, Min(0f)] private float tolerance = 2f;
         [SerializeField, Min(0.5f)] private float retreatStep = 4f;
 
+        /// <summary>
+        /// Approaches to the preferred ring, backs off when the player is too close, and holds and faces them in
+        /// between.
+        /// </summary>
         public override void Tick(in EnemyTickContext context)
         {
             var position = transform.position;

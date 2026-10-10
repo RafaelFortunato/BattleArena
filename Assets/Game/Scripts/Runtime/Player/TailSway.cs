@@ -50,15 +50,20 @@ namespace BattleArena.Player
         private float _turnVelocity;
         private float _lastYaw;
 
+        /// <summary>
+        /// Remembers the modelled tail pose, its natural curl over the back; the sway is built on top of it.
+        /// </summary>
         private void Awake()
         {
-            // The import pose is the tail's natural curl over the back; the sway is built on top of it.
             _rest = new Quaternion[segments.Length];
             for (var i = 0; i < segments.Length; i++)
                 _rest[i] = segments[i].localRotation;
             _lastYaw = body.eulerAngles.y;
         }
 
+        /// <summary>
+        /// Overwrites the Animator's tail pose with the centred sway, bob and turn swing, every frame even when paused.
+        /// </summary>
         private void LateUpdate()
         {
             var deltaTime = Time.deltaTime;
@@ -85,6 +90,9 @@ namespace BattleArena.Player
             }
         }
 
+        /// <summary>
+        /// Advances the sway: blends between standing and running, moves the phase, and springs the turn swing.
+        /// </summary>
         private void Advance(float deltaTime)
         {
             var running = Mathf.Clamp01(controller.CurrentSpeed / runSpeed);

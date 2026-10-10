@@ -24,6 +24,7 @@ namespace BattleArena.Editor.ContentBuilder
 
         // ---------------------------------------------------------------- Pickups and interactables
 
+        /// <summary>Builds the experience gem prefab.</summary>
         private static ExperienceGem BuildGem(MaterialSet m, TimedRelease collectEffect)
         {
             var root = CreateRoot("ExperienceGem", GameLayers.Pickup);
@@ -43,6 +44,7 @@ namespace BattleArena.Editor.ContentBuilder
             return SavePrefab<ExperienceGem>(root, $"{PrefabsFolder}/Pickups/ExperienceGem.prefab");
         }
 
+        /// <summary>Builds the treasure chest prefab.</summary>
         private static TreasureChest BuildChest(MaterialSet m, TimedRelease openEffect)
         {
             var root = CreateRoot("TreasureChest", GameLayers.Interactable);
@@ -93,6 +95,7 @@ namespace BattleArena.Editor.ContentBuilder
             return SavePrefab<MissionZone>(root, $"{PrefabsFolder}/Missions/{name}.prefab");
         }
 
+        /// <summary>Builds the arcane shard prefab.</summary>
         private static MissionShard BuildMissionShard(MaterialSet m, TimedRelease collectEffect)
         {
             var root = CreateRoot("ArcaneShard", GameLayers.Pickup);
@@ -140,6 +143,7 @@ namespace BattleArena.Editor.ContentBuilder
 
         // ---------------------------------------------------------------- Enemy attacks
 
+        /// <summary>Builds the goblin archer's arrow.</summary>
         private static Projectile BuildEnemyArrow(MaterialSet m, TimedRelease hit)
         {
             var root = ProjectileRoot("EnemyArrow", 0.15f, GameLayers.EnemyProjectile);
@@ -164,9 +168,12 @@ namespace BattleArena.Editor.ContentBuilder
                 .ColorOverLife(Fade(0f, 0f, 0.3f, 1f, 1f, 0f));
         }
 
+        /// <summary>
+        /// Builds the arcane wisp's bolt, magenta-purple like the boss's orbs (enemy magic) to stand apart from the
+        /// player's cyan bolts.
+        /// </summary>
         private static Projectile BuildWispBolt(TimedRelease hit)
         {
-            // Magenta-purple like the boss's orbs (enemy magic), kept apart from the player's cyan bolts and violet arcane.
             var color = new Color(0.82f, 0.3f, 1f);
             var root = ProjectileRoot("WispBolt", 0.2f, GameLayers.EnemyProjectile);
             var t = root.transform;
@@ -179,6 +186,7 @@ namespace BattleArena.Editor.ContentBuilder
             return SaveProjectile(root, 3f, hit);
         }
 
+        /// <summary>Builds the boss's orb.</summary>
         private static Projectile BuildBossOrb(TimedRelease hit)
         {
             var color = new Color(0.8f, 0.35f, 1f);
@@ -261,6 +269,7 @@ namespace BattleArena.Editor.ContentBuilder
             return color.maxColorComponent < 0.35f ? new Color(1f, 0.55f, 0.15f) : new Color(color.r, color.g, color.b, 1f);
         }
 
+        /// <summary>Stops every renderer under <paramref name="root"/> from casting or receiving shadows.</summary>
         private static void DisableModelShadows(GameObject root)
         {
             foreach (var renderer in root.GetComponentsInChildren<Renderer>())

@@ -7,10 +7,10 @@ using UnityEngine;
 namespace BattleArena.Editor.ContentBuilder
 {
     /// <summary>
-    /// Generates every placeholder asset the game needs (materials, prefabs, data, UI settings and the
-    /// Arena scene) from primitives. Re-running it updates assets in place, keeping their GUIDs,
-    /// so it is safe to use after tweaking the builder. Swap the "Visual" children of the prefabs
-    /// for real models later; the gameplay components don't depend on the meshes.
+    /// Generates the game's content from code and the imported art: materials, prefabs, data assets, sound events,
+    /// UI settings and the Arena scene (<c>BattleArena &gt; Build Game Content</c>). Re-running it updates assets in
+    /// place, keeping their GUIDs, so it is safe to run after any change to the builder. Each partial file builds
+    /// one area of the game.
     /// </summary>
     internal static partial class GameContentBuilder
     {
@@ -27,6 +27,10 @@ namespace BattleArena.Editor.ContentBuilder
         private const string DamageFontPath = UIFolder + "/Fonts/Baloo2-ExtraBold SDF.asset";
         private const string DamageFontCharacters = "0123456789!-+.%";
 
+        /// <summary>
+        /// Rebuilds all game content into a fresh Arena scene, with a progress bar. Unsaved scene changes are offered
+        /// for saving first.
+        /// </summary>
         [MenuItem("BattleArena/Build Game Content", priority = 0)]
         public static void BuildAll()
         {
@@ -65,6 +69,10 @@ namespace BattleArena.Editor.ContentBuilder
 
         // ---------------------------------------------------------------- Physics
 
+        /// <summary>
+        /// Names the game's physics layers and sets the collision matrix: nothing collides by default, then the pairs
+        /// that matter are enabled.
+        /// </summary>
         private static void ConfigurePhysicsLayers()
         {
             var tagManager = new SerializedObject(AssetDatabase.LoadMainAssetAtPath("ProjectSettings/TagManager.asset"));
@@ -101,13 +109,16 @@ namespace BattleArena.Editor.ContentBuilder
             Collide(GameLayers.PlayerSensor, GameLayers.Interactable);
         }
 
+        /// <summary>Names the layer at <paramref name="index"/>.</summary>
         private static void SetLayerName(SerializedProperty layers, int index, string name) =>
             layers.GetArrayElementAtIndex(index).stringValue = name;
 
+        /// <summary>Lets layers <paramref name="a"/> and <paramref name="b"/> collide.</summary>
         private static void Collide(int a, int b) => Physics.IgnoreLayerCollision(a, b, false);
 
         // ---------------------------------------------------------------- Asset helpers
 
+        /// <summary>Creates <paramref name="path"/> and any missing parent folders.</summary>
         private static void EnsureFolder(string path)
         {
             if (AssetDatabase.IsValidFolder(path))
@@ -140,11 +151,8 @@ namespace BattleArena.Editor.ContentBuilder
             return prefab.GetComponent<T>();
         }
 
-        private static GameObject CreateRoot(string name, int layer)
-        {
-            var go = new GameObject(name) { layer = layer };
-            return go;
-        }
+        /// <summary>Creates an empty root object on <paramref name="layer"/>.</summary>
+        private static GameObject CreateRoot(string name, int layer) => new(name) { layer = layer };
 
         /// <summary>Creates a primitive child used purely as a visual (its collider is removed).</summary>
         private static GameObject AddVisual(Transform parent, PrimitiveType type, Material material,
@@ -164,6 +172,9 @@ namespace BattleArena.Editor.ContentBuilder
             return go;
         }
 
+        /// <summary>
+        /// Creates an empty child at <paramref name="localPosition"/>, on the parent's layer unless one is given.
+        /// </summary>
         private static Transform AddChild(Transform parent, string name, Vector3 localPosition, int? layer = null)
         {
             var child = new GameObject(name) { layer = layer ?? parent.gameObject.layer }.transform;
@@ -172,6 +183,7 @@ namespace BattleArena.Editor.ContentBuilder
             return child;
         }
 
+        /// <summary>Puts <paramref name="go"/> and all its children on <paramref name="layer"/>.</summary>
         private static void SetLayerRecursively(GameObject go, int layer)
         {
             go.layer = layer;

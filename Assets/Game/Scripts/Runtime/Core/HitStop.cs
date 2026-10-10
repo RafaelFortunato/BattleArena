@@ -23,6 +23,7 @@ namespace BattleArena.Core
                 Instance.Begin(seconds);
         }
 
+        /// <summary>Starts or extends the freeze; a freeze only starts from normal speed.</summary>
         private void Begin(float seconds)
         {
             var until = Time.unscaledTime + seconds;
@@ -40,6 +41,9 @@ namespace BattleArena.Core
             Time.timeScale = frozenScale;
         }
 
+        /// <summary>
+        /// Restores normal speed when the freeze ends, unless another system changed the time scale meanwhile.
+        /// </summary>
         private void Update()
         {
             if (!_active || Time.unscaledTime < _until)
@@ -51,6 +55,7 @@ namespace BattleArena.Core
                 Time.timeScale = 1f;
         }
 
+        /// <summary>Restores normal speed if destroyed mid-freeze.</summary>
         protected override void OnDestroy()
         {
             if (_active && Mathf.Approximately(Time.timeScale, frozenScale))

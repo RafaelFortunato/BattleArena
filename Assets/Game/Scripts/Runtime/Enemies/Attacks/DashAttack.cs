@@ -4,7 +4,7 @@ using BattleArena.Vfx;
 using UnityEngine;
 using UnityEngine.AI;
 
-namespace BattleArena.Enemies
+namespace BattleArena.Enemies.Attacks
 {
     /// <summary>
     /// Charger attack: locks a direction and shows a line on the ground during the wind-up, then
@@ -24,26 +24,34 @@ namespace BattleArena.Enemies
         private float _defaultAcceleration;
         private bool _hasHit;
 
+        /// <summary>How long the dash takes at dash speed.</summary>
         protected override float ActiveDuration => dashDistance / dashSpeed;
 
+        /// <summary>Remembers the agent's normal acceleration.</summary>
         protected override void Awake()
         {
             base.Awake();
             _defaultAcceleration = Owner.Agent.acceleration;
         }
 
+        /// <summary>Only dashes from far enough away for the dash to make sense.</summary>
         protected override bool CanStart(in EnemyTickContext context) =>
             base.CanStart(context) && PlanarSqrDistanceTo(context.TargetPosition) >= minRange * minRange;
 
+        /// <summary>
+        /// Locks the dash direction and shows the line on the ground, so the player can sidestep once it appears.
+        /// </summary>
         protected override void OnWindupStarted(in EnemyTickContext context)
         {
-            // The direction is locked here, so the player can sidestep once the line appears.
             _direction = CombatQueries.Planar(context.TargetPosition - transform.position);
             if (telegraphPrefab != null)
                 PoolManager.Spawn(telegraphPrefab, transform.position, Quaternion.identity)
                     .Show(transform.position, _direction, dashDistance, hitRadius * 2f, Windup);
         }
 
+        /// <summary>
+        /// Dashes along the locked direction, stopping short at walls instead of pathing around them.
+        /// </summary>
         protected override void Execute(in EnemyTickContext context)
         {
             var start = transform.position;
@@ -62,18 +70,22 @@ namespace BattleArena.Enemies
             Owner.MoveTo(end);
         }
 
+        /// <summary>
+        /// Hits the player once if the segment travelled since the last tick passed close enough (at dash speed it can
+        /// be several metres).
+        /// </summary>
         protected override void TickActive(in EnemyTickContext context)
         {
             var current = transform.position;
-            // Test the whole segment travelled since the last tick: at dash speed it can be several meters.
             if (!_hasHit && SqrDistanceToSegment(context.TargetPosition, _lastPosition, current) <= hitRadius * hitRadius)
             {
                 _hasHit = true;
-                ScaledDamage(baseDamage).ApplyTo(context.Target);
+                ScaledDamage(BaseDamage).ApplyTo(context.Target);
             }
             _lastPosition = current;
         }
 
+        /// <summary>Restores normal acceleration and speed and stops.</summary>
         protected override void EndActive()
         {
             Owner.Agent.acceleration = _defaultAcceleration;

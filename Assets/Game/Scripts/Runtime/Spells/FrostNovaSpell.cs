@@ -14,9 +14,10 @@ namespace BattleArena.Spells
         [SerializeField, Min(0f)] private float slowDuration = 3f;
         [SerializeField] private AreaEffect ringEffect;
 
-        // Area is the burst size, Duration how long the slow lasts.
+        /// <summary>Area is the burst size, Duration how long the slow lasts.</summary>
         public override SpellStats ScalesWith => SpellStats.Area | SpellStats.Duration;
 
+        /// <summary>Damages and chills every enemy in the burst and plays the ring effect.</summary>
         public override bool Cast(in SpellContext context)
         {
             var center = context.CasterPosition;

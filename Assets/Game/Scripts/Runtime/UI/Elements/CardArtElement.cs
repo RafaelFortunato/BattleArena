@@ -3,14 +3,6 @@ using UnityEngine.UIElements;
 
 namespace BattleArena.UI.Elements
 {
-    /// <summary>Background motif of a card's art panel; encodes rarity at a glance.</summary>
-    public enum CardPattern
-    {
-        Dots,
-        Hexagons,
-        Diamonds
-    }
-
     /// <summary>
     /// Top art panel of an upgrade card: a tinted panel whose bottom edge slants up to the right, filled with
     /// a repeating <see cref="CardPattern"/> and underlined by an accent stroke. Geometry is rebuilt only when
@@ -27,6 +19,7 @@ namespace BattleArena.UI.Elements
         private Color _accent = new(0.3f, 0.64f, 1f);
         private CardPattern _pattern = CardPattern.Hexagons;
 
+        /// <summary>The card's accent colour; tints the panel, pattern and edge stroke.</summary>
         public Color Accent
         {
             get => _accent;
@@ -37,6 +30,7 @@ namespace BattleArena.UI.Elements
             }
         }
 
+        /// <summary>The background pattern.</summary>
         [UxmlAttribute]
         public CardPattern Pattern
         {
@@ -48,12 +42,14 @@ namespace BattleArena.UI.Elements
             }
         }
 
+        /// <summary>Creates the element; it ignores the pointer and draws itself.</summary>
         public CardArtElement()
         {
             pickingMode = PickingMode.Ignore;
             generateVisualContent += Draw;
         }
 
+        /// <summary>Draws the slanted panel, its pattern and the accent stroke along the slanted edge.</summary>
         private void Draw(MeshGenerationContext context)
         {
             var rect = contentRect;
@@ -100,6 +96,7 @@ namespace BattleArena.UI.Elements
             painter.Stroke();
         }
 
+        /// <summary>Fills the panel with a staggered grid of dots.</summary>
         private void DrawDots(Painter2D painter, float w, float h)
         {
             const float spacing = 18.33f;
@@ -119,6 +116,7 @@ namespace BattleArena.UI.Elements
             painter.Fill();
         }
 
+        /// <summary>Fills the panel with a honeycomb of hexagon outlines.</summary>
         private void DrawHexagons(Painter2D painter, float w, float h)
         {
             // 36 × 62 tile: a hexagon plus the stem that links it to the one below.
@@ -143,6 +141,7 @@ namespace BattleArena.UI.Elements
             painter.Stroke();
         }
 
+        /// <summary>Fills the panel with a lattice of diamond outlines.</summary>
         private void DrawDiamonds(Painter2D painter, float w, float h)
         {
             // A lattice of the two diagonal families x ± y = 20 + 40k, with a sparkle in every cell.
@@ -219,6 +218,7 @@ namespace BattleArena.UI.Elements
             painter.LineTo(a + d * tExit);
         }
 
+        /// <summary><paramref name="color"/> with its alpha replaced.</summary>
         private static Color WithAlpha(Color color, float alpha)
         {
             color.a = alpha;

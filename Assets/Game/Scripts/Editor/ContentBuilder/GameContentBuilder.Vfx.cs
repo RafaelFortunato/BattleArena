@@ -26,18 +26,28 @@ namespace BattleArena.Editor.ContentBuilder
         private static readonly Color ToxicGreen = new(0.49f, 1f, 0.29f);
         private static readonly Color LightningBlue = new(0.56f, 0.85f, 1f);
 
+        /// <summary>Prefabs built for the spells.</summary>
         private sealed class SpellVfx
         {
+            /// <summary>Projectiles.</summary>
             public Projectile PlayerBolt, Fireball, ArcaneLance;
+            /// <summary>The meteor strike.</summary>
             public DelayedAreaStrike MeteorStrike;
+            /// <summary>Area effects.</summary>
             public AreaEffect FrostNova, PhaseArrival;
+            /// <summary>The Phase Step departure effect.</summary>
             public TimedRelease PhaseDepart;
+            /// <summary>The chain lightning effect.</summary>
             public ChainLightningEffect ChainLightning;
+            /// <summary>The arcane orbit ring.</summary>
             public OrbitingOrbs ArcaneOrbit;
+            /// <summary>The toxic cloud.</summary>
             public DamageZone ToxicMiasma;
+            /// <summary>The flare at the staff on every cast.</summary>
             public FollowTarget CastFlare;
         }
 
+        /// <summary>Builds every spell effect and projectile.</summary>
         private static SpellVfx BuildSpellVfx(MaterialSet m)
         {
             VfxMaterials.Clear();
@@ -82,11 +92,14 @@ namespace BattleArena.Editor.ContentBuilder
 
         // ---------------------------------------------------------------- Shared pieces
 
+        /// <summary>Creates the root of an effect prefab.</summary>
         private static GameObject FxRoot(string name) => CreateRoot(name, GameLayers.Default);
 
+        /// <summary>Saves an effect hierarchy as a prefab.</summary>
         private static T SaveFx<T>(GameObject root) where T : Component =>
             SavePrefab<T>(root, $"{SpellVfxFolder}/{root.name}.prefab");
 
+        /// <summary>Saves an effect that returns to its pool after <paramref name="lifetime"/> seconds.</summary>
         private static TimedRelease SaveTimed(GameObject root, float lifetime)
         {
             var release = root.AddComponent<TimedRelease>();
@@ -95,6 +108,10 @@ namespace BattleArena.Editor.ContentBuilder
             return SaveFx<TimedRelease>(root);
         }
 
+        /// <summary>
+        /// Saves an effect that scales to a spell's area and returns to its pool after <paramref name="lifetime"/>
+        /// seconds.
+        /// </summary>
         private static AreaEffect SaveArea(GameObject root, float lifetime)
         {
             var effect = root.AddComponent<AreaEffect>();
@@ -123,6 +140,9 @@ namespace BattleArena.Editor.ContentBuilder
             return SaveTimed(root, 0.7f);
         }
 
+        /// <summary>
+        /// Creates a projectile root: trigger sphere and kinematic rigidbody on <paramref name="layer"/>.
+        /// </summary>
         private static GameObject ProjectileRoot(string name, float radius, int layer = GameLayers.PlayerProjectile)
         {
             var root = CreateRoot(name, layer);
@@ -136,6 +156,7 @@ namespace BattleArena.Editor.ContentBuilder
             return root;
         }
 
+        /// <summary>Adds the projectile component and saves the prefab.</summary>
         private static Projectile SaveProjectile(GameObject root, float lifetime, TimedRelease impact)
         {
             var projectile = root.AddComponent<Projectile>();
@@ -177,6 +198,7 @@ namespace BattleArena.Editor.ContentBuilder
 
         // ---------------------------------------------------------------- Projectiles
 
+        /// <summary>Builds the player's basic bolt.</summary>
         private static Projectile BuildBoltProjectile(TimedRelease impact)
         {
             var root = ProjectileRoot("PlayerBolt", 0.2f);
@@ -190,6 +212,7 @@ namespace BattleArena.Editor.ContentBuilder
             return SaveProjectile(root, 1.2f, impact);
         }
 
+        /// <summary>Builds the fireball.</summary>
         private static Projectile BuildFireballProjectile(TimedRelease explosion)
         {
             var root = ProjectileRoot("Fireball", 0.4f);
@@ -210,6 +233,7 @@ namespace BattleArena.Editor.ContentBuilder
             return SaveProjectile(root, 1.6f, explosion);
         }
 
+        /// <summary>Colour ramp of fire particles, from white-hot to dark ember.</summary>
         private static Gradient FireGradient()
         {
             var gradient = new Gradient();
@@ -219,6 +243,7 @@ namespace BattleArena.Editor.ContentBuilder
             return gradient;
         }
 
+        /// <summary>Builds the arcane lance.</summary>
         private static Projectile BuildLanceProjectile(MaterialSet m, TimedRelease impact)
         {
             var root = ProjectileRoot("ArcaneLance", 0.35f);
@@ -291,6 +316,7 @@ namespace BattleArena.Editor.ContentBuilder
 
         // ---------------------------------------------------------------- Meteor Shower
 
+        /// <summary>Builds the meteor strike with its falling meteor.</summary>
         private static DelayedAreaStrike BuildMeteorStrike(MaterialSet m, TimedRelease impact)
         {
             var root = FxRoot("MeteorStrike");
@@ -348,11 +374,13 @@ namespace BattleArena.Editor.ContentBuilder
             return holder;
         }
 
+        /// <summary>A transparent telegraph material with a texture.</summary>
         private static Material TelegraphMaterial(string name, string texture, Color color) =>
             Transparent("Telegraph" + name, color, LoadVfxTexture(texture));
 
         // ---------------------------------------------------------------- Frost Nova
 
+        /// <summary>Builds the frost nova burst.</summary>
         private static AreaEffect BuildFrostNova()
         {
             var root = FxRoot("FrostNova");
@@ -380,6 +408,7 @@ namespace BattleArena.Editor.ContentBuilder
 
         // ---------------------------------------------------------------- Chain Lightning
 
+        /// <summary>Builds the chain lightning effect with its glow and core lines.</summary>
         private static ChainLightningEffect BuildChainLightning(TimedRelease hit, FollowTarget shock)
         {
             var root = FxRoot("ChainLightning");
@@ -404,6 +433,7 @@ namespace BattleArena.Editor.ContentBuilder
             return SaveFx<ChainLightningEffect>(root);
         }
 
+        /// <summary>Adds one line renderer for a lightning strand.</summary>
         private static LineRenderer BoltLine(Transform parent, string name, Material material)
         {
             var go = new GameObject(name) { layer = parent.gameObject.layer };
@@ -444,6 +474,7 @@ namespace BattleArena.Editor.ContentBuilder
 
         // ---------------------------------------------------------------- Arcane Orbit
 
+        /// <summary>Builds the arcane orbit ring.</summary>
         private static OrbitingOrbs BuildArcaneOrbit(MaterialSet m, TimedRelease hitEffect)
         {
             // Holds the maximum orb count: 3 base + 10 projectiles (the stat cap) + 3 Split Cast upgrades.
@@ -489,6 +520,7 @@ namespace BattleArena.Editor.ContentBuilder
 
         // ---------------------------------------------------------------- Toxic Miasma
 
+        /// <summary>Builds the toxic cloud.</summary>
         private static DamageZone BuildToxicMiasma()
         {
             var root = FxRoot("ToxicMiasma");
@@ -519,6 +551,7 @@ namespace BattleArena.Editor.ContentBuilder
 
         // ---------------------------------------------------------------- Phase Step
 
+        /// <summary>Builds the Phase Step departure effect.</summary>
         private static TimedRelease BuildPhaseDepart()
         {
             var root = FxRoot("PhaseDepart");
@@ -536,6 +569,7 @@ namespace BattleArena.Editor.ContentBuilder
             return SaveTimed(root, 1f);
         }
 
+        /// <summary>Builds the Phase Step arrival ring.</summary>
         private static AreaEffect BuildPhaseArrival()
         {
             var root = FxRoot("PhaseArrival");

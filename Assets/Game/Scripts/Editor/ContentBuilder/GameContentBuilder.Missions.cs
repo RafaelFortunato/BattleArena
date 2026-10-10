@@ -1,14 +1,14 @@
-using BattleArena.Core;
 using BattleArena.Missions;
 using BattleArena.Pooling;
-using UnityEngine;
 
 namespace BattleArena.Editor.ContentBuilder
 {
+    /// <summary>Builder part: mission definitions.</summary>
     internal static partial class GameContentBuilder
     {
         private const string MissionsFolder = DataFolder + "/Missions";
 
+        /// <summary>Creates or updates every mission and the zone and shard prefabs they use.</summary>
         private static MissionDefinition[] BuildMissions(MaterialSet m, EnemyRoster roster, TimedRelease collectEffect)
         {
             var goldZone = BuildMissionZone("HoldZone", m.MissionZone, m.MissionZoneFill, FxMaterial("ZoneGoldRune", "vfx_rune_arcane", MissionGold, 1.1f));
@@ -44,6 +44,10 @@ namespace BattleArena.Editor.ContentBuilder
             };
         }
 
+        /// <summary>
+        /// Creates or updates one mission asset with its shared fields, then lets <paramref name="configure"/> set its
+        /// own.
+        /// </summary>
         private static T Mission<T>(string file, string title, string description, float timeLimit,
             System.Func<SerializedSetter, SerializedSetter> configure, float weight = 1f) where T : MissionDefinition
         {

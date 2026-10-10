@@ -32,16 +32,22 @@ namespace BattleArena.Core
         private bool _isEnding;
         private float _stateChangedAt = float.NegativeInfinity;
 
+        /// <summary>The current phase of the session.</summary>
         public GameState State { get; private set; } = GameState.MainMenu;
+        /// <summary>Seconds since the match started; frozen when it ends.</summary>
         public float ElapsedTime { get; private set; }
+        /// <summary>Enemies killed this match.</summary>
         public int Kills { get; private set; }
+        /// <summary>Seconds of survival before the boss arrives.</summary>
         public float MatchDuration => matchDuration;
 
+        /// <summary>Raised with the new kill count after every kill.</summary>
         public event Action<int> KillsChanged;
 
         /// <summary>Gets the pause key before the game toggles pause (the menus, for the settings dialog).</summary>
         public IPauseKeyHandler PauseKeyHandler { get; set; }
 
+        /// <summary>Subscribes to input, the player's death and enemy kills.</summary>
         private void OnEnable()
         {
             input.PauseRequested += OnPauseKey;
@@ -50,6 +56,7 @@ namespace BattleArena.Core
             EventBus<EnemyKilledEvent>.Subscribe(OnEnemyKilled);
         }
 
+        /// <summary>Removes every subscription and disables input.</summary>
         private void OnDisable()
         {
             input.PauseRequested -= OnPauseKey;
@@ -61,6 +68,7 @@ namespace BattleArena.Core
             input.DisableAll();
         }
 
+        /// <summary>Resets the clock, disables input until the match starts and announces the initial state.</summary>
         private void Start()
         {
             Time.timeScale = 1f;
@@ -68,6 +76,9 @@ namespace BattleArena.Core
             EventBus<GameStateChangedEvent>.Raise(new GameStateChangedEvent(State, State));
         }
 
+        /// <summary>
+        /// Starts a match from the main menu: enables gameplay input, starts the spawner and the match clock.
+        /// </summary>
         public void StartMatch()
         {
             if (State != GameState.MainMenu)
@@ -82,6 +93,7 @@ namespace BattleArena.Core
             SetState(GameState.Playing);
         }
 
+        /// <summary>Lets the menus handle the pause key first (e.g. to close a dialog), then toggles pause.</summary>
         private void OnPauseKey(bool viaEnter)
         {
             if (PauseKeyHandler != null && PauseKeyHandler.HandlePauseKey(viaEnter))
@@ -89,7 +101,10 @@ namespace BattleArena.Core
             TogglePause();
         }
 
-        // Closes an open dialog first, like Esc; otherwise only leaves the pause menu, never enters it.
+        /// <summary>
+        /// Handles the back key: closes an open dialog first, like Esc; otherwise only leaves the pause menu, never
+        /// enters it.
+        /// </summary>
         private void OnBackKey()
         {
             if (PauseKeyHandler != null && PauseKeyHandler.HandlePauseKey(false))
@@ -98,6 +113,9 @@ namespace BattleArena.Core
                 TogglePause();
         }
 
+        /// <summary>
+        /// Pauses combat or resumes it; ignored right after a state change so one press cannot do both.
+        /// </summary>
         public void TogglePause()
         {
             if (Time.unscaledTime - _stateChangedAt < pauseToggleGuard)
@@ -119,12 +137,16 @@ namespace BattleArena.Core
             return true;
         }
 
+        /// <summary>Resumes combat after the level-up cards.</summary>
         public void EndLevelUp()
         {
             if (State == GameState.LevelUp)
                 Resume();
         }
 
+        /// <summary>
+        /// Freezes time and gameplay input under an overlay state, remembering the state to return to.
+        /// </summary>
         private void Suspend(GameState overlay)
         {
             _stateBeforeSuspend = State;
@@ -133,6 +155,7 @@ namespace BattleArena.Core
             SetState(overlay);
         }
 
+        /// <summary>Unfreezes time and input and returns to the state before the overlay.</summary>
         private void Resume()
         {
             Time.timeScale = 1f;
@@ -140,6 +163,7 @@ namespace BattleArena.Core
             SetState(_stateBeforeSuspend);
         }
 
+        /// <summary>Reloads the scene for a fresh session.</summary>
         public void Restart()
         {
             Time.timeScale = 1f;
@@ -154,6 +178,9 @@ namespace BattleArena.Core
                 _matchStartTime = Time.time - matchDuration;
         }
 
+        /// <summary>
+        /// Publishes the match clock a few times a second and starts the boss fight when time runs out.
+        /// </summary>
         private IEnumerator MatchTimer()
         {
             var wait = WaitCache.Get(TimeEventInterval);
@@ -172,6 +199,7 @@ namespace BattleArena.Core
             BeginBossFight();
         }
 
+        /// <summary>Stops the regular waves, spawns the boss and announces it.</summary>
         private void BeginBossFight()
         {
             spawner.EnterBossFight();
@@ -188,12 +216,14 @@ namespace BattleArena.Core
             EventBus<NotificationEvent>.Raise(new NotificationEvent($"{spawner.BossDefinition.DisplayName} has awakened!"));
         }
 
+        /// <summary>Counts a kill.</summary>
         private void OnEnemyKilled(EnemyKilledEvent _)
         {
             Kills++;
             KillsChanged?.Invoke(Kills);
         }
 
+        /// <summary>Ends the match in victory.</summary>
         private void OnBossDied(Health health)
         {
             health.Died -= OnBossDied;
@@ -201,8 +231,12 @@ namespace BattleArena.Core
             EndMatch(GameState.Victory);
         }
 
+        /// <summary>Ends the match in defeat.</summary>
         private void OnPlayerDied(Health _) => EndMatch(GameState.Defeat);
 
+        /// <summary>
+        /// Stops the clock, the spawner and input, then shows the end screen. Only the first result counts.
+        /// </summary>
         private void EndMatch(GameState result)
         {
             if (_isEnding || !State.IsCombat())
@@ -221,6 +255,9 @@ namespace BattleArena.Core
             StartCoroutine(ShowEndScreen(result));
         }
 
+        /// <summary>
+        /// Plays the final moment in slow motion, then freezes time and switches to the result state.
+        /// </summary>
         private IEnumerator ShowEndScreen(GameState result)
         {
             // Brief slow motion so the final blow reads before the end screen appears.
@@ -230,6 +267,7 @@ namespace BattleArena.Core
             SetState(result);
         }
 
+        /// <summary>Changes state and announces it on the event bus.</summary>
         private void SetState(GameState next)
         {
             if (State == next)

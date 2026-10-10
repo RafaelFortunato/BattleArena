@@ -13,11 +13,19 @@ namespace BattleArena.Combat
 
         private float _invulnerableUntil;
 
+        /// <summary>Current hit points.</summary>
         public float Current { get; private set; }
+        /// <summary>Maximum hit points.</summary>
         public float Max => maxHealth;
+        /// <summary>Current health as a fraction of the maximum, 0..1.</summary>
         public float Normalized => Current / maxHealth;
+        /// <summary>True while above zero health.</summary>
         public bool IsAlive => Current > 0f;
+        /// <summary>
+        /// True while damage is being ignored (after a hit, or from <see cref="GrantInvulnerability"/>).
+        /// </summary>
         public bool IsInvulnerable => Time.time < _invulnerableUntil;
+        /// <summary>Seconds of invulnerability left.</summary>
         public float InvulnerableRemaining => Mathf.Max(0f, _invulnerableUntil - Time.time);
 
         /// <summary>Reduces every hit with diminishing returns; see <see cref="ArmorDamageMultiplier"/>.</summary>
@@ -33,10 +41,12 @@ namespace BattleArena.Combat
         public event Action<Health> Changed;
         /// <summary>Raised with the full damage of the hit after armor, even if it exceeds the remaining health.</summary>
         public event Action<Health, DamageResult> Damaged;
+        /// <summary>Raised once when health reaches zero.</summary>
         public event Action<Health> Died;
         /// <summary>Raised by <see cref="GrantInvulnerability"/> (e.g. Phase Step), not by the short grace period after a hit.</summary>
         public event Action<float> InvulnerabilityGranted;
 
+        /// <summary>Starts at full health.</summary>
         private void Awake() => Current = maxHealth;
 
         /// <summary>Resets to full health with a new maximum. Used when pooled enemies are respawned.</summary>
@@ -59,6 +69,9 @@ namespace BattleArena.Combat
             Changed?.Invoke(this);
         }
 
+        /// <summary>
+        /// Applies a hit after armor, starts the post-hit grace period and raises the damage, change and death events.
+        /// </summary>
         public void TakeDamage(float amount, bool isCritical = false)
         {
             if (!IsAlive || amount <= 0f || Time.time < _invulnerableUntil)
@@ -86,6 +99,7 @@ namespace BattleArena.Combat
             InvulnerabilityGranted?.Invoke(duration);
         }
 
+        /// <summary>Restores health up to the maximum. Has no effect on the dead.</summary>
         public void Heal(float amount)
         {
             if (!IsAlive || amount <= 0f || Current >= maxHealth)

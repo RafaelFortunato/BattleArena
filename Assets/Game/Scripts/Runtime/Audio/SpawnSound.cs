@@ -12,8 +12,10 @@ namespace BattleArena.Audio
     {
         [SerializeField] private SoundEvent sound;
 
+        /// <summary>Plays the sound at the spawn position.</summary>
         public void OnSpawned() => AudioManager.PlayAt(sound, transform.position);
 
+        /// <summary>Nothing to do: the sound is fire-and-forget.</summary>
         public void OnDespawned() { }
     }
 }

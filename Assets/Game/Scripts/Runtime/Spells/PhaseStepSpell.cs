@@ -17,12 +17,17 @@ namespace BattleArena.Spells
         [SerializeField] private AreaEffect arrivalRing;
         [SerializeField, Min(0.1f)] private float arrivalRingRadius = 1.5f;
 
-        // A fixed escape: none of the shared stats change it.
+        /// <summary>A fixed escape: none of the shared stats change it.</summary>
         public override SpellStats ScalesWith => SpellStats.None;
 
+        /// <summary>Shows the immunity time on the card instead of a damage share.</summary>
         public override (string Label, string Value) CardHeadline =>
             ("Immunity", invulnerabilityDuration.ToString("0.#", System.Globalization.CultureInfo.InvariantCulture) + "s");
 
+        /// <summary>
+        /// Blinks forward, stopping at walls and obstacles, then grants immunity; fails when there is no walkable
+        /// ground to land on.
+        /// </summary>
         public override bool Cast(in SpellContext context)
         {
             var start = context.CasterPosition;

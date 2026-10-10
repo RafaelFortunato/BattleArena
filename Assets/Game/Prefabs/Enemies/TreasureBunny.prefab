@@ -10043,7 +10043,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a578944629f5f794d947dc5dfc31a20f, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: BattleArena.Runtime::BattleArena.Enemies.FleeMovement
+  m_EditorClassIdentifier: BattleArena.Runtime::BattleArena.Enemies.Movement.FleeMovement
   fleeDistance: 14
   fleeStep: 6
   wanderRadius: 6

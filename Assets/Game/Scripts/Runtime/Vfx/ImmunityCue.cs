@@ -20,20 +20,24 @@ namespace BattleArena.Vfx
         private Health _health;
         private Coroutine _routine;
 
+        /// <summary>Caches the health and hides the bubble.</summary>
         private void Awake()
         {
             _health = GetComponent<Health>();
             bubble.SetActive(false);
         }
 
+        /// <summary>Listens for immunity grants.</summary>
         private void OnEnable() => _health.InvulnerabilityGranted += OnGranted;
 
+        /// <summary>Stops listening and hides the bubble.</summary>
         private void OnDisable()
         {
             _health.InvulnerabilityGranted -= OnGranted;
             Stop();
         }
 
+        /// <summary>Starts (or restarts) showing the bubble.</summary>
         private void OnGranted(float duration)
         {
             if (duration <= 0f)
@@ -43,7 +47,10 @@ namespace BattleArena.Vfx
             _routine = StartCoroutine(Play());
         }
 
-        // Runs until the immunity actually ends, so a second grant mid-way simply extends it.
+        /// <summary>
+        /// Shows the bubble until the immunity actually ends, so a second grant mid-way simply extends it, blinking it
+        /// near the end.
+        /// </summary>
         private IEnumerator Play()
         {
             var nextBlink = 0f;
@@ -68,6 +75,7 @@ namespace BattleArena.Vfx
             Stop();
         }
 
+        /// <summary>Stops the routine and hides the bubble.</summary>
         private void Stop()
         {
             if (_routine != null)

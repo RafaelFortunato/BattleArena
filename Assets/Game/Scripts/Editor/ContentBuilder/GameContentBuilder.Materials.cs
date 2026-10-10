@@ -4,27 +4,43 @@ using UnityEngine.Rendering;
 
 namespace BattleArena.Editor.ContentBuilder
 {
+    /// <summary>Builder part: materials.</summary>
     internal static partial class GameContentBuilder
     {
-        /// <summary>Every material used by the placeholder art.</summary>
+        /// <summary>Every material the builder assigns, created or updated once per build.</summary>
         private sealed class MaterialSet
         {
+            /// <summary>Arena ground and generic scenery.</summary>
             public Material Ground, GroundPatch, Stone, Wall, Wood, Leaves, Gold;
+            /// <summary>Lantern pine.</summary>
             public Material PineBark, PineNeedles, PineNeedlesDark, LanternIron, LanternGlow;
+            /// <summary>Graves, walls, wells and other stone props.</summary>
             public Material PropStone, PropStoneDark, PropStoneLight, GraveStone, Moss, Slate, HealingWater, WellDepth, Dirt;
+            /// <summary>Autumn trees and rocks.</summary>
             public Material AutumnWood, LeafRust, LeafRustDark, LeafOchre, RockStone, RockMoss;
+            /// <summary>The player character.</summary>
             public Material HuskyBody, HuskyCrystal;
+            /// <summary>Monster atlases (shared, the Grunt's recolour and the black dragon).</summary>
             public Material MonsterAtlas, MonsterGrunt, MonsterBlackDragon;
+            /// <summary>Chest, arrows and attack telegraphs.</summary>
             public Material ChestWood, ChestIron, Fletching, TelegraphLane, TelegraphLaneFill;
+            /// <summary>Enemy wind-ups, curses, bombs and wisp bolts.</summary>
             public Material WindupGlow, CurseGlow, BombBody, WispBolt;
+            /// <summary>Hit flash.</summary>
             public Material Flash;
-            public Material PlayerBolt, Fireball, BossOrb, Meteor, Gem, ArcaneOrb;
+            /// <summary>Player projectiles and pickups.</summary>
+            public Material PlayerBolt, Fireball, Meteor, Gem, ArcaneOrb;
+            /// <summary>Enemy strike markers.</summary>
             public Material StrikeEnemyRing, StrikeEnemyFill;
+            /// <summary>Generic particle bursts.</summary>
             public Material Particles;
+            /// <summary>Health bars, damage numbers and the frost overlay.</summary>
             public Material HealthBar, DamageText, FrostOverlay;
+            /// <summary>Mission zones, shards and the objective pointer.</summary>
             public Material MissionZone, MissionZoneFill, ArcaneShard, MissionCrystal, PointerGlow;
         }
 
+        /// <summary>Creates or updates every material.</summary>
         private static MaterialSet BuildMaterials()
         {
             return new MaterialSet
@@ -110,6 +126,7 @@ namespace BattleArena.Editor.ContentBuilder
             };
         }
 
+        /// <summary>Creates or updates a URP Lit material.</summary>
         private static Material Lit(string name, Color baseColor, float smoothness = 0.3f, float metallic = 0f, Color? emission = null,
             Texture2D baseMap = null, Vector2? tiling = null)
         {
@@ -134,6 +151,7 @@ namespace BattleArena.Editor.ContentBuilder
             return material;
         }
 
+        /// <summary>Creates or updates a transparent URP Unlit material.</summary>
         private static Material Transparent(string name, Color color, Texture2D texture = null)
         {
             var material = LoadOrCreateMaterial(name, "Universal Render Pipeline/Unlit");
@@ -173,6 +191,7 @@ namespace BattleArena.Editor.ContentBuilder
             return material;
         }
 
+        /// <summary>The shared additive particle material.</summary>
         private static Material ParticleMaterial()
         {
             var material = LoadOrCreateMaterial("Particles", "Universal Render Pipeline/Particles/Unlit");
@@ -200,6 +219,7 @@ namespace BattleArena.Editor.ContentBuilder
             return material;
         }
 
+        /// <summary>The world-space health bar material.</summary>
         private static Material HealthBarMaterial()
         {
             var material = LoadOrCreateMaterial("EnemyHealthBar", "BattleArena/HealthBar");
@@ -256,6 +276,9 @@ namespace BattleArena.Editor.ContentBuilder
             return material;
         }
 
+        /// <summary>
+        /// Loads the material <paramref name="name"/> with <paramref name="shaderName"/>, creating it if needed.
+        /// </summary>
         private static Material LoadOrCreateMaterial(string name, string shaderName)
         {
             var path = $"{MaterialsFolder}/{name}.mat";
@@ -290,6 +313,7 @@ namespace BattleArena.Editor.ContentBuilder
             return AssetDatabase.LoadAssetAtPath<Texture2D>(path);
         }
 
+        /// <summary>Parses "#RRGGBB"; magenta flags a typo.</summary>
         private static Color Hex(string hex) => ColorUtility.TryParseHtmlString(hex, out var color) ? color : Color.magenta;
     }
 }

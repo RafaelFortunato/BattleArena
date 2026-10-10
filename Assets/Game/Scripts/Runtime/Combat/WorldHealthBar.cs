@@ -16,20 +16,28 @@ namespace BattleArena.Combat
 
         private MaterialPropertyBlock _properties;
 
+        /// <summary>Creates the property block used to push the fill value.</summary>
         private void Awake() => _properties = new MaterialPropertyBlock();
 
+        /// <summary>Starts following the health and shows its current state.</summary>
         private void OnEnable()
         {
             health.Changed += Refresh;
             Refresh(health);
         }
 
+        /// <summary>Stops following the health.</summary>
         private void OnDisable() => health.Changed -= Refresh;
 
+        /// <summary>Shows the respawned owner's health (normally full, so hidden).</summary>
         public void OnSpawned() => Refresh(health);
 
+        /// <summary>Hides the bar.</summary>
         public void OnDespawned() => bar.enabled = false;
 
+        /// <summary>
+        /// Shows the bar with the current fill while the owner is hurt and alive; hides it otherwise.
+        /// </summary>
         private void Refresh(Health source)
         {
             var normalized = source.Normalized;

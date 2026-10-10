@@ -19,6 +19,7 @@ namespace BattleArena.Combat
             return new ReadOnlySpan<Collider>(Buffer, 0, count);
         }
 
+        /// <summary>The closest living damageable within <paramref name="radius"/>; false when there is none.</summary>
         public static bool TryFindNearest(Vector3 origin, float radius, int layerMask, out Transform nearest)
         {
             nearest = null;
@@ -56,6 +57,12 @@ namespace BattleArena.Combat
         }
 
         /// <summary>Slows and damages every living target in the radius. Returns how many were hit.</summary>
+        /// <param name="center">Centre of the area.</param>
+        /// <param name="radius">Radius of the area.</param>
+        /// <param name="damage">Damage rolled separately for each target.</param>
+        /// <param name="layerMask">Layers that can be hit.</param>
+        /// <param name="slowMultiplier">Speed multiplier while slowed, 0..1.</param>
+        /// <param name="slowDuration">Seconds the slow lasts.</param>
         /// <param name="chill">Frost slows show on the target; see <see cref="ISlowable.ApplySlow"/>.</param>
         public static int DamageAndSlowInRadius(Vector3 center, float radius, in DamageProfile damage, int layerMask,
             float slowMultiplier, float slowDuration, bool chill = false)

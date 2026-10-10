@@ -29,6 +29,7 @@ namespace BattleArena.Vfx
         [Header("Boss")]
         [SerializeField, Range(0f, 1f)] private float bossArrivalShake = 0.6f;
 
+        /// <summary>Listens for player hits, kills and the boss's arrival.</summary>
         private void OnEnable()
         {
             playerHealth.Damaged += OnPlayerDamaged;
@@ -36,6 +37,7 @@ namespace BattleArena.Vfx
             EventBus<BossSpawnedEvent>.Subscribe(OnBossSpawned);
         }
 
+        /// <summary>Stops listening.</summary>
         private void OnDisable()
         {
             playerHealth.Damaged -= OnPlayerDamaged;
@@ -43,6 +45,9 @@ namespace BattleArena.Vfx
             EventBus<BossSpawnedEvent>.Unsubscribe(OnBossSpawned);
         }
 
+        /// <summary>
+        /// Shakes the screen by how big a share of health the hit took, and freezes briefly on a heavy hit.
+        /// </summary>
         private void OnPlayerDamaged(Health health, DamageResult damage)
         {
             var fraction = damage.Amount / health.Max;
@@ -51,6 +56,7 @@ namespace BattleArena.Vfx
                 HitStop.Trigger(heavyHitStop);
         }
 
+        /// <summary>Shakes and freezes briefly when a heavy enemy dies.</summary>
         private void OnEnemyKilled(EnemyKilledEvent evt)
         {
             if (evt.Definition == null || evt.Definition.MaxHealth < heavyEnemyHealth)
@@ -59,6 +65,7 @@ namespace BattleArena.Vfx
             HitStop.Trigger(heavyKillStop);
         }
 
+        /// <summary>Shakes the screen as the boss arrives.</summary>
         private void OnBossSpawned(BossSpawnedEvent evt) => ScreenShake.Add(bossArrivalShake);
     }
 }

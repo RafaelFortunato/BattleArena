@@ -38,10 +38,13 @@ namespace BattleArena.Player
         private float _speed;
         private float _castElapsed = float.PositiveInfinity;
 
+        /// <summary>Listens for spell casts.</summary>
         private void OnEnable() => EventBus<SpellCastEvent>.Subscribe(OnSpellCast);
 
+        /// <summary>Stops listening for spell casts.</summary>
         private void OnDisable() => EventBus<SpellCastEvent>.Unsubscribe(OnSpellCast);
 
+        /// <summary>Feeds the smoothed speed and run rate to the Animator and fades the cast layer.</summary>
         private void Update()
         {
             var deltaTime = Time.deltaTime;
@@ -65,6 +68,9 @@ namespace BattleArena.Player
             return Mathf.Min(fadeIn, fadeOut);
         }
 
+        /// <summary>
+        /// Restarts the cast thrust (a quick double cast reads as two thrusts) and bursts a flare at the crystal.
+        /// </summary>
         private void OnSpellCast(SpellCastEvent evt)
         {
             // Restart from the top even mid-cast: a quick double cast reads as two thrusts.

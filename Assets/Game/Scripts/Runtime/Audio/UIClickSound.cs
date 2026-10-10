@@ -15,6 +15,9 @@ namespace BattleArena.Audio
         private VisualElement _root;
         private Button _hovered;
 
+        /// <summary>
+        /// Listens for clicks and hovers on the document root, in the trickle-down phase so every button is covered.
+        /// </summary>
         private void OnEnable()
         {
             _root = GetComponent<UIDocument>().rootVisualElement;
@@ -22,19 +25,24 @@ namespace BattleArena.Audio
             _root.RegisterCallback<PointerOverEvent>(OnPointerOver, TrickleDown.TrickleDown);
         }
 
+        /// <summary>Removes the root listeners.</summary>
         private void OnDisable()
         {
             _root.UnregisterCallback<ClickEvent>(OnClick, TrickleDown.TrickleDown);
             _root.UnregisterCallback<PointerOverEvent>(OnPointerOver, TrickleDown.TrickleDown);
         }
 
+        /// <summary>Plays the click sound when the clicked element is, or sits inside, a button.</summary>
         private static void OnClick(ClickEvent evt)
         {
             if (FindButton(evt.target as VisualElement) != null)
                 AudioManager.PlayClick();
         }
 
-        // PointerOver fires for every child the pointer crosses, so only a change of button counts as a hover.
+        /// <summary>
+        /// Plays the hover sound when the pointer reaches a new enabled button. PointerOver fires for every child the
+        /// pointer crosses, so only a change of button counts.
+        /// </summary>
         private void OnPointerOver(PointerOverEvent evt)
         {
             var button = FindButton(evt.target as VisualElement);
@@ -46,6 +54,9 @@ namespace BattleArena.Audio
                 AudioManager.PlayHover();
         }
 
+        /// <summary>
+        /// The button that contains <paramref name="element"/> (or is it), or null when it is not part of a button.
+        /// </summary>
         private static Button FindButton(VisualElement element)
         {
             for (; element != null; element = element.parent)

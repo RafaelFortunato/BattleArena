@@ -3,7 +3,7 @@ using BattleArena.Core;
 using BattleArena.Pooling;
 using UnityEngine;
 
-namespace BattleArena.Enemies
+namespace BattleArena.Enemies.Attacks
 {
     /// <summary>
     /// Kamikaze: when close, stops and lights a fuse (the blast zone is marked on the ground), then
@@ -14,12 +14,14 @@ namespace BattleArena.Enemies
         [SerializeField] private DelayedAreaStrike blastPrefab;
         [SerializeField, Min(0.5f)] private float blastRadius = 3f;
 
+        /// <summary>Arms the blast as the fuse is lit, so killing the enemy now no longer stops it.</summary>
         protected override void OnWindupStarted(in EnemyTickContext context)
         {
             var blast = PoolManager.Spawn(blastPrefab, transform.position, Quaternion.identity);
-            blast.Arm(blastRadius, Windup, ScaledDamage(baseDamage), GameLayers.PlayerMask);
+            blast.Arm(blastRadius, Windup, ScaledDamage(BaseDamage), GameLayers.PlayerMask);
         }
 
+        /// <summary>Removes the enemy as it goes off, without rewards.</summary>
         protected override void Execute(in EnemyTickContext context) => Owner.Vanish();
     }
 }

@@ -13,10 +13,16 @@ namespace BattleArena.Editor.ContentBuilder
     {
         private readonly SerializedObject _serializedObject;
 
+        /// <summary>Wraps <paramref name="target"/> in a serialized object.</summary>
         private SerializedSetter(Object target) => _serializedObject = new SerializedObject(target);
 
+        /// <summary>Starts setting fields on <paramref name="target"/>.</summary>
         public static SerializedSetter For(Object target) => new(target);
 
+        /// <summary>
+        /// Sets a serialized field by its path; supports object references and arrays, enums, numbers, strings,
+        /// colours, vectors and curves.
+        /// </summary>
         public SerializedSetter Set(string propertyPath, object value)
         {
             var property = _serializedObject.FindProperty(propertyPath)
@@ -72,6 +78,7 @@ namespace BattleArena.Editor.ContentBuilder
             return this;
         }
 
+        /// <summary>Writes the changes without recording undo.</summary>
         public void Apply() => _serializedObject.ApplyModifiedPropertiesWithoutUndo();
     }
 }

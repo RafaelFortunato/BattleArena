@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace BattleArena.Enemies
+namespace BattleArena.Enemies.Attacks
 {
     /// <summary>
     /// Melee hit when touching the player. Range, damage and rate come from the <see cref="EnemyDefinition"/>.
@@ -11,12 +11,16 @@ namespace BattleArena.Enemies
         private float _readyAt;
         private Vector3 _lastPosition;
 
+        /// <summary>Makes the attack ready and starts tracking movement from the spawn point.</summary>
         public override void OnSpawned()
         {
             _readyAt = 0f;
             _lastPosition = transform.position;
         }
 
+        /// <summary>
+        /// Hits the player when the path travelled since the last tick came within reach, then waits out the cooldown.
+        /// </summary>
         public override void Tick(in EnemyTickContext context)
         {
             var current = transform.position;

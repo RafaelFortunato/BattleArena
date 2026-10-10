@@ -3,25 +3,6 @@ using UnityEngine.UIElements;
 
 namespace BattleArena.UI.Elements
 {
-    /// <summary>Something the player can do, as shown in a button prompt.</summary>
-    public enum ControlAction
-    {
-        Move,
-        /// <summary>All three spell buttons in a row.</summary>
-        Spells,
-        Spell1,
-        Spell2,
-        Spell3,
-        Interact,
-        Pause,
-        /// <summary>Leave a menu: Esc on a keyboard, B / Circle on a gamepad.</summary>
-        Back,
-        /// <summary>Move between level-up cards.</summary>
-        Browse,
-        /// <summary>Pick the highlighted card.</summary>
-        Confirm
-    }
-
     /// <summary>
     /// The button(s) for one <see cref="ControlAction"/>, drawn for the device the player is using: keycaps on a
     /// keyboard, face buttons on a gamepad (A/B/X/Y letters, or PlayStation symbols on a DualShock or DualSense).
@@ -31,11 +12,17 @@ namespace BattleArena.UI.Elements
     [UxmlElement]
     public partial class ControlGlyph : VisualElement
     {
+        /// <summary>Xbox letters for the four face buttons, by <see cref="FaceButton"/>.</summary>
+        private static readonly string[] XboxLetters = { "A", "B", "X", "Y" };
+        /// <summary>PlayStation symbols for the four face buttons, by <see cref="FaceButton"/>.</summary>
+        private static readonly string[] PlayStationSymbols = { "cross", "circle", "square", "triangle" };
+
         private ControlAction _action;
         private string _keycapClass;
         private ControlDevice _builtFor;
         private bool _built;
 
+        /// <summary>The action whose button(s) the glyph shows.</summary>
         [UxmlAttribute]
         public ControlAction Action
         {
@@ -59,6 +46,7 @@ namespace BattleArena.UI.Elements
             }
         }
 
+        /// <summary>Creates the glyph and follows the control scheme while it is on a panel.</summary>
         public ControlGlyph()
         {
             pickingMode = PickingMode.Ignore;
@@ -73,8 +61,10 @@ namespace BattleArena.UI.Elements
             Rebuild();
         }
 
+        /// <summary>Rebuilds for the device the player switched to.</summary>
         private void OnSchemeChanged(ControlDevice _) => Rebuild();
 
+        /// <summary>Replaces the children with keycaps or gamepad buttons for the current device.</summary>
         private void Rebuild()
         {
             Clear();
@@ -88,6 +78,7 @@ namespace BattleArena.UI.Elements
 
         // ---------------------------------------------------------------- Keyboard
 
+        /// <summary>Adds the keycaps for the action.</summary>
         private void BuildKeyboard()
         {
             switch (_action)
@@ -126,12 +117,14 @@ namespace BattleArena.UI.Elements
             }
         }
 
+        /// <summary>Adds one keycap per key name.</summary>
         private void Keys(params string[] keys)
         {
             foreach (var key in keys)
                 Key(key);
         }
 
+        /// <summary>Adds a keycap labelled <paramref name="text"/>.</summary>
         private Label Key(string text)
         {
             var key = new Label(text) { pickingMode = PickingMode.Ignore };
@@ -140,6 +133,7 @@ namespace BattleArena.UI.Elements
             return key;
         }
 
+        /// <summary>Adds a keycap showing an arrow icon.</summary>
         private void ArrowKey(string iconClass)
         {
             var key = new VisualElement { pickingMode = PickingMode.Ignore };
@@ -152,6 +146,7 @@ namespace BattleArena.UI.Elements
             Add(key);
         }
 
+        /// <summary>Applies the keycap classes, including any extra ones from <see cref="KeycapClass"/>.</summary>
         private void StyleKeycap(VisualElement key)
         {
             key.AddToClassList("keycap");
@@ -163,6 +158,7 @@ namespace BattleArena.UI.Elements
 
         // ---------------------------------------------------------------- Gamepad
 
+        /// <summary>Adds the gamepad buttons for the action.</summary>
         private void BuildGamepad(bool playStation)
         {
             switch (_action)
@@ -198,18 +194,22 @@ namespace BattleArena.UI.Elements
             }
         }
 
+        /// <summary>The four face buttons by position; indexes the letter and symbol tables.</summary>
         private enum FaceButton
         {
+            /// <summary>Bottom button (A, cross).</summary>
             South,
+            /// <summary>Right button (B, circle).</summary>
             East,
+            /// <summary>Left button (X, square).</summary>
             West,
+            /// <summary>Top button (Y, triangle).</summary>
             North
         }
 
-        // Xbox letters and PlayStation symbols for the four face buttons, by position.
-        private static readonly string[] XboxLetters = { "A", "B", "X", "Y" };
-        private static readonly string[] PlayStationSymbols = { "cross", "circle", "square", "triangle" };
-
+        /// <summary>
+        /// Adds a face button: an Xbox letter, or the PlayStation symbol when <paramref name="playStation"/>.
+        /// </summary>
         private void Face(FaceButton button, bool playStation)
         {
             var glyph = new VisualElement { pickingMode = PickingMode.Ignore };
@@ -238,6 +238,7 @@ namespace BattleArena.UI.Elements
             Add(glyph);
         }
 
+        /// <summary>Adds a round gamepad glyph with an icon (stick, d-pad, menu button).</summary>
         private void Ring(string iconClass)
         {
             var glyph = new VisualElement { pickingMode = PickingMode.Ignore };

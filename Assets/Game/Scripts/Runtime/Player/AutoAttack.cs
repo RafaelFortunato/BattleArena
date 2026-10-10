@@ -26,18 +26,22 @@ namespace BattleArena.Player
 
         private Coroutine _fireLoop;
 
+        /// <summary>Listens for match state changes.</summary>
         private void OnEnable() => EventBus<GameStateChangedEvent>.Subscribe(OnGameStateChanged);
 
+        /// <summary>Stops listening and stops firing.</summary>
         private void OnDisable()
         {
             EventBus<GameStateChangedEvent>.Unsubscribe(OnGameStateChanged);
             StopFiring();
         }
 
+        /// <summary>
+        /// Fires during combat and stops when the match ends. Pause and level-up screens freeze time, which already
+        /// stops the loop, so they are left alone.
+        /// </summary>
         private void OnGameStateChanged(GameStateChangedEvent evt)
         {
-            // Pause and level-up screens use timeScale, which already freezes the loop,
-            // so only start/stop on real combat changes.
             if (evt.Current.IsCombat())
             {
                 _fireLoop ??= StartCoroutine(FireLoop());
@@ -48,6 +52,7 @@ namespace BattleArena.Player
             }
         }
 
+        /// <summary>Stops the fire loop if it is running.</summary>
         private void StopFiring()
         {
             if (_fireLoop == null)
@@ -56,6 +61,7 @@ namespace BattleArena.Player
             _fireLoop = null;
         }
 
+        /// <summary>Fires at the nearest enemy in range on every interval, shortened by attack speed.</summary>
         private IEnumerator FireLoop()
         {
             var interval = 0f;
@@ -76,13 +82,16 @@ namespace BattleArena.Player
             }
         }
 
+        /// <summary>
+        /// Fires a fan of bolts at <paramref name="targetPosition"/>. Basic attacks always deal 100% of Attack; they
+        /// grow through attack speed, projectiles and pierce.
+        /// </summary>
         private void Fire(Vector3 targetPosition)
         {
             var origin = muzzle.position;
             var aim = CombatQueries.AimAt(origin, targetPosition);
             var bolts = Mathf.Min(maxBolts, 1 + stats.ExtraProjectiles);
             var totalPierce = pierce + stats.ExtraPierce;
-            // Basic attacks always deal 100% of Attack; they grow through attack speed, projectiles and pierce.
             var damage = stats.CreateDamage(1f);
             var firstAngle = -spreadAngle * (bolts - 1) * 0.5f;
 
