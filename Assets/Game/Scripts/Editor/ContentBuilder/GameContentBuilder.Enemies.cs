@@ -101,7 +101,7 @@ namespace BattleArena.Editor.ContentBuilder
             Behaviour<KeepDistanceMovement>(archerRoot, ("preferredDistance", 9f), ("tolerance", 2f));
             Behaviour<ProjectileAttack>(archerRoot,
                 ("range", 13f), ("cooldown", 2.6f), ("windup", 0.55f), ("baseDamage", 10f),
-                ("windupIndicator", WindupIndicator(archerRoot, m.WindupGlow, new Vector3(0.35f, 1.2f, 0.55f), 0.28f)),
+                ("windupIndicator", WindupIndicator(archerRoot, "EnemyWindupGlow", WindupGlowColor, new Vector3(0.35f, 1.2f, 0.55f), 0.28f)),
                 ("projectilePrefab", arrow), ("muzzle", AddChild(archerRoot.transform, "Muzzle", new Vector3(0.35f, 1.2f, 0.6f))),
                 ("projectileSpeed", 12f), ("projectileCount", 1));
             archerRoot.AddComponent<ContactAttack>();
@@ -112,7 +112,7 @@ namespace BattleArena.Editor.ContentBuilder
             Behaviour<OrbitMovement>(wispRoot, ("radius", 7.5f), ("leadAngle", 35f));
             Behaviour<ProjectileAttack>(wispRoot,
                 ("range", 11f), ("cooldown", 3f), ("windup", 0.45f), ("baseDamage", 23f),
-                ("windupIndicator", WindupIndicator(wispRoot, m.WispBolt, new Vector3(0f, 1.4f, 0f), 1.15f)),
+                ("windupIndicator", WindupIndicator(wispRoot, "WispBolt", Hex("#B030FF"), new Vector3(0f, 1.4f, 0f), 1.15f)),
                 ("projectilePrefab", wispBolt), ("muzzle", AddChild(wispRoot.transform, "Muzzle", new Vector3(0f, 1.3f, 0.5f))),
                 ("projectileSpeed", 9f), ("projectileCount", 3), ("spreadAngle", 22f));
             wispRoot.AddComponent<ContactAttack>();
@@ -123,7 +123,7 @@ namespace BattleArena.Editor.ContentBuilder
             Behaviour<KeepDistanceMovement>(bomberRoot, ("preferredDistance", 10f), ("tolerance", 2f));
             Behaviour<LobbedBombAttack>(bomberRoot,
                 ("range", 14f), ("cooldown", 3.6f), ("windup", 0.6f), ("baseDamage", 16f),
-                ("windupIndicator", WindupIndicator(bomberRoot, m.BombBody, new Vector3(0.45f, 1.55f, 0.2f), 0.45f)),
+                ("windupIndicator", WindupIndicator(bomberRoot, "BombBody", new Color(1f, 0.55f, 0.15f), new Vector3(0.45f, 1.55f, 0.2f), 0.45f)),
                 ("bombPrefab", bomb), ("muzzle", AddChild(bomberRoot.transform, "Muzzle", new Vector3(0.45f, 1.55f, 0.2f))),
                 ("flightTime", 1.1f), ("blastRadius", 2.3f));
             bomberRoot.AddComponent<ContactAttack>();
@@ -134,7 +134,7 @@ namespace BattleArena.Editor.ContentBuilder
             Behaviour<KeepDistanceMovement>(shamanRoot, ("preferredDistance", 12f), ("tolerance", 2.5f));
             Behaviour<GroundStrikeAttack>(shamanRoot,
                 ("range", 15f), ("cooldown", 4.5f), ("windup", 0.8f), ("baseDamage", 18f),
-                ("windupIndicator", WindupIndicator(shamanRoot, m.CurseGlow, new Vector3(0.5f, 2.1f, 0.2f), 0.7f)),
+                ("windupIndicator", WindupIndicator(shamanRoot, "EnemyCurseGlow", Hex("#4DFF3A"), new Vector3(0.5f, 2.1f, 0.2f), 0.7f)),
                 ("strikePrefab", curse), ("strikeRadius", 3f), ("strikeDelay", 1.2f), ("strikeCount", 2), ("scatter", 4f));
             shamanRoot.AddComponent<ContactAttack>();
             var shaman = Define("DarkShaman", "Dark Shaman", SaveEnemy(shamanRoot), health: 84f, speed: 2.5f, damage: 5f, range: 1.2f, cooldown: 1f, xp: 4);
@@ -145,7 +145,7 @@ namespace BattleArena.Editor.ContentBuilder
             boarRoot.AddComponent<ContactAttack>();
             Behaviour<DashAttack>(boarRoot,
                 ("range", 9f), ("cooldown", 4f), ("windup", 0.75f), ("baseDamage", 38f),
-                ("windupIndicator", WindupIndicator(boarRoot, m.WindupGlow, new Vector3(0f, 0.85f, 1.2f), 0.5f)),
+                ("windupIndicator", WindupIndicator(boarRoot, "EnemyWindupGlow", WindupGlowColor, new Vector3(0f, 0.85f, 1.2f), 0.5f)),
                 ("telegraphPrefab", dashLine), ("minRange", 3f), ("dashDistance", 11f), ("dashSpeed", 20f), ("hitRadius", 1.4f));
             var boar = Define("BoarCharger", "Boar Charger", SaveEnemy(boarRoot), health: 264f, speed: 3.3f, damage: 20f, range: 1.6f, cooldown: 1.2f, xp: 6);
 
@@ -154,7 +154,7 @@ namespace BattleArena.Editor.ContentBuilder
             beetleRoot.AddComponent<ChaseMovement>();
             Behaviour<SelfDestructAttack>(beetleRoot,
                 ("range", 2.4f), ("cooldown", 5f), ("windup", 0.9f), ("baseDamage", 38f),
-                ("windupIndicator", WindupIndicator(beetleRoot, m.WindupGlow, new Vector3(0f, 0.5f, 0f), 1.3f)),
+                ("windupIndicator", WindupIndicator(beetleRoot, "EnemyWindupGlow", WindupGlowColor, new Vector3(0f, 0.5f, 0f), 1.3f)),
                 ("blastPrefab", beetleBlast), ("blastRadius", 3f));
             var beetle = Define("BombBeetle", "Bomb Beetle", SaveEnemy(beetleRoot), health: 60f, speed: 4.4f, damage: 0f, range: 1f, cooldown: 1f, xp: 3);
 
@@ -186,7 +186,7 @@ namespace BattleArena.Editor.ContentBuilder
             warlordRoot.AddComponent<ContactAttack>();
             Behaviour<GroundStrikeAttack>(warlordRoot,
                 ("range", 8f), ("cooldown", 4f), ("windup", 0.9f), ("baseDamage", 22f),
-                ("windupIndicator", WindupIndicator(warlordRoot, m.WindupGlow, new Vector3(0f, 1.9f, 0f), 0.5f)),
+                ("windupIndicator", WindupIndicator(warlordRoot, "EnemyWindupGlow", WindupGlowColor, new Vector3(0f, 1.9f, 0f), 0.5f)),
                 ("strikePrefab", warlordSlam), ("strikeRadius", 3.5f), ("strikeDelay", 1f), ("strikeCount", 3), ("scatter", 3.5f));
             var warlord = Define("OgreWarlord", "Ogre Warlord", SaveEnemy(warlordRoot), health: 480f, speed: 2.6f, damage: 18f, range: 2.6f, cooldown: 1.3f, xp: 30);
 

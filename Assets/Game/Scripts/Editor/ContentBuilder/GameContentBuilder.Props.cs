@@ -232,14 +232,20 @@ namespace BattleArena.Editor.ContentBuilder
             return SavePrefab<LineTelegraph>(root, $"{PrefabsFolder}/Vfx/DashTelegraph.prefab");
         }
 
+        /// <summary>Glow colour of most enemy wind-ups.</summary>
+        private static readonly Color WindupGlowColor = Hex("#FF4A10");
+
         /// <summary>
         /// Charging effect shown while an attack winds up: a pulsing glow where the attack comes from, sparks
         /// drawn into it, and a ring closing in around the enemy's feet.
         /// </summary>
-        private static GameObject WindupIndicator(GameObject root, Material source, Vector3 localPosition, float size)
+        /// <param name="root">Enemy the indicator is added to.</param>
+        /// <param name="key">Names the generated effect materials, so enemies with the same key share them.</param>
+        /// <param name="color">Glow colour.</param>
+        /// <param name="localPosition">Where the attack comes from, relative to the enemy.</param>
+        /// <param name="size">Scale of the glow and sparks.</param>
+        private static GameObject WindupIndicator(GameObject root, string key, Color color, Vector3 localPosition, float size)
         {
-            var color = IndicatorColor(source);
-            var key = source.name;
             var indicator = new GameObject("WindupIndicator") { layer = root.layer };
             indicator.transform.SetParent(root.transform, false);
             indicator.transform.localPosition = localPosition;
@@ -258,15 +264,6 @@ namespace BattleArena.Editor.ContentBuilder
 
             indicator.SetActive(false);
             return indicator;
-        }
-
-        /// <summary>The glow colour of a material: its emission hue if it has one, otherwise its base colour.</summary>
-        private static Color IndicatorColor(Material material)
-        {
-            var emission = material.GetColor("_EmissionColor");
-            var color = emission.maxColorComponent > 0.01f ? emission / emission.maxColorComponent : material.GetColor("_BaseColor");
-            // Dark materials (e.g. the bomb) would give an invisible glow; fall back to a warning orange.
-            return color.maxColorComponent < 0.35f ? new Color(1f, 0.55f, 0.15f) : new Color(color.r, color.g, color.b, 1f);
         }
 
         /// <summary>Stops every renderer under <paramref name="root"/> from casting or receiving shadows.</summary>

@@ -10,8 +10,8 @@ namespace BattleArena.Editor.ContentBuilder
         /// <summary>Every material the builder assigns, created or updated once per build.</summary>
         private sealed class MaterialSet
         {
-            /// <summary>Arena ground and generic scenery.</summary>
-            public Material Ground, GroundPatch, Stone, Wall, Wood, Leaves, Gold;
+            /// <summary>Arena ground, and the gold trim on chests and bombs.</summary>
+            public Material Ground, Gold;
             /// <summary>Lantern pine.</summary>
             public Material PineBark, PineNeedles, PineNeedlesDark, LanternIron, LanternGlow;
             /// <summary>Graves, walls, wells and other stone props.</summary>
@@ -24,12 +24,12 @@ namespace BattleArena.Editor.ContentBuilder
             public Material MonsterAtlas, MonsterGrunt, MonsterBlackDragon;
             /// <summary>Chest, arrows and attack telegraphs.</summary>
             public Material ChestWood, ChestIron, Fletching, TelegraphLane, TelegraphLaneFill;
-            /// <summary>Enemy wind-ups, curses, bombs and wisp bolts.</summary>
-            public Material WindupGlow, CurseGlow, BombBody, WispBolt;
+            /// <summary>The goblin bomb's casing.</summary>
+            public Material BombBody;
             /// <summary>Hit flash.</summary>
             public Material Flash;
-            /// <summary>Player projectiles and pickups.</summary>
-            public Material PlayerBolt, Fireball, Meteor, Gem, ArcaneOrb;
+            /// <summary>Meteor cores and experience gems.</summary>
+            public Material Meteor, Gem;
             /// <summary>Enemy strike markers.</summary>
             public Material StrikeEnemyRing, StrikeEnemyFill;
             /// <summary>Generic particle bursts.</summary>
@@ -47,11 +47,6 @@ namespace BattleArena.Editor.ContentBuilder
             {
                 // Painted grass tiles every ~8 m across the 100 m ground plane.
                 Ground = Lit("Ground", Color.white, smoothness: 0.05f, baseMap: LoadTexture(GroundTexturePath), tiling: new Vector2(GroundScale * 1.2f, GroundScale * 1.2f)),
-                GroundPatch = Lit("GroundPatch", Hex("#3F5A33"), smoothness: 0.05f),
-                Stone = Lit("Stone", Hex("#8A8D93"), smoothness: 0.15f),
-                Wall = Lit("Wall", Hex("#5A5C66"), smoothness: 0.1f),
-                Wood = Lit("Wood", Hex("#7A4E2A"), smoothness: 0.2f),
-                Leaves = Lit("Leaves", Hex("#2F6B3A"), smoothness: 0.05f),
                 Gold = Lit("Gold", Hex("#E2B243"), smoothness: 0.6f, metallic: 0.8f),
 
                 // Lantern pine (Blender model); slot order matches the FBX sub-meshes.
@@ -92,19 +87,12 @@ namespace BattleArena.Editor.ContentBuilder
                 MonsterGrunt = MonsterMaterial("MonsterGrunt", MonsterGruntAtlasPath, Color.white, 0.2f, 0f),
                 // A touch glossier than the rest, so the black hide still shows its shape under the lights.
                 MonsterBlackDragon = MonsterMaterial("MonsterBlackDragon", MonsterBlackDragonAtlasPath, Color.white, 0.35f, 0f),
-                WindupGlow = Lit("EnemyWindupGlow", Hex("#FFB070"), emission: Hex("#FF4A10") * 6f),
-                CurseGlow = Lit("EnemyCurseGlow", Hex("#C8FFB0"), emission: Hex("#4DFF3A") * 4f),
                 BombBody = Lit("BombBody", Hex("#1C1C22"), smoothness: 0.6f),
-                WispBolt = Lit("WispBolt", Hex("#F2D6FF"), emission: Hex("#B030FF") * 5f),
 
                 Flash = Lit("HitFlash", Color.white, emission: Color.white * 1.5f),
 
-                PlayerBolt = Lit("PlayerBolt", Hex("#BFF3FF"), emission: Hex("#38C8FF") * 5f),
-                Fireball = Lit("Fireball", Hex("#FFC060"), emission: Hex("#FF6A00") * 6f),
                 Meteor = Lit("Meteor", Hex("#5A2B18"), emission: Hex("#FF4A00") * 3f),
                 Gem = Lit("ExperienceGem", Hex("#A6FFD8"), emission: Hex("#20E0A0") * 3f),
-                ArcaneOrb = Lit("ArcaneOrb", Hex("#E2C8FF"), emission: Hex("#9A4DFF") * 5f),
-
 
                 TelegraphLane = Transparent("TelegraphEnemyLane", new Color(1f, 0.28f, 0.25f, 0.9f), LoadVfxTexture("vfx_lane")),
                 TelegraphLaneFill = Transparent("TelegraphEnemyLaneFill", new Color(1f, 0.2f, 0.2f, 0.45f), LoadVfxTexture("vfx_lane")),
